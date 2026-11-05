@@ -1846,6 +1846,120 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
 }
 /* ==[/W6]== */
 </style>
+
+<style>
+/* ==[HOME]== homepage / onboarding. Scoped to #home (wins over the older .hero/.steps rules),
+   tokens only so it follows Paper / Sepia / Night. */
+#home{ max-width:1180px; margin:0 auto; padding:22px 20px 6px; }
+#home .hero{ position:relative; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr); gap:32px; align-items:stretch;
+  padding:52px 40px 36px; border:1px solid var(--line); border-radius:22px; overflow:hidden;
+  background:linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--accent) 4%, var(--surface)));
+  box-shadow:var(--shadow-md); }
+#home .hero::before{ content:none; }
+#home .hero-hide{ position:absolute; top:14px; right:16px; z-index:2; display:inline-flex; align-items:center; gap:6px;
+  font:inherit; font-size:12.5px; font-weight:600; color:var(--ink-faint); background:none; border:1px solid transparent;
+  border-radius:8px; padding:4px 8px; cursor:pointer; }
+#home .hero-hide:hover{ color:var(--ink); background:color-mix(in srgb, var(--ink) 6%, transparent); }
+#home .hero-copy{ display:flex; flex-direction:column; justify-content:center; min-width:0; }
+#home .hero-kicker{ align-self:flex-start; margin:0 0 16px; padding:5px 11px; border-radius:999px; border:none;
+  background:var(--accent-soft); color:var(--accent-soft-fg); font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
+#home .hero h2{ margin:0; max-width:none; color:var(--ink); font-family:var(--font-ui);
+  font-size:clamp(30px, 3.6vw, 46px); line-height:1.08; letter-spacing:-.035em; font-weight:800; }
+#home .hero-em{ color:var(--accent); }
+#home .hero-sub{ margin:16px 0 0; max-width:560px; color:var(--ink-soft); font-size:17px; line-height:1.6; }
+#home .hero-actions{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:26px; }
+#home .hero-actions .btn{ min-height:44px; padding:0 18px; font-size:15px; font-weight:600; border-radius:11px; gap:8px; }
+#home .hero-actions .btn .ico{ width:18px; height:18px; }
+#home .hero-actions .btn.linklike{ padding:0 8px; color:var(--accent); background:none; border-color:transparent; box-shadow:none; }
+#home .hero-actions .btn.linklike:hover{ background:var(--accent-soft); color:var(--accent-soft-fg); }
+
+#home .hero-drop{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:230px;
+  padding:24px; text-align:center; font:inherit; color:var(--ink); cursor:pointer;
+  border:1.5px dashed color-mix(in srgb, var(--accent) 45%, var(--line-strong)); border-radius:18px;
+  background:color-mix(in srgb, var(--accent) 5%, var(--surface)); transition:border-color .15s, background .15s, transform .15s; }
+#home .hero-drop:hover{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 9%, var(--surface)); transform:translateY(-1px); }
+#home .hero-drop .drop-icon{ width:52px; height:52px; margin:0 0 10px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+  background:var(--accent-soft); color:var(--accent-soft-fg); box-shadow:none; }
+#home .hero-drop .drop-icon svg{ width:26px; height:26px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+#home .hero-drop b{ font-size:16px; color:var(--ink); margin:0; }
+#home .hero-drop span{ font-size:13.5px; color:var(--ink-soft); }
+#home .hero-drop .click-hint{ margin-top:10px; font-size:12px; font-weight:500; color:var(--ink-faint); }
+
+#home .home-h{ margin:34px 2px 14px; font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); }
+#home .howto{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px; counter-reset:none; }
+#home .how-step{ position:relative; display:flex; flex-direction:column; padding:16px 16px 18px; border:1px solid var(--line);
+  border-radius:16px; background:var(--surface); box-shadow:var(--shadow-sm); }
+#home .how-num{ position:absolute; top:12px; left:12px; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:var(--accent); color:var(--accent-contrast); font-size:12px; font-weight:800; }
+#home .how-vis{ width:100%; height:72px; margin:4px 0 12px; border-radius:10px; background:var(--surface-2); }
+#home .how-step b{ font-size:15px; color:var(--ink); }
+#home .how-step p{ margin:4px 0 0; font-size:13.5px; line-height:1.45; color:var(--ink-soft); }
+/* mini illustrations */
+#home .mv-card{ fill:var(--surface); stroke:var(--line-strong); stroke-width:1.2; }
+#home .mv-line{ fill:var(--line-strong); }
+#home .mv-ink{ fill:var(--ink-faint); }
+#home .mv-bar{ fill:var(--line-strong); }
+#home .mv-hl{ fill:var(--hl-active, var(--hl)); }
+#home .mv-accent{ fill:var(--accent); }
+#home .mv-soft{ fill:var(--accent-soft); stroke:var(--line-strong); stroke-width:1; }
+#home .mv-stroke{ fill:none; stroke:var(--accent); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+#home .mv-tag{ fill:var(--accent-contrast); font:700 7px/1 var(--font-ui); }
+
+#home .why{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; margin-top:14px; }
+#home .why-card{ padding:18px; border-radius:16px; border:1px solid var(--line); background:color-mix(in srgb, var(--surface) 70%, transparent); }
+#home .why-ico{ width:36px; height:36px; border-radius:11px; display:flex; align-items:center; justify-content:center; margin-bottom:10px;
+  background:var(--accent-soft); color:var(--accent-soft-fg); }
+#home .why-ico svg{ width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+#home .why-card b{ display:block; font-size:15px; color:var(--ink); margin-bottom:4px; }
+#home .why-card p{ margin:0; font-size:13.5px; line-height:1.5; color:var(--ink-soft); }
+#home .assure{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px 18px; margin:18px 0 6px; font-size:13px; color:var(--ink-soft); }
+#home .assure span{ display:inline-flex; align-items:center; gap:6px; }
+#home .assure span::before{ content:"✓"; font-weight:800; color:var(--success); }
+
+/* keyboard focus */
+#home button:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+/* first-visit tip above the sample document (outside #doc, so not part of the anchor text) */
+.try-tip{ display:flex; align-items:center; gap:10px; margin:0 0 18px; padding:10px 12px 10px 14px; border-radius:12px;
+  border:1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); background:var(--accent-soft); color:var(--accent-soft-fg);
+  font-size:14px; line-height:1.45; }
+.try-tip[hidden], body:not(.sample-mode) .try-tip{ display:none; }
+.try-tip .try-ico{ flex:none; font-size:16px; }
+.try-tip .try-txt{ flex:1; min-width:0; }
+.try-tip kbd{ font:600 12px/1 var(--font-mono); padding:2px 6px; border-radius:5px; border:1px solid currentColor; opacity:.85; }
+.try-tip .try-x{ flex:none; width:28px; height:28px; border-radius:7px; border:none; background:none; color:inherit; font-size:18px; line-height:1; cursor:pointer; }
+.try-tip .try-x:hover{ background:color-mix(in srgb, currentColor 12%, transparent); }
+.try-tip.flash{ animation:tryFlash 1.2s ease-out; }
+@keyframes tryFlash{ 0%{ box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); } 100%{ box-shadow:0 0 0 12px transparent; } }
+
+/* documents panel counter (library limit) */
+.lib-count{ font-size:12px; font-weight:600; color:var(--ink-faint); margin-left:6px; }
+.lib-count.full{ color:var(--danger); }
+
+@media (max-width:1000px){
+  #home .howto{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+}
+@media (max-width:900px){
+  #home .hero{ grid-template-columns:1fr; gap:22px; padding:34px 24px 26px; }
+  #home .hero-drop{ min-height:150px; }
+  #home .why{ grid-template-columns:1fr; }
+}
+@media (max-width:560px){
+  #home{ padding:12px 12px 4px; }
+  #home .hero{ padding:40px 18px 20px; border-radius:18px; }
+  #home .hero h2{ font-size:29px; }
+  #home .hero-sub{ font-size:15.5px; }
+  #home .hero-actions{ display:grid; grid-template-columns:1fr; }
+  #home .hero-actions .btn{ width:100%; justify-content:center; }
+  #home .howto{ grid-template-columns:1fr; }
+  #home .hero-drop{ display:none; }   /* the Open button does the same job on phones */
+}
+@media (prefers-reduced-motion:reduce){
+  #home .hero-drop{ transition:none; }
+  #home .hero-drop:hover{ transform:none; }
+  .try-tip.flash{ animation:none; }
+}
+</style>
 </head>
 <body>
 
@@ -1878,36 +1992,100 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
   </div>
 </header>
 
-<section class="home" id="home">
+<section class="home" id="home" aria-labelledby="homeTitle">
   <div class="hero">
-    <div>
+    <button class="hero-hide" id="bHeroSample" type="button" title="Hide the intro and keep the demo">Hide intro <span aria-hidden="true">×</span></button>
+    <div class="hero-copy">
       <span class="hero-kicker">Markdown review desk for AI</span>
-      <h2>Read, comment and edit Markdown — then hand it to your AI.</h2>
-      <p>Open any Markdown file, comment right on the words that matter, fix the source in the built-in editor, and export a clean package that ChatGPT, Claude or Gemini can act on exactly where you pointed. Free, private, no sign-up.</p>
+      <h2 id="homeTitle">Point at the exact words.<br><span class="hero-em">Tell your AI what to fix.</span></h2>
+      <p class="hero-sub">Comment on any Markdown file, then export it with every comment pinned to its passage — so ChatGPT, Claude or Gemini answers in the right place.</p>
       <div class="hero-actions">
-        <button class="btn primary" id="bHeroOpen">Open Markdown</button>
-        <button class="btn ghost" id="bHeroPaste">Paste Markdown</button>
-        <button class="btn linklike" id="bHeroSample">Hide intro</button>
+        <button class="btn primary" id="bHeroOpen" type="button"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Open a Markdown file</button>
+        <button class="btn ghost" id="bHeroPaste" type="button"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/></svg>Paste Markdown</button>
+        <button class="btn linklike" id="bHeroDemo" type="button">Explore the demo below <span aria-hidden="true">↓</span></button>
       </div>
     </div>
-    <button class="hero-drop" id="heroDrop" type="button" aria-label="Open Markdown file browser">
-      <div class="drop-icon">↧</div>
-      <b>Drop your Markdown file here</b>
-      <span>or click to browse from your computer.</span>
-      <span class="click-hint">Supports .md, .markdown, and .txt files</span>
+    <button class="hero-drop" id="heroDrop" type="button" aria-label="Open a Markdown file — or drop one here">
+      <span class="drop-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 19h14"/></svg></span>
+      <b>Drop your .md file here</b>
+      <span>or click to browse your computer</span>
+      <span class="click-hint">.md · .markdown · .txt — or a .mdeverything.json backup</span>
     </button>
   </div>
-  <div class="steps" aria-label="How it works">
-    <div class="step-card"><span class="num">1</span><b>Open or paste</b><p>Drop a .md / .markdown / .txt file, open it, or paste the text.</p></div>
-    <div class="step-card"><span class="num">2</span><b>Comment in place</b><p>Select a passage or use the margin button, then reply in threads.</p></div>
-    <div class="step-card"><span class="num">3</span><b>Export for AI</b><p>One copy with the document, quotes, sections, comments and replies.</p></div>
+
+  <h3 class="home-h" id="howTitle">How it works</h3>
+  <ol class="howto" aria-labelledby="howTitle">
+    <li class="how-step">
+      <span class="how-num" aria-hidden="true">1</span>
+      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
+        <rect class="mv-card" x="38" y="5" width="44" height="54" rx="5"/><path class="mv-stroke" d="M70 5v11h12"/>
+        <rect class="mv-line" x="45" y="23" width="30" height="3" rx="1.5"/><rect class="mv-line" x="45" y="30" width="24" height="3" rx="1.5"/><rect class="mv-line" x="45" y="37" width="28" height="3" rx="1.5"/>
+        <rect class="mv-accent" x="44" y="45" width="22" height="9" rx="4.5"/><text class="mv-tag" x="55" y="51.6" text-anchor="middle">.md</text>
+      </svg>
+      <b>Open or paste your .md</b>
+      <p>Drop a file, open it, or paste the text.</p>
+    </li>
+    <li class="how-step">
+      <span class="how-num" aria-hidden="true">2</span>
+      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
+        <rect class="mv-line" x="8" y="12" width="66" height="4" rx="2"/>
+        <rect class="mv-hl" x="6" y="21" width="52" height="11" rx="3"/><rect class="mv-ink" x="10" y="24.5" width="44" height="4" rx="2"/>
+        <rect class="mv-line" x="8" y="38" width="60" height="4" rx="2"/><rect class="mv-line" x="8" y="47" width="44" height="4" rx="2"/>
+        <rect class="mv-card" x="78" y="14" width="34" height="24" rx="7"/><path class="mv-stroke" d="M89 26h12M95 20v12"/>
+      </svg>
+      <b>Select text → comment</b>
+      <p>Press Enter, or use the margin button for a whole block.</p>
+    </li>
+    <li class="how-step">
+      <span class="how-num" aria-hidden="true">3</span>
+      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
+        <rect class="mv-card" x="18" y="5" width="84" height="54" rx="7"/>
+        <circle class="mv-accent" cx="29" cy="15" r="4.5"/><rect class="mv-ink" x="38" y="13" width="46" height="4" rx="2"/>
+        <rect class="mv-bar" x="29" y="25" width="2" height="26" rx="1"/>
+        <rect class="mv-line" x="36" y="27" width="42" height="3.5" rx="1.75"/><rect class="mv-line" x="36" y="41" width="34" height="3.5" rx="1.75"/>
+        <path class="mv-stroke" d="M85 47l7-7 3 3-7 7h-3z"/>
+      </svg>
+      <b>Reply, edit and organise</b>
+      <p>Threads, search, undo — and up to 10 documents.</p>
+    </li>
+    <li class="how-step">
+      <span class="how-num" aria-hidden="true">4</span>
+      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
+        <rect class="mv-card" x="10" y="10" width="34" height="46" rx="5"/><rect class="mv-soft" x="19" y="6" width="16" height="8" rx="3"/>
+        <rect class="mv-line" x="16" y="22" width="22" height="3" rx="1.5"/><rect class="mv-line" x="16" y="29" width="18" height="3" rx="1.5"/><rect class="mv-hl" x="15" y="36" width="24" height="7" rx="2"/>
+        <path class="mv-stroke" d="M52 32h14M60 26l6 6-6 6"/>
+        <rect class="mv-accent" x="74" y="14" width="38" height="28" rx="9"/><path class="mv-accent" d="M82 41l2 8 7-8z"/>
+        <text class="mv-tag" x="93" y="32" text-anchor="middle">AI</text>
+      </svg>
+      <b>Export for AI</b>
+      <p>Paste into ChatGPT, Claude or Gemini.</p>
+    </li>
+  </ol>
+
+  <div class="why" role="list" aria-label="Why mdeverything">
+    <div class="why-card" role="listitem">
+      <span class="why-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span>
+      <b>Precise context for AI</b>
+      <p>Each comment carries its quote, section and surrounding text, so answers land on the right sentence.</p>
+    </div>
+    <div class="why-card" role="listitem">
+      <span class="why-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+      <b>Private — runs in your browser</b>
+      <p>No upload, no account, no tracking. Your work stays on this device.</p>
+    </div>
+    <div class="why-card" role="listitem">
+      <span class="why-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>
+      <b>Works in any language</b>
+      <p>Comments anchor to the exact words — English, Tiếng Việt, 日本語 alike.</p>
+    </div>
   </div>
+  <p class="assure"><span>Free</span><span>No sign-up</span><span>Autosaves as you work</span><span>Keep up to 10 documents</span></p>
 </section>
 
 
 <main>
   <nav id="outline" class="outline" aria-label="Document outline"></nav>
-  <section class="sheet"><div id="doc"></div></section>
+  <section class="sheet"><div class="try-tip" id="tryTip" role="note" hidden><span class="try-ico" aria-hidden="true">✨</span><span class="try-txt"><b>Try it:</b> select any sentence below and press <kbd>Enter</kbd> to leave a comment.</span><button type="button" class="try-x" aria-label="Dismiss tip">×</button></div><div id="doc"></div></section>
   <aside class="rail">
     <div class="rail-inner" id="railInner"></div>
     <div id="empty" class="rail-empty">
@@ -2762,6 +2940,7 @@ function commitPending(){
     quote:pending.quote, start:pending.start,
     prefix:pending.prefix, suffix:pending.suffix, note:"", replies:[] };
   ANN.push(a); const id=a.id;
+  markOnboarded();                   // first comment → the "Try it" tip is no longer needed
   activeId=id;                       // render the new card as active immediately
   hideFloater(); hideHlPop(true); window.getSelection().removeAllRanges();
   // The comments panel is optional now: adding a note never forces it open —
@@ -3209,10 +3388,12 @@ async function save(){
     let promoted=false;
     if(isSampleMode){
       if(LIB.activeId || !libSampleChanged()) return;
+      if(libFull()){ if(!libFullWarned){ libFullWarned=true; libFullToast(); } return; }
       libPromoteSample(); promoted=true;
     }
     const now=Date.now();
     let meta = LIB.activeId && libMeta(LIB.activeId);
+    if(!meta && libFull()){ if(!libFullWarned){ libFullWarned=true; libFullToast(); } return; }
     if(!meta){   // first save of a new document (opened file, pasted text, demo copy)
       meta={ id:libUid(), name:libUniqueName(currentFileName), createdAt:now, updatedAt:now, notes:0, chars:0 };
       LIB.docs.push(meta); LIB.activeId=meta.id; libFp="";
@@ -3276,6 +3457,7 @@ document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("mousedown",
 /* ============ load a NEW document ============
    Opening a file creates a new library document; the previous one stays in Documents. */
 async function loadNewDoc(src, name){
+  if(libFull()){ libFullToast(); return false; }
   libLeaveCurrent();
   SRC=src; ANN=[]; activeId=null; LIB.activeId=null; libFp="";
   setWorkspaceMode({home:false, sample:false, fileName:name || "Markdown document"});
@@ -3311,7 +3493,11 @@ $("#fileMd").addEventListener("change",async e=>{
 $("#bRender").addEventListener("click",()=>{
   const next=$("#srcArea").value;
   if(!next.trim()){ toast("Paste Markdown first"); return; }
-  if(libPasteNew){ closeOverlays(); libResetPasteMode(); loadNewDoc(next, "Pasted Markdown"); return; }
+  if(libPasteNew){
+    if(libFull()){ libFullToast(); return; }   // keep the drawer (and the pasted text) open
+    closeOverlays(); libResetPasteMode(); loadNewDoc(next, "Pasted Markdown"); return;
+  }
+  if(isSampleMode && libFull()){ libFullToast(); return; }   // would become a new library document
   const replaceDemo = isHomeMode && isSampleMode;
   SRC=next; if(replaceDemo) ANN=[]; activeId=null; closeOverlays();
   if(isSampleMode) setWorkspaceMode({home:false, sample:false, fileName: replaceDemo ? "Pasted Markdown" : "Sample copy"});
@@ -4569,6 +4755,13 @@ document.addEventListener("keydown",e=>{
 const LIB_KEY = "marginalia:library:v1";
 const LIB_DOC = "marginalia:doc:";
 const LIB_PREFIX = "marginalia:";
+const LIB_MAX = 10;                         // documents kept in the browser (homepage promises "up to 10")
+function libFull(){ return LIB.docs.length >= LIB_MAX; }
+function libFullToast(){
+  toast(`You can keep up to ${LIB_MAX} documents — delete one to add another`,
+    { action:{ label:"Manage", run:()=>libOpenPanel() }, ms:7000 });
+}
+let libFullWarned = false;
 const LIB_QUOTA = 5 * 1024 * 1024;        // typical per-origin localStorage budget (characters)
 const LIB_OLD_DAYS = 30;
 let LIB = { activeId:null, docs:[] };
@@ -4802,8 +4995,9 @@ async function libImportFile(f){
     return fail("it isn't an mdeverything backup");
   const list = data.docs.filter(d => d && typeof d.src === "string");
   if(!list.length) return fail("it contains no documents");
-  let nDocs = 0, nNotes = 0, first = null, full = false;
+  let nDocs = 0, nNotes = 0, first = null, full = false, capped = 0;
   for(const d of list){
+    if(libFull()){ capped = list.length - nDocs; break; }
     const now = Date.now();
     const ann = (Array.isArray(d.ann) ? d.ann : []).filter(a => a && typeof a.quote === "string")
       .map((a, i) => normAnn({ ...a, id:String(a.id || ("a" + now.toString(36) + i)), note:typeof a.note === "string" ? a.note : "" }));
@@ -4816,7 +5010,9 @@ async function libImportFile(f){
   await libWriteIndex();
   if(first) await libOpen(first.id, { quiet:true });
   libRenderPanel();
-  if(nDocs) toast(`Imported ${libPlural(nDocs, "document")} · ${libPlural(nNotes, "comment")}` + (full ? " — storage is full, the rest were skipped" : ""), { ms:4000 });
+  if(nDocs) toast(`Imported ${libPlural(nDocs, "document")} · ${libPlural(nNotes, "comment")}` + (full ? " — storage is full, the rest were skipped" : "")
+    + (capped ? ` — ${libPlural(capped, "document")} skipped (limit ${LIB_MAX})` : ""), { ms:5000 });
+  else if(capped) libFullToast();
   return nDocs > 0;
 }
 
@@ -4935,7 +5131,7 @@ function libBuildPanel(){
   p.setAttribute("role", "dialog"); p.setAttribute("aria-label", "Documents");
   p.innerHTML = `
     <div class="lib-head">
-      <h2>Documents</h2>
+      <h2>Documents <span class="lib-count"></span></h2>
       <span class="lib-new">
         <button type="button" class="lib-btn primary" data-lib="new" aria-haspopup="menu" aria-expanded="false">${LIB_ICONS.plus}New</button>
         <span class="lib-menu" role="menu" hidden>
@@ -5015,6 +5211,9 @@ function libRenderPanel(){
   const p = libPanel;
   if(!p || p.hidden) return;
   // notice: what the panel shows / the demo state
+  const cnt = p.querySelector(".lib-count");
+  cnt.textContent = `${LIB.docs.length} / ${LIB_MAX}`;
+  cnt.classList.toggle("full", libFull());
   const notice = p.querySelector(".lib-notice");
   notice.hidden = !isSampleMode;
   notice.textContent = isSampleMode ? "You're viewing the sample document. It isn't saved unless you change it — then it's kept here as “Sample copy”." : "";
@@ -5142,6 +5341,26 @@ new MutationObserver(() => { if(libPasteNew && !$("#ovSource").classList.contain
 // keep relative times fresh while the panel is open
 setInterval(() => { if(libIsOpen() && !libRenamingId) libRenderPanel(); }, 60000);
 /* ==[/W6]== */
+
+/* ==[HOME]== homepage: "Explore the demo" + first-visit tip */
+const ONBOARD_KEY = "marginalia:onboarded:v1";
+function isOnboarded(){ try{ return localStorage.getItem(ONBOARD_KEY) === "1"; }catch(e){ return false; } }
+function markOnboarded(){
+  try{ localStorage.setItem(ONBOARD_KEY, "1"); }catch(e){}
+  const t = $("#tryTip"); if(t) t.hidden = true;
+}
+(function initTryTip(){
+  const t = $("#tryTip"); if(!t) return;
+  t.hidden = isOnboarded();
+  t.querySelector(".try-x").addEventListener("click", markOnboarded);
+})();
+$("#bHeroDemo").addEventListener("click", () => {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  $(".sheet").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  const t = $("#tryTip");
+  if(t && !t.hidden){ t.classList.remove("flash"); void t.offsetWidth; t.classList.add("flash"); }
+});
+/* ==[/HOME]== */
 
 // called at the end of every full renderDoc(); feature errors must not break rendering
 function onDocRendered(){
