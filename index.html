@@ -1741,6 +1741,109 @@ button.doc-label::after{ content:"▾"; font-size:.8em; opacity:.6; }
 
 <style>
 /* ==[W6 LIBRARY]== owned by the library workstream (documents, storage, backup) */
+button.doc-label{ background:none; border:0; padding:3px 6px; margin:0 0 0 -6px; border-radius:7px;
+  color:var(--ink-soft); transition:background .12s,color .12s; }
+button.doc-label:hover, button.doc-label[aria-expanded="true"]{ background:var(--surface-2); color:var(--ink); }
+button.doc-label:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+button.doc-label[aria-disabled="true"]{ cursor:default; opacity:.7; }
+button.doc-label::before, button.doc-label::after{ flex:none; }
+button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+.lib-panel{ position:fixed; z-index:78; top:var(--lib-top,58px); left:var(--lib-left,16px);
+  width:min(440px, calc(100vw - 32px)); max-height:calc(100vh - var(--lib-top,58px) - 16px);
+  max-height:calc(100dvh - var(--lib-top,58px) - 16px);
+  display:flex; flex-direction:column; overflow:hidden;
+  background:var(--paper); color:var(--ink); border:1px solid var(--line); border-radius:14px;
+  box-shadow:var(--shadow-lg); font-family:var(--font-ui); font-size:13.5px; line-height:1.4;
+  animation:libIn .14s ease-out; }
+.lib-panel[hidden]{ display:none; }
+@keyframes libIn{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){ .lib-panel{ animation:none; } }
+
+.lib-head{ display:flex; align-items:center; gap:6px; padding:12px 10px 8px 16px; }
+.lib-head h2{ margin:0 auto 0 0; font-size:14px; font-weight:650; letter-spacing:-.005em; color:var(--ink); }
+.lib-btn{ display:inline-flex; align-items:center; gap:5px; height:28px; padding:0 10px; border-radius:7px;
+  border:1px solid var(--line); background:var(--surface); color:var(--ink); font:500 12.5px/1 var(--font-ui);
+  cursor:pointer; white-space:nowrap; transition:background .12s,border-color .12s; }
+.lib-btn:hover{ background:var(--surface-2); border-color:var(--line-strong); }
+.lib-btn.primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); }
+.lib-btn.primary:hover{ background:var(--accent-strong); border-color:var(--accent-strong); }
+.lib-btn:focus-visible, .lib-ico:focus-visible, .lib-open:focus-visible, .lib-link:focus-visible,
+.lib-menu button:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.lib-btn svg, .lib-ico svg{ width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:1.8;
+  stroke-linecap:round; stroke-linejoin:round; flex:none; }
+.lib-x{ width:28px; height:28px; border:0; background:none; border-radius:7px; color:var(--ink-faint);
+  font-size:19px; line-height:1; cursor:pointer; }
+.lib-x:hover{ background:var(--surface-2); color:var(--ink); }
+
+.lib-new{ position:relative; }
+.lib-menu{ position:absolute; top:calc(100% + 4px); right:0; z-index:2; min-width:190px; padding:4px;
+  background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow-md); }
+.lib-menu[hidden]{ display:none; }
+.lib-menu button{ display:block; width:100%; text-align:left; border:0; background:none; color:var(--ink);
+  font:500 13px/1.3 var(--font-ui); padding:8px 10px; border-radius:7px; cursor:pointer; }
+.lib-menu button:hover{ background:var(--surface-2); }
+.lib-menu .sub{ display:block; font-weight:400; font-size:11.5px; color:var(--ink-faint); margin-top:1px; }
+
+.lib-search-wrap{ padding:0 12px 10px; }
+.lib-search{ width:100%; height:32px; padding:0 10px; border:1px solid var(--line); border-radius:8px;
+  background:var(--surface); color:var(--ink); font:400 13px var(--font-ui); box-sizing:border-box; }
+.lib-search::placeholder{ color:var(--ink-faint); }
+.lib-search:focus{ outline:2px solid var(--accent); outline-offset:-1px; border-color:transparent; }
+.lib-notice{ margin:0 12px 10px; padding:8px 10px; border-radius:8px; background:var(--accent-soft);
+  color:var(--accent-soft-fg); font-size:12.5px; line-height:1.45; }
+
+.lib-list{ flex:1 1 auto; min-height:64px; overflow:auto; padding:6px; border-top:1px solid var(--line);
+  overscroll-behavior:contain; }
+.lib-row{ display:flex; align-items:center; gap:2px; padding-right:4px; border-radius:9px; }
+.lib-row:hover, .lib-row:focus-within{ background:var(--surface-2); }
+.lib-row.on{ background:var(--accent-soft); }
+.lib-open{ flex:1 1 auto; min-width:0; display:block; text-align:left; padding:8px 10px; border:0; background:none;
+  color:inherit; font:inherit; border-radius:8px; cursor:pointer; }
+.lib-name-line{ display:flex; align-items:center; gap:6px; min-width:0; }
+.lib-name{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; color:var(--ink); }
+.lib-cur{ flex:none; font-size:10.5px; font-weight:650; letter-spacing:.02em; text-transform:uppercase;
+  padding:1px 6px; border-radius:99px; background:var(--accent); color:var(--accent-contrast); }
+.lib-meta{ display:block; margin-top:2px; font-size:12px; color:var(--ink-faint); overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; }
+.lib-row.on .lib-meta{ color:var(--accent-soft-fg); opacity:.85; }
+.lib-acts{ flex:none; display:flex; gap:1px; opacity:0; transition:opacity .12s; }
+.lib-row:hover .lib-acts, .lib-row:focus-within .lib-acts, .lib-row.on .lib-acts{ opacity:1; }
+@media (hover:none){ .lib-acts{ opacity:1; } }
+.lib-ico{ width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; padding:0;
+  border:0; background:none; border-radius:7px; color:var(--ink-soft); cursor:pointer; }
+.lib-ico:hover{ background:var(--surface); color:var(--ink); }
+.lib-ico.danger:hover{ color:var(--danger); }
+.lib-rename{ width:100%; box-sizing:border-box; margin:5px 0; padding:5px 8px; border:1px solid var(--accent);
+  border-radius:7px; background:var(--surface); color:var(--ink); font:600 13.5px var(--font-ui); }
+.lib-rename:focus{ outline:2px solid var(--accent-soft); outline-offset:0; }
+.lib-rename-wrap{ flex:1 1 auto; min-width:0; padding:0 4px 0 6px; }
+.lib-empty{ padding:22px 16px; text-align:center; color:var(--ink-soft); font-size:13px; line-height:1.5; }
+.lib-empty b{ display:block; color:var(--ink); margin-bottom:2px; }
+
+.lib-foot{ display:grid; gap:9px; padding:10px 14px 12px; border-top:1px solid var(--line); background:var(--surface); }
+.lib-meter-row{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; font-size:12px; color:var(--ink-soft); }
+.lib-meter-row b{ font-weight:600; color:var(--ink); }
+.lib-bar{ height:6px; margin-top:5px; border-radius:99px; background:var(--surface-2); border:1px solid var(--line); overflow:hidden; }
+.lib-bar > i{ display:block; height:100%; width:0; background:var(--accent); border-radius:inherit; transition:width .2s; }
+.lib-meter.warn .lib-bar > i{ background:var(--danger); }
+.lib-meter.warn .lib-meter-row b{ color:var(--danger); }
+.lib-meter-note{ font-size:12px; color:var(--ink-faint); line-height:1.45; }
+.lib-foot-acts{ display:flex; flex-wrap:wrap; gap:4px 14px; }
+.lib-link{ padding:2px 0; border:0; background:none; color:var(--ink-soft); font:500 12.5px var(--font-ui); cursor:pointer;
+  text-decoration:underline; text-decoration-color:var(--line-strong); text-underline-offset:3px; }
+.lib-link:hover{ color:var(--ink); text-decoration-color:currentColor; }
+.lib-link.danger{ color:var(--danger); }
+.lib-link[disabled]{ opacity:.45; cursor:default; text-decoration:none; }
+
+/* "Download backup first" inside the shared confirm dialog */
+.lib-confirm-backup{ display:inline-flex; margin-top:9px; }
+.lib-confirm-backup.done{ pointer-events:none; opacity:.75; }
+
+@media (max-width:560px){
+  .lib-panel{ left:12px !important; right:12px; width:auto; }
+  .lib-head{ padding-left:14px; }
+}
 /* ==[/W6]== */
 </style>
 </head>
@@ -1884,14 +1987,20 @@ function updateWorkspaceChrome(){
   document.body.classList.toggle("sample-mode", isSampleMode);
   const label = $("#docLabel");
   if(label){
-    label.textContent = isSampleMode ? "Sample document" : (currentFileName || "Markdown document");
-    label.title = label.textContent;
+    const name = isSampleMode ? "Sample document" : (currentFileName || "Markdown document");
+    const span = document.createElement("span");   // own box so a long name ellipsizes before the ▾
+    span.className = "doc-label-text"; span.textContent = name;
+    label.replaceChildren(span);
+    label.title = `${name} — Documents`;
   }
 }
 function setWorkspaceMode({home=false, sample=false, fileName=""}={}){
+  // the editor applying changes to the demo turns it into the user's own copy (see W6 library)
+  if(isSampleMode && !sample && fileName==="Edited document") fileName = "Sample copy";
   isHomeMode = !!home;
   isSampleMode = !!sample;
   currentFileName = sample ? "Sample document" : (fileName || "Markdown document");
+  if(sample) libDetach();           // the demo is never a library document
   updateWorkspaceChrome();
 }
 function openFilePicker(){ $("#fileMd").click(); }
@@ -3063,7 +3172,8 @@ function buildBundle(incDoc){
 /* ============ persistence (silent autosave) ============
    Uses the host's window.storage when present (e.g. inside a Claude artifact),
    otherwise the browser's localStorage — so documents and comments survive reloads. */
-function snapshot(){ return JSON.stringify({src:SRC,ann:ANN,isHomeMode,isSampleMode,currentFileName}); }
+// current document as stored per library doc (marginalia:doc:<id>)
+function snapshot(){ return JSON.stringify({src:SRC,ann:ANN,currentFileName}); }
 async function storeGet(key){
   if(window.storage){ const r=await window.storage.get(key,false); return (r&&r.value)||null; }
   try{ return localStorage.getItem(key); }catch(e){ return null; }
@@ -3075,30 +3185,63 @@ async function storeDel(key){
   }
   try{ localStorage.removeItem(key); }catch(e){}
 }
-let quotaWarned=false;
+let quotaWarned=false;   // reset once a document write succeeds again
+// returns true when the value was stored; failures never break the session
 async function storeSet(key,val){
-  if(window.storage) return window.storage.set(key,val,false);
-  try{ localStorage.setItem(key,val); }
-  catch(e){   // quota exceeded or storage blocked: keep working, just unsaved
-    if(!quotaWarned){ quotaWarned=true; toast("This document is too large to keep in browser storage — export to save your notes"); }
-  }
-}
-async function save(){
-  try{ await storeSet(STORE_KEY, snapshot()); }catch(e){}
-}
-async function restore(){
   try{
-    const raw=await storeGet(STORE_KEY);
-    if(raw){ const d=JSON.parse(raw);
-      if(d.src){
-        SRC=d.src; ANN=(Array.isArray(d.ann)?d.ann:[]).filter(a=>a&&a.id).map(normAnn);
-        isHomeMode = typeof d.isHomeMode === "boolean" ? d.isHomeMode : false;
-        isSampleMode = typeof d.isSampleMode === "boolean" ? d.isSampleMode : false;
-        currentFileName = d.currentFileName || (isSampleMode ? "Sample document" : "Markdown document");
-        return true;
-      } }
-  }catch(e){}
-  return false;
+    if(window.storage) await window.storage.set(key,val,false);
+    else localStorage.setItem(key,val);
+    return true;
+  }catch(e){ storeFailed(e); return false; }
+}
+function storeFailed(e){
+  if(quotaWarned) return;
+  quotaWarned=true;
+  const full = !!window.storage || (e && (e.name==="QuotaExceededError" || e.name==="NS_ERROR_DOM_QUOTA_REACHED" || e.code===22 || e.code===1014));
+  if(full) toast("Browser storage is full — your latest changes aren't saved", {action:{label:"Manage storage", run:()=>libOpenPanel()}, ms:9000});
+  else toast("Browser storage isn't available here — changes won't be kept after a reload");
+}
+// Writes the active library document (+ its metadata). Called after every change.
+// The demo is not stored unless the user really changes it (then it becomes "Sample copy").
+async function save(){
+  if(!libBooted) return;
+  try{
+    let promoted=false;
+    if(isSampleMode){
+      if(LIB.activeId || !libSampleChanged()) return;
+      libPromoteSample(); promoted=true;
+    }
+    const now=Date.now();
+    let meta = LIB.activeId && libMeta(LIB.activeId);
+    if(!meta){   // first save of a new document (opened file, pasted text, demo copy)
+      meta={ id:libUid(), name:libUniqueName(currentFileName), createdAt:now, updatedAt:now, notes:0, chars:0 };
+      LIB.docs.push(meta); LIB.activeId=meta.id; libFp="";
+      if(currentFileName!==meta.name){ currentFileName=meta.name; updateWorkspaceChrome(); }
+    }
+    const fp=libContentFp(SRC, ANN);
+    if(fp===libFp) return;            // a re-render without real changes keeps updatedAt
+    meta.updatedAt=now; meta.notes=ANN.length; meta.chars=SRC.length;
+    const id=meta.id;
+    const ok=await libWriteDoc(id, snapshot());
+    if(ok && LIB.activeId===id) libFp=fp;
+    await libWriteIndex();
+    libRenderPanel();
+    if(promoted && ok) toast("Your changes are saved as “Sample copy”", { action:{ label:"Documents", run:()=>libOpenPanel() } });
+  }catch(e){ console.error(e); }
+}
+// Loads the library (migrating the old single-workspace key) and the active document.
+async function restore(){
+  try{ await libLoad(); }catch(e){ console.error(e); }
+  libBooted=true;
+  if(!LIB.activeId) return false;
+  const meta=libMeta(LIB.activeId);
+  let d=null; try{ d=await libReadDoc(meta.id); }catch(e){}
+  if(!d){   // index points at missing data → forget it and fall back to the demo
+    LIB.docs=LIB.docs.filter(x=>x!==meta); LIB.activeId=null; libWriteIndex();
+    return false;
+  }
+  libApplyDoc(meta, d);
+  return true;
 }
 
 /* ============ clipboard ============ */
@@ -3130,27 +3273,24 @@ function closeOverlays(){document.querySelectorAll(".overlay").forEach(o=>o.clas
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",closeOverlays));
 document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("mousedown",e=>{if(e.target===o)closeOverlays();}));
 
-/* ============ load a NEW document (guarded so notes aren't lost by accident) ============ */
+/* ============ load a NEW document ============
+   Opening a file creates a new library document; the previous one stays in Documents. */
 async function loadNewDoc(src, name){
-  if(hasRealNotes()){
-    const ok = await askConfirm({
-      title:"Replace current document?",
-      message:`You currently have ${ANN.length} notes. Loading a new document will delete these annotations.`,
-      note:"Export your notes first if you want to keep a copy.",
-      confirmText:"Replace document",
-      cancelText:"Keep current document"
-    });
-    if(!ok) return false;
-  }
-  SRC=src; ANN=[]; activeId=null; closeOverlays();
+  libLeaveCurrent();
+  SRC=src; ANN=[]; activeId=null; LIB.activeId=null; libFp="";
   setWorkspaceMode({home:false, sample:false, fileName:name || "Markdown document"});
-  renderDoc(); toast(name ? ("Opened "+name) : "Document loaded");
+  renderDoc();                       // save() files it as a new library document (unique name)
+  window.scrollTo(0,0);
+  toast(name ? ("Opened "+currentFileName) : "Document loaded");
+  libRenderPanel();
   return true;
 }
-function loadMdFile(f){
-  const r=new FileReader();
-  r.onload=()=>loadNewDoc(r.result, f.name);
-  r.readAsText(f);
+// .md / .markdown / .txt → new document; .json → mdeverything backup import
+async function loadMdFile(f){
+  if(libIsJson(f)) return libImportFile(f);
+  let text;
+  try{ text=await f.text(); }catch(e){ toast(`Couldn't read “${f.name}”`); return false; }
+  return loadNewDoc(text, f.name);
 }
 
 /* Open / paste / sample actions */
@@ -3161,14 +3301,21 @@ $("#bHeroPaste").addEventListener("click",openSourceDrawer);
 $("#bHeroSample").addEventListener("click",useSampleDocument);
 $("#heroDrop").addEventListener("click",openFilePicker);
 $("#bImportFile").addEventListener("click",openFilePicker);
-$("#fileMd").addEventListener("change",e=>{ const f=e.target.files[0]; if(f) loadMdFile(f); e.target.value=""; });
+$("#fileMd").setAttribute("accept", ".md,.markdown,.txt,.json,text/markdown,text/plain,application/json");
+$("#fileMd").addEventListener("change",async e=>{
+  const files=[...e.target.files]; e.target.value="";
+  for(const f of files) await loadMdFile(f);
+});
 // Pasting & rendering edits the current doc — from homepage it replaces the demo notes; in workspace it keeps notes when possible.
+// Documents → New → Paste (libPasteNew) creates a new library document instead.
 $("#bRender").addEventListener("click",()=>{
   const next=$("#srcArea").value;
   if(!next.trim()){ toast("Paste Markdown first"); return; }
+  if(libPasteNew){ closeOverlays(); libResetPasteMode(); loadNewDoc(next, "Pasted Markdown"); return; }
   const replaceDemo = isHomeMode && isSampleMode;
   SRC=next; if(replaceDemo) ANN=[]; activeId=null; closeOverlays();
-  setWorkspaceMode({home:false, sample:false, fileName:"Pasted Markdown"});
+  if(isSampleMode) setWorkspaceMode({home:false, sample:false, fileName: replaceDemo ? "Pasted Markdown" : "Sample copy"});
+  else updateWorkspaceChrome();      // a library document keeps its name
   renderDoc(); toast("Markdown rendered");
 });
 
@@ -3185,8 +3332,9 @@ let dragDepth=0; const dz=$("#dropzone");
 window.addEventListener("dragenter",e=>{ if(e.dataTransfer&&[...e.dataTransfer.types].includes("Files")){ dragDepth++; dz.classList.add("show"); } });
 window.addEventListener("dragover",e=>{ if(dz.classList.contains("show")) e.preventDefault(); });
 window.addEventListener("dragleave",()=>{ dragDepth=Math.max(0,dragDepth-1); if(!dragDepth) dz.classList.remove("show"); });
-window.addEventListener("drop",e=>{ e.preventDefault(); dragDepth=0; dz.classList.remove("show");
-  const f=e.dataTransfer?.files?.[0]; if(f) loadMdFile(f); });
+window.addEventListener("drop",async e=>{ e.preventDefault(); dragDepth=0; dz.classList.remove("show");
+  const files=[...(e.dataTransfer?.files||[])];
+  for(const f of files) await loadMdFile(f); });
 
 /* relayout notes when the window resizes */
 let rsT; window.addEventListener("resize",()=>{ clearTimeout(rsT); rsT=setTimeout(layoutCards,120); });
@@ -4414,6 +4562,585 @@ document.addEventListener("keydown",e=>{
 /* ==[/W5]== */
 
 /* ==[W6 LIBRARY]== owned by the library workstream (documents, storage, backup) — also wires #docLabel */
+/* Storage layout (all through storeGet/storeSet/storeDel, "marginalia:" prefix kept):
+     marginalia:library:v1  → {activeId, docs:[{id, name, createdAt, updatedAt, notes, chars}]}
+     marginalia:doc:<id>    → {src, ann, currentFileName}
+   The demo is never stored; reload restores LIB.activeId or shows the demo.          */
+const LIB_KEY = "marginalia:library:v1";
+const LIB_DOC = "marginalia:doc:";
+const LIB_PREFIX = "marginalia:";
+const LIB_QUOTA = 5 * 1024 * 1024;        // typical per-origin localStorage budget (characters)
+const LIB_OLD_DAYS = 30;
+let LIB = { activeId:null, docs:[] };
+let libBooted = false;                    // save() is a no-op until restore() has run
+let libFp = "";                           // content fingerprint of the active doc as last written
+let libPasteNew = false;                  // paste drawer opened from Documents → New → Paste
+const libSizes = new Map();               // id → stored characters (key + value)
+
+const libPlural = (n, one, many) => `${n} ${n===1 ? one : (many || one+"s")}`;
+function libUid(){
+  let id;
+  do{ id = "d" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); } while(libMeta(id));
+  return id;
+}
+function libMeta(id){ return LIB.docs.find(d => d.id === id) || null; }
+function libSorted(){ return [...LIB.docs].sort((a,b) => b.updatedAt - a.updatedAt); }
+function libUniqueName(base, exceptId){
+  base = String(base || "").trim() || "Untitled";
+  const taken = new Set(LIB.docs.filter(d => d.id !== exceptId).map(d => d.name.toLowerCase()));
+  if(!taken.has(base.toLowerCase())) return base;
+  for(let n = 2; ; n++){ const c = `${base} (${n})`; if(!taken.has(c.toLowerCase())) return c; }
+}
+// what counts as a real change: text, comment ids/quotes/notes, replies (not render-only fields)
+function libContentFp(src, ann){
+  const list = (ann || []).map(a => [String(a.id), a.quote, a.note || "", a.prefix || "", a.suffix || "",
+    (a.replies || []).map(r => [r.text, r.ts])]);
+  list.sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0);
+  return JSON.stringify([src, list]);
+}
+function libTime(v, fallback){
+  const t = typeof v === "number" ? v : Date.parse(v);
+  return Number.isFinite(t) && t > 0 ? t : fallback;
+}
+
+/* ---------- storage primitives ---------- */
+async function libWriteIndex(){ return storeSet(LIB_KEY, JSON.stringify({ activeId:LIB.activeId, docs:LIB.docs })); }
+async function libWriteDoc(id, payload){
+  const ok = await storeSet(LIB_DOC + id, payload);
+  if(ok){ libSizes.set(id, (LIB_DOC + id).length + payload.length); quotaWarned = false; }
+  return ok;
+}
+async function libReadDoc(id){
+  const raw = await storeGet(LIB_DOC + id);
+  if(!raw) return null;
+  libSizes.set(id, (LIB_DOC + id).length + raw.length);
+  const d = JSON.parse(raw);
+  return d && typeof d.src === "string" ? d : null;
+}
+function libCleanAnn(list){
+  return (Array.isArray(list) ? list : []).filter(a => a && a.id && typeof a.quote === "string").map(normAnn);
+}
+function libApplyDoc(meta, d){
+  SRC = d.src; ANN = libCleanAnn(d.ann); activeId = null;
+  LIB.activeId = meta.id;
+  isHomeMode = false; isSampleMode = false; currentFileName = meta.name;
+  libFp = libContentFp(SRC, ANN);
+}
+async function libLoad(){
+  const raw = await storeGet(LIB_KEY);
+  let idx = null;
+  if(raw){ try{ idx = JSON.parse(raw); }catch(e){} }
+  if(idx && Array.isArray(idx.docs)){
+    const now = Date.now(), seen = new Set();
+    LIB.docs = idx.docs.filter(d => d && typeof d.id === "string" && !seen.has(d.id) && seen.add(d.id)).map(d => ({
+      id:d.id, name:String(d.name || "Untitled"), createdAt:libTime(d.createdAt, now), updatedAt:libTime(d.updatedAt, now),
+      notes:Number(d.notes) || 0, chars:Number(d.chars) || 0 }));
+    LIB.activeId = libMeta(idx.activeId) ? idx.activeId : null;
+  }
+  await libMigrate();
+}
+// one-time: the pre-library single workspace (marginalia:workspace:v1) becomes the first document
+async function libMigrate(){
+  const raw = await storeGet(STORE_KEY);
+  if(!raw) return;
+  let d = null; try{ d = JSON.parse(raw); }catch(e){}
+  let keep = !!(d && typeof d.src === "string" && d.src.trim());
+  let name = keep && d.currentFileName;
+  const ann = keep ? libCleanAnn(d.ann) : [];
+  if(keep && d.isSampleMode){   // demo-only → drop; demo carrying the user's own comments → keep a copy
+    keep = ann.some(a => !String(a.id).startsWith("demo") && String(a.note || "").trim());
+    name = "Sample copy";
+  }
+  if(keep){
+    const now = Date.now();
+    const meta = { id:libUid(), name:libUniqueName(name || "Markdown document"), createdAt:now, updatedAt:now,
+      notes:ann.length, chars:d.src.length };
+    if(!(await libWriteDoc(meta.id, JSON.stringify({ src:d.src, ann, currentFileName:meta.name })))) return;
+    LIB.docs.push(meta); LIB.activeId = meta.id;
+    if(!(await libWriteIndex())){
+      LIB.docs.pop(); LIB.activeId = null; await storeDel(LIB_DOC + meta.id); return;
+    }
+  }
+  await storeDel(STORE_KEY);
+}
+// leaving the current document: close popover / composer / floater / drawers
+function libLeaveCurrent(){
+  try{ hideFloater(); hideHlPop(true); }catch(e){}
+  closeOverlays();
+}
+// the demo is shown: detach from the library (called from setWorkspaceMode({sample:true}))
+function libDetach(){
+  if(!libBooted || !LIB.activeId) return;
+  LIB.activeId = null; libFp = "";
+  libWriteIndex(); libRenderPanel();
+}
+
+/* ---------- the demo: stored only after a real change ---------- */
+function libSampleChanged(){
+  if(SRC !== SAMPLE) return true;
+  const base = new Map(sampleAnnotations().map(a => [a.id, a]));
+  return ANN.some(a => {
+    if(!String(a.note || "").trim()) return false;       // a composer that wasn't saved yet
+    const b = base.get(a.id);
+    if(!b) return true;                                   // the user's own comment
+    if(a.note !== b.note) return true;
+    const ra = (a.replies || []).map(r => r.text), rb = b.replies.map(r => r.text);
+    return ra.length !== rb.length || ra.some((t, i) => t !== rb[i]);
+  });
+}
+function libPromoteSample(){
+  const before = doc.getBoundingClientRect().top;
+  setWorkspaceMode({ home:false, sample:false, fileName:"Sample copy" });
+  const shift = doc.getBoundingClientRect().top - before;   // the intro hid → keep the text in place
+  if(Math.abs(shift) > 1) window.scrollBy(0, shift);
+  renderCards();                                            // drop the "Example note" chips
+}
+
+/* ---------- document actions ---------- */
+async function libOpen(id, { quiet=false } = {}){
+  const meta = libMeta(id); if(!meta) return false;
+  if(id === LIB.activeId && !isSampleMode){ libClosePanel(); return true; }
+  let d = null; try{ d = await libReadDoc(id); }catch(e){}
+  if(!d){ toast(`Couldn't open “${meta.name}” — its saved data is missing`); return false; }
+  libLeaveCurrent();
+  libApplyDoc(meta, d);
+  updateWorkspaceChrome();
+  renderDoc();
+  window.scrollTo(0, 0);
+  libWriteIndex();
+  libRenderPanel();
+  if(!quiet) toast(`Opened ${meta.name}`);
+  return true;
+}
+function libRename(id, name){
+  const meta = libMeta(id); if(!meta) return;
+  name = String(name || "").trim();
+  if(!name || name === meta.name) return;
+  meta.name = libUniqueName(name, id);
+  if(id === LIB.activeId){ currentFileName = meta.name; updateWorkspaceChrome(); }
+  libWriteIndex();
+}
+async function libDeleteMany(ids){
+  const items = [];
+  const activeWas = LIB.activeId;
+  for(const id of ids){
+    const meta = libMeta(id); if(!meta) continue;
+    let data = null;
+    if(id === LIB.activeId) data = snapshot();            // live state is the freshest copy
+    else { try{ data = await storeGet(LIB_DOC + id); }catch(e){} }
+    items.push({ meta, data, pos:LIB.docs.indexOf(meta) });
+  }
+  if(!items.length) return;
+  const gone = new Set(items.map(i => i.meta.id));
+  LIB.docs = LIB.docs.filter(d => !gone.has(d.id));
+  for(const it of items){ await storeDel(LIB_DOC + it.meta.id); libSizes.delete(it.meta.id); }
+  if(activeWas && gone.has(activeWas)){
+    LIB.activeId = null; libFp = "";
+    let opened = false;
+    for(const next of libSorted()){ if(await libOpen(next.id, { quiet:true })){ opened = true; break; } }
+    if(!opened){ libLeaveCurrent(); loadSample({ home:false }); }
+  }
+  await libWriteIndex();
+  libRenderPanel();
+  const msg = items.length === 1 ? `Deleted “${items[0].meta.name}”` : `Deleted ${items.length} documents`;
+  toast(msg, { action:{ label:"Undo", run:() => libUndoDelete(items, gone.has(activeWas) ? activeWas : null) }, ms:8000 });
+}
+async function libUndoDelete(items, reopenId){
+  let n = 0;
+  for(const it of [...items].sort((a,b) => a.pos - b.pos)){
+    if(libMeta(it.meta.id)) continue;
+    if(it.data && !(await libWriteDoc(it.meta.id, it.data))) continue;
+    LIB.docs.splice(Math.min(it.pos, LIB.docs.length), 0, it.meta); n++;
+  }
+  await libWriteIndex();
+  if(reopenId && libMeta(reopenId)) await libOpen(reopenId, { quiet:true });
+  libRenderPanel();
+  if(n) toast(n === 1 ? `Restored “${items[0].meta.name}”` : `Restored ${n} documents`);
+}
+
+/* ---------- backup / import ---------- */
+function libLocalDate(){
+  const d = new Date(), p = n => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+}
+function libBackupName(name){
+  const base = String(name || "").replace(/\.(md|markdown|txt)$/i, "").replace(/[\\/:*?"<>|\u0000-\u001f]+/g, "-")
+    .replace(/\s+/g, " ").trim().slice(0, 80);
+  return (base || "document") + ".mdeverything.json";
+}
+function libDownload(name, text){
+  const url = URL.createObjectURL(new Blob([text], { type:"application/json" }));
+  const a = document.createElement("a");
+  a.href = url; a.download = name; a.style.display = "none";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+async function libBackup(ids, { all=false } = {}){
+  const docs = [];
+  for(const id of ids){
+    const m = libMeta(id); if(!m) continue;
+    let d = null;
+    if(id === LIB.activeId) d = { src:SRC, ann:ANN };
+    else { try{ d = await libReadDoc(id); }catch(e){} }
+    if(!d) continue;
+    docs.push({ name:m.name, src:d.src,
+      ann:(Array.isArray(d.ann) ? d.ann : []).map(a => { const c = { ...a }; delete c.resolved; delete c.section; return c; }),
+      createdAt:new Date(m.createdAt).toISOString(), updatedAt:new Date(m.updatedAt).toISOString() });
+  }
+  if(!docs.length){ toast("Nothing to back up yet"); return false; }
+  const file = (!all && docs.length === 1) ? libBackupName(docs[0].name) : `mdeverything-backup-${libLocalDate()}.json`;
+  libDownload(file, JSON.stringify({ format:"mdeverything", version:1, exportedAt:new Date().toISOString(), docs }, null, 2));
+  toast(`Downloaded ${file}`);
+  return true;
+}
+function libIsJson(f){ return /\.json$/i.test(f.name || "") || f.type === "application/json"; }
+async function libImportFile(f){
+  const fail = why => { toast(`Couldn't import “${f.name}” — ${why}`, { ms:5000 }); return false; };
+  let data;
+  try{ data = JSON.parse(await f.text()); }catch(e){ return fail("it isn't valid JSON"); }
+  if(!data || typeof data !== "object" || data.format !== "mdeverything" || !Array.isArray(data.docs))
+    return fail("it isn't an mdeverything backup");
+  const list = data.docs.filter(d => d && typeof d.src === "string");
+  if(!list.length) return fail("it contains no documents");
+  let nDocs = 0, nNotes = 0, first = null, full = false;
+  for(const d of list){
+    const now = Date.now();
+    const ann = (Array.isArray(d.ann) ? d.ann : []).filter(a => a && typeof a.quote === "string")
+      .map((a, i) => normAnn({ ...a, id:String(a.id || ("a" + now.toString(36) + i)), note:typeof a.note === "string" ? a.note : "" }));
+    const meta = { id:libUid(), name:libUniqueName(d.name || "Imported document"),
+      createdAt:libTime(d.createdAt, now), updatedAt:libTime(d.updatedAt, now), notes:ann.length, chars:d.src.length };
+    if(!(await libWriteDoc(meta.id, JSON.stringify({ src:d.src, ann, currentFileName:meta.name })))){ full = true; break; }
+    LIB.docs.push(meta); nDocs++; nNotes += ann.length;
+    if(!first) first = meta;
+  }
+  await libWriteIndex();
+  if(first) await libOpen(first.id, { quiet:true });
+  libRenderPanel();
+  if(nDocs) toast(`Imported ${libPlural(nDocs, "document")} · ${libPlural(nNotes, "comment")}` + (full ? " — storage is full, the rest were skipped" : ""), { ms:4000 });
+  return nDocs > 0;
+}
+
+/* ---------- storage meter + cleanup ---------- */
+function libUsage(){
+  if(window.storage) return null;
+  try{
+    let used = 0;
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k && k.startsWith(LIB_PREFIX)) used += k.length + (localStorage.getItem(k) || "").length;
+    }
+    return used;
+  }catch(e){ return null; }
+}
+function libDocSize(meta){
+  if(!window.storage){
+    try{ const v = localStorage.getItem(LIB_DOC + meta.id); if(v != null) return (LIB_DOC + meta.id).length + v.length; }catch(e){}
+  }
+  return libSizes.get(meta.id) || meta.chars || 0;
+}
+function libFmt(n){
+  if(n < 1024) return `${n} B`;
+  if(n < 1024 * 1024) return `${(n / 1024).toFixed(n < 10240 ? 1 : 0)} KB`;
+  return `${(n / 1048576).toFixed(1)} MB`;
+}
+function libRel(t){
+  const s = (Date.now() - t) / 1000;
+  if(s < 45) return "just now";
+  if(s < 3600) return `${Math.max(1, Math.round(s / 60))} min ago`;
+  if(s < 86400) return `${Math.round(s / 3600)} h ago`;
+  const d = Math.round(s / 86400);
+  if(d === 1) return "yesterday";
+  if(d < 30) return `${d} days ago`;
+  const dt = new Date(t);
+  return dt.toLocaleDateString(undefined, { month:"short", day:"numeric", year:dt.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined });
+}
+// askConfirm + a "Download backup first" button in the note; the message may list lines
+function libConfirm(opts, backupIds){
+  const p = askConfirm(opts);
+  const desc = $("#confirmDesc"), note = $("#confirmNote");
+  desc.style.whiteSpace = "pre-line";
+  if(backupIds && backupIds.length){
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "lib-btn lib-confirm-backup";
+    b.textContent = backupIds.length === 1 ? "Download backup first" : `Download backup of ${backupIds.length} documents first`;
+    b.addEventListener("click", async () => {
+      if(await libBackup(backupIds, { all:backupIds.length > 1 })){ b.textContent = "Backup downloaded ✓"; b.classList.add("done"); }
+    });
+    note.appendChild(document.createElement("br"));
+    note.appendChild(b);
+  }
+  return p.then(v => { desc.style.whiteSpace = ""; return v; });
+}
+// the confirm dialog confirms on any Enter (document capture) — keep Enter/Space on our button local
+window.addEventListener("keydown", e => {
+  const t = e.target;
+  if((e.key === "Enter" || e.key === " ") && t && t.classList && t.classList.contains("lib-confirm-backup")){
+    e.preventDefault(); e.stopImmediatePropagation(); t.click();
+  }
+}, true);
+async function libCleanupOld(){
+  const cutoff = Date.now() - LIB_OLD_DAYS * 864e5;
+  const old = libSorted().filter(d => d.updatedAt < cutoff);
+  if(!old.length){ toast(`No documents older than ${LIB_OLD_DAYS} days`); return; }
+  const shown = old.slice(0, 8).map(d => `• ${d.name} — ${libRel(d.updatedAt)}`).join("\n")
+    + (old.length > 8 ? `\n…and ${old.length - 8} more` : "");
+  const ok = await libConfirm({
+    title:`Remove ${libPlural(old.length, "old document")}?`,
+    message:`Not changed in the last ${LIB_OLD_DAYS} days:\n${shown}`,
+    note:"This frees browser storage. You can undo right after.",
+    confirmText:`Remove ${old.length}`, cancelText:"Keep them", icon:"🗑"
+  }, old.map(d => d.id));
+  if(ok) await libDeleteMany(old.map(d => d.id));
+}
+async function libDeleteAll(){
+  const n = LIB.docs.length, c = LIB.docs.reduce((s, d) => s + (d.notes || 0), 0);
+  const ok = await libConfirm({
+    title:"Delete all data?",
+    message:`This permanently removes ${libPlural(n, "document")}, ${libPlural(c, "comment")} and your saved preferences from this browser.`,
+    note:"This can't be undone.",
+    confirmText:"Delete everything", cancelText:"Cancel"
+  }, n ? LIB.docs.map(d => d.id) : null);
+  if(!ok) return;
+  const keys = new Set([LIB_KEY, STORE_KEY, ...LIB.docs.map(d => LIB_DOC + d.id)]);
+  try{ if(typeof THEME_KEY !== "undefined") keys.add(THEME_KEY); }catch(e){}
+  try{ if(typeof PANE_KEY !== "undefined") keys.add(PANE_KEY); }catch(e){}
+  try{ if(typeof OUTLINE_KEY !== "undefined") keys.add(OUTLINE_KEY); }catch(e){}
+  try{ if(typeof MDE_DRAFT_KEY !== "undefined") keys.add(MDE_DRAFT_KEY); }catch(e){}
+  if(!window.storage){
+    try{ for(let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if(k && k.startsWith(LIB_PREFIX)) keys.add(k); } }catch(e){}
+  }
+  for(const k of keys) await storeDel(k);
+  LIB = { activeId:null, docs:[] }; libFp = ""; libSizes.clear(); quotaWarned = false;
+  libLeaveCurrent();
+  loadSample({ home:true });
+  window.scrollTo(0, 0);
+  libRenderPanel();
+  toast("All data deleted from this browser");
+}
+
+/* ---------- Documents panel (opened from the header document name) ---------- */
+const libLabel = $("#docLabel");
+const LIB_ICONS = {
+  rename:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z"/></svg>',
+  backup:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/></svg>',
+  del:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  imp:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 19h14"/></svg>'
+};
+let libPanel = null, libRenamingId = null;
+function libBuildPanel(){
+  if(libPanel) return libPanel;
+  const p = document.createElement("div");
+  p.className = "lib-panel"; p.id = "libPanel"; p.hidden = true;
+  p.setAttribute("role", "dialog"); p.setAttribute("aria-label", "Documents");
+  p.innerHTML = `
+    <div class="lib-head">
+      <h2>Documents</h2>
+      <span class="lib-new">
+        <button type="button" class="lib-btn primary" data-lib="new" aria-haspopup="menu" aria-expanded="false">${LIB_ICONS.plus}New</button>
+        <span class="lib-menu" role="menu" hidden>
+          <button type="button" role="menuitem" data-lib="open-file">Open file…<span class="sub">.md, .markdown, .txt — or a backup .json</span></button>
+          <button type="button" role="menuitem" data-lib="paste">Paste Markdown…<span class="sub">Start a new document from text</span></button>
+          <button type="button" role="menuitem" data-lib="sample">Sample document<span class="sub">The guided demo (not saved)</span></button>
+        </span>
+      </span>
+      <button type="button" class="lib-btn" data-lib="import" title="Import an mdeverything backup (.json)">${LIB_ICONS.imp}Import</button>
+      <button type="button" class="lib-x" data-lib="close" aria-label="Close documents">×</button>
+    </div>
+    <div class="lib-notice" hidden></div>
+    <div class="lib-search-wrap"><input type="search" class="lib-search" placeholder="Search documents" aria-label="Search documents by name"></div>
+    <div class="lib-list" role="list" aria-label="Saved documents"></div>
+    <div class="lib-foot">
+      <div class="lib-meter"></div>
+      <div class="lib-foot-acts">
+        <button type="button" class="lib-link" data-lib="backup-all">Download backup of all</button>
+        <button type="button" class="lib-link" data-lib="old">Remove documents older than ${LIB_OLD_DAYS} days</button>
+        <button type="button" class="lib-link danger" data-lib="wipe">Delete all data</button>
+      </div>
+    </div>
+    <input type="file" class="lib-import-input" accept=".json,application/json" hidden>`;
+  document.body.appendChild(p);
+  libPanel = p;
+  const menu = p.querySelector(".lib-menu"), newBtn = p.querySelector('[data-lib="new"]');
+  const setMenu = open => { menu.hidden = !open; newBtn.setAttribute("aria-expanded", open ? "true" : "false"); };
+  p.querySelector(".lib-search").addEventListener("input", libRenderPanel);
+  p.querySelector(".lib-import-input").addEventListener("change", async e => {
+    const files = [...e.target.files]; e.target.value = "";
+    for(const f of files) await libImportFile(f);
+  });
+  p.addEventListener("click", e => {
+    const b = e.target.closest("[data-lib]");
+    if(!b || !p.contains(b)) { if(!e.target.closest(".lib-new")) setMenu(false); return; }
+    const act = b.dataset.lib, row = b.closest(".lib-row"), id = row && row.dataset.id;
+    if(act !== "new") setMenu(false);
+    switch(act){
+      case "new": setMenu(menu.hidden); if(!menu.hidden) menu.querySelector("button").focus(); break;
+      case "open-file": libClosePanel(); openFilePicker(); break;
+      case "paste":
+        libClosePanel(); openSourceDrawer();
+        libPasteNew = true; $("#srcArea").value = "";
+        $("#ovSourceTitle").textContent = "New document from Markdown"; $("#bRender").textContent = "Create document";
+        break;
+      case "sample": libClosePanel(); libLeaveCurrent(); loadSample({ home:false }); window.scrollTo(0,0); toast("Showing the sample document"); break;
+      case "import": p.querySelector(".lib-import-input").click(); break;
+      case "close": libClosePanel(true); break;
+      case "open": libOpen(id).then(ok => { if(ok) libClosePanel(); }); break;
+      case "rename": libStartRename(id); break;
+      case "backup": libBackup([id]); break;
+      case "delete": libDeleteMany([id]); break;
+      case "backup-all": libBackup(libSorted().map(d => d.id), { all:true }); break;
+      case "old": libCleanupOld(); break;
+      case "wipe": libDeleteAll(); break;
+    }
+  });
+  menu.addEventListener("keydown", e => {
+    const items = [...menu.querySelectorAll("button")], i = items.indexOf(document.activeElement);
+    if(e.key === "ArrowDown" || e.key === "ArrowUp"){
+      e.preventDefault(); items[(i + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus();
+    }
+    if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); setMenu(false); newBtn.focus(); }
+  });
+  return p;
+}
+function libPositionPanel(){
+  if(!libPanel) return;
+  const h = document.querySelector("header"), hr = h ? h.getBoundingClientRect() : { bottom:56 };
+  const lr = libLabel.getBoundingClientRect();
+  const w = Math.min(440, window.innerWidth - 32);
+  const left = Math.max(16, Math.min(lr.left - 8, window.innerWidth - w - 16));
+  libPanel.style.setProperty("--lib-top", Math.max(8, Math.round(hr.bottom + 6)) + "px");
+  libPanel.style.setProperty("--lib-left", Math.round(left) + "px");
+}
+function libRenderPanel(){
+  const p = libPanel;
+  if(!p || p.hidden) return;
+  // notice: what the panel shows / the demo state
+  const notice = p.querySelector(".lib-notice");
+  notice.hidden = !isSampleMode;
+  notice.textContent = isSampleMode ? "You're viewing the sample document. It isn't saved unless you change it — then it's kept here as “Sample copy”." : "";
+  // list
+  if(libRenamingId && !libMeta(libRenamingId)) libRenamingId = null;
+  const q = p.querySelector(".lib-search").value.trim().toLowerCase();
+  const all = libSorted(), docs = q ? all.filter(d => d.name.toLowerCase().includes(q)) : all;
+  const list = p.querySelector(".lib-list");
+  if(!all.length){
+    list.innerHTML = `<div class="lib-empty"><b>No saved documents yet</b>Open or paste a Markdown file — it's kept here automatically, with its comments.</div>`;
+  } else if(!docs.length){
+    list.innerHTML = `<div class="lib-empty">No documents match “${esc(q)}”.</div>`;
+  } else {
+    list.innerHTML = docs.map(d => {
+      const on = d.id === LIB.activeId && !isSampleMode;
+      const meta = `${libPlural(d.notes || 0, "comment")} · ${libRel(d.updatedAt)} · ${libFmt(libDocSize(d))}`;
+      const main = d.id === libRenamingId
+        ? `<span class="lib-rename-wrap"><input class="lib-rename" type="text" value="${esc(d.name).replace(/"/g, "&quot;")}" aria-label="Rename ${esc(d.name).replace(/"/g, "&quot;")}" maxlength="120"></span>`
+        : `<button type="button" class="lib-open" data-lib="open" title="Open ${esc(d.name).replace(/"/g, "&quot;")}"${on ? ' aria-current="true"' : ""}>
+             <span class="lib-name-line"><span class="lib-name">${esc(d.name)}</span>${on ? '<span class="lib-cur">Open</span>' : ""}</span>
+             <span class="lib-meta">${esc(meta)}</span></button>`;
+      return `<div class="lib-row${on ? " on" : ""}" role="listitem" data-id="${esc(d.id)}">${main}
+        <span class="lib-acts">
+          <button type="button" class="lib-ico" data-lib="rename" title="Rename" aria-label="Rename ${esc(d.name).replace(/"/g, "&quot;")}">${LIB_ICONS.rename}</button>
+          <button type="button" class="lib-ico" data-lib="backup" title="Download backup" aria-label="Download backup of ${esc(d.name).replace(/"/g, "&quot;")}">${LIB_ICONS.backup}</button>
+          <button type="button" class="lib-ico danger" data-lib="delete" title="Delete" aria-label="Delete ${esc(d.name).replace(/"/g, "&quot;")}">${LIB_ICONS.del}</button>
+        </span></div>`;
+    }).join("");
+    const inp = list.querySelector(".lib-rename");
+    if(inp) libWireRename(inp, libRenamingId);
+  }
+  // storage meter
+  const meter = p.querySelector(".lib-meter");
+  const used = libUsage();
+  if(used == null){
+    meter.className = "lib-meter";
+    meter.innerHTML = `<div class="lib-meter-note">${window.storage
+      ? "Storage is managed by the app hosting this page, so usage can't be measured here."
+      : "Browser storage isn't available here — documents won't be kept after a reload."}</div>`;
+  } else {
+    const pct = Math.min(100, used / LIB_QUOTA * 100);
+    meter.className = "lib-meter" + (pct >= 80 ? " warn" : "");
+    meter.title = "Approximate: characters mdeverything keeps in this browser. Real limits vary by browser.";
+    const of = used > LIB_QUOTA ? " used (browser limit unknown)" : " of ~5 MB";
+    meter.innerHTML = `<div class="lib-meter-row"><span>Storage <span aria-hidden="true">(approx.)</span></span><span><b>~${libFmt(used)}</b>${of}</span></div>
+      <div class="lib-bar" role="meter" aria-label="Approximate browser storage used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><i style="width:${pct.toFixed(1)}%"></i></div>
+      ${pct >= 80 ? '<div class="lib-meter-note">Storage is almost full — download a backup and remove documents you no longer need.</div>' : ""}`;
+  }
+  p.querySelector('[data-lib="backup-all"]').disabled = !all.length;
+  p.querySelector('[data-lib="old"]').disabled = !all.length;
+}
+function libStartRename(id){
+  libRenamingId = id; libRenderPanel();
+}
+function libWireRename(inp, id){
+  let done = false;
+  const finish = commit => {
+    if(done) return; done = true;
+    if(commit) libRename(id, inp.value);
+    libRenamingId = null; libRenderPanel();
+    const btn = libPanel.querySelector(`.lib-row[data-id="${CSS.escape(id)}"] [data-lib="rename"]`);
+    if(btn) btn.focus();
+  };
+  inp.addEventListener("keydown", e => {
+    if(e.key === "Enter"){ e.preventDefault(); e.stopPropagation(); finish(true); }
+    else if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); finish(false); }
+  });
+  inp.addEventListener("blur", () => finish(true));
+  setTimeout(() => { if(inp.isConnected){ inp.focus(); inp.select(); } }, 0);
+}
+function libIsOpen(){ return !!(libPanel && !libPanel.hidden); }
+function libOpenPanel(){
+  if(document.body.classList.contains("editing")){
+    toast(typeof mdeMod !== "undefined" ? `Finish editing first: Done (${mdeMod}Enter) applies, Discard reverts` : "Finish editing first");
+    return;
+  }
+  const p = libBuildPanel();
+  libRenamingId = null;
+  p.querySelector(".lib-search").value = "";
+  p.hidden = false;
+  libLabel.setAttribute("aria-expanded", "true");
+  libPositionPanel();
+  libRenderPanel();
+  setTimeout(() => { if(!isMobile()) p.querySelector(".lib-search").focus({ preventScroll:true }); else p.querySelector(".lib-x").focus({ preventScroll:true }); }, 0);
+}
+function libClosePanel(focusBack){
+  if(!libPanel || libPanel.hidden) return;
+  libPanel.hidden = true; libRenamingId = null;
+  libPanel.querySelector(".lib-menu").hidden = true;
+  libLabel.setAttribute("aria-expanded", "false");
+  if(focusBack) libLabel.focus({ preventScroll:true });
+}
+libLabel.setAttribute("aria-controls", "libPanel");
+libLabel.addEventListener("click", e => {
+  e.preventDefault();
+  if(libIsOpen()) libClosePanel(); else libOpenPanel();
+});
+// outside click / Esc close it; the confirm dialog and toast don't count as outside
+document.addEventListener("pointerdown", e => {
+  if(!libIsOpen()) return;
+  const t = e.target;
+  if(libPanel.contains(t) || libLabel.contains(t) || (t.closest && t.closest("#confirmModal, #toast"))) return;
+  libClosePanel();
+}, true);
+document.addEventListener("keydown", e => {
+  if(e.key !== "Escape" || !libIsOpen() || e.defaultPrevented) return;
+  if(!$("#confirmModal").hidden) return;
+  libClosePanel(true);
+});
+window.addEventListener("resize", () => { if(libIsOpen()) libPositionPanel(); });
+// the editor locks document switching: mirror it on the trigger
+new MutationObserver(() => {
+  const editing = document.body.classList.contains("editing");
+  if(editing){ libLabel.setAttribute("aria-disabled", "true"); libClosePanel(); }
+  else libLabel.removeAttribute("aria-disabled");
+}).observe(document.body, { attributes:true, attributeFilter:["class"] });
+// the normal Paste buttons edit the current document again
+function libResetPasteMode(){
+  libPasteNew = false;
+  $("#ovSourceTitle").textContent = "Paste Markdown"; $("#bRender").textContent = "Render document";
+}
+["#bSource", "#bHeroPaste"].forEach(s => { const b = $(s); if(b) b.addEventListener("click", libResetPasteMode, true); });
+new MutationObserver(() => { if(libPasteNew && !$("#ovSource").classList.contains("open")) libResetPasteMode(); })
+  .observe($("#ovSource"), { attributes:true, attributeFilter:["class"] });
+// keep relative times fresh while the panel is open
+setInterval(() => { if(libIsOpen() && !libRenamingId) libRenderPanel(); }, 60000);
 /* ==[/W6]== */
 
 // called at the end of every full renderDoc(); feature errors must not break rendering
