@@ -597,7 +597,7 @@ textarea.big{border-radius:10px;background:var(--surface-2)}
 }
 body.home-mode main{padding-top:18px}
 body.home-mode .sheet::before{
-  content:"Sample document with 5 example notes";
+  content:"Live demo · hover or click the highlights";
   display:inline-flex;
   margin:-22px 0 18px;
   border-radius:999px;
@@ -1676,9 +1676,9 @@ body.editing .mde{display:flex;flex-direction:column;border-radius:inherit;
 <section class="home" id="home">
   <div class="hero">
     <div>
-      <span class="hero-kicker">Markdown annotation workspace</span>
-      <h2>Review Markdown with contextual notes for any AI assistant.</h2>
-      <p>Load a Markdown document, highlight any passage, add comments or questions, then export a clean context package for ChatGPT, Claude, Gemini, or your coding assistant.</p>
+      <span class="hero-kicker">Markdown review desk for AI</span>
+      <h2>Read, comment and edit Markdown — then hand it to your AI.</h2>
+      <p>Open any Markdown file, comment right on the words that matter, fix the source in the built-in editor, and export a clean package that ChatGPT, Claude or Gemini can act on exactly where you pointed. Free, private, no sign-up.</p>
       <div class="hero-actions">
         <button class="btn primary" id="bHeroOpen">Open Markdown</button>
         <button class="btn ghost" id="bHeroPaste">Paste Markdown</button>
@@ -1693,9 +1693,9 @@ body.editing .mde{display:flex;flex-direction:column;border-radius:inherit;
     </button>
   </div>
   <div class="steps" aria-label="How it works">
-    <div class="step-card"><span class="num">1</span><b>Load Markdown</b><p>Open, paste, or drag a .md / .markdown / .txt file.</p></div>
-    <div class="step-card"><span class="num">2</span><b>Add contextual notes</b><p>Select any passage and attach a question, comment, or edit request.</p></div>
-    <div class="step-card"><span class="num">3</span><b>Export for AI</b><p>Copy a clean package with quote, section, context, and notes.</p></div>
+    <div class="step-card"><span class="num">1</span><b>Open or paste</b><p>Drop a .md / .markdown / .txt file, open it, or paste the text.</p></div>
+    <div class="step-card"><span class="num">2</span><b>Comment in place</b><p>Select a passage or use the margin button, then reply in threads.</p></div>
+    <div class="step-card"><span class="num">3</span><b>Export for AI</b><p>One copy with the document, quotes, sections, comments and replies.</p></div>
   </div>
 </section>
 
@@ -1800,11 +1800,21 @@ function openSourceDrawer(){
 }
 function sampleAnnotations(){
   const notes = [
-    { quote:"Payment approval", note:"Example note — Ask the AI to check whether this feature name is too broad. Should Batch Transfer and Payroll share one approval model, or should the document separate them more clearly?" },
-    { quote:"business accounts", note:"Example note — Use comments to flag wording. Ask the AI to check whether a term like this is defined clearly and used consistently for BA, QA, and business stakeholders." },
-    { quote:"Batch transfer", note:"Example note — Highlight a scope item and ask the AI to find missing rules, edge cases, required screens, or data fields that the URD may need before release." },
-    { quote:"reviews the details", note:"Example note — Turn vague UX wording into a review question. What information must the Checker see before approving or rejecting, and what should be hidden for sensitive payroll data?" },
-    { quote:"What happens to the request status if the connection drops mid-flow?", note:"Example note — Convert open questions into actionable AI prompts. Ask for suggested business rules, fallback statuses, error messages, and acceptance criteria." }
+    { quote:"copy-paste a few paragraphs into a chatbot",
+      note:"Example — ask a question. Is this pain point the strongest hook for the intro, or should “AI edits the wrong section” lead? Suggest two alternative opening lines.",
+      replies:["Leaning towards the wrong-section angle — it's more concrete."] },
+    { quote:"repeated wording is never confused",
+      note:"Example — check a claim. Add a one-line example that shows how the surrounding context tells two identical phrases apart." },
+    { quote:"your comments re-anchor automatically",
+      note:"Example — request an edit. “Re-anchor” may be jargon for first-time readers; rewrite this step in plain words." },
+    { quote:"One click to comment on a whole paragraph, heading or table cell",
+      note:"Example — comment on a table cell. Shorten this description to under 8 words without losing the meaning.",
+      replies:["Maybe: “Comment on a whole block in one click.”"] },
+    { quote:"Your own document is next",
+      note:"Example — turn a to-do into a call to action. Suggest a short, friendly line that points people to the Open button." },
+    { quote:"your work is saved locally on this device",
+      note:"Example — fact-check. Confirm this matches how autosave works (browser storage, per device) and say what happens in a private window.",
+      replies:["Worth mentioning that clearing site data removes it too.","Agreed — keep it to one short sentence though."] }
   ];
   const CTX=70;
   return notes.map((n,i)=>{
@@ -1814,7 +1824,8 @@ function sampleAnnotations(){
       id:"demo"+(i+1), quote:n.quote, start:s,
       prefix:s>=0 ? SAMPLE.slice(Math.max(0,s-CTX),s) : "",
       suffix:s>=0 ? SAMPLE.slice(e,e+CTX) : "",
-      note:n.note
+      note:n.note,
+      replies:(n.replies||[]).map((text,k,all)=>({text, ts:Date.now()-(all.length-k)*45*60000}))
     };
   });
 }
@@ -1881,7 +1892,7 @@ async function useSampleDocument(){
     if(!ok) return false;
   }
   loadSample({home:false});
-  toast("Sample loaded with 5 example comments");
+  toast(`Sample loaded with ${ANN.length} example comments`);
   return true;
 }
 
@@ -2092,6 +2103,9 @@ function prepMermaid(){
 async function drawMermaid(){
   initMermaid();
   if(!window.mermaid) return;
+  // mermaid sizes node boxes from text measured at render time; wait for the web fonts
+  // so labels aren't clipped when Inter/Merriweather swap in afterwards
+  try{ if(document.fonts && document.fonts.ready) await document.fonts.ready; }catch(e){}
   const wraps=[...doc.querySelectorAll(".mermaid-wrap")];
   for(const w of wraps){
     const src=w.dataset.src||"";
@@ -2977,44 +2991,98 @@ function toast(m){ const el=$("#toast"); el.textContent=m; el.classList.add("sho
   clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),2400); }
 
 /* ============ sample ============ */
-const SAMPLE=`# User Requirements Document (URD)
+const SAMPLE=`# Welcome to mdeverything ✨
 
-## 1. Overview
-This document describes the user requirements for the **Payment approval** feature in the **mobile app**, for **business accounts**.
+**Read, comment and edit Markdown — then hand it to your AI.** mdeverything is a quiet, fast review desk for any \`.md\` file: point at the exact words that matter, say what you want, and export a package your assistant can act on without guessing.
 
-Scope covers the **approve / reject** mechanism for:
-- **Batch transfer** — see §2.1
-- **Payroll transfer** — see §2.2
+> 👋 **This page is a live document.** Hover a highlighted phrase to peek at an example comment, click it to open the thread, or select any sentence below and press **Enter** to add your own. Nothing you do here leaves your browser.
 
-| Item | Value |
-| --- | --- |
-| Project | Digital Banking Platform |
-| Document ID | URD-08-PaymentApproval |
-| Version | 1.6 |
-| Status | Draft |
+## 1. Why mdeverything?
 
-## 2. Approval flow
-The Checker opens the pending-approval list, reviews the details, then chooses **Approve** or **Reject**.
+Most AI reviews start the same way: you copy-paste a few paragraphs into a chatbot, type "can you improve this?", and get back a rewrite of the wrong section. The model never saw the whole document, and it can't tell which sentence you meant.
+
+mdeverything fixes the handoff:
+
+- **Precise** — every comment is pinned to a quoted passage, its section and the text around it, so repeated wording is never confused.
+- **Complete** — export the full document together with every comment and reply, in one copy.
+- **Fast** — no sign-up, no upload, no plug-ins. Open a file and start reviewing in seconds.
+- **Calm** — a distraction-free reading view with an outline, three themes and typography made for long specs.
+
+## 2. How it works
+
+1. **Open** a Markdown file, drop it on the page, or paste the text.
+2. **Comment** on the words that matter — select a passage, or use the margin button to cover a whole paragraph.
+3. **Refine** the source in the built-in editor when you spot a typo; your comments re-anchor automatically.
+4. **Export for AI** and paste the bundle into ChatGPT, Claude, Gemini or your coding assistant.
 
 \`\`\`mermaid
-sequenceDiagram
-    actor Checker
-    participant App as Mobile App
-    participant Core
-    Checker->>App: Open pending request
-    App->>Core: Fetch request details
-    Core-->>App: Request info + beneficiaries
-    Checker->>App: Tap Approve / Reject
-    App->>Core: Submit decision
-    Core-->>App: Update status
+flowchart LR
+    A[Open .md] --> B[Read]
+    B --> C[Comment]
+    C --> D[Edit]
+    D --> E[Export]
+    E --> F[Your AI]
 \`\`\`
 
-### 2.1. Business rule
-> Payroll data is sensitive: only users with payroll permission may view each beneficiary's amount.
+## 3. Features at a glance
 
-## 3. Open questions
-- What happens to the request status if the connection drops mid-flow?
-- Should OTP be re-verified before approving high-value requests?`;
+| Feature | What you get | How |
+| --- | --- | --- |
+| Inline comments | Comment right on the selected words, with reply threads | Select text, press \`Enter\` |
+| Margin comments | One click to comment on a whole paragraph, heading or table cell | Hover a block, use the left margin |
+| Outline | A table of contents that follows your reading position | \`☰\` in the top bar |
+| Markdown editor | Formatting toolbar, shortcuts and a live preview | \`✎ Edit\`, then \`Ctrl + Enter\` to apply |
+| Reading themes | Paper, Sepia (cream paper with a bookish serif) and Night | Theme switch in the top bar |
+| Autosave | Your document and comments are still here when you come back | Automatic |
+
+### 3.1 What your AI receives
+
+Every export starts with clear instructions, then the document, then one block per comment:
+
+\`\`\`text
+[1] Location: section “Pricing” · line ~42
+Quoted passage:
+"""
+Free for teams of up to 5 people
+"""
+Context: …Our plans start simple: 〈Free for teams of up to 5 people〉, then $8 per seat…
+Note / question:
+"""
+Is 5 still the right limit? Check it against the FAQ section.
+"""
+Replies (1):
+- Also confirm the per-seat price in the table below.
+\`\`\`
+
+The assistant knows exactly **where** to look and **what** you want — so it answers the question you asked, in the place you asked it.
+
+## 4. Made for real documents
+
+- 📐 **Product specs** — PRDs, BRDs and user requirements with wide tables and flow diagrams.
+- 💻 **Technical docs** — READMEs, API guides and runbooks with code blocks you can copy in one click.
+- 🧪 **Research & analysis** — long notes where every claim needs a second look.
+- ✍️ **Drafts** — blog posts, proposals and release notes before they ship.
+
+It works in any language — English, Tiếng Việt, 日本語 — because comments anchor to the exact words, not to line numbers.
+
+Already handled for you:
+
+- [x] Wide tables scroll sideways instead of breaking words
+- [x] Mermaid diagrams render right in the page
+- [x] Code blocks get a language label and a copy button
+- [ ] Your own document is next
+
+## 5. Private by design
+
+> **No account. No upload. No tracking.** mdeverything runs entirely in your browser, and your work is saved locally on this device. Close the tab, come back tomorrow, and pick up where you left off.
+
+## 6. Try it now
+
+1. Select any sentence on this page and press **Enter** to leave a comment.
+2. Click a highlight, then write a **Reply** to start a thread.
+3. Press **Export for AI** in the top bar and paste the result into your favourite assistant.
+
+Ready for your own file? Use **Open** in the top bar, or drop a \`.md\` file anywhere on this page. 🚀`;
 
 /* ============ boot ============ */
 /* ==[W2 OUTLINE]== owned by the outline workstream (also wires #bOutline) */
@@ -3844,7 +3912,8 @@ function onDocRendered(){
 (async function(){
   initTheme();      // set data-theme before mermaid inits so diagrams render themed
   initMermaid();
-  const had = await restore();
+  let had = await restore();
+  if(had && isSampleMode && SRC!==SAMPLE) had=false;   // demo content changed since the last visit → show the new demo
   if(!had){
     loadSample({home:true});
   } else {
