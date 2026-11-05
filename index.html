@@ -1423,25 +1423,12 @@ body.no-notes:not(.outline-hidden) .rail{grid-column:2}
 
 <style>
 /* ==[W3 COMMENTS]== owned by the comments workstream */
-/* ---- resolved notes: muted highlight + dimmed check badge ---- */
-mark.hl.hl-done{
-  background:color-mix(in srgb, var(--hl) 35%, transparent);
-  box-shadow:none;
-  text-decoration:underline dashed var(--hl-line);
-  text-decoration-thickness:1px; text-underline-offset:3px;
-}
-mark.hl.hl-done:hover,mark.hl.hl-done.on{ background:var(--hl); }
-.hl-badge.done{ background:var(--ink-faint); color:var(--paper); opacity:.8; box-shadow:none; }
-.hl-badge.done::after{ content:"✓"; margin-left:1px; }
-
 /* ---- inline popover: shared ---- */
 #hlPop{ background:var(--surface); color:var(--ink); border-color:var(--line-strong); font-family:var(--font-ui); }
 #hlPop[data-mode="card"],#hlPop[data-mode="composer"]{ width:340px; padding:12px 12px 10px; }
 #hlPop.off{ visibility:hidden; pointer-events:none; }
 #hlPop .pop-row:hover,#hlPop .pop-row:focus-visible{ background:color-mix(in srgb, var(--accent) 9%, transparent); }
 #hlPop .pop-badge{ background:var(--accent); color:var(--accent-contrast); }
-#hlPop .pop-row.is-done .pop-badge,#hlPop.is-done .pop-badge{ background:var(--ink-faint); color:var(--paper); }
-#hlPop .pop-row.is-done .pop-note{ color:var(--ink-soft); }
 #hlPop .pop-meta{ font-size:11.5px; color:var(--ink-faint); margin-top:3px; }
 #hlPop .pc-head{ display:flex; align-items:center; gap:8px; min-height:22px; margin-bottom:8px; }
 #hlPop .pc-title{ font-size:12.5px; font-weight:700; color:var(--ink); }
@@ -1449,8 +1436,6 @@ mark.hl.hl-done:hover,mark.hl.hl-done.on{ background:var(--hl); }
 #hlPop .pc-chip{ min-width:20px; height:20px; padding:0 5px; border-radius:999px; border:1px solid var(--line-strong);
   background:none; color:var(--ink-soft); font-size:11px; font-weight:700; line-height:1; cursor:pointer; }
 #hlPop .pc-chip:hover{ border-color:var(--accent); color:var(--accent); }
-#hlPop .pc-status{ font-size:11px; font-weight:700; color:var(--success);
-  background:color-mix(in srgb, var(--success) 12%, transparent); padding:2px 8px; border-radius:999px; }
 #hlPop .pc-x{ margin-left:auto; border:none; background:none; color:var(--ink-faint); font-size:18px; line-height:1;
   width:24px; height:24px; border-radius:6px; cursor:pointer; flex:none; }
 #hlPop .pc-x:hover{ background:color-mix(in srgb, var(--ink) 8%, transparent); color:var(--ink); }
@@ -1459,7 +1444,6 @@ mark.hl.hl-done:hover,mark.hl.hl-done.on{ background:var(--hl); }
 #hlPop .pc-note{ font-size:13.5px; line-height:1.55; color:var(--ink); white-space:pre-wrap; overflow-wrap:anywhere;
   max-height:220px; overflow:auto; }
 #hlPop .pc-note.muted{ color:var(--ink-faint); font-style:italic; }
-#hlPop.is-done .pc-note{ color:var(--ink-soft); }
 #hlPop .pc-thread{ margin-top:10px; border-top:1px solid var(--line); padding-top:4px; max-height:200px; overflow:auto; }
 #hlPop .pc-reply{ padding:7px 0 6px 10px; border-left:2px solid var(--line-strong); margin:6px 0 0 2px; }
 #hlPop .pc-rtext{ font-size:13px; line-height:1.5; color:var(--ink); white-space:pre-wrap; overflow-wrap:anywhere; }
@@ -1488,18 +1472,8 @@ mark.hl.hl-done:hover,mark.hl.hl-done.on{ background:var(--hl); }
 #hlPop .mini.save{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); }
 @media (max-width:420px){ #hlPop .pc-hint{ display:none; } }
 
-/* ---- comments panel list: resolved toggle, replies count, done state ---- */
-.w3-railbar{ display:flex; align-items:center; gap:8px; margin:0 0 10px; font-size:12px; color:var(--ink-soft); }
-.w3-railbar[hidden]{ display:none; }
-.w3-rb-msg:empty{ display:none; }
-.w3-rb-toggle{ margin-left:auto; border:1px solid var(--line-strong); background:var(--paper); color:var(--ink-soft);
-  font-size:12px; font-weight:600; padding:4px 10px; border-radius:999px; cursor:pointer; }
-.w3-rb-toggle:hover,.w3-rb-toggle[aria-pressed="true"]{ border-color:var(--accent); color:var(--accent); }
-.card.done{ opacity:.72; }
-.card.done .badge{ background:var(--ink-faint); }
-.card.done .c-note{ color:var(--ink-soft); }
+/* ---- comments panel list: replies count ---- */
 .c-meta{ display:flex; gap:10px; margin-top:7px; font-size:11.5px; color:var(--ink-faint); }
-.c-meta .c-done{ color:var(--success); font-weight:700; }
 
 /* ---- margin comment button (lives in .sheet, outside #doc) ---- */
 .sheet{ position:relative; }
@@ -2215,36 +2189,24 @@ function nearestHeading(node){
 }
 
 function renderCards(){
-  ANN.forEach(normAnn);              // replies / done defaults for old + sample data
+  ANN.forEach(normAnn);              // replies defaults for old + sample data
   $("#cnt").textContent = ANN.length;
   const lbl=$("#cntLabel"); if(lbl) lbl.textContent = ANN.length===1 ? "note" : "notes";
   empty.style.display = ANN.length ? "none" : "block";
   // No notes yet → let the document use the full width (wide tables need room).
   document.body.classList.toggle("no-notes", ANN.length===0);
   railInner.innerHTML="";
-  // open notes by default; resolved ones behind a "Show resolved (n)" toggle
-  const doneCount=ANN.filter(a=>a.done).length;
-  const bar=railBar();
-  bar.hidden = !doneCount;
-  if(doneCount){
-    const allDone = doneCount===ANN.length;
-    bar.querySelector(".w3-rb-msg").textContent = allDone && !showResolved ? "All notes resolved" : "";
-    const tg=bar.querySelector(".w3-rb-toggle");
-    tg.textContent = showResolved ? `Hide resolved (${doneCount})` : `Show resolved (${doneCount})`;
-    tg.setAttribute("aria-pressed", showResolved?"true":"false");
-  }
   ANN.forEach((a,i)=>{
-    if(a.done && !showResolved) return;
     const c=document.createElement("div");
     const isExample = isSampleMode && String(a.id).startsWith("demo");
-    c.className="card"+(a.id===activeId?" on":"")+(isExample?" example":"")+(a.done?" done":"");
+    c.className="card"+(a.id===activeId?" on":"")+(isExample?" example":"");
     c.dataset.id=a.id;
     const warn = a.resolved===false
       ? `<span class="warn" title="This passage was not found in the document">⚠</span>` : "";
     const exampleChip = isExample ? `<div class="example-chip">Example note</div>` : "";
     const nRep=a.replies.length;
-    const meta = (nRep||a.done)
-      ? `<div class="c-meta">${a.done?'<span class="c-done">✓ Resolved</span>':''}${nRep?`<span class="c-replies">${nRep} ${nRep===1?"reply":"replies"}</span>`:''}</div>` : "";
+    const meta = nRep
+      ? `<div class="c-meta"><span class="c-replies">${nRep} ${nRep===1?"reply":"replies"}</span></div>` : "";
     c.innerHTML =
       `<div class="c-top">
          <span class="badge">${i+1}</span>
@@ -2339,7 +2301,7 @@ function delAnn(id){
   ANN=ANN.filter(x=>x.id!==id);
   if(activeId===id) activeId=null;
   if(POP.mode && POP.mode!=="preview" && POP.id===id) closePop(true);
-  renumber(); syncDoneMarks();
+  renumber();
   renderCards(); save();
 }
 
@@ -2470,7 +2432,7 @@ function commitPending(){
   if(!pending) return;
   const a={ id:"a"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),
     quote:pending.quote, start:pending.start,
-    prefix:pending.prefix, suffix:pending.suffix, note:"", replies:[], done:false };
+    prefix:pending.prefix, suffix:pending.suffix, note:"", replies:[] };
   ANN.push(a); const id=a.id;
   activeId=id;                       // render the new card as active immediately
   hideFloater(); hideHlPop(true); window.getSelection().removeAllRanges();
@@ -2482,7 +2444,7 @@ function commitPending(){
   const s=findStart(T,a);
   a.resolved=s!==-1;
   if(s!==-1){ wrapRange(doc, s, s+a.quote.length, id); bindMarkClicks(id); }
-  renumber(); syncDoneMarks();
+  renumber();
   renderCards(); save();
   pulseMark(id);                     // brief highlight flash on the new passage
   focusCard(id,false);
@@ -2512,7 +2474,7 @@ $("#addBtn").addEventListener("click",commitPending);
    One floating element (#hlPop) with three modes:
      "preview"  — hover a highlight: compact read-only list (groups nested notes)
      "card"     — click a highlight / badge: pinned until outside click or Esc;
-                  full note, replies thread, Edit · Resolve · Delete, reply box
+                  full note, replies thread, Edit · Delete, reply box
      "composer" — after "Add note" or Edit: auto-growing textarea, Save / Cancel
    It lives outside #doc, so nothing here touches the anchor-text space.        */
 const hlPop=$("#hlPop");
@@ -2552,15 +2514,15 @@ function showHlPop(mark){
   }
   items.forEach(a=>{
     const num=ANN.indexOf(a)+1;
-    const row=document.createElement("div"); row.className="pop-row"+(a.done?" is-done":""); row.tabIndex=0;
+    const row=document.createElement("div"); row.className="pop-row"; row.tabIndex=0;
     row.innerHTML=`<span class="pop-badge"></span><div class="pop-body"><div class="pop-quote"></div><div class="pop-note"></div><div class="pop-meta"></div></div>`;
-    row.querySelector(".pop-badge").textContent=a.done?"✓":num;
+    row.querySelector(".pop-badge").textContent=num;
     row.querySelector(".pop-quote").textContent=a.quote;
     const note=row.querySelector(".pop-note");
     note.textContent=a.note || "No note yet — click to add";
     if(!a.note) note.classList.add("muted");
     const nRep=(a.replies||[]).length;
-    const meta=[a.done?"Resolved":"", nRep?(nRep+(nRep===1?" reply":" replies")):""].filter(Boolean).join(" · ");
+    const meta=nRep?(nRep+(nRep===1?" reply":" replies")):"";
     const metaEl=row.querySelector(".pop-meta");
     if(meta) metaEl.textContent=meta; else metaEl.remove();
     const go=()=>{ if(a.note) openCard(a.id,{anchor:mark}); else openComposer(a.id,{isNew:false}); };
@@ -2569,7 +2531,7 @@ function showHlPop(mark){
     hlPop.appendChild(row);
   });
   POP.mode="preview"; POP.id=null; POP.anchor=mark;
-  hlPop.dataset.mode="preview"; hlPop.classList.remove("is-done");
+  hlPop.dataset.mode="preview"; 
   hlPop.setAttribute("aria-label","Note preview");
   showPopEl();
 }
@@ -2631,7 +2593,7 @@ function openComposer(id,{isNew=false}={}){
   if(!doc.querySelector(`mark.hl[data-id="${id}"]`)) return;
   clearTimeout(POP.armT);
   POP.mode="composer"; POP.id=id; POP.isNew=!!isNew; POP.anchor=null;
-  hlPop.dataset.mode="composer"; hlPop.classList.remove("is-done");
+  hlPop.dataset.mode="composer"; 
   hlPop.setAttribute("aria-label", isNew?"New note":"Edit note");
   hlPop.innerHTML=
     `<div class="pc-head"><span class="pop-badge"></span><span class="pc-title"></span>
@@ -2698,23 +2660,19 @@ function renderPop(){
   const draft=prev ? prev.value : "", hadFocus=!!prev && document.activeElement===prev;
   const num=ANN.indexOf(a)+1;
   hlPop.setAttribute("aria-label",`Note ${num}`);
-  hlPop.classList.toggle("is-done", !!a.done);
   hlPop.innerHTML=
     `<div class="pc-head"><span class="pop-badge"></span><span class="pc-sw"></span>
-       <span class="pc-status">✓ Resolved</span>
        <button type="button" class="pc-x" aria-label="Close" title="Close (Esc)">×</button></div>
      <div class="pc-quote"></div>
      <div class="pc-note"></div>
      <div class="pc-thread"></div>
      <div class="pc-actions">
        <button type="button" data-act="edit">Edit</button>
-       <button type="button" data-act="resolve"></button>
        <button type="button" data-act="delete" class="pc-del">Delete</button>
      </div>
      <div class="pc-replybox"><textarea class="pc-reply-ta" rows="1" placeholder="Reply…" aria-label="Reply"></textarea>
        <button type="button" class="pc-send" disabled>Reply</button></div>`;
-  hlPop.querySelector(".pop-badge").textContent=a.done?"✓":num;
-  if(!a.done) hlPop.querySelector(".pc-status").remove();
+  hlPop.querySelector(".pop-badge").textContent=num;
   // several notes on the clicked spot → number chips to switch between them
   const sw=hlPop.querySelector(".pc-sw");
   if(POP.group.length>1){
@@ -2744,13 +2702,6 @@ function renderPop(){
   } else th.remove();
   hlPop.querySelector(".pc-x").addEventListener("click",()=>closePop());
   hlPop.querySelector('[data-act="edit"]').addEventListener("click",()=>openComposer(a.id,{isNew:false}));
-  const res=hlPop.querySelector('[data-act="resolve"]');
-  res.textContent=a.done?"Reopen":"Resolve";
-  res.addEventListener("click",()=>{
-    a.done=!a.done; syncDoneMarks(); renderCards(); save();
-    renderPop(); positionPop();
-    toast(a.done?"Note resolved":"Note reopened");
-  });
   const del=hlPop.querySelector('[data-act="delete"]');
   del.addEventListener("click",()=>{
     if(del.classList.contains("armed")){ const id=a.id; closePop(true); delAnn(id); toast("Note deleted"); return; }
@@ -2864,7 +2815,7 @@ function initTheme(){ let s="light"; try{ s=localStorage.getItem(THEME_KEY)||"li
 
 /* ============ export bundle ============ */
 const HEAD={
-  en:`You are reviewing a Markdown document with inline annotations left by a reviewer. Each note points to a specific passage (with its section location and surrounding context) plus a question or request. Read the whole document, then for each note use "Location" + "Context" to pinpoint the exact passage (even when wording repeats), and answer the question and/or edit the text as requested.`
+  en:`You are reviewing a Markdown document with inline annotations left by a reviewer. Each note points to a specific passage (with its section location and surrounding context) plus a question or request. "Replies" under a note are follow-up comments in the same thread — treat the note and its replies together as one request about that passage. Read the whole document, then for each note use "Location" + "Context" to pinpoint the exact passage (even when wording repeats), and answer the question and/or edit the text as requested.`
 };
 function sourceLine(quote){
   if(!quote) return null;
@@ -2877,14 +2828,13 @@ function buildBundle(incDoc){
   const L=[];
   L.push(HEAD.en,"");
   if(incDoc){ L.push("===== DOCUMENT (markdown) =====","",SRC.trim(),""); }
-  const nDone=ANN.filter(a=>a.done).length;
-  L.push(`===== NOTES (${ANN.length}${nDone?`, ${nDone} resolved`:""}) =====`,"");
+  L.push(`===== NOTES (${ANN.length}) =====`,"");
   ANN.forEach((a,i)=>{
     const loc=[];
     if(a.section) loc.push(`section “${clean(a.section)}”`);
     const ln=sourceLine(a.quote); if(ln) loc.push(`line ~${ln}`);
     if(a.resolved===false) loc.push("(not found in the current document)");
-    L.push(`[${i+1}]${a.done?" [resolved]":""}${loc.length?" Location: "+loc.join(" · "):""}`);
+    L.push(`[${i+1}]${loc.length?" Location: "+loc.join(" · "):""}`);
     L.push(`Quoted passage:`,`"""`,clean(a.quote),`"""`);
     L.push(`Context: …${clean(a.prefix)} 〈${clean(a.quote)}〉 ${clean(a.suffix)}…`);
     L.push(`Note / question:`,`"""`,(a.note||"(no note)"),`"""`);
@@ -3235,37 +3185,15 @@ document.addEventListener("keydown", e=>{
 /* ==[/W2]== */
 
 /* ==[W3 COMMENTS]== owned by the comments workstream (gutter + other new comment helpers) */
-var showResolved=false;              // panel list: resolved notes hidden unless toggled on
-// model defaults: replies thread + user "done" flag (old saves / sample notes lack them)
+// model defaults: replies thread (old saves / sample notes lack it)
 function normAnn(a){
   if(!a) return a;
   a.replies = Array.isArray(a.replies)
     ? a.replies.filter(r=>r && typeof r.text==="string" && r.text.trim())
         .map(r=>({text:r.text, ts:Number(r.ts)||Date.now()}))
     : [];
-  a.done = !!a.done;
+  delete a.done;                     // the resolve feature was removed; drop old flags
   return a;
-}
-// resolved notes → muted highlight + dimmed check badge (classes only; no text changes)
-function syncDoneMarks(){
-  const done=new Set(ANN.filter(a=>a.done).map(a=>a.id));
-  doc.querySelectorAll("mark.hl").forEach(m=>m.classList.toggle("hl-done", done.has(m.dataset.id)));
-  doc.querySelectorAll(".hl-badge").forEach(b=>{
-    const d=done.has(b.dataset.id);
-    b.classList.toggle("done", d);
-    b.title = d ? "Resolved note — click to view" : "";
-  });
-}
-// "Show resolved (n)" bar above the panel list (created lazily, lives outside #doc)
-function railBar(){
-  let bar=document.getElementById("railBar");
-  if(bar) return bar;
-  bar=document.createElement("div");
-  bar.id="railBar"; bar.className="w3-railbar"; bar.hidden=true;
-  bar.innerHTML=`<span class="w3-rb-msg"></span><button type="button" class="w3-rb-toggle" aria-pressed="false"></button>`;
-  bar.querySelector(".w3-rb-toggle").addEventListener("click",()=>{ showResolved=!showResolved; renderCards(); });
-  railInner.parentNode.insertBefore(bar, railInner);
-  return bar;
 }
 
 /* ---- margin ("gutter") comment button: comment on a whole block ---- */
@@ -3337,7 +3265,6 @@ gutBtn.addEventListener("click",e=>{
 
 // after every full render: re-apply resolved styling, drop stale popover / gutter refs
 function refreshGutter(){
-  syncDoneMarks();
   hideGutter();
   if(POP.mode) closePop(true);
 }
