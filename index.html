@@ -1656,13 +1656,32 @@ body.editing .mde{display:flex;flex-direction:column;border-radius:inherit;
 }
 /* ==[/W4]== */
 </style>
+
+<style>
+/* ==[SCAFFOLD-2]== toast action button + documents trigger reset */
+#toast.has-action{ pointer-events:auto; display:flex; align-items:center; gap:14px; }
+#toast .toast-act{ font:inherit; font-weight:700; color:inherit; background:none; border:none; padding:2px 4px;
+  cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+button.doc-label{ font:inherit; cursor:pointer; display:inline-flex; align-items:center; gap:4px; }
+button.doc-label::after{ content:"▾"; font-size:.8em; opacity:.6; }
+</style>
+
+<style>
+/* ==[W5 COMMENTS]== owned by the comments workstream (reply edit/delete, undo, shortcuts, search) */
+/* ==[/W5]== */
+</style>
+
+<style>
+/* ==[W6 LIBRARY]== owned by the library workstream (documents, storage, backup) */
+/* ==[/W6]== */
+</style>
 </head>
 <body>
 
 <header>
   <div class="brand">
     <h1 class="logo" aria-label="mdeverything"><span class="logo-md">md</span><span class="logo-rest">everything</span></h1>
-    <span class="doc-label" id="docLabel">Sample document</span>
+    <button type="button" class="doc-label" id="docLabel" title="Documents" aria-haspopup="dialog" aria-expanded="false">Sample document</button>
   </div>
   <div class="tools">
     <button class="btn icon-btn" id="bOutline" type="button" title="Show / hide outline" aria-label="Show / hide outline" aria-pressed="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h13"/></svg><span class="b-txt">Outline</span></button>
@@ -2940,6 +2959,13 @@ async function storeGet(key){
   if(window.storage){ const r=await window.storage.get(key,false); return (r&&r.value)||null; }
   try{ return localStorage.getItem(key); }catch(e){ return null; }
 }
+async function storeDel(key){
+  if(window.storage){
+    try{ return window.storage.delete ? window.storage.delete(key,false) : window.storage.set(key,"",false); }catch(e){}
+    return;
+  }
+  try{ localStorage.removeItem(key); }catch(e){}
+}
 let quotaWarned=false;
 async function storeSet(key,val){
   if(window.storage) return window.storage.set(key,val,false);
@@ -3057,8 +3083,20 @@ window.addEventListener("drop",e=>{ e.preventDefault(); dragDepth=0; dz.classLis
 let rsT; window.addEventListener("resize",()=>{ clearTimeout(rsT); rsT=setTimeout(layoutCards,120); });
 
 let toastT;
-function toast(m){ const el=$("#toast"); el.textContent=m; el.classList.add("show");
-  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),2400); }
+// toast(msg) or toast(msg, {action:{label, run}, ms}) — the action variant shows a button (e.g. Undo)
+function toast(m,opts={}){
+  const el=$("#toast"); el.textContent="";
+  const span=document.createElement("span"); span.textContent=m; el.appendChild(span);
+  el.classList.toggle("has-action", !!opts.action);
+  if(opts.action){
+    const b=document.createElement("button"); b.type="button"; b.className="toast-act"; b.textContent=opts.action.label;
+    b.addEventListener("click",()=>{ clearTimeout(toastT); el.classList.remove("show");
+      try{ opts.action.run(); }catch(e){ console.error(e); } });
+    el.appendChild(b);
+  }
+  el.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"), opts.ms || (opts.action ? 6000 : 2400));
+}
 
 /* ============ sample ============ */
 const SAMPLE=`# Welcome to mdeverything ✨
@@ -3972,6 +4010,12 @@ window.addEventListener("beforeunload", e => {
   if(mdeIsOpen() && mdeIsDirty()){ mdeSaveDraft(); e.preventDefault(); e.returnValue = ""; }
 });
 /* ==[/W4]== */
+
+/* ==[W5 COMMENTS]== owned by the comments workstream (reply edit/delete, undo, shortcuts, search) */
+/* ==[/W5]== */
+
+/* ==[W6 LIBRARY]== owned by the library workstream (documents, storage, backup) — also wires #docLabel */
+/* ==[/W6]== */
 
 // called at the end of every full renderDoc(); feature errors must not break rendering
 function onDocRendered(){
