@@ -12,7 +12,7 @@
 <meta name="application-name" content="Marginalia">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#2563eb">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 
 <link rel="canonical" href="https://ductienuit.github.io/marginalia/">
 
@@ -65,6 +65,9 @@
   ]
 }
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
@@ -1227,6 +1230,103 @@ body.no-notes #bToggleRail{ display:none; }   /* nothing to hide when there are 
 .card:hover .c-editbtn,.card.on .c-editbtn{ opacity:1; }
 .c-editbtn:hover{ background:#e8eefb; color:var(--brand); }
 @media (hover:none){ .c-editbtn,.c-del{ opacity:1; } }   /* always visible on touch */
+
+/* ================= THEMES: Light (default :root) / Dark / Beige(Dune) =================
+   Theme variables are set on <body data-theme="…"> so every descendant inherits them.
+   A few surfaces hard-coded in the base CSS get explicit overrides below. */
+.seg{ display:inline-flex; border:1px solid var(--line-strong); border-radius:10px; overflow:hidden;
+  background:var(--paper); box-shadow:var(--shadow-sm); }
+.seg button{ border:none; background:none; color:var(--ink-soft); padding:7px 9px; font-size:14px;
+  line-height:1; display:inline-flex; align-items:center; justify-content:center; min-width:34px; min-height:36px;
+  transition:background .12s,color .12s; }
+.seg button + button{ border-left:1px solid var(--line); }
+.seg button:hover{ background:var(--hl); color:var(--ink); }
+.seg button[aria-pressed="true"]{ background:var(--accent); color:#fff; }
+
+/* ======================= DARK ======================= */
+body[data-theme="dark"]{
+  --app-bg:#1b1c1f; --paper:#242529; --ink:#e7e9ee; --ink-soft:#a6adbb; --ink-faint:#7b8390;
+  --line:#34363c; --line-strong:#43464e;
+  --brand:#4b94ff; --brand-dark:#3b82f6; --accent:#4b94ff; --accent-deep:#2f6fe0;
+  --hl:rgba(75,148,255,.20); --hl-line:rgba(75,148,255,.60); --hl-active:rgba(75,148,255,.34);
+  --danger:#f87171; --success:#34d399;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+  --shadow-md:0 14px 34px -24px rgba(0,0,0,.8);
+  --shadow-lg:0 24px 70px -32px rgba(0,0,0,.85);
+}
+body[data-theme="dark"]{ background:#17181b; }
+body[data-theme="dark"] header{ background:rgba(28,29,33,.82); border-bottom-color:var(--line); }
+body[data-theme="dark"] .brand h1{ color:#f3f5f9; }
+body[data-theme="dark"] .card{ background:#2a2b30; }
+body[data-theme="dark"] .c-note{ color:var(--ink); }
+body[data-theme="dark"] .c-note.placeholder{ color:var(--ink-faint); }
+body[data-theme="dark"] .c-quote{ background:#303138; border-left-color:#44474f; }
+body[data-theme="dark"] .mini:hover{ background:#30323a; color:var(--ink); }
+body[data-theme="dark"] .x:hover,body[data-theme="dark"] .c-del:hover{ background:#3a2a2c; }
+body[data-theme="dark"] .c-editbtn:hover{ background:#223049; }
+body[data-theme="dark"] #doc h1,body[data-theme="dark"] #doc h2,body[data-theme="dark"] #doc h3,body[data-theme="dark"] #doc h4{ color:#cfe0ff; }
+body[data-theme="dark"] #doc strong{ color:#f3f5f9; }
+body[data-theme="dark"] #doc code{ background:#2c3340; border-color:#3a414e; color:#bcd4ff; }
+body[data-theme="dark"] #doc blockquote{ background:#2a2b30; border-left-color:rgba(75,148,255,.5); color:var(--ink-soft); }
+body[data-theme="dark"] #doc th{ background:#2b3340; color:#cfe0ff; }
+body[data-theme="dark"] #doc tr:nth-child(even) td{ background:#26272c; }
+body[data-theme="dark"] #doc .table-scroll{ background:var(--paper); }
+body[data-theme="dark"] .mermaid-wrap{ background:#1f2024; border-color:var(--line); }
+body[data-theme="dark"] #hlPop,body[data-theme="dark"] .menu,body[data-theme="dark"] .panel,body[data-theme="dark"] .confirm-card{ background:#26272c; }
+body[data-theme="dark"] #hlPop .pop-row:hover,body[data-theme="dark"] #hlPop .pop-row:focus-visible,body[data-theme="dark"] .menu>button:hover{ background:#30323a; }
+body[data-theme="dark"] #hlPop .pop-quote{ background:#2a2b30; }
+body[data-theme="dark"] .rail-empty{ background:rgba(255,255,255,.04); }
+body[data-theme="dark"] textarea.big,body[data-theme="dark"] .c-edit textarea,body[data-theme="dark"] select{ background:#1f2024; color:var(--ink); }
+body[data-theme="dark"] #toast{ background:#e7e9ee; color:#1b1c1f; }
+body[data-theme="dark"] .hero{ background:linear-gradient(135deg,#23242a,#1d1e22); border-color:var(--line); }
+body[data-theme="dark"] .hero h2{ color:#f3f5f9; }
+body[data-theme="dark"] .hero-kicker{ background:#223049; border-color:#2f4a6e; color:#9ec3ff; }
+body[data-theme="dark"] .hero-drop{ background:rgba(255,255,255,.03); border-color:#3a414e; }
+body[data-theme="dark"] .hero-drop b{ color:#f3f5f9; }
+body[data-theme="dark"] .step-card{ background:rgba(255,255,255,.03); border-color:var(--line); }
+body[data-theme="dark"] .step-card b{ color:#e7e9ee; }
+body[data-theme="dark"] .step-card .num,body[data-theme="dark"] .drop-icon{ background:#223049; color:#9ec3ff; }
+body[data-theme="dark"] .doc-label,body[data-theme="dark"] .count{ background:#26272c; }
+body[data-theme="dark"] .sheet::before{ background:#2b3340; color:#9ec3ff; }
+
+/* ======================= BEIGE (Dune / Calmly) ======================= */
+body[data-theme="beige"]{
+  --app-bg:#f1e8cf; --paper:#fdf8ea; --ink:#3a3936; --ink-soft:#6f6753; --ink-faint:#9a9076;
+  --line:#e7dfc6; --line-strong:#d4ccb4;
+  --brand:#2b7192; --brand-dark:#1f5570; --accent:#2b7192; --accent-deep:#1f5570;
+  --hl:rgba(185,158,81,.22); --hl-line:rgba(185,158,81,.92); --hl-active:rgba(185,158,81,.36);
+  --danger:#b4232a; --success:#4e7d4e;
+  --shadow-sm:0 1px 2px rgba(120,100,50,.10);
+  --shadow-md:0 14px 34px -24px rgba(120,100,50,.45);
+  --shadow-lg:0 24px 70px -32px rgba(120,100,50,.5);
+}
+body[data-theme="beige"]{ background:#f4ecd4; }
+body[data-theme="beige"] #doc{ font-family:"Merriweather",Georgia,"Times New Roman",serif; }
+body[data-theme="beige"] header{ background:rgba(253,248,234,.85); border-bottom-color:var(--line-strong); }
+body[data-theme="beige"] .brand h1{ color:#33322e; }
+body[data-theme="beige"] #doc h1,body[data-theme="beige"] #doc h2,body[data-theme="beige"] #doc h3,body[data-theme="beige"] #doc h4{ color:#1f5570; }
+body[data-theme="beige"] #doc strong{ color:#2a2924; }
+body[data-theme="beige"] .card{ background:#fdf8ea; }
+body[data-theme="beige"] .c-quote{ background:#f3ebd3; border-left-color:#d4ccb4; }
+body[data-theme="beige"] #doc code{ background:#efe7cf; border-color:#ddd3b5; color:#7a5a1e; }
+body[data-theme="beige"] #doc blockquote{ background:#f3ebd3; border-left-color:rgba(185,158,81,.6); }
+body[data-theme="beige"] #doc th{ background:#efe7cf; color:#1f5570; }
+body[data-theme="beige"] #doc tr:nth-child(even) td{ background:#faf3df; }
+body[data-theme="beige"] #doc .table-scroll{ background:var(--paper); }
+body[data-theme="beige"] .mermaid-wrap{ background:#faf3df; border-color:var(--line-strong); }
+body[data-theme="beige"] #hlPop,body[data-theme="beige"] .menu,body[data-theme="beige"] .panel,body[data-theme="beige"] .confirm-card{ background:#fdf8ea; }
+body[data-theme="beige"] #hlPop .pop-row:hover,body[data-theme="beige"] #hlPop .pop-row:focus-visible,body[data-theme="beige"] .menu>button:hover{ background:#f3ebd3; }
+body[data-theme="beige"] #hlPop .pop-quote{ background:#f3ebd3; }
+body[data-theme="beige"] textarea.big,body[data-theme="beige"] .c-edit textarea,body[data-theme="beige"] select{ background:#fffdf5; color:var(--ink); }
+body[data-theme="beige"] .doc-label,body[data-theme="beige"] .count{ background:#fdf8ea; }
+body[data-theme="beige"] .hero{ background:linear-gradient(135deg,#fdf8ea,#f4ecd4); border-color:var(--line-strong); }
+body[data-theme="beige"] .hero h2{ color:#33322e; }
+body[data-theme="beige"] .hero-kicker{ background:#efe7cf; border-color:#d4ccb4; color:#1f5570; }
+body[data-theme="beige"] .hero-drop{ background:rgba(255,255,255,.35); border-color:#cdb97e; }
+body[data-theme="beige"] .hero-drop b{ color:#33322e; }
+body[data-theme="beige"] .step-card{ background:rgba(255,255,255,.4); border-color:var(--line-strong); }
+body[data-theme="beige"] .step-card .num,body[data-theme="beige"] .drop-icon{ background:#efe7cf; color:#1f5570; }
+body[data-theme="beige"] .sheet::before{ background:#efe7cf; color:#6f6753; }
 </style>
 </head>
 <body>
@@ -1239,6 +1339,11 @@ body.no-notes #bToggleRail{ display:none; }   /* nothing to hide when there are 
   <div class="tools">
     <span class="doc-label" id="docLabel">Sample document</span>
     <span class="count" aria-live="polite"><b id="cnt">0</b> <span id="cntLabel">notes</span></span>
+    <span class="seg" id="themeSeg" role="group" aria-label="Giao diện">
+      <button type="button" data-theme-set="light" title="Paper (sáng)" aria-label="Paper (sáng)" aria-pressed="true">☀</button>
+      <button type="button" data-theme-set="beige" title="Sepia (be)" aria-label="Sepia (be)" aria-pressed="false">◐</button>
+      <button type="button" data-theme-set="dark" title="Night (tối)" aria-label="Night (tối)" aria-pressed="false">☾</button>
+    </span>
     <button class="btn icon-btn" id="bToggleRail" title="Hide notes panel" aria-pressed="false" aria-label="Hide notes panel"><span class="tr-ico" aria-hidden="true">⇥</span><span class="tr-txt">Hide notes</span></button>
     <button class="btn" id="bOpenMd">Open Markdown</button>
     <button class="btn" id="bSource">Paste Markdown</button>
@@ -1626,16 +1731,30 @@ function findStart(T,a){
 
 /* ============ mermaid ============ */
 let mermaidReady=false;
+function mermaidThemeVars(){
+  const t=document.body.dataset.theme||"light";
+  if(t==="dark") return { primaryColor:"#2b3340", primaryBorderColor:"#4b94ff",
+    primaryTextColor:"#e7e9ee", lineColor:"#a6adbb", secondaryColor:"#262a33",
+    tertiaryColor:"#1f2024", fontFamily:'"Segoe UI",system-ui,Arial,sans-serif', fontSize:"14px" };
+  if(t==="beige") return { primaryColor:"#efe7cf", primaryBorderColor:"#2b7192",
+    primaryTextColor:"#3a3936", lineColor:"#6f6753", secondaryColor:"#f3ebd3",
+    tertiaryColor:"#faf3df", fontFamily:'"Merriweather",Georgia,serif', fontSize:"14px" };
+  return { primaryColor:"#eef5ff", primaryBorderColor:"#2563eb",
+    primaryTextColor:"#172033", lineColor:"#607086", secondaryColor:"#f5f8ff",
+    tertiaryColor:"#fafcfe", fontFamily:'"Segoe UI",system-ui,Arial,sans-serif', fontSize:"14px" };
+}
 function initMermaid(){
   if(mermaidReady || !window.mermaid) return;
   try{
-    mermaid.initialize({ startOnLoad:false, securityLevel:"strict", theme:"base",
-      themeVariables:{ primaryColor:"#eef5ff", primaryBorderColor:"#2563eb",
-        primaryTextColor:"#172033", lineColor:"#607086", secondaryColor:"#f5f8ff",
-        tertiaryColor:"#fafcfe", fontFamily:'"Segoe UI",system-ui,Arial,sans-serif',
-        fontSize:"14px" } });
+    mermaid.initialize({ startOnLoad:false, securityLevel:"strict", theme:"base", themeVariables:mermaidThemeVars() });
     mermaidReady=true;
   }catch(e){}
+}
+// re-apply mermaid theme + redraw existing diagrams (used when switching themes)
+function rethemeMermaid(){
+  if(!window.mermaid) return;
+  try{ mermaid.initialize({ startOnLoad:false, securityLevel:"strict", theme:"base", themeVariables:mermaidThemeVars() }); }catch(e){}
+  drawMermaid();
 }
 // synchronously turn ```mermaid blocks into excluded .no-anchor placeholders
 function prepMermaid(){
@@ -2111,6 +2230,20 @@ function setRailCollapsed(v){
 }
 $("#bToggleRail").addEventListener("click",()=>setRailCollapsed(!document.body.classList.contains("rail-collapsed")));
 
+/* ============ theme (Light / Beige / Dark) ============ */
+const THEME_KEY="marginalia:theme:v1";
+function applyTheme(name){
+  if(!["light","dark","beige"].includes(name)) name="light";
+  document.body.dataset.theme=name;
+  document.querySelectorAll("#themeSeg button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.themeSet===name?"true":"false"));
+  const mc={light:"#2563eb",dark:"#17181b",beige:"#f4ecd4"}[name];
+  const meta=document.querySelector('meta[name="theme-color"]'); if(meta) meta.setAttribute("content",mc);
+  try{ localStorage.setItem(THEME_KEY,name); }catch(e){}
+  if(mermaidReady) rethemeMermaid();   // only once diagrams exist; boot inits with the theme already set
+}
+$("#themeSeg").addEventListener("click",e=>{ const b=e.target.closest("button[data-theme-set]"); if(b) applyTheme(b.dataset.themeSet); });
+function initTheme(){ let s="light"; try{ s=localStorage.getItem(THEME_KEY)||"light"; }catch(e){} applyTheme(s); }
+
 /* ============ export bundle ============ */
 const HEAD={
   en:`You are reviewing a Markdown document with inline annotations left by a reviewer. Each note points to a specific passage (with its section location and surrounding context) plus a question or request. Read the whole document, then for each note use "Location" + "Context" to pinpoint the exact passage (even when wording repeats), and answer the question and/or edit the text as requested.`
@@ -2298,6 +2431,7 @@ sequenceDiagram
 
 /* ============ boot ============ */
 (async function(){
+  initTheme();      // set data-theme before mermaid inits so diagrams render themed
   initMermaid();
   const had = await restore();
   if(!had){
