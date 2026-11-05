@@ -1472,8 +1472,23 @@ body.no-notes:not(.outline-hidden) .rail{grid-column:2}
 #hlPop .mini.save{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); }
 @media (max-width:420px){ #hlPop .pc-hint{ display:none; } }
 
-/* ---- comments panel list: replies count ---- */
+/* ---- comments panel list: replies count; the active card shows the thread + reply box ---- */
 .c-meta{ display:flex; gap:10px; margin-top:7px; font-size:11.5px; color:var(--ink-faint); }
+.card .c-thread{ margin-top:9px; border-top:1px solid var(--line); padding-top:2px; max-height:240px; overflow:auto; }
+.card .c-reply{ padding:6px 0 5px 9px; border-left:2px solid var(--line-strong); margin:6px 0 0 2px; }
+.card .c-rtext{ font-size:13px; line-height:1.5; color:var(--ink); white-space:pre-wrap; overflow-wrap:anywhere; }
+.card .c-time{ font-size:11px; color:var(--ink-faint); margin-top:1px; }
+.card .c-replybox{ display:flex; align-items:flex-end; gap:6px; margin-top:9px; cursor:auto; }
+.card .c-reply-ta{ flex:1; min-width:0; font:inherit; font-size:13px; line-height:1.45; padding:6px 9px; min-height:32px; max-height:140px;
+  resize:none; overflow-y:hidden; border:1px solid var(--line-strong); border-radius:9px; outline:none; color:var(--ink);
+  background:color-mix(in srgb, var(--ink) 3%, var(--paper)); transition:border-color .12s, box-shadow .12s; }
+.card .c-reply-ta:focus{ border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
+.card .c-reply-ta::placeholder{ color:var(--ink-faint); }
+.card .c-send{ flex:none; border:none; background:var(--accent); color:var(--accent-contrast); font-size:12.5px; font-weight:600;
+  padding:7px 11px; border-radius:8px; cursor:pointer; }
+.card .c-send:disabled{ opacity:.45; cursor:default; }
+.card:not(.on) .c-thread,.card:not(.on) .c-replybox,.card.editing .c-replybox{ display:none; }
+.card.on .c-meta{ display:none; }
 
 /* ---- margin comment button (lives in .sheet, outside #doc) ---- */
 .sheet{ position:relative; }
@@ -2209,6 +2224,13 @@ function renderCards(){
   empty.style.display = ANN.length ? "none" : "block";
   // No notes yet → let the document use the full width (wide tables need room).
   document.body.classList.toggle("no-notes", ANN.length===0);
+  // keep any half-typed panel reply (and its focus) across re-renders
+  const drafts={}; let focusedReply=null;
+  railInner.querySelectorAll(".card").forEach(c=>{
+    const t=c.querySelector(".c-reply-ta"); if(!t) return;
+    if(t.value) drafts[c.dataset.id]=t.value;
+    if(document.activeElement===t) focusedReply=c.dataset.id;
+  });
   railInner.innerHTML="";
   ANN.forEach((a,i)=>{
     const c=document.createElement("div");
@@ -2231,8 +2253,42 @@ function renderCards(){
        </div>
        ${exampleChip}
        <div class="c-note${a.note?'':' placeholder'}"></div>
-       ${meta}`;
+       ${meta}
+       ${a.note ? `<div class="c-thread"></div>
+       <div class="c-replybox"><textarea class="c-reply-ta" rows="1" placeholder="Reply…" aria-label="Reply to note ${i+1}"></textarea>
+         <button type="button" class="c-send" disabled>Reply</button></div>` : ""}`;
     c.querySelector(".c-note").textContent = a.note || "Click to add a note…";
+    // replies thread + reply box: shown when the card is the active one (same thread as the inline card)
+    const th=c.querySelector(".c-thread");
+    if(th){
+      if(nRep) a.replies.forEach(r=>{
+        const el=document.createElement("div"); el.className="c-reply";
+        el.innerHTML=`<div class="c-rtext"></div><div class="c-time"></div>`;
+        el.querySelector(".c-rtext").textContent=r.text;
+        const t=el.querySelector(".c-time"); t.textContent=relTime(r.ts); t.title=new Date(r.ts).toLocaleString();
+        th.appendChild(el);
+      }); else th.remove();
+      const rta=c.querySelector(".c-reply-ta"), send=c.querySelector(".c-send");
+      const grow=()=>{ rta.style.height="auto"; rta.style.height=Math.min(rta.scrollHeight,140)+"px";
+        rta.style.overflowY = rta.scrollHeight>140 ? "auto" : "hidden"; send.disabled=!rta.value.trim(); };
+      const doSend=()=>{
+        const t=rta.value.trim(); if(!t) return;
+        rta.value="";
+        addReply(a,t);
+        const nc=[...railInner.children].find(x=>x.dataset.id===a.id);
+        const nta=nc && nc.querySelector(".c-reply-ta"); if(nta) focusWithoutScrolling(nta);
+        const nth=nc && nc.querySelector(".c-thread"); if(nth) nth.scrollTop=nth.scrollHeight;
+      };
+      rta.addEventListener("input",()=>{ grow(); layoutCards(); });
+      // keep keys away from the card's own shortcuts (Enter = edit, Space, Delete = arm delete)
+      rta.addEventListener("keydown",e=>{
+        e.stopPropagation();
+        if(e.key==="Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); doSend(); }
+      });
+      send.addEventListener("click",e=>{ e.stopPropagation(); doSend(); });
+      if(drafts[a.id]) rta.value=drafts[a.id];
+      grow();
+    }
     c.tabIndex = 0;
     c.setAttribute("role","button");
     c.setAttribute("aria-label", a.note ? `Note ${i+1}: ${a.quote}` : `Empty note ${i+1} on “${a.quote}” — activate to write`);
@@ -2259,13 +2315,14 @@ function renderCards(){
     editBtn.setAttribute("aria-label","Edit note "+(i+1));
     editBtn.addEventListener("click",e=>{ e.stopPropagation(); disarmDel(); editCard(c,a); });
 
-    c.addEventListener("click",()=>{
+    c.addEventListener("click",e=>{
+      if(e.target.closest(".c-replybox")) return;   // typing a reply, not selecting the card
       disarmDel();   // clicking the card cancels a pending delete
       if(c.classList.contains("editing")) return;
-      // scroll to the highlight and open the inline card (composer if still empty)
-      focusCard(a.id,true);
-      if(a.resolved===false) return;
-      if(!a.note) openComposer(a.id,{isNew:false}); else openCard(a.id);
+      // the panel card is self-contained (thread + reply box), so don't open the inline card too
+      if(POP.mode==="card" && POP.id!==a.id) closePop();
+      focusCard(a.id,true);   // scroll to the highlight and expand this card
+      if(!a.note) editCard(c,a);
     });
     c.addEventListener("dblclick",()=>editCard(c,a));
     c.addEventListener("keydown",e=>{
@@ -2275,7 +2332,20 @@ function renderCards(){
     });
     railInner.appendChild(c);
   });
+  if(focusedReply){
+    const nc=[...railInner.children].find(x=>x.dataset.id===focusedReply);
+    const t=nc && nc.querySelector(".c-reply-ta"); if(t) focusWithoutScrolling(t);
+  }
   doLayout();   // position synchronously so focus never scrolls to a top:0 card
+}
+
+// one place to add a reply, used by both the inline card and the panel card, so they stay in sync
+function addReply(a,text){
+  const t=(text||"").trim(); if(!a || !t) return false;
+  a.replies.push({text:t, ts:Date.now()});
+  save(); renderCards();
+  if(POP.mode==="card" && POP.id===a.id){ renderPop(); positionPop(); }
+  return true;
 }
 
 function editCard(c,a){
@@ -2724,12 +2794,12 @@ function renderPop(){
     POP.armT=setTimeout(()=>{ if(del.isConnected){ del.classList.remove("armed"); del.textContent="Delete"; } },2800);
   });
   const ta=hlPop.querySelector(".pc-reply-ta"), send=hlPop.querySelector(".pc-send");
-  const grow=()=>{ ta.style.height="auto"; ta.style.height=Math.min(ta.scrollHeight,160)+"px"; send.disabled=!ta.value.trim(); };
+  const grow=()=>{ ta.style.height="auto"; ta.style.height=Math.min(ta.scrollHeight,160)+"px";
+    ta.style.overflowY = ta.scrollHeight>160 ? "auto" : "hidden"; send.disabled=!ta.value.trim(); };
   const doSend=()=>{
     const t=ta.value.trim(); if(!t) return;
-    a.replies.push({text:t, ts:Date.now()});
-    ta.value=""; renderCards(); save();
-    renderPop(); positionPop();
+    ta.value="";
+    addReply(a,t);      // updates the panel card and re-renders this one
     const nth=hlPop.querySelector(".pc-thread"); if(nth) nth.scrollTop=nth.scrollHeight;
   };
   ta.addEventListener("input",()=>{ grow(); positionPop(); });
