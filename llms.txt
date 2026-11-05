@@ -4,14 +4,14 @@
 
 mdeverything runs entirely in the browser. There is no sign-up, no server, and no data
 leaves the user's device. The user opens a Markdown document, leaves inline comments on any
-passage (with replies and resolve), optionally edits the source in a built-in Markdown
+passage (with reply threads), optionally edits the source in a built-in Markdown
 editor, and exports a structured bundle (quoted passage, section location, surrounding
 context, comments and replies) to paste into an AI assistant for review.
 
 ## Features
-- Inline comments anchored to passages, Claude-artifact style (preview, card, replies, resolve)
+- Inline comments anchored to passages, Claude-artifact style (preview, card, replies)
 - Margin button to comment on a whole paragraph, list item, heading or table cell
-- Optional comments panel with a resolved filter
+- Optional comments panel listing every comment
 - Document outline with scroll-spy
 - Markdown editor with formatting toolbar, shortcuts and live preview
 - Paper, Sepia and Night reading themes

@@ -15,20 +15,20 @@ context package for ChatGPT, Claude, Gemini, or your coding assistant.
 ## What it does
 
 You read a Markdown document inside mdeverything. Select a passage and a comment box opens
-right there, Claude-artifact style. Each comment can hold a question, a request or a reply
-thread, and can be resolved when it's handled. When you're done, **Export for AI** copies a
+right there, Claude-artifact style. Each comment can hold a question or request plus a reply
+thread. When you're done, **Export for AI** copies a
 structured bundle an assistant can act on:
 
 - the exact **quoted passage**
 - its **section location** and a **line hint**
 - the **surrounding context** (so duplicate wording is never confused)
-- your **comment**, its **replies**, and whether it's **resolved**
+- your **comment** and its **replies**
 
 ## Features
 
 - **Inline comments** — select text or use the margin button to comment on a whole block;
-  hover to preview, click for the card with Edit · Resolve · Delete · Reply
-- **Comments panel** — optional side list (hidden by default) with a resolved filter
+  hover to preview, click for the card with Edit · Delete · Reply
+- **Comments panel** — optional side list of every comment (hidden by default)
 - **Outline** — table of contents with scroll-spy; drawer on small screens
 - **Markdown editor** — formatting toolbar, shortcuts (Ctrl/Cmd+B · I · K), live preview;
   comments re-anchor after you apply changes
