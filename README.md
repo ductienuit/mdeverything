@@ -7,8 +7,8 @@ context package for ChatGPT, Claude, Gemini, or your coding assistant.
 
 🔗 **Live app:** https://ductienuit.github.io/mdeverything/
 
-> Formerly **Marginalia** (`ductienuit.github.io/marginalia`). The old address now points
-> here, and work saved in your browser carries over automatically.
+> Formerly **Marginalia** (`ductienuit.github.io/marginalia`). The old address now shows a
+> short "what's new" page and then brings visitors here.
 
 ![mdeverything — read, comment and edit Markdown for AI review](og-image.png)
 
@@ -33,6 +33,7 @@ structured bundle an assistant can act on:
 - **Markdown editor** — formatting toolbar, shortcuts (Ctrl/Cmd+B · I · K), live preview;
   comments re-anchor after you apply changes
 - **Three reading themes** — Paper, Sepia (cream paper + Merriweather), Night
+- **Autosave** — your document, comments and preferences stay in your browser between visits
 - Renders GitHub-flavored Markdown, wide tables and **Mermaid** diagrams
 - Export modes: **full context**, **notes only**, or **raw Markdown**
 - Keyboard accessible, responsive from mobile to desktop, `prefers-reduced-motion` aware

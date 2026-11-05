@@ -1791,8 +1791,8 @@ let activeId = null;
 let isHomeMode = true;
 let isSampleMode = true;
 let currentFileName = "Sample document";
-// Storage keys keep the original "marginalia:" prefix on purpose: the app moved from
-// /marginalia/ to /mdeverything/ on the same origin, so saved work carries over.
+// Storage keys keep the original "marginalia:" prefix (the app's former name); renaming
+// them would drop preferences already saved on this origin.
 const STORE_KEY = "marginalia:workspace:v1";
 
 const $ = s => document.querySelector(s);
@@ -2898,16 +2898,29 @@ function buildBundle(incDoc){
   return L.join("\n").trim()+"\n";
 }
 
-/* ============ persistence (silent autosave via window.storage) ============ */
-function snapshot(){ return JSON.stringify({src:SRC,ann:ANN,isHomeMode,isSampleMode,currentFileName},null,2); }
+/* ============ persistence (silent autosave) ============
+   Uses the host's window.storage when present (e.g. inside a Claude artifact),
+   otherwise the browser's localStorage — so documents and comments survive reloads. */
+function snapshot(){ return JSON.stringify({src:SRC,ann:ANN,isHomeMode,isSampleMode,currentFileName}); }
+async function storeGet(key){
+  if(window.storage){ const r=await window.storage.get(key,false); return (r&&r.value)||null; }
+  try{ return localStorage.getItem(key); }catch(e){ return null; }
+}
+let quotaWarned=false;
+async function storeSet(key,val){
+  if(window.storage) return window.storage.set(key,val,false);
+  try{ localStorage.setItem(key,val); }
+  catch(e){   // quota exceeded or storage blocked: keep working, just unsaved
+    if(!quotaWarned){ quotaWarned=true; toast("This document is too large to keep in browser storage — export to save your notes"); }
+  }
+}
 async function save(){
-  try{ if(window.storage) await window.storage.set(STORE_KEY, snapshot(), false); }catch(e){}
+  try{ await storeSet(STORE_KEY, snapshot()); }catch(e){}
 }
 async function restore(){
   try{
-    if(!window.storage) return false;
-    const r=await window.storage.get(STORE_KEY,false);
-    if(r&&r.value){ const d=JSON.parse(r.value);
+    const raw=await storeGet(STORE_KEY);
+    if(raw){ const d=JSON.parse(raw);
       if(d.src){
         SRC=d.src; ANN=(Array.isArray(d.ann)?d.ann:[]).filter(a=>a&&a.id).map(normAnn);
         isHomeMode = typeof d.isHomeMode === "boolean" ? d.isHomeMode : false;

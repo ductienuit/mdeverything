@@ -15,6 +15,7 @@ context, comments and replies) to paste into an AI assistant for review.
 - Document outline with scroll-spy
 - Markdown editor with formatting toolbar, shortcuts and live preview
 - Paper, Sepia and Night reading themes
+- Autosave of the document, comments and preferences in the browser (localStorage)
 - Export modes: full context, notes only, or raw Markdown
 - Renders GitHub-flavored Markdown and Mermaid diagrams
 - 100% client-side: no tracking, no account, no upload
