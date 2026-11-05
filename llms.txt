@@ -1,21 +1,26 @@
-# Marginalia
+# mdeverything
 
-> Free, single-file web app to annotate Markdown documents with inline notes and export a clean, structured context package for AI assistants like ChatGPT, Claude, and Gemini.
+> Free browser app to read, comment on and edit Markdown documents, then export a clean, structured context package for AI assistants like ChatGPT, Claude, and Gemini. Formerly named Marginalia.
 
-Marginalia runs entirely in the browser. There is no sign-up, no server, and no data
-leaves the user's device. The user loads a Markdown document, highlights any passage,
-attaches a note or question, and exports a structured bundle (quoted passage, section
-location, surrounding context, and notes) to paste into an AI assistant for review.
+mdeverything runs entirely in the browser. There is no sign-up, no server, and no data
+leaves the user's device. The user opens a Markdown document, leaves inline comments on any
+passage (with replies and resolve), optionally edits the source in a built-in Markdown
+editor, and exports a structured bundle (quoted passage, section location, surrounding
+context, comments and replies) to paste into an AI assistant for review.
 
 ## Features
-- Inline, anchored Markdown annotations (margin-rail, Google-Docs style)
-- Highlight a passage and attach a question, comment, or edit request
+- Inline comments anchored to passages, Claude-artifact style (preview, card, replies, resolve)
+- Margin button to comment on a whole paragraph, list item, heading or table cell
+- Optional comments panel with a resolved filter
+- Document outline with scroll-spy
+- Markdown editor with formatting toolbar, shortcuts and live preview
+- Paper, Sepia and Night reading themes
 - Export modes: full context, notes only, or raw Markdown
 - Renders GitHub-flavored Markdown and Mermaid diagrams
-- Keyboard accessible, responsive, light theme, prefers-reduced-motion aware
 - 100% client-side: no tracking, no account, no upload
 
 ## Links
-- Live app: https://ductienuit.github.io/marginalia/
-- Source code: https://github.com/ductienuit/marginalia
+- Live app: https://ductienuit.github.io/mdeverything/
+- Source code: https://github.com/ductienuit/mdeverything
+- Previous address (redirects here): https://ductienuit.github.io/marginalia/
 - License: MIT

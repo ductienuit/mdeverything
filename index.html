@@ -3,52 +3,53 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Marginalia — annotate Markdown for AI review</title>
+<title>mdeverything — read, comment and edit Markdown for AI review</title>
 
 <!-- ===== SEO / social / AI-crawler metadata ===== -->
-<meta name="description" content="Free single-file web app to annotate Markdown and export a clean, structured context package for AI assistants like ChatGPT, Claude, and Gemini. Highlight a passage, add a note, copy the bundle.">
-<meta name="keywords" content="markdown annotation, annotate markdown, AI document review, context for ChatGPT, Claude document review, Gemini, markdown notes tool, AI prompt context">
-<meta name="author" content="Marginalia">
-<meta name="application-name" content="Marginalia">
+<meta name="description" content="Free browser app to read, comment on and edit Markdown, then export a clean, structured context package for AI assistants like ChatGPT, Claude, and Gemini. Inline comments, outline, Markdown editor, three reading themes.">
+<meta name="keywords" content="markdown editor, markdown annotation, annotate markdown, markdown comments, AI document review, context for ChatGPT, Claude document review, Gemini, markdown reader">
+<meta name="author" content="mdeverything">
+<meta name="application-name" content="mdeverything">
 <meta name="robots" content="index, follow, max-image-preview:large">
-<meta name="theme-color" content="#2563eb">
+<meta name="theme-color" content="#f7f7f5">
 <meta name="color-scheme" content="light dark">
 
-<link rel="canonical" href="https://ductienuit.github.io/marginalia/">
+<link rel="canonical" href="https://ductienuit.github.io/mdeverything/">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Marginalia">
-<meta property="og:title" content="Marginalia — Annotate Markdown for AI review">
-<meta property="og:description" content="Highlight any passage in a Markdown document, attach a note or question, then copy a structured bundle (quote, section, and context) to paste into ChatGPT, Claude, Gemini, or your coding assistant. No sign-up, runs in your browser.">
-<meta property="og:url" content="https://ductienuit.github.io/marginalia/">
-<meta property="og:image" content="https://ductienuit.github.io/marginalia/og-image.png">
+<meta property="og:site_name" content="mdeverything">
+<meta property="og:title" content="mdeverything — Read, comment and edit Markdown for AI review">
+<meta property="og:description" content="Highlight any passage in a Markdown document, leave an inline comment, edit the source, then copy a structured bundle (quote, section, context, replies) for ChatGPT, Claude, Gemini, or your coding assistant. No sign-up, runs in your browser.">
+<meta property="og:url" content="https://ductienuit.github.io/mdeverything/">
+<meta property="og:image" content="https://ductienuit.github.io/mdeverything/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Marginalia — annotate Markdown for AI review">
+<meta property="og:image:alt" content="mdeverything — read, comment and edit Markdown for AI review">
 <meta property="og:locale" content="en_US">
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Marginalia — Annotate Markdown for AI review">
-<meta name="twitter:description" content="Annotate Markdown and export a clean context package for ChatGPT, Claude, Gemini, or your coding assistant. Free and runs entirely in your browser.">
-<meta name="twitter:image" content="https://ductienuit.github.io/marginalia/og-image.png">
+<meta name="twitter:title" content="mdeverything — Read, comment and edit Markdown for AI review">
+<meta name="twitter:description" content="Read, comment on and edit Markdown, then export a clean context package for ChatGPT, Claude, Gemini, or your coding assistant. Free and runs entirely in your browser.">
+<meta name="twitter:image" content="https://ductienuit.github.io/mdeverything/og-image.png">
 
-<!-- favicon / logo (inline SVG, works even when the file is opened standalone) -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%232563eb'/%3E%3Crect%20x='13'%20y='25'%20width='28'%20height='6'%20rx='3'%20fill='%23ffffff'%20opacity='0.5'/%3E%3Crect%20x='13'%20y='37'%20width='22'%20height='6'%20rx='3'%20fill='%23ffffff'%20opacity='0.5'/%3E%3Crect%20x='11'%20y='31'%20width='34'%20height='8'%20rx='4'%20fill='%23ffffff'/%3E%3Ccircle%20cx='49'%20cy='20'%20r='6'%20fill='%23fbbf24'/%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%232563eb'/%3E%3Crect%20x='13'%20y='25'%20width='28'%20height='6'%20rx='3'%20fill='%23ffffff'%20opacity='0.5'/%3E%3Crect%20x='13'%20y='37'%20width='22'%20height='6'%20rx='3'%20fill='%23ffffff'%20opacity='0.5'/%3E%3Crect%20x='11'%20y='31'%20width='34'%20height='8'%20rx='4'%20fill='%23ffffff'/%3E%3Ccircle%20cx='49'%20cy='20'%20r='6'%20fill='%23fbbf24'/%3E%3C/svg%3E">
+<!-- favicon / app icon: follows the active theme (swapped in applyTheme) -->
+<link rel="icon" type="image/png" sizes="64x64" href="assets/icon-light-64.png" id="favicon">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-light-32.png" id="favicon32">
+<link rel="apple-touch-icon" href="assets/icon-light-180.png" id="appleIcon">
 
 <!-- Structured data for search + AI crawlers -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Marginalia",
-  "alternateName": "Marginalia — Markdown annotation for AI review",
-  "description": "Free, single-file web app to annotate Markdown documents with inline notes and export a clean, structured context package for AI assistants like ChatGPT, Claude, and Gemini.",
-  "url": "https://ductienuit.github.io/marginalia/",
-  "image": "https://ductienuit.github.io/marginalia/og-image.png",
-  "screenshot": "https://ductienuit.github.io/marginalia/og-image.png",
+  "name": "mdeverything",
+  "alternateName": "mdeverything — Markdown reader, commenter and editor for AI review",
+  "description": "Free browser app to read, comment on and edit Markdown documents, then export a clean, structured context package for AI assistants like ChatGPT, Claude, and Gemini.",
+  "url": "https://ductienuit.github.io/mdeverything/",
+  "image": "https://ductienuit.github.io/mdeverything/og-image.png",
+  "screenshot": "https://ductienuit.github.io/mdeverything/og-image.png",
   "applicationCategory": "ProductivityApplication",
   "operatingSystem": "Any (modern web browser)",
   "browserRequirements": "Requires JavaScript",
@@ -56,10 +57,11 @@
   "inLanguage": "en",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "featureList": [
-    "Annotate Markdown documents with inline notes",
-    "Highlight any passage and attach a question, comment, or edit request",
-    "Export a structured context bundle (quote, section, surrounding context)",
-    "One-click copy for ChatGPT, Claude, Gemini, or coding assistants",
+    "Inline comments on any passage, with replies and resolve",
+    "Document outline with scroll-spy",
+    "Markdown editor with formatting toolbar and live preview",
+    "Paper, Sepia and Night reading themes",
+    "Export a structured context bundle (quote, section, context, replies) for AI assistants",
     "Renders Mermaid diagrams and GitHub-flavored Markdown",
     "Runs entirely client-side with no sign-up or upload"
   ]
@@ -1516,6 +1518,21 @@ mark.hl.hl-done:hover,mark.hl.hl-done.on{ background:var(--hl); }
 </style>
 
 <style>
+/* ==[BRAND]== mdeverything wordmark, rebuilt in CSS from the logo artwork so it stays
+   crisp at any size and follows the theme: "md" = accent, "everything" = ink, gold brush. */
+:root{ --logo-brush:rgba(247,201,72,.55); }
+body[data-theme="beige"]{ --logo-brush:rgba(222,172,62,.5); }
+body[data-theme="dark"]{ --logo-brush:rgba(212,158,42,.55); }
+.brand h1.logo{ position:relative; display:inline-flex; align-items:baseline; margin:0; isolation:isolate;
+  font-family:var(--font-ui); font-size:19px; letter-spacing:-.045em; line-height:1; color:var(--ink); white-space:nowrap; }
+.logo-md{ font-weight:800; color:var(--accent); }
+.logo-rest{ font-weight:500; color:var(--ink); }
+.logo::before{ content:""; position:absolute; z-index:-1; left:1.1em; top:.3em; width:3.2em; height:.6em;
+  background:linear-gradient(90deg,transparent 0,var(--logo-brush) 12%,var(--logo-brush) 86%,transparent 100%);
+  border-radius:45% 55% 50% 50%/60% 45% 55% 40%; transform:rotate(-7deg); filter:blur(.5px); }
+</style>
+
+<style>
 /* ==[W4 EDITOR]== owned by the editor workstream */
 /* Edit mode: the editor lives inside .sheet (outside #doc, so selections in it
    never trigger the "Add note" floater). Colors derive from the base tokens via
@@ -1655,7 +1672,7 @@ body.editing .mde{display:flex;flex-direction:column;border-radius:inherit;
 
 <header>
   <div class="brand">
-    <h1>Margin<em>alia</em></h1>
+    <h1 class="logo" aria-label="mdeverything"><span class="logo-md">md</span><span class="logo-rest">everything</span></h1>
     <span class="doc-label" id="docLabel">Sample document</span>
   </div>
   <div class="tools">
@@ -1774,6 +1791,8 @@ let activeId = null;
 let isHomeMode = true;
 let isSampleMode = true;
 let currentFileName = "Sample document";
+// Storage keys keep the original "marginalia:" prefix on purpose: the app moved from
+// /marginalia/ to /mdeverything/ on the same origin, so saved work carries over.
 const STORE_KEY = "marginalia:workspace:v1";
 
 const $ = s => document.querySelector(s);
@@ -2835,6 +2854,8 @@ function applyTheme(name){
   document.querySelectorAll("#themeSeg button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.themeSet===name?"true":"false"));
   const mc={light:"#f7f7f5",dark:"#1c1d21",beige:"#f2ebd6"}[name];
   const meta=document.querySelector('meta[name="theme-color"]'); if(meta) meta.setAttribute("content",mc);
+  const ico={light:"light",beige:"sepia",dark:"dark"}[name];
+  [["#favicon",64],["#favicon32",32],["#appleIcon",180]].forEach(([sel,sz])=>{ const l=document.querySelector(sel); if(l) l.href=`assets/icon-${ico}-${sz}.png`; });
   try{ localStorage.setItem(THEME_KEY,name); }catch(e){}
   if(mermaidReady) rethemeMermaid();   // only once diagrams exist; boot inits with the theme already set
 }

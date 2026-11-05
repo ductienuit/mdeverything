@@ -1,55 +1,63 @@
-# Marginalia
+<p align="center"><img src="assets/wordmark-light.png" alt="mdeverything" width="360"></p>
 
-**Annotate Markdown for AI review.** Marginalia is a free, single-file web app: load a
-Markdown document, highlight any passage, attach a note or question, then export a clean,
-structured context package to paste into ChatGPT, Claude, Gemini, or your coding assistant.
+**Read, comment on and edit Markdown — then hand it to your AI.** mdeverything is a free
+web app that runs entirely in your browser: open a Markdown document, leave inline comments
+on any passage, tweak the source in a built-in editor, then export a clean, structured
+context package for ChatGPT, Claude, Gemini, or your coding assistant.
 
-🔗 **Live app:** https://ductienuit.github.io/marginalia/
+🔗 **Live app:** https://ductienuit.github.io/mdeverything/
 
-![Marginalia — annotate Markdown, export context for AI](og-image.png)
+> Formerly **Marginalia** (`ductienuit.github.io/marginalia`). The old address now points
+> here, and work saved in your browser carries over automatically.
+
+![mdeverything — read, comment and edit Markdown for AI review](og-image.png)
 
 ## What it does
 
-You read a Markdown document inside Marginalia. When you select a passage, a margin note
-anchors right beside it (Google-Docs style). Each note can hold a question, comment, or
-edit request. When you're done, **Export for AI** copies a structured bundle that an
-assistant can act on:
+You read a Markdown document inside mdeverything. Select a passage and a comment box opens
+right there, Claude-artifact style. Each comment can hold a question, a request or a reply
+thread, and can be resolved when it's handled. When you're done, **Export for AI** copies a
+structured bundle an assistant can act on:
 
 - the exact **quoted passage**
 - its **section location** and a **line hint**
 - the **surrounding context** (so duplicate wording is never confused)
-- your **note / question**
+- your **comment**, its **replies**, and whether it's **resolved**
 
 ## Features
 
-- Inline, anchored annotations with a collision-free margin rail
-- Highlight any passage and attach a question, comment, or edit request
-- Three export modes: **full context**, **notes only**, or **raw Markdown**
-- Renders GitHub-flavored Markdown and **Mermaid** diagrams
-- Inline two-step delete confirm (no jarring popups)
+- **Inline comments** — select text or use the margin button to comment on a whole block;
+  hover to preview, click for the card with Edit · Resolve · Delete · Reply
+- **Comments panel** — optional side list (hidden by default) with a resolved filter
+- **Outline** — table of contents with scroll-spy; drawer on small screens
+- **Markdown editor** — formatting toolbar, shortcuts (Ctrl/Cmd+B · I · K), live preview;
+  comments re-anchor after you apply changes
+- **Three reading themes** — Paper, Sepia (cream paper + Merriweather), Night
+- Renders GitHub-flavored Markdown, wide tables and **Mermaid** diagrams
+- Export modes: **full context**, **notes only**, or **raw Markdown**
 - Keyboard accessible, responsive from mobile to desktop, `prefers-reduced-motion` aware
-- Drag-and-drop a `.md` / `.markdown` / `.txt` file, or paste Markdown directly
 
 ## Privacy
 
-Marginalia runs **entirely in your browser**. There is no server, no account, and no
-tracking. Your document and notes never leave your device. Third-party libraries
-(Markdown, sanitizer, diagrams) are loaded from a public CDN.
+mdeverything runs **entirely in your browser**. There is no server, no account and no
+tracking. Your document and comments never leave your device; they're saved in your
+browser's local storage. Third-party libraries (Markdown, sanitizer, diagrams) and fonts are
+loaded from public CDNs.
 
 ## Use it locally
 
-It's one file — no build step. Either:
+No build step. Either:
 
 - Open `index.html` directly in a browser, **or**
 - Serve the folder: `python -m http.server 8000` then visit `http://localhost:8000/`
 
 ## Tech
 
-A single `index.html` with vanilla JavaScript and CSS. Uses
+`index.html` with vanilla JavaScript and CSS, plus logo assets in `assets/`. Uses
 [marked](https://github.com/markedjs/marked) for Markdown,
-[DOMPurify](https://github.com/cure53/DOMPurify) for sanitization, and
+[DOMPurify](https://github.com/cure53/DOMPurify) for sanitization and
 [Mermaid](https://github.com/mermaid-js/mermaid) for diagrams (all via CDN).
-`make_og.py` regenerates the social preview image.
+`make_og.py` regenerates the social preview image from the logo assets.
 
 ## License
 
