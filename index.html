@@ -1426,6 +1426,137 @@ body.no-notes:not(.outline-hidden) .rail{grid-column:2}
 
 <style>
 /* ==[W4 EDITOR]== owned by the editor workstream */
+/* Edit mode: the editor lives inside .sheet (outside #doc, so selections in it
+   never trigger the "Add note" floater). Colors derive from the base tokens via
+   color-mix so every theme stays readable even before it defines --surface*. */
+body.editing main{grid-template-columns:minmax(0,1fr)!important;max-width:1440px;padding-bottom:28px!important}
+body.editing .rail,body.editing #outline,body.editing #home,
+body.editing #hlPop,body.editing #floater{display:none!important}
+body.editing .sheet>:not(.mde){display:none!important}
+body.editing .sheet{padding:0!important;overflow:visible!important;min-height:0}
+body.editing .sheet::before{display:none!important}
+body.editing .tools [aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+
+.mde{display:none}
+body.editing .mde{display:flex;flex-direction:column;border-radius:inherit;
+  --mde-bg:var(--paper);
+  --mde-subtle:color-mix(in srgb,var(--ink) 4%,var(--paper));
+  --mde-hover:color-mix(in srgb,var(--ink) 8%,var(--paper));
+  --mde-accent-soft:color-mix(in srgb,var(--accent) 16%,var(--paper));
+  --mde-head:color-mix(in srgb,var(--accent) 42%,var(--ink));
+  --mde-split-h:max(360px,calc(100vh - var(--mde-top,64px) - 158px));
+}
+@supports (height:100dvh){ body.editing .mde{--mde-split-h:max(360px,calc(100dvh - var(--mde-top,64px) - 158px))} }
+
+/* toolbar */
+.mde-bar{position:sticky;top:var(--mde-top,64px);z-index:20;display:flex;align-items:center;gap:10px;
+  padding:8px 10px 8px 12px;background:color-mix(in srgb,var(--paper) 94%,transparent);
+  backdrop-filter:saturate(150%) blur(10px);border-bottom:1px solid var(--line);
+  border-top-left-radius:inherit;border-top-right-radius:inherit}
+.mde-tools{display:flex;align-items:center;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin;padding:1px}
+.mde-sep{flex:none;width:1px;height:20px;background:var(--line);margin:0 5px}
+.mde-btn{flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;
+  padding:0;border:none;border-radius:8px;background:none;color:var(--ink-soft);
+  transition:background .12s,color .12s}
+.mde-btn:hover{background:var(--mde-hover);color:var(--ink)}
+.mde-btn:active{background:var(--mde-accent-soft);color:var(--accent)}
+.mde-btn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.mde-btn .ico{width:17px;height:17px}
+.mde-actions{flex:none;display:flex;align-items:center;gap:6px}
+.mde-actions .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;white-space:nowrap}
+.mde-actions .btn .ico{width:15px;height:15px}
+
+/* Write / Preview tabs (narrow screens only) */
+.mde-tabs{display:none;gap:2px;padding:4px 12px 0;border-bottom:1px solid var(--line);background:var(--mde-bg)}
+.mde-tab{border:none;background:none;padding:9px 14px 8px;margin-bottom:-1px;font-size:13px;font-weight:600;
+  color:var(--ink-soft);border-bottom:2px solid transparent;border-radius:6px 6px 0 0}
+.mde-tab:hover{color:var(--ink)}
+.mde-tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.mde-tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* split view */
+.mde-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);height:var(--mde-split-h)}
+.mde-pane{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--mde-bg)}
+.mde-pane-write{border-right:1px solid var(--line)}
+.mde-phead{flex:none;padding:6px 18px;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-faint);background:var(--mde-subtle);border-bottom:1px solid var(--line);transition:color .12s}
+.mde-pane-write:focus-within .mde-phead{color:var(--accent)}
+.mde-ta{flex:1;min-height:0;width:100%;margin:0;padding:18px 22px 48px;border:none;outline:none;resize:none;
+  font-family:var(--font-mono);font-size:13.5px;line-height:1.75;tab-size:2;-moz-tab-size:2;
+  color:var(--ink);background:var(--mde-bg);caret-color:var(--accent)}
+.mde-ta::selection{background:color-mix(in srgb,var(--accent) 26%,transparent)}
+.mde-ta::placeholder{color:var(--ink-faint)}
+.mde-preview{flex:1;min-height:0;overflow:auto;padding:24px 32px 56px;background:var(--mde-bg);outline:none}
+.mde-preview:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}
+
+/* footer / status */
+.mde-foot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:8px 14px;
+  border-top:1px solid var(--line);background:var(--mde-subtle);color:var(--ink-soft);font-size:12px;
+  font-variant-numeric:tabular-nums;border-bottom-left-radius:inherit;border-bottom-right-radius:inherit}
+.mde-dirty{display:inline-flex;align-items:center;gap:6px}
+.mde-dirty::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ink-faint);opacity:.6}
+.mde-dirty.on{color:var(--ink);font-weight:600}
+.mde-dirty.on::before{background:var(--accent);opacity:1}
+.mde-hint{margin-left:auto;color:var(--ink-faint)}
+.mde-hint kbd{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);background:var(--mde-bg);
+  border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:4px;padding:0 4px}
+
+/* live preview typography (mirrors #doc, token-only) */
+.mde-doc{font-family:var(--font-doc);font-size:15.5px;line-height:1.68;color:var(--ink);word-wrap:break-word}
+.mde-doc>:first-child{margin-top:0}
+.mde-doc h1,.mde-doc h2,.mde-doc h3,.mde-doc h4{color:var(--mde-head);line-height:1.3}
+.mde-doc h1{font-size:28px;margin:0 0 14px;padding-bottom:12px;border-bottom:3px solid var(--accent)}
+.mde-doc h2{font-size:21px;margin:34px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+.mde-doc h3{font-size:16.5px;margin:22px 0 6px;padding:3px 0 3px 10px;border-left:4px solid var(--accent);
+  border-radius:0 8px 8px 0;background:linear-gradient(90deg,var(--mde-accent-soft),transparent)}
+.mde-doc h4{font-size:14.5px;margin:16px 0 4px}
+.mde-doc p{margin:8px 0}
+.mde-doc ul,.mde-doc ol{margin:8px 0;padding-left:26px}
+.mde-doc li{margin:4px 0}
+.mde-doc li>input[type="checkbox"]{margin:0 6px 0 -2px;vertical-align:-1px}
+.mde-doc a{color:var(--accent);text-decoration:none}
+.mde-doc a:hover{text-decoration:underline}
+.mde-doc strong{font-weight:700}
+.mde-doc code{font-family:var(--font-mono);font-size:.82em;background:var(--mde-subtle);
+  border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--mde-head)}
+.mde-doc pre{background:var(--mde-subtle);border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+  overflow:auto;font-size:13px;line-height:1.55}
+.mde-doc pre code{background:none;border:none;padding:0;color:var(--ink);font-size:13px}
+.mde-doc blockquote{margin:10px 0;padding:8px 14px;border-left:4px solid color-mix(in srgb,var(--accent) 40%,transparent);
+  background:var(--mde-subtle);border-radius:10px;color:var(--ink-soft)}
+.mde-doc .mde-tscroll{overflow-x:auto;margin:12px 0}
+.mde-doc table{border-collapse:collapse;width:100%;font-size:13.5px}
+.mde-doc th,.mde-doc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.mde-doc th{background:var(--mde-accent-soft);color:var(--mde-head);font-weight:600}
+.mde-doc tr:nth-child(even) td{background:var(--mde-subtle)}
+.mde-doc hr{border:none;border-top:1px solid var(--line);margin:22px 0}
+.mde-doc img{max-width:100%;border-radius:6px}
+.mde-doc .mde-empty{color:var(--ink-faint);font-style:italic}
+.mde-mmd{margin:14px 0;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--mde-subtle);
+  overflow:auto;text-align:center}
+.mde-mmd svg{max-width:100%;height:auto}
+.mde-mmd-msg{padding:14px;font-family:var(--font-ui);font-size:12.5px;color:var(--ink-faint)}
+.mde-mmd.err{text-align:left}
+.mde-mmd.err .mde-mmd-msg{padding:0 0 8px;color:var(--danger);font-weight:600}
+
+@media (max-width:899.98px){
+  body.editing .mde{--mde-split-h:max(320px,calc(100vh - var(--mde-top,56px) - 186px))}
+  @supports (height:100dvh){ body.editing .mde{--mde-split-h:max(320px,calc(100dvh - var(--mde-top,56px) - 186px))} }
+  .mde-tabs{display:flex}
+  .mde-phead,.mde-hint{display:none}
+  .mde-split{grid-template-columns:minmax(0,1fr)}
+  .mde-pane-write{border-right:none}
+  .mde[data-tab="write"] .mde-pane-preview,.mde[data-tab="preview"] .mde-pane-write{display:none}
+  .mde-ta{padding:16px 16px 40px}
+  .mde-preview{padding:18px 18px 40px}
+  .mde-bar{gap:8px;padding:6px 8px}
+}
+@media (max-width:600px){
+  .mde-ta{font-size:16px;line-height:1.65}   /* >=16px stops iOS zoom-on-focus */
+  .mde-actions .btn{padding:7px 10px}
+  .mde-doc{font-size:15px}
+  .mde-doc h1{font-size:24px}
+}
 /* ==[/W4]== */
 </style>
 </head>
@@ -2706,6 +2837,568 @@ function refreshGutter(){}
 /* ==[/W3]== */
 
 /* ==[W4 EDITOR]== owned by the editor workstream (also wires #bEdit) */
+/* Markdown source editor: toolbar + textarea + debounced live preview. It renders
+   into its own .mde element inside .sheet (never into #doc), and on "Done" writes
+   SRC and calls renderDoc() so comments re-anchor by quote. All text edits go
+   through mdeReplace() → execCommand("insertText") so native undo keeps working. */
+const MDE_DRAFT_KEY = "marginalia:editor-draft:v1";
+const mdeIsMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent || "");
+const mdeMod = mdeIsMac ? "⌘" : "Ctrl+";
+let mde = null;                 // built DOM refs, created once on first open
+let mdeBase = "";               // SRC when the editing session started
+let mdeScrollY = 0;
+let mdePreviewT = null, mdeDraftT = null;
+let mdeTabEscape = false;       // Esc then Tab lets keyboard users leave the textarea
+const mdeMmdCache = new Map();  // theme+source → {svg}|{err}
+let mdeMmdQueue = Promise.resolve();
+const MDE_BLOCKED = "#bOpenMd,#bSource,#bCopy,#bCopyOpts,#bOutline,#bToggleRail";
+
+const mdeSvg = d => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+const MDE_ICON = {
+  undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+  redo:'<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',
+  bold:'<path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7a3.5 3.5 0 0 1 0 7H7z" stroke-width="2.2"/>',
+  italic:'<path d="M11 5h7M6 19h7M14.5 5l-5 14"/>',
+  strike:'<path d="M4 12h16"/><path d="M16.5 7.5C16 6 14.4 5 12.2 5 9.7 5 8 6.3 8 8.1c0 1.3.8 2.3 2.4 2.9M8 16c.5 1.8 2.2 3 4.4 3 2.6 0 4.3-1.4 4.3-3.3 0-.6-.1-1.1-.4-1.6"/>',
+  h1:'<path d="M4 6v12M12 6v12M4 12h8"/><path d="m16.5 10 3-2v10"/>',
+  h2:'<path d="M4 6v12M12 6v12M4 12h8"/><path d="M16 10.2a2.1 2.1 0 1 1 4.1.6c-.4 1.2-4.1 3.9-4.1 7.2h4.4"/>',
+  h3:'<path d="M4 6v12M12 6v12M4 12h8"/><path d="M16 8h4.2l-2.6 3.6a2.6 2.6 0 1 1-1.9 4.5"/>',
+  ul:'<path d="M9.5 6H20M9.5 12H20M9.5 18H20"/><circle cx="4.8" cy="6" r="1.1" fill="currentColor" stroke="none"/><circle cx="4.8" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="4.8" cy="18" r="1.1" fill="currentColor" stroke="none"/>',
+  ol:'<path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 4.5 5.5 4v4.5M3.8 14.2a1.4 1.4 0 1 1 2.4 1L3.8 18h2.6" stroke-width="1.5"/>',
+  task:'<rect x="3.5" y="4.5" width="6" height="6" rx="1.5"/><path d="m5 7.6 1.2 1.2L8.3 6.4M13 7.5h8M13 16.5h8"/><rect x="3.5" y="13.5" width="6" height="6" rx="1.5"/>',
+  quote:'<path d="M5 5v14M9.5 8H20M9.5 12H20M9.5 16h7"/>',
+  code:'<path d="m8 8-4 4 4 4M16 8l4 4-4 4"/>',
+  codeblock:'<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="m10 10-2 2 2 2M14 10l2 2-2 2"/>',
+  link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.4 1.4M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.4-1.4"/>',
+  table:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M3 14.5h18M12 5v14"/>',
+  hr:'<path d="M3.5 12h17"/><path d="M8 7h8M8 17h8" opacity=".45"/>',
+  check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>'
+};
+// [action, label, shortcut]
+const MDE_TOOLS = [
+  ["undo","Undo",mdeMod+"Z"], ["redo","Redo",mdeIsMac?"⇧⌘Z":"Ctrl+Y"], "|",
+  ["bold","Bold",mdeMod+"B"], ["italic","Italic",mdeMod+"I"], ["strike","Strikethrough"], "|",
+  ["h1","Heading 1"], ["h2","Heading 2"], ["h3","Heading 3"], "|",
+  ["ul","Bulleted list"], ["ol","Numbered list"], ["task","Task list"], ["quote","Quote"], "|",
+  ["code","Inline code"], ["codeblock","Code block"], ["link","Link",mdeMod+"K"], ["table","Insert table"], ["hr","Horizontal rule"]
+];
+
+const mdeIsOpen = () => document.body.classList.contains("editing");
+const mdeIsDirty = () => !!mde && mde.ta.value !== mdeBase;
+const mdeNarrow = () => window.matchMedia("(max-width:899.98px)").matches;
+
+function mdeBuild(){
+  if(mde) return mde;
+  const sheet = document.querySelector("main .sheet");
+  const root = document.createElement("div");
+  root.className = "mde"; root.dataset.tab = "write";
+  root.setAttribute("role","region"); root.setAttribute("aria-label","Markdown editor");
+  const tools = MDE_TOOLS.map(t => t==="|" ? '<span class="mde-sep" aria-hidden="true"></span>' :
+    `<button type="button" class="mde-btn" data-act="${t[0]}" title="${t[1]}${t[2]?` (${t[2]})`:""}" aria-label="${t[1]}">${mdeSvg(MDE_ICON[t[0]])}</button>`).join("");
+  root.innerHTML = `
+    <div class="mde-bar">
+      <div class="mde-tools" role="toolbar" aria-label="Formatting" aria-controls="mdeTa">${tools}</div>
+      <div class="mde-actions">
+        <button type="button" class="btn" data-act="discard" title="Discard changes and return to the document">Discard</button>
+        <button type="button" class="btn primary" data-act="apply" title="Apply changes (${mdeMod}Enter)">${mdeSvg(MDE_ICON.check)}<span>Done</span></button>
+      </div>
+    </div>
+    <div class="mde-tabs" role="tablist" aria-label="Editor view">
+      <button type="button" class="mde-tab" role="tab" id="mdeTabWrite" data-tab="write" aria-controls="mdePaneWrite" aria-selected="true">Write</button>
+      <button type="button" class="mde-tab" role="tab" id="mdeTabPreview" data-tab="preview" aria-controls="mdePanePreview" aria-selected="false" tabindex="-1">Preview</button>
+    </div>
+    <div class="mde-split">
+      <div class="mde-pane mde-pane-write" id="mdePaneWrite" role="tabpanel" aria-labelledby="mdeTabWrite">
+        <div class="mde-phead" aria-hidden="true">Markdown</div>
+        <textarea class="mde-ta" id="mdeTa" spellcheck="true" autocapitalize="off" autocomplete="off"
+          aria-label="Markdown source" aria-describedby="mdeHint" placeholder="Write Markdown…"></textarea>
+      </div>
+      <div class="mde-pane mde-pane-preview" id="mdePanePreview" role="tabpanel" aria-labelledby="mdeTabPreview">
+        <div class="mde-phead" aria-hidden="true">Preview</div>
+        <div class="mde-preview" tabindex="0" aria-label="Live preview"><div class="mde-doc"></div></div>
+      </div>
+    </div>
+    <div class="mde-foot">
+      <span class="mde-count"></span>
+      <span class="mde-dirty" aria-live="polite"></span>
+      <span class="mde-hint" id="mdeHint"><kbd>${mdeMod}Enter</kbd> apply · <kbd>Esc</kbd> then <kbd>Tab</kbd> leaves the editor</span>
+    </div>`;
+  sheet.appendChild(root);
+  mde = {
+    root, ta: root.querySelector(".mde-ta"), preview: root.querySelector(".mde-preview"),
+    out: root.querySelector(".mde-doc"), count: root.querySelector(".mde-count"),
+    dirty: root.querySelector(".mde-dirty"), tabs: [...root.querySelectorAll(".mde-tab")],
+    tools: root.querySelector(".mde-tools")
+  };
+  const { ta, tools: bar } = mde;
+
+  // toolbar: keep the textarea's focus + selection while clicking
+  bar.addEventListener("mousedown", e => { if(e.target.closest(".mde-btn")) e.preventDefault(); });
+  bar.addEventListener("click", e => { const b = e.target.closest(".mde-btn"); if(b) mdeAction(b.dataset.act); });
+  bar.addEventListener("keydown", e => {   // arrow-key navigation inside the toolbar
+    if(!["ArrowLeft","ArrowRight","Home","End"].includes(e.key)) return;
+    const btns = [...bar.querySelectorAll(".mde-btn")];
+    let i = btns.indexOf(document.activeElement); if(i < 0) return;
+    e.preventDefault();
+    i = e.key==="Home" ? 0 : e.key==="End" ? btns.length-1
+      : (i + (e.key==="ArrowRight" ? 1 : -1) + btns.length) % btns.length;
+    btns[i].focus();
+  });
+  root.querySelector('[data-act="apply"]').addEventListener("click", mdeApply);
+  root.querySelector('[data-act="discard"]').addEventListener("click", mdeDiscard);
+  mde.tabs.forEach(t => {
+    t.addEventListener("click", () => mdeSetTab(t.dataset.tab, true));
+    t.addEventListener("keydown", e => {
+      if(e.key==="ArrowLeft" || e.key==="ArrowRight"){ e.preventDefault(); mdeSetTab(t.dataset.tab==="write" ? "preview" : "write", true); }
+    });
+  });
+  ta.addEventListener("input", () => {
+    clearTimeout(mdePreviewT); mdePreviewT = setTimeout(mdeRenderPreview, 200);
+    clearTimeout(mdeDraftT);   mdeDraftT = setTimeout(mdeSaveDraft, 600);
+    mdeUpdateStatus();
+  });
+  ta.addEventListener("keydown", mdeKeydown);
+  ta.addEventListener("scroll", () => {   // proportional scroll sync in split view
+    if(mdeNarrow()) return;
+    const max = ta.scrollHeight - ta.clientHeight, p = mde.preview;
+    p.scrollTop = max > 0 ? (ta.scrollTop / max) * (p.scrollHeight - p.clientHeight) : 0;
+  }, { passive:true });
+  root.addEventListener("keydown", e => {
+    if((e.ctrlKey || e.metaKey) && e.key==="Enter"){ e.preventDefault(); mdeApply(); }
+  });
+  mde.preview.addEventListener("click", e => {   // never navigate the app away from a preview link
+    const a = e.target.closest && e.target.closest("a[href]"); if(!a) return;
+    e.preventDefault();
+    const h = a.getAttribute("href") || "";
+    if(/^https?:\/\//i.test(h)) window.open(h, "_blank", "noopener");
+  });
+  return mde;
+}
+
+/* ---------- open / apply / discard ---------- */
+function mdeSyncButton(on){
+  const b = $("#bEdit"); if(!b) return;
+  b.setAttribute("aria-pressed", on ? "true" : "false");
+  b.title = on ? `Finish editing and apply changes (${mdeMod}Enter)` : "Edit Markdown source with live preview";
+  const t = b.querySelector(".b-txt"); if(t) t.textContent = on ? "Editing" : "Edit";
+  document.querySelectorAll(MDE_BLOCKED).forEach(x => {
+    if(on) x.setAttribute("aria-disabled","true"); else x.removeAttribute("aria-disabled");
+  });
+}
+function mdeUpdateTop(){
+  if(!mde) return;
+  const h = document.querySelector("header");
+  mde.root.style.setProperty("--mde-top", (h ? h.offsetHeight : 64) + "px");
+}
+function mdeOpen(){
+  if(mdeIsOpen()) return;
+  const m = mdeBuild();
+  hideFloater(); hideHlPop(true);
+  mdeScrollY = window.scrollY;
+  mdeBase = SRC;
+  let text = SRC, restored = false;
+  const d = mdeLoadDraft();
+  if(d && d.base === mdeHash(SRC) && typeof d.text === "string" && d.text !== SRC){ text = d.text; restored = true; }
+  m.ta.value = text;
+  document.body.classList.add("editing");
+  mdeSyncButton(true);
+  mdeUpdateTop();
+  mdeSetTab("write", false);
+  mdeRenderPreview(); mdeUpdateStatus();
+  window.scrollTo(0, 0);
+  m.ta.setSelectionRange(0, 0); m.ta.scrollTop = 0; m.preview.scrollTop = 0;
+  focusWithoutScrolling(m.ta);
+  if(restored) toast("Restored your unsaved draft");
+}
+function mdeClose(){
+  clearTimeout(mdePreviewT); clearTimeout(mdeDraftT);
+  document.body.classList.remove("editing");
+  mdeSyncButton(false);
+}
+function mdeRestoreView(){
+  requestAnimationFrame(() => { window.scrollTo(0, mdeScrollY); layoutCards(); });
+  focusWithoutScrolling($("#bEdit"));
+}
+function mdeApply(){
+  if(!mdeIsOpen()) return;
+  const text = mde.ta.value, changed = text !== mdeBase;
+  mdeClearDraft();
+  mdeClose();
+  if(!changed){ mdeRestoreView(); toast("No changes to apply"); return; }
+  const wasAnchored = new Set(ANN.filter(a => a.resolved !== false).map(a => a.id));
+  SRC = text;
+  if(isHomeMode || isSampleMode){
+    setWorkspaceMode({ home:false, sample:false,
+      fileName: (!isSampleMode && currentFileName) || "Edited document" });
+  }
+  renderDoc();   // re-anchors every comment by its quote + context
+  const lost = ANN.filter(a => a.resolved === false && wasAnchored.has(a.id)).length;
+  const back = ANN.filter(a => a.resolved !== false && !wasAnchored.has(a.id)).length;
+  let msg = "Changes applied";
+  if(lost) msg += ` · ${lost} comment${lost>1?"s":""} lost ${lost>1?"their":"its"} anchor`;
+  if(back) msg += ` · ${back} comment${back>1?"s":""} re-anchored`;
+  toast(msg);
+  mdeRestoreView();
+}
+async function mdeDiscard(){
+  if(!mdeIsOpen()) return;
+  const dirty = mdeIsDirty();
+  if(dirty){
+    const ok = await askConfirm({
+      title:"Discard your edits?",
+      message:"Your changes to the Markdown source will be lost.",
+      note:"The document and its comments stay exactly as they were before you started editing.",
+      confirmText:"Discard edits", cancelText:"Keep editing"
+    });
+    if(!ok){ focusWithoutScrolling(mde.ta); return; }
+  }
+  mdeClearDraft();
+  mdeClose();
+  mdeRestoreView();
+  if(dirty) toast("Edits discarded");
+}
+function mdeSetTab(tab, focus){
+  if(!mde) return;
+  mde.root.dataset.tab = tab;
+  mde.tabs.forEach(b => {
+    const on = b.dataset.tab === tab;
+    b.setAttribute("aria-selected", on ? "true" : "false");
+    b.tabIndex = on ? 0 : -1;
+  });
+  if(tab === "preview"){ clearTimeout(mdePreviewT); mdeRenderPreview(); }
+  if(focus) mde.tabs.find(b => b.dataset.tab === tab).focus({ preventScroll:true });
+}
+
+/* ---------- status, preview, draft ---------- */
+function mdeUpdateStatus(){
+  const v = mde.ta.value;
+  const w = (v.match(/[\p{L}\p{N}][\p{L}\p{N}'’_-]*/gu) || []).length;
+  mde.count.textContent = `${w.toLocaleString()} word${w===1?"":"s"} · ${v.length.toLocaleString()} character${v.length===1?"":"s"}`;
+  const dirty = mdeIsDirty();
+  if(!mde.dirty.textContent || mde.dirty.classList.contains("on") !== dirty){   // only touch the live region on change
+    mde.dirty.classList.toggle("on", dirty);
+    mde.dirty.textContent = dirty ? "Unsaved changes" : "No changes";
+  }
+}
+function mdeRenderPreview(){
+  if(!mde) return;
+  const out = mde.out, v = mde.ta.value;
+  if(!v.trim()){ out.innerHTML = '<p class="mde-empty">Nothing to preview yet.</p>'; return; }
+  out.innerHTML = mdToHtml(v);
+  out.querySelectorAll("table").forEach(t => {
+    const w = document.createElement("div"); w.className = "mde-tscroll";
+    t.replaceWith(w); w.appendChild(t);
+  });
+  out.querySelectorAll("code.language-mermaid, code.lang-mermaid").forEach(code => {
+    const host = code.closest("pre") || code, src = code.textContent;
+    const box = document.createElement("div"); box.className = "mde-mmd";
+    host.replaceWith(box);
+    mdeFillMermaid(box, src);
+  });
+}
+function mdePaintMermaid(box, res, src){
+  box.classList.remove("pending");
+  if(res.svg){ box.innerHTML = res.svg; return; }
+  box.classList.add("err");
+  box.innerHTML = '<div class="mde-mmd-msg">Diagram didn’t parse — showing source.</div><pre><code>' + esc(src) + '</code></pre>';
+}
+function mdeFillMermaid(box, src){
+  const key = (document.body.dataset.theme || "light") + "\n" + src;
+  const hit = mdeMmdCache.get(key);
+  if(hit){ mdePaintMermaid(box, hit, src); return; }
+  if(!window.mermaid){ mdePaintMermaid(box, { err:true }, src); return; }
+  box.classList.add("pending"); box.dataset.key = key;
+  box.innerHTML = '<div class="mde-mmd-msg">Rendering diagram…</div>';
+  // render one diagram at a time; skip work for previews that were already replaced
+  mdeMmdQueue = mdeMmdQueue.then(async () => {
+    const waiting = () => mde ? [...mde.out.querySelectorAll(".mde-mmd.pending")].filter(b => b.dataset.key === key) : [];
+    if(!waiting().length) return;
+    let res = mdeMmdCache.get(key);
+    if(!res){
+      const id = "mdemmd" + Math.random().toString(36).slice(2);
+      try{ initMermaid(); const { svg } = await mermaid.render(id, src); res = { svg }; }
+      catch(e){ res = { err:true }; const junk = document.getElementById("d" + id); if(junk) junk.remove(); }
+      mdeMmdCache.set(key, res);
+      if(mdeMmdCache.size > 40) mdeMmdCache.delete(mdeMmdCache.keys().next().value);
+    }
+    waiting().forEach(b => mdePaintMermaid(b, res, src));
+  }).catch(() => {});
+}
+function mdeHash(s){
+  let h = 5381;
+  for(let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36) + ":" + s.length;
+}
+function mdeSaveDraft(){
+  if(!mde || !mdeIsOpen()) return;
+  try{
+    if(mdeIsDirty()) localStorage.setItem(MDE_DRAFT_KEY, JSON.stringify({ base:mdeHash(mdeBase), text:mde.ta.value, t:Date.now() }));
+    else localStorage.removeItem(MDE_DRAFT_KEY);
+  }catch(e){}
+}
+function mdeLoadDraft(){ try{ const r = localStorage.getItem(MDE_DRAFT_KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function mdeClearDraft(){ clearTimeout(mdeDraftT); try{ localStorage.removeItem(MDE_DRAFT_KEY); }catch(e){} }
+
+/* ---------- text editing primitives ---------- */
+// Replace [start,end) with text, keeping the browser's undo stack, then select [selS,selE).
+function mdeReplace(start, end, text, selS, selE){
+  const ta = mde.ta, before = ta.value;
+  const expected = before.slice(0, start) + text + before.slice(end);
+  ta.focus({ preventScroll:true });
+  ta.setSelectionRange(start, end);
+  let ok = false;
+  try{ ok = document.execCommand("insertText", false, text); }catch(e){}
+  if(!ok || ta.value !== expected){
+    if(ta.value === before) ta.setRangeText(text, start, end, "end");
+    else ta.value = expected;
+    ta.dispatchEvent(new Event("input", { bubbles:true }));
+  }
+  ta.setSelectionRange(selS, selE == null ? selS : selE);
+}
+// [lineStart, lineEnd) covering every line touched by the selection
+function mdeLineRange(v, s, e){
+  const ls = v.lastIndexOf("\n", s - 1) + 1;
+  const endPos = (e > s && v[e - 1] === "\n") ? e - 1 : e;
+  let le = v.indexOf("\n", endPos); if(le === -1) le = v.length;
+  return [ls, le];
+}
+// apply fn(lines[]) → lines[] to the selected lines
+function mdeLines(fn){
+  const ta = mde.ta, v = ta.value, s = ta.selectionStart, e = ta.selectionEnd;
+  const [ls, le] = mdeLineRange(v, s, e);
+  const old = v.slice(ls, le), out = fn(old.split("\n")).join("\n");
+  if(out === old) return;
+  if(s === e){
+    const c = Math.min(ls + out.length, Math.max(ls, s + out.length - old.length));
+    mdeReplace(ls, le, out, c, c);
+  } else mdeReplace(ls, le, out, ls, ls + out.length);
+}
+const MDE_RX_TASK = /^(\s*)[-*+]\s+\[[ xX]\](?:\s+|$)/;
+const MDE_RX_OL = /^(\s*)\d+[.)]\s+/;
+const MDE_RX_UL = /^(\s*)[-*+]\s+/;
+const MDE_RX_PREFIX = /^(#{1,6}\s+|>\s*|[-*+]\s+\[[ xX]\]\s+|[-*+]\s+|\d+[.)]\s+)/;
+function mdeStripList(l){
+  for(const rx of [MDE_RX_TASK, MDE_RX_OL, MDE_RX_UL]){
+    const m = l.match(rx); if(m) return m[1] + l.slice(m[0].length);
+  }
+  return l;
+}
+function mdeHeading(level){
+  mdeLines(lines => {
+    const ne = lines.filter(l => l.trim());
+    const lvl = l => { const m = l.match(/^(#{1,6})(\s|$)/); return m ? m[1].length : 0; };
+    const all = ne.length && ne.every(l => lvl(l) === level);
+    return lines.map(l => {
+      if(!l.trim() && ne.length) return l;
+      const body = l.replace(/^#{1,6}(\s+|$)/, "");
+      return all ? body : "#".repeat(level) + " " + body;
+    });
+  });
+}
+function mdeList(kind){
+  mdeLines(lines => {
+    let idx = lines.map((l, i) => l.trim() ? i : -1).filter(i => i >= 0);
+    if(!idx.length) idx = lines.map((_, i) => i);
+    const is = l => kind==="task" ? MDE_RX_TASK.test(l) : kind==="ol" ? MDE_RX_OL.test(l)
+                  : (MDE_RX_UL.test(l) && !MDE_RX_TASK.test(l));
+    const all = idx.every(i => is(lines[i]) );
+    const set = new Set(idx);
+    let n = 0;
+    return lines.map((l, i) => {
+      if(!set.has(i)) return l;
+      const stripped = mdeStripList(l);
+      if(all) return stripped;
+      const ind = stripped.match(/^\s*/)[0], body = stripped.slice(ind.length);
+      n++;
+      return ind + (kind==="ul" ? "- " : kind==="task" ? "- [ ] " : n + ". ") + body;
+    });
+  });
+}
+function mdeQuote(){
+  mdeLines(lines => {
+    const ne = lines.filter(l => l.trim());
+    const all = ne.length && ne.every(l => /^\s*>/.test(l));
+    return lines.map(l => all ? l.replace(/^(\s*)>\s?/, "$1")
+                              : (l.trim() ? "> " + l : (ne.length ? ">" : "> ")));
+  });
+}
+function mdeRun(str, ch, fromEnd){
+  let n = 0;
+  if(fromEnd){ for(let i = str.length - 1; i >= 0 && str[i] === ch; i--) n++; }
+  else { for(let i = 0; i < str.length && str[i] === ch; i++) n++; }
+  return n;
+}
+// does str start AND end with the marker? ("*" must not be half of "**")
+function mdeIsWrapped(str, ch, w){
+  if(str.length <= 2 * w) return false;
+  const L = mdeRun(str, ch, false), R = mdeRun(str, ch, true);
+  if(L < w || R < w || L === str.length) return false;
+  return w === 2 || Math.min(L, R) % 2 === 1;
+}
+// toggle an inline marker (**, *, ~~, `) around the selection
+function mdeInline(mk, ph){
+  const ta = mde.ta, v = ta.value, ch = mk[0], w = mk.length;
+  let s = ta.selectionStart, e = ta.selectionEnd;
+  const sel = v.slice(s, e);
+  if(sel.includes("\n")){   // multi-line: wrap/unwrap each non-empty line on its own
+    const parts = sel.split("\n").map(l => {
+      const lead = l.match(/^\s*/)[0], core = l.trim(), trail = l.slice(lead.length + core.length);
+      const pm = core.match(MDE_RX_PREFIX), pre = pm ? pm[0] : "";
+      return { l, lead, pre, body: core.slice(pre.length), trail };
+    });
+    const ne = parts.filter(p => p.body);
+    const all = ne.length && ne.every(p => mdeIsWrapped(p.body, ch, w));
+    const out = parts.map(p => !p.body ? p.l
+      : p.lead + p.pre + (all ? p.body.slice(w, -w) : mk + p.body + mk) + p.trail).join("\n");
+    mdeReplace(s, e, out, s, s + out.length);
+    return;
+  }
+  while(s < e && /\s/.test(v[s])) s++;          // keep edge spaces outside the markers
+  while(e > s && /\s/.test(v[e - 1])) e--;
+  if(s === e){                                  // caret inside a word → use that word
+    const isW = c => c && /[\p{L}\p{N}_]/u.test(c);
+    while(s > 0 && isW(v[s - 1])) s--;
+    while(e < v.length && isW(v[e])) e++;
+  } else if(s === v.lastIndexOf("\n", s - 1) + 1){   // whole line: keep "- ", "## " … outside
+    const pm = v.slice(s, e).match(MDE_RX_PREFIX);
+    if(pm && pm[0].length < e - s) s += pm[0].length;
+  }
+  const core = v.slice(s, e);
+  if(core && mdeIsWrapped(core, ch, w)){        // selection includes the markers
+    const inner = core.slice(w, -w);
+    mdeReplace(s, e, inner, s, s + inner.length); return;
+  }
+  const L = mdeRun(v.slice(0, s), ch, true), R = mdeRun(v.slice(e), ch, false);
+  if(Math.min(L, R) >= w && (w === 2 || Math.min(L, R) % 2 === 1)){   // markers just outside
+    mdeReplace(s - w, e + w, core, s - w, s - w + core.length); return;
+  }
+  if(!core){ mdeReplace(s, e, mk + ph + mk, s + w, s + w + ph.length); return; }
+  mdeReplace(s, e, mk + core + mk, s + w, s + w + core.length);
+}
+function mdeLink(){
+  const ta = mde.ta, v = ta.value;
+  let s = ta.selectionStart, e = ta.selectionEnd;
+  while(s < e && /\s/.test(v[s])) s++;
+  while(e > s && /\s/.test(v[e - 1])) e--;
+  const core = v.slice(s, e);
+  const m = core.match(/^\[([^\]]*)\]\([^)]*\)$/);
+  if(m){ mdeReplace(s, e, m[1], s, s + m[1].length); return; }     // toggle off
+  if(!core){ const t = "[link text](https://)"; mdeReplace(s, e, t, s + 1, s + 10); return; }
+  if(/^(https?:\/\/|www\.)\S+$/i.test(core)){
+    const t = `[link text](${core})`; mdeReplace(s, e, t, s + 1, s + 10); return;
+  }
+  const t = `[${core}](https://)`, u = s + core.length + 3;
+  mdeReplace(s, e, t, u, u + 8);   // select the URL placeholder so typing replaces it
+}
+// insert a block on its own lines with blank lines around it; sel offsets are relative to text (null = after it)
+function mdeInsertBlock(text, selS, selE){
+  const ta = mde.ta, v = ta.value;
+  const [ls, le] = mdeLineRange(v, ta.selectionEnd, ta.selectionEnd);
+  const emptyLine = !v.slice(ls, le).trim();
+  const from = emptyLine ? ls : le, to = le;   // an empty/whitespace line is replaced
+  const before = v.slice(0, from), after = v.slice(to);
+  const lead = !before ? "" : before.endsWith("\n\n") ? "" : before.endsWith("\n") ? "\n" : "\n\n";
+  const trail = !after ? "\n" : after.startsWith("\n\n") ? "" : after.startsWith("\n") ? "\n" : "\n\n";
+  const base = from + lead.length;
+  if(selS == null){ const c = base + text.length + trail.length; mdeReplace(from, to, lead + text + trail, c, c); }
+  else mdeReplace(from, to, lead + text + trail, base + selS, base + selE);
+}
+function mdeCodeBlock(){
+  const ta = mde.ta, v = ta.value, s = ta.selectionStart, e = ta.selectionEnd;
+  if(s === e){ mdeInsertBlock("```\ncode\n```", 4, 8); return; }
+  const [ls, le] = mdeLineRange(v, s, e), block = v.slice(ls, le);
+  const m = block.match(/^```[^\n]*\n([\s\S]*?)\n?```\s*$/);
+  if(m){ mdeReplace(ls, le, m[1], ls, ls + m[1].length); return; }  // toggle off
+  mdeReplace(ls, le, "```\n" + block + "\n```", ls + 4, ls + 4 + block.length);
+}
+function mdeIndent(outdent){
+  const ta = mde.ta, s = ta.selectionStart, e = ta.selectionEnd;
+  if(!outdent && s === e){ mdeReplace(s, e, "  ", s + 2); return; }
+  mdeLines(lines => lines.map(l => outdent ? l.replace(/^( {1,2}|\t)/, "") : (l.trim() ? "  " + l : l)));
+}
+// Enter inside a list / quote continues it; Enter on an empty item ends it
+function mdeContinueList(){
+  const ta = mde.ta, v = ta.value, s = ta.selectionStart;
+  if(s !== ta.selectionEnd) return false;
+  const ls = v.lastIndexOf("\n", s - 1) + 1;
+  if(((v.slice(0, ls).match(/^\s*```/gm) || []).length) % 2) return false;   // inside a code fence
+  let le = v.indexOf("\n", s); if(le === -1) le = v.length;
+  const line = v.slice(ls, s);
+  let m, next;
+  if((m = line.match(/^(\s*)([-*+])\s+\[[ xX]\]\s+/))) next = m[1] + m[2] + " [ ] ";
+  else if((m = line.match(/^(\s*)(\d+)([.)])\s+/))) next = m[1] + (Number(m[2]) + 1) + m[3] + " ";
+  else if((m = line.match(/^(\s*)([-*+])\s+/))) next = m[1] + m[2] + " ";
+  else if((m = line.match(/^(\s*>\s?)/))) next = m[1];
+  else return false;
+  if(line.length === m[0].length && !v.slice(s, le).trim()){   // empty item → leave the list
+    mdeReplace(ls, le, "", ls); return true;
+  }
+  mdeReplace(s, s, "\n" + next, s + 1 + next.length);
+  return true;
+}
+function mdeKeydown(e){
+  if(e.isComposing) return;
+  if(e.key === "Escape"){ mdeTabEscape = true; return; }
+  if(e.key === "Tab" && mdeTabEscape){ mdeTabEscape = false; return; }   // let focus move on
+  if(!["Shift","Control","Meta","Alt"].includes(e.key)) mdeTabEscape = false;
+  if((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey){
+    const k = e.key.toLowerCase();
+    if(k === "b"){ e.preventDefault(); mdeAction("bold"); }
+    else if(k === "i"){ e.preventDefault(); mdeAction("italic"); }
+    else if(k === "k"){ e.preventDefault(); mdeAction("link"); }
+    return;
+  }
+  if(e.key === "Tab" && !e.altKey && !e.ctrlKey && !e.metaKey){ e.preventDefault(); mdeIndent(e.shiftKey); return; }
+  if(e.key === "Enter" && !e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey){
+    if(mdeContinueList()) e.preventDefault();
+  }
+}
+function mdeAction(act){
+  if(!mdeIsOpen()) return;
+  if(mde.root.dataset.tab === "preview" && mdeNarrow()) mdeSetTab("write", false);
+  const ta = mde.ta;
+  ta.focus({ preventScroll:true });
+  switch(act){
+    case "undo": case "redo":
+      try{ document.execCommand(act); }catch(e){}
+      break;
+    case "bold": mdeInline("**", "bold text"); break;
+    case "italic": mdeInline("*", "italic text"); break;
+    case "strike": mdeInline("~~", "strikethrough"); break;
+    case "code": mdeInline("`", "code"); break;
+    case "h1": mdeHeading(1); break;
+    case "h2": mdeHeading(2); break;
+    case "h3": mdeHeading(3); break;
+    case "ul": case "ol": case "task": mdeList(act); break;
+    case "quote": mdeQuote(); break;
+    case "codeblock": mdeCodeBlock(); break;
+    case "link": mdeLink(); break;
+    case "table": mdeInsertBlock("| Column 1 | Column 2 |\n| --- | --- |\n| Cell | Cell |\n| Cell | Cell |", 2, 10); break;
+    case "hr": mdeInsertBlock("---", null); break;
+  }
+}
+
+/* ---------- wiring ---------- */
+$("#bEdit").addEventListener("click", () => { if(mdeIsOpen()) mdeApply(); else mdeOpen(); });
+// header actions that would replace / export the document wait until editing ends
+document.addEventListener("click", e => {
+  if(!mdeIsOpen()) return;
+  const b = e.target.closest && e.target.closest(MDE_BLOCKED);
+  if(!b) return;
+  e.preventDefault(); e.stopPropagation();
+  toast(`Finish editing first: Done (${mdeMod}Enter) applies, Discard reverts`);
+}, true);
+window.addEventListener("drop", e => {
+  if(!mdeIsOpen() || !e.dataTransfer || ![...e.dataTransfer.types].includes("Files")) return;
+  e.preventDefault(); e.stopPropagation();
+  dragDepth = 0; $("#dropzone").classList.remove("show");
+  toast("Finish editing before opening another file");
+}, true);
+window.addEventListener("resize", () => { if(mdeIsOpen()) mdeUpdateTop(); });
+$("#themeSeg").addEventListener("click", () => { if(mdeIsOpen()) setTimeout(mdeRenderPreview, 0); });
+window.addEventListener("beforeunload", e => {
+  if(mdeIsOpen() && mdeIsDirty()){ mdeSaveDraft(); e.preventDefault(); e.returnValue = ""; }
+});
 /* ==[/W4]== */
 
 // called at the end of every full renderDoc(); feature errors must not break rendering
