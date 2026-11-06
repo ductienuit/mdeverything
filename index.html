@@ -2220,6 +2220,7 @@ function sampleAnnotations(){
 }
 function hasRealNotes(){ return ANN.length && !(isHomeMode && isSampleMode); }
 function loadSample({home=false}={}){
+  saveFlush();                       // a pending autosave belongs to the document being left
   SRC=SAMPLE;
   ANN=sampleAnnotations();
   activeId=null;
@@ -3365,14 +3366,50 @@ async function storeDel(key){
   try{ localStorage.removeItem(key); }catch(e){}
 }
 let quotaWarned=false;   // reset once a document write succeeds again
+// throws on failure (quota, storage disabled) — callers decide whether to warn
+async function storeSetRaw(key,val){
+  if(window.storage) await window.storage.set(key,val,false);
+  else localStorage.setItem(key,val);
+}
 // returns true when the value was stored; failures never break the session
 async function storeSet(key,val){
-  try{
-    if(window.storage) await window.storage.set(key,val,false);
-    else localStorage.setItem(key,val);
-    return true;
-  }catch(e){ storeFailed(e); return false; }
+  try{ await storeSetRaw(key,val); return true; }
+  catch(e){ storeFailed(e); return false; }
 }
+
+/* IndexedDB — holds the large documents (see W6 library). Values are the same JSON strings
+   as in localStorage. Every call rejects when IndexedDB is unavailable (some private modes). */
+const IDB_NAME="mdeverything", IDB_STORE="docs";
+let idbP=null;
+function idbOpen(){
+  if(idbP) return idbP;
+  idbP=new Promise((res,rej)=>{
+    if(!window.indexedDB) return rej(new Error("IndexedDB unavailable"));
+    let r; try{ r=indexedDB.open(IDB_NAME,1); }catch(e){ return rej(e); }
+    r.onupgradeneeded=()=>{ if(!r.result.objectStoreNames.contains(IDB_STORE)) r.result.createObjectStore(IDB_STORE); };
+    r.onsuccess=()=>{ const db=r.result; db.onversionchange=()=>{ db.close(); idbP=null; }; res(db); };
+    r.onerror=()=>rej(r.error||new Error("IndexedDB open failed"));
+    r.onblocked=()=>rej(new Error("IndexedDB blocked"));
+  });
+  idbP.catch(()=>{ idbP=null; });
+  return idbP;
+}
+async function idbRun(mode, fn){
+  const db=await idbOpen();
+  return new Promise((res,rej)=>{
+    let tx; try{ tx=db.transaction(IDB_STORE,mode); }catch(e){ idbP=null; return rej(e); }
+    const req=fn(tx.objectStore(IDB_STORE)); let out;
+    if(req) req.onsuccess=()=>{ out=req.result; };
+    tx.oncomplete=()=>res(out);
+    tx.onerror=()=>rej(tx.error||new Error("IndexedDB error"));
+    tx.onabort=()=>rej(tx.error||new Error("IndexedDB aborted"));
+  });
+}
+const idbGet=k=>idbRun("readonly",s=>s.get(k));
+const idbSet=(k,v)=>idbRun("readwrite",s=>s.put(v,k));
+const idbDel=k=>idbRun("readwrite",s=>s.delete(k));
+const idbKeys=()=>idbRun("readonly",s=>s.getAllKeys());
+const idbClear=()=>idbRun("readwrite",s=>s.clear());
 function storeFailed(e){
   if(quotaWarned) return;
   quotaWarned=true;
@@ -3380,36 +3417,67 @@ function storeFailed(e){
   if(full) toast("Browser storage is full — your latest changes aren't saved", {action:{label:"Manage storage", run:()=>libOpenPanel()}, ms:9000});
   else toast("Browser storage isn't available here — changes won't be kept after a reload");
 }
-// Writes the active library document (+ its metadata). Called after every change.
+// Autosave. save() is called after every change; it waits SAVE_DELAY ms so a burst of edits
+// is written once. saveFlush() captures the current document synchronously (so switching
+// documents right after a change can't lose it) and queues the write behind earlier ones.
 // The demo is not stored unless the user really changes it (then it becomes "Sample copy").
-async function save(){
+const SAVE_DELAY=300;
+let saveTimer=0, savePending=false, saveChain=Promise.resolve();
+function save(){
   if(!libBooted) return;
-  try{
-    let promoted=false;
-    if(isSampleMode){
-      if(LIB.activeId || !libSampleChanged()) return;
-      if(libFull()){ if(!libFullWarned){ libFullWarned=true; libFullToast(); } return; }
-      libPromoteSample(); promoted=true;
-    }
-    const now=Date.now();
-    let meta = LIB.activeId && libMeta(LIB.activeId);
-    if(!meta && libFull()){ if(!libFullWarned){ libFullWarned=true; libFullToast(); } return; }
-    if(!meta){   // first save of a new document (opened file, pasted text, demo copy)
-      meta={ id:libUid(), name:libUniqueName(currentFileName), createdAt:now, updatedAt:now, notes:0, chars:0 };
-      LIB.docs.push(meta); LIB.activeId=meta.id; libFp="";
-      if(currentFileName!==meta.name){ currentFileName=meta.name; updateWorkspaceChrome(); }
-    }
-    const fp=libContentFp(SRC, ANN);
-    if(fp===libFp) return;            // a re-render without real changes keeps updatedAt
-    meta.updatedAt=now; meta.notes=ANN.length; meta.chars=SRC.length;
-    const id=meta.id;
-    const ok=await libWriteDoc(id, snapshot());
-    if(ok && LIB.activeId===id) libFp=fp;
-    await libWriteIndex();
-    libRenderPanel();
-    if(promoted && ok) toast("Your changes are saved as “Sample copy”", { action:{ label:"Documents", run:()=>libOpenPanel() } });
-  }catch(e){ console.error(e); }
+  savePending=true;
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveFlush, SAVE_DELAY);
 }
+function saveCancel(){ clearTimeout(saveTimer); saveTimer=0; savePending=false; }
+// writes only when a change is waiting (a flush on its own never creates a document)
+function saveFlush(){
+  const pending=savePending;
+  saveCancel();
+  if(!libBooted || !pending) return saveChain;
+  let job=null;
+  try{ job=savePrepare(); }catch(e){ console.error(e); }
+  if(job) saveChain=saveChain.then(()=>saveWrite(job)).catch(e=>console.error(e));
+  return saveChain;
+}
+// synchronous part: decide what to write and capture it
+function savePrepare(){
+  let promoted=false;
+  if(isSampleMode){
+    if(LIB.activeId || !libSampleChanged()) return null;
+    if(libFull()){ if(!libFullWarned){ libFullWarned=true; libFullToast(); } return null; }
+    libPromoteSample(); promoted=true;
+  }
+  const now=Date.now();
+  let meta = LIB.activeId && libMeta(LIB.activeId);
+  if(!meta && libFull()){ if(!libFullWarned){ libFullWarned=true; libFullToast(); } return null; }
+  if(!meta){   // first save of a new document (opened file, pasted text, demo copy)
+    meta={ id:libUid(), name:libUniqueName(currentFileName), createdAt:now, updatedAt:now, notes:0, chars:0, pending:true };
+    LIB.docs.push(meta); LIB.activeId=meta.id; libFp="";
+    if(currentFileName!==meta.name){ currentFileName=meta.name; updateWorkspaceChrome(); }
+  }
+  const fp=libContentFp(SRC, ANN);
+  if(fp===libFp) return null;        // a re-render without real changes keeps updatedAt
+  libFp=fp;                          // optimistic; reset if the write fails so the next change retries
+  return { meta, fp, now, promoted, payload:snapshot(), notes:ANN.length, chars:SRC.length };
+}
+// asynchronous part: the document data first, the index only once the data is safely stored
+async function saveWrite(job){
+  const { meta } = job;
+  const ok=await libWriteDoc(meta.id, job.payload, meta);
+  if(!ok){
+    if(LIB.activeId===meta.id && libFp===job.fp) libFp="";
+    return;                          // a new doc stays "pending" (kept out of the index) → no ghost entry
+  }
+  meta.updatedAt=job.now; meta.notes=job.notes; meta.chars=job.chars; delete meta.pending;
+  await libWriteIndex();
+  libRenderPanel();
+  libAfterSave();
+  if(job.promoted) toast("Your changes are saved as “Sample copy”", { action:{ label:"Documents", run:()=>libOpenPanel() } });
+}
+// write what's pending before the tab goes away (localStorage writes are synchronous)
+window.addEventListener("pagehide", ()=>saveFlush());
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden") saveFlush(); });
 // Loads the library (migrating the old single-workspace key) and the active document.
 async function restore(){
   try{ await libLoad(); }catch(e){ console.error(e); }
@@ -3418,7 +3486,7 @@ async function restore(){
   const meta=libMeta(LIB.activeId);
   let d=null; try{ d=await libReadDoc(meta.id); }catch(e){}
   if(!d){   // index points at missing data → forget it and fall back to the demo
-    LIB.docs=LIB.docs.filter(x=>x!==meta); LIB.activeId=null; libWriteIndex();
+    LIB.docs=LIB.docs.filter(x=>x!==meta); LIB.activeId=null; await libWriteIndex();
     return false;
   }
   libApplyDoc(meta, d);
@@ -4748,13 +4816,22 @@ document.addEventListener("keydown",e=>{
 /* ==[/W5]== */
 
 /* ==[W6 LIBRARY]== owned by the library workstream (documents, storage, backup) — also wires #docLabel */
-/* Storage layout (all through storeGet/storeSet/storeDel, "marginalia:" prefix kept):
-     marginalia:library:v1  → {activeId, docs:[{id, name, createdAt, updatedAt, notes, chars}]}
-     marginalia:doc:<id>    → {src, ann, currentFileName}
+/* Storage layout ("marginalia:" prefix kept):
+     marginalia:library:v1  (localStorage) → {activeId, docs:[{id, name, createdAt, updatedAt, notes, chars, store, size}]}
+     marginalia:doc:<id>    (localStorage) → {src, ann, currentFileName}   documents up to LIB_LS_MAX characters
+     IndexedDB "mdeverything" / docs / <id> → the same JSON string           larger documents (store:"idb")
+   Small documents stay in localStorage (synchronous, survives everything); large ones go to
+   IndexedDB so they can't fill the ~5 MB localStorage budget. A document that grew past the
+   limit moves to IndexedDB and stays there. No IndexedDB (some private modes) → localStorage.
+   Inside a host with window.storage (Claude artifact) everything goes through window.storage.
    The demo is never stored; reload restores LIB.activeId or shows the demo.          */
 const LIB_KEY = "marginalia:library:v1";
 const LIB_DOC = "marginalia:doc:";
 const LIB_PREFIX = "marginalia:";
+const LIB_BACKUP_KEY = "marginalia:backup:v1";   // {at: last backup, nag: last reminder}
+const LIB_PERSIST_KEY = "marginalia:persist:v1"; // navigator.storage.persist() asked once
+const LIB_LS_MAX = 256 * 1024;              // characters; larger documents are kept in IndexedDB
+const LIB_BACKUP_DAYS = 7;                  // remind to download a backup after this long
 const LIB_MAX = 10;                         // documents kept in the browser (homepage promises "up to 10")
 function libFull(){ return LIB.docs.length >= LIB_MAX; }
 function libFullToast(){
@@ -4762,7 +4839,7 @@ function libFullToast(){
     { action:{ label:"Manage", run:()=>libOpenPanel() }, ms:7000 });
 }
 let libFullWarned = false;
-const LIB_QUOTA = 5 * 1024 * 1024;        // typical per-origin localStorage budget (characters)
+const LIB_QUOTA = 5 * 1024 * 1024;        // typical per-origin localStorage budget (characters) — only for the near-full warning
 const LIB_OLD_DAYS = 30;
 let LIB = { activeId:null, docs:[] };
 let libBooted = false;                    // save() is a no-op until restore() has run
@@ -4784,12 +4861,19 @@ function libUniqueName(base, exceptId){
   if(!taken.has(base.toLowerCase())) return base;
   for(let n = 2; ; n++){ const c = `${base} (${n})`; if(!taken.has(c.toLowerCase())) return c; }
 }
-// what counts as a real change: text, comment ids/quotes/notes, replies (not render-only fields)
+// what counts as a real change: text, comment ids/quotes/notes, replies (not render-only fields).
+// Hashed (no copy of the whole document per keystroke); length is part of it to make collisions rarer.
+function libHash(str){
+  let h = 0x811c9dc5;
+  for(let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return (h >>> 0).toString(36);
+}
 function libContentFp(src, ann){
   const list = (ann || []).map(a => [String(a.id), a.quote, a.note || "", a.prefix || "", a.suffix || "",
     (a.replies || []).map(r => [r.text, r.ts])]);
   list.sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0);
-  return JSON.stringify([src, list]);
+  const notes = JSON.stringify(list);
+  return `${src.length}.${libHash(src)}.${notes.length}.${libHash(notes)}`;
 }
 function libTime(v, fallback){
   const t = typeof v === "number" ? v : Date.parse(v);
@@ -4797,16 +4881,81 @@ function libTime(v, fallback){
 }
 
 /* ---------- storage primitives ---------- */
-async function libWriteIndex(){ return storeSet(LIB_KEY, JSON.stringify({ activeId:LIB.activeId, docs:LIB.docs })); }
-async function libWriteDoc(id, payload){
-  const ok = await storeSet(LIB_DOC + id, payload);
-  if(ok){ libSizes.set(id, (LIB_DOC + id).length + payload.length); quotaWarned = false; }
-  return ok;
+const libGoneIds = new Set();             // deleted in this tab: never merged back from another tab's index
+function libUseIdb(){ return !window.storage && !!window.indexedDB; }
+function libNormMeta(d, now){
+  const m = { id:d.id, name:String(d.name || "Untitled"), createdAt:libTime(d.createdAt, now), updatedAt:libTime(d.updatedAt, now),
+    notes:Number(d.notes) || 0, chars:Number(d.chars) || 0 };
+  if(d.store === "idb") m.store = "idb";
+  if(Number(d.size) > 0) m.size = Number(d.size);
+  return m;
+}
+function libParseIndex(raw){
+  let idx = null;
+  if(raw){ try{ idx = JSON.parse(raw); }catch(e){} }
+  if(!idx || !Array.isArray(idx.docs)) return null;
+  const now = Date.now(), seen = new Set();
+  return { activeId:idx.activeId,
+    docs:idx.docs.filter(d => d && typeof d.id === "string" && !seen.has(d.id) && seen.add(d.id)).map(d => libNormMeta(d, now)) };
+}
+function libIndexDocs(){
+  return LIB.docs.filter(d => !d.pending).map(d => { const c = { ...d }; delete c.pending; return c; });
+}
+// read–merge–write: documents another tab added since our last sync are kept, not overwritten
+async function libWriteIndex(){
+  if(!window.storage){
+    let stored = null;
+    try{ stored = libParseIndex(localStorage.getItem(LIB_KEY)); }catch(e){}
+    if(stored){
+      for(const d of stored.docs){
+        if(libGoneIds.has(d.id)) continue;
+        const mine = libMeta(d.id);
+        if(!mine){ LIB.docs.push(d); continue; }
+        if(d.updatedAt > mine.updatedAt && d.id !== LIB.activeId) Object.assign(mine, d);
+      }
+    }
+  }
+  return storeSet(LIB_KEY, JSON.stringify({ activeId:LIB.activeId, docs:libIndexDocs() }));
+}
+// raw JSON of a stored document, wherever it lives (the other store is a fallback for interrupted moves)
+async function libReadRaw(id, meta){
+  meta = meta || libMeta(id);
+  const lsRead = async () => { try{ return await storeGet(LIB_DOC + id); }catch(e){ return null; } };
+  const idbRead = async () => { if(!libUseIdb()) return null; try{ return (await idbGet(id)) || null; }catch(e){ return null; } };
+  if(meta && meta.store === "idb") return (await idbRead()) || (await lsRead());
+  return (await lsRead()) || (await idbRead());
+}
+// small → localStorage, large (or already moved) → IndexedDB; either one full → try the other.
+// Updates meta.store / meta.size when given. Returns true only when the data is stored.
+async function libWriteDoc(id, payload, meta){
+  meta = meta || libMeta(id);
+  const size = (LIB_DOC + id).length + payload.length;
+  const idb = libUseIdb();
+  const wantIdb = idb && (payload.length > LIB_LS_MAX || (meta && meta.store === "idb"));
+  let lastErr = null, where = null;
+  const toLs = async () => { try{ await storeSetRaw(LIB_DOC + id, payload); return true; }catch(e){ lastErr = e; return false; } };
+  const toIdb = async () => { if(!idb) return false; try{ await idbSet(id, payload); return true; }catch(e){ lastErr = lastErr || e; return false; } };
+  if(wantIdb){ if(await toIdb()) where = "idb"; else if(await toLs()) where = "ls"; }
+  else { if(await toLs()) where = "ls"; else if(await toIdb()) where = "idb"; }
+  if(!where){ storeFailed(lastErr); return false; }
+  // drop the copy in the other store (after a move, or a stale one)
+  if(where === "idb"){ try{ await storeDel(LIB_DOC + id); }catch(e){} }
+  else if(idb && meta && meta.store === "idb"){ try{ await idbDel(id); }catch(e){} }
+  if(meta){ if(where === "idb") meta.store = "idb"; else delete meta.store; meta.size = size; }
+  libSizes.set(id, size); quotaWarned = false;
+  return true;
+}
+async function libDelDoc(id){
+  try{ await storeDel(LIB_DOC + id); }catch(e){}
+  if(libUseIdb()){ try{ await idbDel(id); }catch(e){} }
+  libSizes.delete(id);
 }
 async function libReadDoc(id){
-  const raw = await storeGet(LIB_DOC + id);
+  const meta = libMeta(id);
+  const raw = await libReadRaw(id, meta);
   if(!raw) return null;
-  libSizes.set(id, (LIB_DOC + id).length + raw.length);
+  const size = (LIB_DOC + id).length + raw.length;
+  libSizes.set(id, size); if(meta) meta.size = size;
   const d = JSON.parse(raw);
   return d && typeof d.src === "string" ? d : null;
 }
@@ -4820,17 +4969,54 @@ function libApplyDoc(meta, d){
   libFp = libContentFp(SRC, ANN);
 }
 async function libLoad(){
-  const raw = await storeGet(LIB_KEY);
-  let idx = null;
-  if(raw){ try{ idx = JSON.parse(raw); }catch(e){} }
-  if(idx && Array.isArray(idx.docs)){
-    const now = Date.now(), seen = new Set();
-    LIB.docs = idx.docs.filter(d => d && typeof d.id === "string" && !seen.has(d.id) && seen.add(d.id)).map(d => ({
-      id:d.id, name:String(d.name || "Untitled"), createdAt:libTime(d.createdAt, now), updatedAt:libTime(d.updatedAt, now),
-      notes:Number(d.notes) || 0, chars:Number(d.chars) || 0 }));
+  const idx = libParseIndex(await storeGet(LIB_KEY));
+  if(idx){
+    LIB.docs = idx.docs;
     LIB.activeId = libMeta(idx.activeId) ? idx.activeId : null;
   }
   await libMigrate();
+  try{ await libRecoverOrphans(); }catch(e){ console.error(e); }
+}
+// Stored documents the index doesn't list (an interrupted save, another tab's race) used to sit
+// invisible and take space. Put valid ones back in the library; drop empty/broken ones.
+async function libRecoverOrphans(){
+  if(window.storage) return;               // the host store can't list its keys
+  const found = [];                        // [id, "ls"|"idb"]
+  try{
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k && k.startsWith(LIB_DOC)) found.push([k.slice(LIB_DOC.length), "ls"]);
+    }
+  }catch(e){}
+  if(libUseIdb()){ try{ for(const k of (await idbKeys()) || []) found.push([String(k), "idb"]); }catch(e){} }
+  let recovered = 0, changed = false;
+  for(const [id, where] of found){
+    const meta = libMeta(id);
+    if(meta){                              // listed: only drop a stale copy in the other store
+      const primary = meta.store === "idb" ? "idb" : "ls";
+      if(where !== primary){
+        const other = primary === "idb" ? (libUseIdb() ? await idbGet(id).catch(() => null) : null) : await storeGet(LIB_DOC + id);
+        if(other){ if(where === "ls") await storeDel(LIB_DOC + id); else await idbDel(id).catch(() => {}); }
+        else { if(where === "idb") meta.store = "idb"; else delete meta.store; changed = true; }   // primary missing → use this copy
+      }
+      continue;
+    }
+    let raw = null, d = null;
+    try{ raw = where === "idb" ? await idbGet(id) : await storeGet(LIB_DOC + id); d = raw && JSON.parse(raw); }catch(e){}
+    if(!d || typeof d.src !== "string" || !d.src.trim()){
+      if(where === "idb") await idbDel(id).catch(() => {}); else await storeDel(LIB_DOC + id);
+      continue;
+    }
+    if(libFull()) continue;                // keep the data; it comes back once there's room
+    const now = Date.now(), ann = libCleanAnn(d.ann);
+    const m = { id, name:libUniqueName(d.currentFileName || "Recovered document"), createdAt:now, updatedAt:now,
+      notes:ann.length, chars:d.src.length, size:(LIB_DOC + id).length + raw.length };
+    if(where === "idb") m.store = "idb";
+    LIB.docs.push(m); recovered++; changed = true;
+  }
+  if(changed) await libWriteIndex();
+  if(recovered) setTimeout(() => toast(`Recovered ${libPlural(recovered, "document")} that weren't listed in Documents`,
+    { action:{ label:"Documents", run:() => libOpenPanel() }, ms:7000 }), 600);
 }
 // one-time: the pre-library single workspace (marginalia:workspace:v1) becomes the first document
 async function libMigrate(){
@@ -4848,22 +5034,24 @@ async function libMigrate(){
     const now = Date.now();
     const meta = { id:libUid(), name:libUniqueName(name || "Markdown document"), createdAt:now, updatedAt:now,
       notes:ann.length, chars:d.src.length };
-    if(!(await libWriteDoc(meta.id, JSON.stringify({ src:d.src, ann, currentFileName:meta.name })))) return;
+    if(!(await libWriteDoc(meta.id, JSON.stringify({ src:d.src, ann, currentFileName:meta.name }), meta))) return;
     LIB.docs.push(meta); LIB.activeId = meta.id;
     if(!(await libWriteIndex())){
-      LIB.docs.pop(); LIB.activeId = null; await storeDel(LIB_DOC + meta.id); return;
+      LIB.docs.pop(); LIB.activeId = null; await libDelDoc(meta.id); return;
     }
   }
   await storeDel(STORE_KEY);
 }
 // leaving the current document: close popover / composer / floater / drawers
 function libLeaveCurrent(){
-  try{ hideFloater(); hideHlPop(true); }catch(e){}
+  try{ hideFloater(); hideHlPop(true); }catch(e){}   // closing the composer may commit a comment → save()
+  saveFlush();                             // capture the document being left before SRC/ANN change
   closeOverlays();
 }
 // the demo is shown: detach from the library (called from setWorkspaceMode({sample:true}))
 function libDetach(){
   if(!libBooted || !LIB.activeId) return;
+  saveCancel();                            // loadSample() already flushed what belonged to the old document
   LIB.activeId = null; libFp = "";
   libWriteIndex(); libRenderPanel();
 }
@@ -4900,7 +5088,7 @@ async function libOpen(id, { quiet=false } = {}){
   updateWorkspaceChrome();
   renderDoc();
   window.scrollTo(0, 0);
-  libWriteIndex();
+  await libWriteIndex();
   libRenderPanel();
   if(!quiet) toast(`Opened ${meta.name}`);
   return true;
@@ -4914,41 +5102,47 @@ function libRename(id, name){
   libWriteIndex();
 }
 async function libDeleteMany(ids){
+  await saveFlush();                                      // no queued write may recreate a deleted document
   const items = [];
   const activeWas = LIB.activeId;
   for(const id of ids){
     const meta = libMeta(id); if(!meta) continue;
     let data = null;
     if(id === LIB.activeId) data = snapshot();            // live state is the freshest copy
-    else { try{ data = await storeGet(LIB_DOC + id); }catch(e){} }
+    else data = await libReadRaw(id, meta);
     items.push({ meta, data, pos:LIB.docs.indexOf(meta) });
   }
   if(!items.length) return;
   const gone = new Set(items.map(i => i.meta.id));
+  gone.forEach(id => libGoneIds.add(id));
   LIB.docs = LIB.docs.filter(d => !gone.has(d.id));
-  for(const it of items){ await storeDel(LIB_DOC + it.meta.id); libSizes.delete(it.meta.id); }
+  if(activeWas && gone.has(activeWas)){ LIB.activeId = null; libFp = ""; }
+  await libWriteIndex();                                  // the index first: a failure below leaves an orphan, never a ghost
+  for(const it of items) await libDelDoc(it.meta.id);
   if(activeWas && gone.has(activeWas)){
-    LIB.activeId = null; libFp = "";
     let opened = false;
     for(const next of libSorted()){ if(await libOpen(next.id, { quiet:true })){ opened = true; break; } }
     if(!opened){ libLeaveCurrent(); loadSample({ home:false }); }
   }
-  await libWriteIndex();
   libRenderPanel();
   const msg = items.length === 1 ? `Deleted “${items[0].meta.name}”` : `Deleted ${items.length} documents`;
   toast(msg, { action:{ label:"Undo", run:() => libUndoDelete(items, gone.has(activeWas) ? activeWas : null) }, ms:8000 });
 }
 async function libUndoDelete(items, reopenId){
-  let n = 0;
+  let n = 0, capped = 0;
   for(const it of [...items].sort((a,b) => a.pos - b.pos)){
     if(libMeta(it.meta.id)) continue;
-    if(it.data && !(await libWriteDoc(it.meta.id, it.data))) continue;
+    if(libFull()){ capped++; continue; }                  // the limit holds even for Undo
+    if(!it.data || !(await libWriteDoc(it.meta.id, it.data, it.meta))) continue;
+    libGoneIds.delete(it.meta.id);
     LIB.docs.splice(Math.min(it.pos, LIB.docs.length), 0, it.meta); n++;
   }
   await libWriteIndex();
   if(reopenId && libMeta(reopenId)) await libOpen(reopenId, { quiet:true });
   libRenderPanel();
-  if(n) toast(n === 1 ? `Restored “${items[0].meta.name}”` : `Restored ${n} documents`);
+  if(n) toast((n === 1 ? `Restored “${items[0].meta.name}”` : `Restored ${n} documents`)
+    + (capped ? ` — ${libPlural(capped, "document")} not restored (limit ${LIB_MAX})` : ""), { ms:capped ? 6000 : 3000 });
+  else if(capped) libFullToast();
 }
 
 /* ---------- backup / import ---------- */
@@ -4983,6 +5177,7 @@ async function libBackup(ids, { all=false } = {}){
   if(!docs.length){ toast("Nothing to back up yet"); return false; }
   const file = (!all && docs.length === 1) ? libBackupName(docs[0].name) : `mdeverything-backup-${libLocalDate()}.json`;
   libDownload(file, JSON.stringify({ format:"mdeverything", version:1, exportedAt:new Date().toISOString(), docs }, null, 2));
+  if(all || docs.length >= LIB.docs.length) libBackupState({ at:Date.now() });
   toast(`Downloaded ${file}`);
   return true;
 }
@@ -4995,28 +5190,148 @@ async function libImportFile(f){
     return fail("it isn't an mdeverything backup");
   const list = data.docs.filter(d => d && typeof d.src === "string");
   if(!list.length) return fail("it contains no documents");
-  let nDocs = 0, nNotes = 0, first = null, full = false, capped = 0;
-  for(const d of list){
-    if(libFull()){ capped = list.length - nDocs; break; }
+  // documents already here with identical text + comments are skipped (re-importing a backup)
+  await saveFlush();
+  const have = new Map();                  // fingerprint → meta
+  for(const m of LIB.docs){
+    if(m.id === LIB.activeId && !isSampleMode){ have.set(libContentFp(SRC, ANN), m); continue; }
+    try{ const x = await libReadDoc(m.id); if(x) have.set(libContentFp(x.src, libCleanAnn(x.ann)), m); }catch(e){}
+  }
+  let nDocs = 0, nNotes = 0, first = null, full = false, capped = 0, dup = 0, dupMeta = null;
+  for(let i = 0; i < list.length; i++){
+    const d = list[i];
     const now = Date.now();
     const ann = (Array.isArray(d.ann) ? d.ann : []).filter(a => a && typeof a.quote === "string")
-      .map((a, i) => normAnn({ ...a, id:String(a.id || ("a" + now.toString(36) + i)), note:typeof a.note === "string" ? a.note : "" }));
+      .map((a, j) => normAnn({ ...a, id:String(a.id || ("a" + now.toString(36) + j)), note:typeof a.note === "string" ? a.note : "" }));
+    const fp = libContentFp(d.src, ann);
+    if(have.has(fp)){ dup++; dupMeta = dupMeta || have.get(fp); continue; }
+    if(libFull()){ capped = list.length - i; break; }
     const meta = { id:libUid(), name:libUniqueName(d.name || "Imported document"),
       createdAt:libTime(d.createdAt, now), updatedAt:libTime(d.updatedAt, now), notes:ann.length, chars:d.src.length };
-    if(!(await libWriteDoc(meta.id, JSON.stringify({ src:d.src, ann, currentFileName:meta.name })))){ full = true; break; }
-    LIB.docs.push(meta); nDocs++; nNotes += ann.length;
+    if(!(await libWriteDoc(meta.id, JSON.stringify({ src:d.src, ann, currentFileName:meta.name }), meta))){ full = true; break; }
+    LIB.docs.push(meta); have.set(fp, meta); nDocs++; nNotes += ann.length;
     if(!first) first = meta;
   }
   await libWriteIndex();
   if(first) await libOpen(first.id, { quiet:true });
   libRenderPanel();
+  const dupMsg = dup ? ` — ${libPlural(dup, "duplicate")} skipped (already in Documents)` : "";
   if(nDocs) toast(`Imported ${libPlural(nDocs, "document")} · ${libPlural(nNotes, "comment")}` + (full ? " — storage is full, the rest were skipped" : "")
-    + (capped ? ` — ${libPlural(capped, "document")} skipped (limit ${LIB_MAX})` : ""), { ms:5000 });
+    + (capped ? ` — ${libPlural(capped, "document")} skipped (limit ${LIB_MAX})` : "") + dupMsg, { ms:5000 });
   else if(capped) libFullToast();
+  else if(dup) toast(dup === 1 ? `“${dupMeta.name}” is already in Documents — nothing new to import` : `All ${dup} documents are already in Documents — nothing new to import`,
+    { action:{ label:"Open", run:() => libOpen(dupMeta.id) }, ms:6000 });
   return nDocs > 0;
 }
 
+/* ---------- after a save: durable storage + backup reminder ---------- */
+function libBackupState(patch){
+  let st = {};
+  try{ st = JSON.parse(localStorage.getItem(LIB_BACKUP_KEY) || "{}") || {}; }catch(e){}
+  if(patch){ st = { ...st, ...patch }; try{ localStorage.setItem(LIB_BACKUP_KEY, JSON.stringify(st)); }catch(e){} }
+  return st;
+}
+function libAfterSave(){
+  if(window.storage) return;
+  // ask once to exempt this site from automatic cleanup when the device runs low on space
+  try{
+    if(navigator.storage && navigator.storage.persist && !localStorage.getItem(LIB_PERSIST_KEY)){
+      localStorage.setItem(LIB_PERSIST_KEY, "1");
+      navigator.storage.persisted().then(p => p || navigator.storage.persist()).catch(() => {});
+    }
+  }catch(e){}
+  // browsers may clear site data (Safari: after ~7 days without a visit) → nudge to keep a file copy
+  const now = Date.now(), st = libBackupState();
+  libCheckSpace().catch(() => {});
+  if(!st.at){ libBackupState({ at:now }); return; }        // the clock starts with the first saved document
+  if(now - st.at < LIB_BACKUP_DAYS * 864e5 || now - (st.nag || 0) < 864e5 || !LIB.docs.length) return;
+  libBackupState({ nag:now });
+  toast(`No backup in over ${LIB_BACKUP_DAYS} days — browsers can clear site data. Keep a copy of your documents as a file.`,
+    { action:{ label:"Download backup", run:() => libBackup(libSorted().map(d => d.id), { all:true }) }, ms:10000 });
+}
+
+/* ---------- several tabs: keep the library in sync ----------
+   The index lives in localStorage, so every index write fires a "storage" event in the other tabs. */
+function libSyncFromOtherTab(){
+  if(!libBooted || window.storage) return;
+  let stored = null;
+  try{ stored = libParseIndex(localStorage.getItem(LIB_KEY)); }catch(e){}
+  if(!stored) stored = { docs:[] };                         // another tab deleted everything
+  const theirs = new Map(stored.docs.map(d => [d.id, d]));
+  let changedActive = null, removedActive = null;
+  for(const mine of [...LIB.docs]){
+    const d = theirs.get(mine.id);
+    if(!d){
+      if(mine.pending) continue;
+      if(mine.id === LIB.activeId && !isSampleMode){ removedActive = mine; continue; }   // keep it open; the next change saves it again
+      LIB.docs = LIB.docs.filter(x => x !== mine); continue;
+    }
+    if(mine.id === LIB.activeId && !isSampleMode && d.updatedAt > mine.updatedAt) changedActive = mine;
+    if(d.updatedAt >= mine.updatedAt){ Object.assign(mine, d); if(!d.store) delete mine.store; }
+    else mine.name = d.name;                                  // ours is newer (a save in flight): only take a rename
+    if(mine.id === LIB.activeId && currentFileName !== mine.name){ currentFileName = mine.name; updateWorkspaceChrome(); }
+  }
+  for(const d of stored.docs) if(!libMeta(d.id) && !libGoneIds.has(d.id)) LIB.docs.push(d);
+  libRenderPanel();
+  if(changedActive){
+    const id = changedActive.id;
+    toast(`“${changedActive.name}” was changed in another tab`, { action:{ label:"Load latest", run:() => libReload(id) }, ms:10000 });
+  } else if(removedActive){
+    toast(`“${removedActive.name}” was deleted in another tab — it stays open here, and your next change saves it again`, { ms:8000 });
+  }
+}
+// re-read the open document from storage (after another tab changed it)
+async function libReload(id){
+  if(id !== LIB.activeId) return;
+  saveCancel();
+  const meta = libMeta(id); if(!meta) return;
+  let d = null; try{ d = await libReadDoc(id); }catch(e){}
+  if(!d){ toast("Couldn't load the latest version"); return; }
+  libLeaveCurrent();
+  libApplyDoc(meta, d);
+  updateWorkspaceChrome();
+  renderDoc();
+  toast(`Loaded the latest “${meta.name}”`);
+}
+window.addEventListener("storage", e => {
+  if(window.storage) return;
+  if(e.key === LIB_KEY || e.key === null) libSyncFromOtherTab();
+});
+
+/* ---------- storage status: warn only when space is running out ---------- */
+const LIB_WARN_FREE = 50 * 1024 * 1024;     // the browser has less than this left for the site
+const LIB_WARN_SHARE = 0.9;                 // or 90% of its quota is used
+const LIB_WARN_LS = 0.9 * LIB_QUOTA;        // localStorage (holds the index) nearly at its ~5 MB budget
+// {used, ls, idb, usage, quota, free, warn} — warn is a message, or "" when all is fine
+async function libStorageStatus(){
+  const ls = libUsage();
+  if(ls == null) return null;
+  const idb = LIB.docs.filter(d => d.store === "idb").reduce((s, d) => s + (d.size || d.chars || 0), 0);
+  const st = { used:ls + idb, ls, idb, usage:0, quota:0, free:null, warn:"", kind:"" };
+  try{
+    if(navigator.storage && navigator.storage.estimate){
+      const est = await navigator.storage.estimate();
+      if(est && est.quota){ st.quota = est.quota; st.usage = est.usage || 0; st.free = Math.max(0, st.quota - st.usage); }
+    }
+  }catch(e){}
+  if(st.free != null && (st.free < LIB_WARN_FREE || st.usage / st.quota >= LIB_WARN_SHARE))
+    st.kind = "quota", st.warn = `Storage is almost full — only ~${libFmt(st.free)} left. Download a backup and remove documents you no longer need.`;
+  else if(ls >= LIB_WARN_LS)
+    st.kind = "ls", st.warn = "This site's small-document storage is almost full (it's shared with other pages on this domain). Remove documents you no longer need.";
+  return st;
+}
+// after a save: tell the user (at most once a day) before writes start failing
+async function libCheckSpace(){
+  const st = await libStorageStatus();
+  if(!st || !st.warn) return;
+  const now = Date.now(), b = libBackupState();
+  if(now - (b.fullNag || 0) < 864e5) return;
+  libBackupState({ fullNag:now });
+  toast(st.warn, { action:{ label:"Manage storage", run:() => libOpenPanel() }, ms:10000 });
+}
+
 /* ---------- storage meter + cleanup ---------- */
+// characters mdeverything keeps in localStorage (the part with the ~5 MB budget)
 function libUsage(){
   if(window.storage) return null;
   try{
@@ -5029,15 +5344,16 @@ function libUsage(){
   }catch(e){ return null; }
 }
 function libDocSize(meta){
-  if(!window.storage){
+  if(!window.storage && meta.store !== "idb"){
     try{ const v = localStorage.getItem(LIB_DOC + meta.id); if(v != null) return (LIB_DOC + meta.id).length + v.length; }catch(e){}
   }
-  return libSizes.get(meta.id) || meta.chars || 0;
+  return meta.size || libSizes.get(meta.id) || meta.chars || 0;
 }
 function libFmt(n){
   if(n < 1024) return `${n} B`;
   if(n < 1024 * 1024) return `${(n / 1024).toFixed(n < 10240 ? 1 : 0)} KB`;
-  return `${(n / 1048576).toFixed(1)} MB`;
+  if(n < 1024 * 1048576) return `${(n / 1048576).toFixed(1)} MB`;
+  return `${(n / 1073741824).toFixed(1)} GB`;
 }
 function libRel(t){
   const s = (Date.now() - t) / 1000;
@@ -5102,6 +5418,10 @@ async function libDeleteAll(){
   try{ if(typeof PANE_KEY !== "undefined") keys.add(PANE_KEY); }catch(e){}
   try{ if(typeof OUTLINE_KEY !== "undefined") keys.add(OUTLINE_KEY); }catch(e){}
   try{ if(typeof MDE_DRAFT_KEY !== "undefined") keys.add(MDE_DRAFT_KEY); }catch(e){}
+  keys.add(LIB_BACKUP_KEY); keys.add(LIB_PERSIST_KEY);
+  saveCancel();
+  LIB.docs.forEach(d => libGoneIds.add(d.id));
+  if(libUseIdb()){ try{ await idbClear(); }catch(e){} }
   if(!window.storage){
     try{ for(let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if(k && k.startsWith(LIB_PREFIX)) keys.add(k); } }catch(e){}
   }
@@ -5254,13 +5574,18 @@ function libRenderPanel(){
       ? "Storage is managed by the app hosting this page, so usage can't be measured here."
       : "Browser storage isn't available here — documents won't be kept after a reload."}</div>`;
   } else {
-    const pct = Math.min(100, used / LIB_QUOTA * 100);
-    meter.className = "lib-meter" + (pct >= 80 ? " warn" : "");
-    meter.title = "Approximate: characters mdeverything keeps in this browser. Real limits vary by browser.";
-    const of = used > LIB_QUOTA ? " used (browser limit unknown)" : " of ~5 MB";
-    meter.innerHTML = `<div class="lib-meter-row"><span>Storage <span aria-hidden="true">(approx.)</span></span><span><b>~${libFmt(used)}</b>${of}</span></div>
-      <div class="lib-bar" role="meter" aria-label="Approximate browser storage used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><i style="width:${pct.toFixed(1)}%"></i></div>
-      ${pct >= 80 ? '<div class="lib-meter-note">Storage is almost full — download a backup and remove documents you no longer need.</div>' : ""}`;
+    if(!meter.firstChild) meter.innerHTML = `<div class="lib-meter-row"><span>Storage</span><span><b>~${libFmt(used)}</b> used</span></div>`;
+    // no fixed limit is shown: the real room is large (IndexedDB) — only warn when it's running out
+    libStorageStatus().then(st => {
+      if(!meter.isConnected || !st) return;
+      meter.className = "lib-meter" + (st.warn ? " warn" : "");
+      meter.title = `Small documents: ~${libFmt(st.ls)} in localStorage · large documents: ~${libFmt(st.idb)} in IndexedDB`
+        + (st.free != null ? ` · the browser has ~${libFmt(st.free)} free for this site` : "");
+      const pct = st.quota ? Math.min(100, st.usage / st.quota * 100) : 0;
+      meter.innerHTML = `<div class="lib-meter-row"><span>Storage</span><span><b>~${libFmt(st.used)}</b> used</span></div>`
+        + (st.warn ? (st.kind === "quota" ? `<div class="lib-bar" role="meter" aria-label="Browser storage used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><i style="width:${pct.toFixed(1)}%"></i></div>` : "")
+          + `<div class="lib-meter-note">${esc(st.warn)}</div>` : "");
+    });
   }
   p.querySelector('[data-lib="backup-all"]').disabled = !all.length;
   p.querySelector('[data-lib="old"]').disabled = !all.length;
