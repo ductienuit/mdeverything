@@ -1,0 +1,41 @@
+[
+  {
+    "quote": "copia e cola alguns parágrafos num chatbot",
+    "note": "Exemplo — faça uma pergunta. Essa dor é o melhor gancho para a introdução, ou “a IA edita a seção errada” deveria vir primeiro? Sugira duas frases de abertura alternativas.",
+    "replies": ["Estou mais para o ângulo da seção errada — é mais concreto."]
+  },
+  {
+    "quote": "frases repetidas nunca se confundem",
+    "note": "Exemplo — confira uma afirmação. Adicione um exemplo de uma linha mostrando como o contexto ao redor diferencia duas frases idênticas."
+  },
+  {
+    "quote": "seus comentários se reancoram automaticamente",
+    "note": "Exemplo — peça uma edição. “Reancorar” pode soar como jargão para quem lê pela primeira vez; reescreva este passo em palavras simples."
+  },
+  {
+    "quote": "Um clique para comentar um parágrafo, título ou célula de tabela inteiros",
+    "note": "Exemplo — comente uma célula de tabela. Encurte esta descrição para menos de 8 palavras sem perder o sentido.",
+    "replies": ["Talvez: “Comente um bloco inteiro num clique.”"]
+  },
+  {
+    "quote": "Agora é a vez do seu documento",
+    "note": "Exemplo — transforme uma tarefa num convite à ação. Sugira uma frase curta e simpática que leve as pessoas ao botão Importar."
+  },
+  {
+    "quote": "seu trabalho fica salvo localmente neste dispositivo",
+    "note": "Exemplo — checagem de fatos. Confirme se isso bate com o funcionamento do salvamento automático (armazenamento do navegador, por dispositivo) e diga o que acontece numa janela anônima.",
+    "replies": ["Vale mencionar que limpar os dados do site também apaga tudo.", "Concordo — mas numa frase curta só."]
+  },
+  {
+    "quote": "cada edição sugerida aparece como um diff que você pode aceitar ou rejeitar",
+    "note": "Exemplo — uma resposta da IA com uma edição sugerida. Deixe este trecho mais amigável para quem não conhece a palavra “diff”.",
+    "replies": [
+      {
+        "by": "ai",
+        "round": 1,
+        "text": "Aqui vai uma versão mais simples, sem jargão. Aceite para reescrever a frase ou Rejeite para manter a sua.",
+        "edits": [{ "kind": "quote", "text": "cada edição sugerida mostra o texto antigo e o novo para você aceitar ou rejeitar com um clique" }]
+      }
+    ]
+  }
+]
