@@ -1963,6 +1963,120 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
 
 <style>
 /* ==[AI CSS]== A — AI answers, suggestions, export options */
+/* diff tokens: --ins (added words, purple) / --del (removed words, muted) — AA on each theme's paper */
+:root{ --ins:#7c3aed; --ins-bg:rgba(124,58,237,.09); --del:#75736d; }
+body[data-theme="beige"]{ --ins:#6b3486; --ins-bg:rgba(107,52,134,.09); --del:#786f5f; }
+body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8e919a; }
+
+/* export menu: separators + checkbox item */
+.menu .ai-menu-sep{ height:1px; margin:4px 6px; background:var(--line); }
+.menu>button.ai-menu-check{ position:relative; padding-left:34px; }
+.ai-check{ position:absolute; left:11px; top:11px; width:15px; height:15px; box-sizing:border-box; border-radius:4px;
+  border:1.5px solid var(--line-strong); background:var(--surface); }
+.ai-menu-check[aria-checked="true"] .ai-check{ background:var(--accent); border-color:var(--accent); }
+.ai-menu-check[aria-checked="true"] .ai-check::after{ content:""; position:absolute; left:4px; top:1px; width:4px; height:8px;
+  border:solid var(--accent-contrast); border-width:0 2px 2px 0; transform:rotate(45deg); }
+.menu>button:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+
+/* AI replies (panel card + inline card) */
+.card .c-reply.ai-reply,#hlPop .pc-reply.ai-reply{ border-left-color:var(--accent); padding-right:74px; }
+.ai-tag{ display:inline-block; margin-right:6px; padding:0 5px; border-radius:4px; font-size:10px; font-weight:700; letter-spacing:.04em;
+  line-height:15px; vertical-align:1px; background:var(--accent-soft); color:var(--accent-soft-fg); }
+.ai-rcopy svg{ width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; vertical-align:-2px; }
+.card .c-rtext.ai-md,#hlPop .pc-rtext.ai-md{ white-space:normal; }
+.ai-md > :first-child{ margin-top:0; }
+.ai-md > :last-child{ margin-bottom:0; }
+.ai-md p{ margin:0 0 6px; }
+.ai-md ul,.ai-md ol{ margin:0 0 6px; padding-left:18px; }
+.ai-md li{ margin:1px 0; }
+.ai-md h1,.ai-md h2,.ai-md h3,.ai-md h4,.ai-md h5,.ai-md h6{ font-size:13px; font-weight:700; margin:6px 0 3px; }
+.ai-md strong{ font-weight:650; }
+.ai-md code{ font-family:var(--font-mono); font-size:12px; padding:0 3px; border-radius:4px; background:var(--surface-2); color:var(--code-inline-fg); }
+.ai-md pre{ margin:0 0 6px; padding:7px 9px; border-radius:6px; background:var(--code-bg); overflow:auto; max-height:220px; }
+.ai-md pre code{ padding:0; background:none; color:var(--code-fg); white-space:pre; }
+.ai-md blockquote{ margin:0 0 6px; padding-left:8px; border-left:2px solid var(--line-strong); color:var(--ink-soft); }
+.ai-md a{ color:var(--accent); }
+.ai-md table{ border-collapse:collapse; font-size:12px; margin:0 0 6px; display:block; overflow:auto; }
+.ai-md th,.ai-md td{ border:1px solid var(--line); padding:2px 5px; }
+
+/* suggested edit (word diff) */
+.ai-sugg{ margin:7px 0 2px; padding:7px 9px; border:1px solid var(--line); border-radius:8px; background:var(--surface-2); font-size:13px; }
+.ai-sugg-head{ display:flex; align-items:center; gap:8px; margin-bottom:4px; font-size:11px; font-weight:700; letter-spacing:.03em;
+  text-transform:uppercase; color:var(--ink-soft); }
+.ai-sugg-state{ margin-left:auto; text-transform:none; letter-spacing:0; font-weight:600; color:var(--ink-faint); }
+.ai-sugg.is-accepted .ai-sugg-state{ color:var(--success); }
+.ai-sugg.is-rejected .ai-diff{ opacity:.65; }
+.ai-diff{ line-height:1.55; white-space:pre-wrap; overflow-wrap:anywhere; color:var(--ink); }
+.ai-diff del.ai-del{ color:var(--del); text-decoration:line-through; text-decoration-thickness:1px; }
+.ai-diff ins.ai-ins{ color:var(--ins); background:var(--ins-bg); text-decoration:none; border-radius:3px; font-weight:550; }
+.ai-sugg-acts{ display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
+.ai-sugg-acts .mini{ padding:4px 10px; font-size:12px; border:1px solid var(--line-strong); }
+.ai-sugg-acts .mini.save{ border-color:var(--accent); }
+.ai-sugg-acts .mini:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+
+/* paste-back dialog */
+.ai-paste{ width:min(720px,100%); font-family:var(--font-ui); }
+.ai-paste textarea.ai-paste-ta{ min-height:200px; max-height:42vh; }
+.ai-paste code{ font-family:var(--font-mono); font-size:12px; }
+.ai-prev{ margin-top:12px; }
+.ai-prev-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
+.ai-prev-list li{ display:flex; gap:9px; align-items:flex-start; padding:7px 10px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+.ai-prev-ico{ flex:none; width:18px; text-align:center; font-weight:700; line-height:20px; }
+.ai-prev-list li.ok .ai-prev-ico{ color:var(--success); }
+.ai-prev-list li.warn .ai-prev-ico{ color:var(--danger); }
+.ai-prev-list li.dup .ai-prev-ico{ color:var(--ink-faint); }
+.ai-prev-list li.dup .ai-prev-t,.ai-prev-list li.warn .ai-prev-t{ color:var(--ink-soft); }
+.ai-prev-main{ min-width:0; flex:1; }
+.ai-prev-t{ font-size:13px; font-weight:600; color:var(--ink); overflow-wrap:anywhere; }
+.ai-prev-s{ font-size:12px; color:var(--ink-soft); margin-top:1px; }
+.ai-prev-gen{ margin-top:8px; padding:8px 10px; border:1px dashed var(--line-strong); border-radius:8px; }
+.ai-prev-gen-h{ display:flex; align-items:center; gap:8px; font-size:13px; }
+.ai-prev-gen-h span{ font-size:12px; color:var(--ink-faint); margin-right:auto; }
+.ai-prev-gen-h .mini{ border:1px solid var(--line-strong); padding:3px 10px; font-size:12px; }
+.ai-prev-gen-b{ margin-top:5px; font-size:12.5px; line-height:1.5; color:var(--ink-soft); white-space:pre-wrap; max-height:120px; overflow:auto; overflow-wrap:anywhere; }
+.ai-prev-empty{ margin:0; font-size:13px; color:var(--ink-soft); }
+
+/* comments panel row: Paste AI answer / Show suggestions */
+.ai-w5row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; padding-top:7px; border-top:1px solid var(--line); }
+.ai-w5btn{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:12px; font-weight:600; line-height:1.2; padding:4px 9px;
+  border-radius:7px; border:1px solid var(--line-strong); background:none; color:var(--ink-soft); cursor:pointer; }
+.ai-w5btn:hover{ border-color:var(--accent); color:var(--ink); }
+.ai-w5btn:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.ai-w5btn[hidden],.w5-chip[hidden],.ai-sugg-bar[hidden]{ display:none !important; }
+.ai-w5ico{ width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.ai-w5box{ position:relative; width:12px; height:12px; box-sizing:border-box; border-radius:3px; border:1.5px solid var(--line-strong); }
+.ai-w5toggle[aria-pressed="true"]{ background:var(--accent-soft); color:var(--accent-soft-fg); border-color:transparent; }
+.ai-w5toggle[aria-pressed="true"] .ai-w5box{ background:var(--accent); border-color:var(--accent); }
+.ai-w5toggle[aria-pressed="true"] .ai-w5box::after{ content:""; position:absolute; left:2.5px; top:0; width:3px; height:6px;
+  border:solid var(--accent-contrast); border-width:0 1.5px 1.5px 0; transform:rotate(45deg); }
+
+/* inline suggestions in the document */
+#doc mark.hl.ai-sugg-old{ text-decoration:line-through; text-decoration-color:var(--del); color:var(--del); }
+#doc ins.ai-sugg-new{ position:relative; text-decoration:none; color:var(--ins); background:var(--ins-bg); border-radius:3px;
+  padding:0 2px; margin-left:3px; }
+/* ✓ / ✕ float above the inserted text (no layout shift); visible on hover / keyboard focus */
+.ai-sn-acts{ position:absolute; right:-4px; bottom:100%; z-index:3; display:flex; gap:2px; padding:2px; border-radius:7px;
+  background:var(--surface); box-shadow:var(--shadow-md); opacity:0; pointer-events:none; transition:opacity .12s; }
+#doc ins.ai-sugg-new:hover .ai-sn-acts,#doc ins.ai-sugg-new:focus-within .ai-sn-acts{ opacity:1; pointer-events:auto; }
+@media (hover:none){ #doc ins.ai-sugg-new .ai-sn-acts{ position:static; display:inline-flex; vertical-align:1px; margin-left:3px;
+  box-shadow:none; background:none; opacity:1; pointer-events:auto; } }
+.ai-sn-acts button{ width:20px; height:20px; padding:0; border-radius:5px; border:1px solid var(--line-strong); background:var(--surface);
+  color:var(--ink-soft); font:600 11px/1 var(--font-ui); cursor:pointer; }
+.ai-sn-acts .ai-sn-ok:hover{ color:var(--success); border-color:var(--success); }
+.ai-sn-acts .ai-sn-no:hover{ color:var(--danger); border-color:var(--danger); }
+.ai-sn-acts button:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+
+/* floating "N suggestions · Accept all · Reject all" bar */
+.ai-sugg-bar{ position:fixed; left:16px; bottom:20px; z-index:55; display:flex; align-items:center; gap:4px; padding:5px 6px 5px 12px;
+  border:1px solid var(--line-strong); border-radius:999px; background:var(--surface); box-shadow:var(--shadow-lg);
+  font-family:var(--font-ui); font-size:12.5px; color:var(--ink); max-width:calc(100vw - 32px); }
+.ai-sb-n{ font-weight:600; margin-right:4px; white-space:nowrap; }
+.ai-sugg-bar button{ font:inherit; font-weight:600; padding:4px 10px; border-radius:999px; border:none; background:none; color:var(--accent); cursor:pointer; white-space:nowrap; }
+.ai-sugg-bar button:hover{ background:var(--surface-2); }
+.ai-sugg-bar button:focus-visible{ outline:2px solid var(--accent); outline-offset:0; }
+.ai-sugg-bar .ai-sb-x{ color:var(--ink-faint); font-size:15px; padding:2px 8px; }
+@media (max-width:720px){ .ai-sugg-bar{ bottom:78px; left:12px; } }
+@media (prefers-reduced-motion:reduce){ .ai-sn-acts{ transition:none; } }
 /* ==[/AI CSS]== */
 /* ==[LINKS CSS]== B — in-document links */
 #doc a.link-broken{ color:var(--danger); text-decoration:underline dotted; text-decoration-thickness:1.5px; text-underline-offset:3px; cursor:help; }
@@ -2094,9 +2208,15 @@ body.editing .tbl-layer{ display:none!important; }
       <button class="btn primary" id="bCopy">Export for AI</button>
       <button class="btn primary split" id="bCopyOpts" title="Export options" aria-label="Export options" aria-haspopup="menu" aria-expanded="false" aria-controls="menuCopy">▾</button>
       <div class="menu" id="menuCopy" role="menu" hidden>
-        <button data-mode="full">Full context<span class="sub">Document + annotations for any AI assistant</span></button>
-        <button data-mode="notes">Notes only<span class="sub">Annotations without full document</span></button>
-        <button data-mode="raw">Raw markdown<span class="sub">Current document only</span></button>
+        <button type="button" role="menuitem" data-mode="full">Full context<span class="sub">Document + annotations for any AI assistant</span></button>
+        <button type="button" role="menuitem" data-mode="notes">Notes only<span class="sub">Annotations without full document</span></button>
+        <button type="button" role="menuitem" data-mode="raw">Raw markdown<span class="sub">Current document only</span></button>
+        <div class="ai-menu-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-ai="dl-bundle">Download as file<span class="sub">Full context as a .md file</span></button>
+        <button type="button" role="menuitem" data-ai="dl-md">Download Markdown<span class="sub">Current document as .md</span></button>
+        <div class="ai-menu-sep" role="separator"></div>
+        <button type="button" role="menuitemcheckbox" aria-checked="false" data-ai="fmt" class="ai-menu-check"><span class="ai-check" aria-hidden="true"></span>Ask AI to reply in mdeverything format<span class="sub">So you can paste the answers back as replies</span></button>
+        <button type="button" role="menuitem" data-ai="paste">Paste AI answer…<span class="sub">Add the AI's answers to your notes</span></button>
       </div>
     </span>
   </div>
@@ -2250,6 +2370,27 @@ body.editing .tbl-layer{ display:none!important; }
 <div id="toast"></div>
 
 <!-- ==[AI HTML]== A — AI answers, suggestions, export options -->
+<div class="overlay" id="ovAiPaste">
+  <div class="panel ai-paste" role="dialog" aria-modal="true" aria-labelledby="aiPasteTitle" aria-describedby="aiPasteHint">
+    <div class="panel-head"><h3 id="aiPasteTitle">Paste AI answer</h3>
+      <button class="x" type="button" data-close aria-label="Close" title="Close (Esc)">×</button></div>
+    <div class="panel-body">
+      <p class="hint" id="aiPasteHint">Paste your assistant's reply. Each answer is matched to its note by <code>{#id}</code> (or by number) and added as an AI reply.</p>
+      <textarea class="big ai-paste-ta" id="aiPasteTa" spellcheck="false" aria-label="AI answer" placeholder="```mdeverything&#10;## [1] {#n3f9a}&#10;Your answer…&#10;```"></textarea>
+      <div class="ai-prev" id="aiPrev" aria-live="polite"></div>
+    </div>
+    <div class="panel-foot">
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="button" id="aiPasteAdd" disabled>Add answers</button>
+    </div>
+  </div>
+</div>
+<div class="ai-sugg-bar" id="aiSuggBar" role="region" aria-label="Suggested edits" hidden>
+  <span class="ai-sb-n" aria-live="polite"></span>
+  <button type="button" data-sb="accept">Accept all</button>
+  <button type="button" data-sb="reject">Reject all</button>
+  <button type="button" class="ai-sb-x" data-sb="hide" aria-label="Hide suggestions in the document" title="Hide suggestions">×</button>
+</div>
 <!-- ==[/AI HTML]== -->
 <!-- ==[LINKS HTML]== B — in-document links -->
 <div id="linkPop" role="tooltip" aria-hidden="true"></div>
@@ -3448,6 +3589,7 @@ function sourceLine(quote){
 }
 function buildBundle(incDoc){
   const clean=s=>(s||"").replace(/\s+/g," ").trim();
+  const fmt=aiExportFmtOn(), sids=fmt ? aiNoteIds() : null;   // AI answer format: stable {#id} per note
   const L=[];
   L.push(HEAD.en,"");
   if(incDoc){ L.push("===== DOCUMENT (markdown) =====","",SRC.trim(),""); }
@@ -3457,17 +3599,18 @@ function buildBundle(incDoc){
     if(a.section) loc.push(`section “${clean(a.section)}”`);
     const ln=sourceLine(a.quote); if(ln) loc.push(`line ~${ln}`);
     if(a.resolved===false) loc.push("(not found in the current document)");
-    L.push(`[${i+1}]${loc.length?" Location: "+loc.join(" · "):""}`);
+    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${loc.length?" Location: "+loc.join(" · "):""}`);
     L.push(`Quoted passage:`,`"""`,clean(a.quote),`"""`);
     L.push(`Context: …${clean(a.prefix)} 〈${clean(a.quote)}〉 ${clean(a.suffix)}…`);
     L.push(`Note / question:`,`"""`,(a.note||"(no note)"),`"""`);
     const reps=Array.isArray(a.replies)?a.replies:[];
     if(reps.length){
       L.push(`Replies (${reps.length}):`);
-      reps.forEach(r=>L.push("- "+String(r.text||"").trim().replace(/\n/g,"\n  ")));
+      reps.forEach(r=>L.push("- "+(r.by==="ai"?"(AI) ":"")+String(r.text||"").trim().replace(/\n/g,"\n  ")));
     }
     L.push("");
   });
+  if(fmt) L.push(aiHowToAnswer(),"");
   return L.join("\n").trim()+"\n";
 }
 
@@ -3700,7 +3843,10 @@ function syncCopyMenu(){ $("#bCopyOpts").setAttribute("aria-expanded", $("#menuC
 $("#bCopy").addEventListener("click",()=>doExport("full"));
 $("#bCopyOpts").addEventListener("click",e=>{e.stopPropagation(); const mn=$("#menuCopy"); mn.hidden=!mn.hidden; syncCopyMenu();});
 $("#menuCopy").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b)return;
-  $("#menuCopy").hidden=true; syncCopyMenu(); doExport(b.dataset.mode || "full"); });
+  if(b.dataset.ai==="fmt"){ e.stopPropagation(); aiToggleExportFmt(); return; }   // toggle keeps the menu open
+  $("#menuCopy").hidden=true; syncCopyMenu();
+  if(b.dataset.ai){ aiMenuAction(b.dataset.ai); return; }
+  doExport(b.dataset.mode || "full"); });
 document.addEventListener("click",e=>{ if(!e.target.closest(".pop")){ $("#menuCopy").hidden=true; syncCopyMenu(); } });
 
 /* ============ drag & drop .md ============ */
@@ -4008,6 +4154,10 @@ function normAnn(a){
           r.ts=Number(r.ts)||Date.now();
           if(!r.id || typeof r.id!=="string") r.id=newReplyId(r.ts);
           if(r.editedAt!=null){ const e=Number(r.editedAt); if(e) r.editedAt=e; else delete r.editedAt; }
+          // AI answers (pasted back): by:"ai", optional suggested replacement + its accepted / rejected state
+          if(r.by!=="ai") delete r.by;
+          if(typeof r.suggest!=="string" || !r.suggest.trim()){ delete r.suggest; delete r.suggestState; }
+          else if(r.suggestState!=="accepted" && r.suggestState!=="rejected") delete r.suggestState;
           return r;
         })
     : [];
@@ -4743,6 +4893,7 @@ function w5ReplyEl(a, r, scope){
   }
   el.querySelector('[data-r="edit"]').addEventListener("click",e=>{ e.stopPropagation(); w5StartReplyEdit(a, r, scope); });
   el.querySelector('[data-r="del"]').addEventListener("click",e=>{ e.stopPropagation(); w5DeleteReplyUndo(a, r.id); });
+  if(r.by==="ai") aiDecorateReply(el, a, r, pre, scope);   // Markdown body, "AI" label, Copy, suggested edit
   return el;
 }
 
@@ -4758,6 +4909,9 @@ function w5MatchesQuery(a, terms){ if(!terms.length) return true; const h=w5Hay(
 function w5PassChip(a){
   if(w5F==="replies") return (a.replies||[]).length>0;
   if(w5F==="unanchored") return a.resolved===false;
+  if(w5F==="ai") return aiHasAnswer(a);
+  if(w5F==="noai") return !aiHasAnswer(a);
+  if(w5F==="sugg") return aiPendingCount(a)>0;
   return true;
 }
 function w5Passes(a, terms){ return !!a && w5MatchesQuery(a, terms||w5Terms()) && w5PassChip(a); }
@@ -4767,7 +4921,11 @@ function w5ApplyFilter(){
   if(!w5Bar) return;
   const terms=w5Terms();
   const inQ=ANN.filter(a=>w5MatchesQuery(a, terms));
-  const n={ all:inQ.length, replies:inQ.filter(a=>(a.replies||[]).length).length, unanchored:inQ.filter(a=>a.resolved===false).length };
+  const n={ all:inQ.length, replies:inQ.filter(a=>(a.replies||[]).length).length, unanchored:inQ.filter(a=>a.resolved===false).length,
+    ai:inQ.filter(aiHasAnswer).length, noai:inQ.filter(a=>!aiHasAnswer(a)).length, sugg:inQ.filter(a=>aiPendingCount(a)>0).length };
+  // the AI chips appear once the document has an AI answer (or while one of them is the active filter)
+  const anyAi=ANN.some(aiHasAnswer) || ["ai","noai","sugg"].includes(w5F);
+  w5Bar.querySelectorAll(".w5-chip.ai-chip").forEach(b=>{ b.hidden=!anyAi; });
   w5Bar.querySelectorAll(".w5-chip").forEach(b=>{
     b.querySelector(".w5-n").textContent=n[b.dataset.f];
     b.setAttribute("aria-pressed", b.dataset.f===w5F ? "true" : "false");
@@ -4782,10 +4940,13 @@ function w5ApplyFilter(){
   w5Bar.classList.toggle("w5-filtering", !!(terms.length || w5F!=="all"));
   const none=w5Bar.querySelector(".w5-none");
   if(ANN.length && !shown){
-    const what = w5F==="replies" ? "with replies" : w5F==="unanchored" ? "unanchored" : "";
+    const what = w5F==="replies" ? "with replies" : w5F==="unanchored" ? "unanchored"
+      : w5F==="ai" ? "with an AI answer" : w5F==="noai" ? "without an AI answer" : w5F==="sugg" ? "with pending suggestions" : "";
+    const post=/^with/.test(what);   // "comments with replies" reads better than "with replies comments"
+    const noun = post ? `comments ${what}` : `${what?what+" ":""}comments`;
     none.querySelector(".w5-none-msg").textContent = terms.length
-      ? `No ${what?what+" ":""}comments match “${w5Q.trim()}”.`
-      : `No ${what} comments.`;
+      ? `No ${noun} match “${w5Q.trim()}”.`
+      : `No ${noun}.`;
     none.hidden=false;
   } else none.hidden=true;
 }
@@ -4810,6 +4971,9 @@ function w5ClearFilter(){
          <button type="button" class="w5-chip" data-f="all" aria-pressed="true">All <span class="w5-n">0</span></button>
          <button type="button" class="w5-chip" data-f="replies" aria-pressed="false">With replies <span class="w5-n">0</span></button>
          <button type="button" class="w5-chip" data-f="unanchored" aria-pressed="false" title="Notes whose passage is no longer in the document">Unanchored <span aria-hidden="true">⚠</span> <span class="w5-n">0</span></button>
+         <button type="button" class="w5-chip ai-chip" data-f="ai" aria-pressed="false" hidden>With AI answer <span class="w5-n">0</span></button>
+         <button type="button" class="w5-chip ai-chip" data-f="noai" aria-pressed="false" hidden>No AI answer <span class="w5-n">0</span></button>
+         <button type="button" class="w5-chip ai-chip" data-f="sugg" aria-pressed="false" title="AI suggested edits not yet accepted or rejected" hidden>Pending suggestions <span class="w5-n">0</span></button>
        </div>
        <button type="button" class="w5-help-btn" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">?</button>
      </div>
@@ -5813,6 +5977,614 @@ $("#bHeroDemo").addEventListener("click", () => {
 /* ==[/HOME]== */
 
 /* ==[AI]== A — AI answers, suggestions, export options */
+/* Round trip with an AI assistant:
+   1. Export (optionally) asks the AI to answer in a fixed format: one ```mdeverything block with
+      "## [n] {#id}" per note and an optional "### Suggested edit" (full replacement of the quote).
+   2. "Paste AI answer…" parses that reply, previews the matches and adds them as replies {by:"ai"}.
+   3. Suggested edits show as a word diff in the reply (Accept / Reject) and, optionally, inline in
+      the document. Accept rewrites the passage in SRC (Undo restores SRC + notes).
+   Everything inserted into #doc is .no-anchor, so highlight anchoring is never affected.
+   `var` for state read from earlier sections (renderCards → w5ApplyFilter → aiHasAnswer). */
+var AI_FMT_KEY="marginalia:exportfmt:v1", AI_SUGG_KEY="marginalia:aisugg:v1";
+function aiLSGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function aiLSSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+var aiFmt = aiLSGet(AI_FMT_KEY)==="1";
+var aiShowSugg = aiLSGet(AI_SUGG_KEY)==="1";
+var aiInlineSig = null;
+// a pasted reply in this format is recognised on a plain Ctrl+V anywhere outside text fields
+var AI_DETECT = /^\s*#{1,6}\s*\[\d+\]\s*\{#n[a-z0-9]+\}/m;
+
+/* ---------- model helpers ---------- */
+function aiHasAnswer(a){ return !!a && (a.replies||[]).some(r=>r.by==="ai"); }
+function aiIsPending(r){ return !!r && r.by==="ai" && typeof r.suggest==="string" && !!r.suggest.trim() && !r.suggestState; }
+function aiPendingCount(a){ return a ? (a.replies||[]).filter(aiIsPending).length : 0; }
+// newest pending suggestion per note, in reading order
+function aiPendingList(){
+  const out=[];
+  ANN.forEach(a=>{
+    const reps=(a.replies||[]).filter(aiIsPending);
+    if(reps.length) out.push({a, r:reps[reps.length-1]});
+  });
+  return out;
+}
+function aiHash36(str){
+  let h=0x811c9dc5;
+  for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,0x01000193); }
+  return (h>>>0).toString(36).padStart(4,"0");
+}
+// stable short id per note ("n" + 4 base36 chars of a hash of its id), unique within the document
+function aiNoteIds(){
+  const m=new Map(), used=new Set();
+  [...ANN].sort((x,y)=>String(x.id)<String(y.id)?-1:String(x.id)>String(y.id)?1:0).forEach(a=>{
+    let salt=0, sid;
+    do{ sid="n"+aiHash36(salt ? a.id+"#"+salt : String(a.id)).slice(-4); salt++; }while(used.has(sid));
+    used.add(sid); m.set(a.id, sid);
+  });
+  return m;
+}
+// rendered (anchor) text of a Markdown snippet: what a quote of it would look like in #doc
+function aiPlainText(md){
+  const d=document.createElement("div");
+  d.innerHTML=mdToHtml(String(md||""));
+  return anchorText(d).replace(/^\s+|\s+$/g,"");
+}
+
+/* ---------- export options ---------- */
+function aiExportFmtOn(){ return aiFmt; }
+function aiSyncFmtItem(){
+  const b=document.querySelector('#menuCopy [data-ai="fmt"]');
+  if(b) b.setAttribute("aria-checked", aiFmt ? "true" : "false");
+}
+function aiToggleExportFmt(){
+  aiFmt=!aiFmt; aiLSSet(AI_FMT_KEY, aiFmt ? "1" : "0"); aiSyncFmtItem();
+  toast(aiFmt ? "Exports now ask the AI to answer in mdeverything format" : "Exports use the plain format");
+}
+function aiHowToAnswer(){
+  const sids=aiNoteIds(), first=ANN[0];
+  const ex = first ? `[1] {#${sids.get(first.id)}}` : "[1] {#n3f9a}";
+  return [
+    "===== HOW TO ANSWER =====",
+    "",
+    "Reply with ONE fenced code block whose language is `mdeverything` (open it with ````mdeverything — four backticks — if your answers contain ``` code blocks). Inside it, for each note you answer:",
+    "",
+    `## ${ex}`,
+    "Your answer to that note (Markdown allowed).",
+    "",
+    "### Suggested edit",
+    "The full replacement text for the quoted passage, in the document's Markdown, without quotes around it.",
+    "",
+    "Rules:",
+    "- Start each answer with `## [number] {#id}`, copying the number and id shown next to the note above.",
+    "- Add `### Suggested edit` ONLY when the note asks for a wording change; it replaces exactly the quoted passage.",
+    "- Optional: a `## General` section for comments not tied to one note.",
+    "- Write nothing outside the code block."
+  ].join("\n");
+}
+function aiBaseName(){
+  const n = isSampleMode ? "Sample document" : (currentFileName || "document");
+  return n.replace(/\.(md|markdown|txt)$/i,"").replace(/[\\/:*?"<>|\u0000-\u001f]+/g,"-").trim() || "document";
+}
+function aiDownload(name, text){
+  const url=URL.createObjectURL(new Blob([text], { type:"text/markdown;charset=utf-8" }));
+  const a=document.createElement("a");
+  a.href=url; a.download=name; a.style.display="none";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 5000);
+}
+function aiMenuAction(act){
+  if(act==="dl-bundle"){
+    if(!ANN.length){ toast("Add at least one note before exporting AI context"); return; }
+    const name=aiBaseName()+"-for-ai.md";
+    aiDownload(name, buildBundle(true)); toast(`Downloaded ${name}`);
+  } else if(act==="dl-md"){
+    if(!SRC.trim()){ toast("No Markdown document to download yet"); return; }
+    const name=aiBaseName()+".md";
+    aiDownload(name, SRC.replace(/\s+$/,"")+"\n"); toast(`Downloaded ${name}`);
+  } else if(act==="paste") aiOpenPaste("");
+}
+
+/* ---------- parser (tolerant) ---------- */
+const AI_FENCE_RE=/^\s{0,3}(`{3,}|~{3,})/;
+function aiHeading(line){
+  const L=line.trim(); if(!L) return null;
+  const hasHash=/^#{1,6}(?!#)/.test(L), hasBold=/^(\*\*|__)/.test(L);
+  let m=L.match(/^(?:#{1,6}\s*)?(?:\*\*|__)?\s*\[\s*(\d{1,4})\s*\]\s*(?:\*\*|__)?\s*(?:\{\s*#\s*(n[a-z0-9]{2,8})\s*\})?\s*(?:\*\*|__)?\s*(.*)$/i);
+  if(m && (hasHash || m[2] || (hasBold && m[3].length<=60))) return {kind:"note", n:Number(m[1]), sid:m[2] ? m[2].toLowerCase() : ""};
+  if((hasHash || hasBold) && /^(?:#{1,6}\s*)?(?:\*\*|__)?\s*General\b[\s:*_]*$/i.test(L)) return {kind:"general"};
+  if((hasHash || hasBold) && /^(?:#{1,6}\s*)?(?:\*\*|__)?\s*Suggest(?:ed)?\s+(?:edit|rewrite|wording|change)\b[\s:*_]*$/i.test(L)) return {kind:"sugg"};
+  return null;
+}
+function aiTidy(lines){
+  let t=lines.join("\n").replace(/^\s*\n/,"").replace(/\s+$/,"");
+  t=t.replace(/\n\s*(?:-{3,}|\*{3,}|_{3,})\s*$/,"").replace(/\s+$/,"");   // trailing separator between answers
+  return t.replace(/^\s+/,"");
+}
+function aiUnwrapSuggest(t){
+  let s=t;
+  const fm=s.match(/^(`{3,}|~{3,})[^\n]*\n([\s\S]*?)\n\1\s*$/);   // wrapped in a code fence
+  if(fm) s=fm[2];
+  const ls=s.split("\n");
+  if(ls.every(l=>/^\s*>/.test(l) || !l.trim())) s=ls.map(l=>l.replace(/^\s*>\s?/,"")).join("\n");   // blockquoted
+  return s.trim();
+}
+function aiParseAnswer(raw){
+  const lines=String(raw||"").replace(/\r\n?/g,"\n").split("\n");
+  let body=lines, open=-1, fence="";
+  for(let i=0;i<lines.length;i++){
+    const m=lines[i].match(/^\s{0,3}(`{3,}|~{3,})\s*mdeverything\b.*$/i);
+    if(m){ open=i; fence=m[1]; break; }
+  }
+  if(open>=0){
+    let close=lines.length;
+    for(let i=lines.length-1;i>open;i--){
+      const m=lines[i].match(/^\s{0,3}(`{3,}|~{3,})\s*$/);
+      if(m && m[1][0]===fence[0] && m[1].length>=fence.length){ close=i; break; }
+    }
+    body=lines.slice(open+1, close);
+  } else {
+    // a plain ``` block around the whole answer (language forgotten)
+    const f=lines.findIndex(l=>l.trim()), l=lines.length-1-[...lines].reverse().findIndex(x=>x.trim());
+    if(f>=0 && l>f && /^\s{0,3}(`{3,}|~{3,})\s*\w*\s*$/.test(lines[f]) && /^\s{0,3}(`{3,}|~{3,})\s*$/.test(lines[l])) body=lines.slice(f+1,l);
+  }
+  const answers=[], gen=[]; let cur=null, inGen=false, inFence=null;
+  for(const line of body){
+    const fm=line.match(AI_FENCE_RE);
+    if(fm){
+      if(!inFence) inFence=fm[1];
+      else if(fm[1][0]===inFence[0] && fm[1].length>=inFence.length && !line.trim().slice(fm[1].length).trim()) inFence=null;
+    } else if(!inFence){
+      const h=aiHeading(line);
+      if(h && h.kind==="note"){ cur={n:h.n, sid:h.sid, lines:[], sugg:null}; answers.push(cur); inGen=false; continue; }
+      if(h && h.kind==="general"){ cur=null; inGen=true; continue; }
+      if(h && h.kind==="sugg" && cur){ cur.sugg=[]; continue; }
+    }
+    if(cur) (cur.sugg||cur.lines).push(line);
+    else if(inGen) gen.push(line);
+  }
+  return {
+    answers: answers.map(a=>({ n:a.n, sid:a.sid, text:aiTidy(a.lines), suggest: a.sugg ? aiUnwrapSuggest(aiTidy(a.sugg)) : "" })),
+    general: aiTidy(gen)
+  };
+}
+// match parsed answers to notes: {#id} first, the [n] number only when no id was given
+function aiMatch(parsed){
+  const ids=aiNoteIds(), bySid=new Map();
+  ids.forEach((sid,aid)=>bySid.set(sid,aid));
+  const taken=[];   // answers already accepted in this paste (to skip repeats)
+  return parsed.answers.map(p=>{
+    const it={...p, status:"ok", a:null, num:0, why:""};
+    if(p.sid){
+      const a=bySid.has(p.sid) ? annById(bySid.get(p.sid)) : null;
+      if(!a){ it.status="nomatch"; it.why=`No note with id {#${p.sid}} in this document`; return it; }
+      it.a=a; it.how="id";
+    } else {
+      const a=ANN[p.n-1];
+      if(!a){ it.status="nomatch"; it.why=`No note [${p.n}] in this document`; return it; }
+      it.a=a; it.how="number";
+    }
+    it.num=ANN.indexOf(it.a)+1;
+    if(!it.text && !it.suggest){ it.status="empty"; it.why="Empty answer"; return it; }
+    if(!it.text) it.text="Suggested an edit.";
+    const same=r=>String(r.text).trim()===it.text && (r.suggest||"")===(it.suggest||"");
+    if(it.a.replies.some(same) || taken.some(t=>t.a===it.a && same(t))){ it.status="dup"; return it; }
+    taken.push(it);
+    return it;
+  });
+}
+
+/* ---------- adding answers (one batch, one save, one Undo) ---------- */
+function aiRefreshViews(){
+  save(); renderCards();
+  if(POP.mode==="card"){ renderPop(); positionPop(); }
+  aiSyncInline();
+}
+function aiAddAnswers(items){
+  const ts=Date.now(), added=[];
+  items.forEach((it,k)=>{
+    const r={ id:newReplyId(ts+k), text:it.text, ts:ts+k, by:"ai" };
+    if(it.suggest) r.suggest=it.suggest;
+    it.a.replies.push(r); added.push({aid:it.a.id, rid:r.id});
+  });
+  aiRefreshViews();
+  return added;
+}
+function aiRemoveAnswers(added){
+  added.forEach(({aid,rid})=>{
+    const a=annById(aid); if(!a) return;
+    const i=a.replies.findIndex(r=>r.id===rid); if(i>=0) a.replies.splice(i,1);
+    if(replyEdit && replyEdit.rid===rid) replyEdit=null;
+  });
+  aiRefreshViews();
+}
+
+/* ---------- paste dialog ---------- */
+var aiPasteReturn=null, aiPasteT=0, aiPasteItems=[];
+function aiPasteOpen(){ return $("#ovAiPaste").classList.contains("open"); }
+function aiOpenPaste(text){
+  if(mdeIsOpen()){ toast("Finish editing first"); return; }
+  const ov=$("#ovAiPaste"), ta=$("#aiPasteTa");
+  if(!aiPasteOpen()) aiPasteReturn=document.activeElement;
+  closeOverlays();
+  const mn=$("#menuCopy"); if(mn && !mn.hidden){ mn.hidden=true; syncCopyMenu(); }
+  ta.value=text||"";
+  openOverlay(ov);
+  aiRenderPreview();
+  setTimeout(()=>{ focusWithoutScrolling(ta); if(text){ ta.setSelectionRange(0,0); ta.scrollTop=0; } },0);
+}
+function aiNoteSnippet(a){
+  const s=String(a.note||a.quote||"").replace(/\s+/g," ").trim();
+  const w=s.split(" ");
+  return w.length>9 ? w.slice(0,9).join(" ")+"…" : s;
+}
+function aiRenderPreview(){
+  const box=$("#aiPrev"), btn=$("#aiPasteAdd"), raw=$("#aiPasteTa").value;
+  box.textContent="";
+  aiPasteItems=[];
+  if(!raw.trim()){ btn.disabled=true; btn.textContent="Add answers"; return; }
+  if(!ANN.length){
+    box.innerHTML='<p class="ai-prev-empty">This document has no notes yet, so there is nothing to attach answers to.</p>';
+    btn.disabled=true; btn.textContent="Add answers"; return;
+  }
+  const parsed=aiParseAnswer(raw), items=aiMatch(parsed);
+  aiPasteItems=items;
+  const ul=document.createElement("ul"); ul.className="ai-prev-list";
+  items.forEach(it=>{
+    const li=document.createElement("li");
+    const ico=document.createElement("span"); ico.className="ai-prev-ico"; ico.setAttribute("aria-hidden","true");
+    const main=document.createElement("div"); main.className="ai-prev-main";
+    const t=document.createElement("div"); t.className="ai-prev-t";
+    const s=document.createElement("div"); s.className="ai-prev-s";
+    const label=it.sid ? `[${it.n}] {#${it.sid}}` : `[${it.n}]`;
+    if(it.status==="ok"){
+      li.className="ok"; ico.textContent="✓";
+      t.textContent=`Note ${it.num} · ${aiNoteSnippet(it.a)}`;
+      s.textContent=(it.how==="number" ? "Matched by number" : "Matched by id")+(it.suggest ? " · includes a suggested edit" : "");
+    } else if(it.status==="dup"){
+      li.className="dup"; ico.textContent="↻";
+      t.textContent=`Note ${it.num} · ${aiNoteSnippet(it.a)}`;
+      s.textContent="Identical answer already added — skipped";
+    } else {
+      li.className="warn"; ico.textContent="⚠";
+      t.textContent=label; s.textContent=it.why+" — skipped";
+    }
+    const sr=document.createElement("span"); sr.className="sr-only";
+    sr.textContent = it.status==="ok" ? "Will be added: " : it.status==="dup" ? "Skipped, duplicate: " : "Skipped: ";
+    main.append(sr,t,s); li.append(ico,main); ul.appendChild(li);
+  });
+  if(items.length) box.appendChild(ul);
+  if(parsed.general){
+    const g=document.createElement("div"); g.className="ai-prev-gen";
+    g.innerHTML='<div class="ai-prev-gen-h"><b>General</b><span>Not stored — copy it if you need it</span><button type="button" class="mini">Copy</button></div><div class="ai-prev-gen-b"></div>';
+    g.querySelector(".ai-prev-gen-b").textContent=parsed.general;
+    g.querySelector("button").addEventListener("click",()=>copyText(parsed.general).then(ok=>toast(ok?"General comments copied":"Couldn't copy, try again")));
+    box.appendChild(g);
+  }
+  if(!items.length && !parsed.general){
+    box.innerHTML='<p class="ai-prev-empty">No answers found. Each answer should start with a heading like <code>## [1] {#n3f9a}</code> — turn on “Ask AI to reply in mdeverything format” in the Export menu before exporting.</p>';
+  }
+  const n=items.filter(x=>x.status==="ok").length;
+  btn.disabled=!n;
+  btn.textContent = n ? `Add ${n} answer${n===1?"":"s"}` : "Add answers";
+}
+function aiCommitPaste(){
+  const ok=aiPasteItems.filter(x=>x.status==="ok" && annById(x.a.id));
+  if(!ok.length) return;
+  closeOverlays();
+  const added=aiAddAnswers(ok);
+  const n=added.length;
+  toast(`Added ${n} AI answer${n===1?"":"s"}`, { action:{ label:"Undo", run:()=>{ aiRemoveAnswers(added); toast(`Removed ${n} AI answer${n===1?"":"s"}`); } }, ms:8000 });
+}
+(function aiWirePaste(){
+  const ov=$("#ovAiPaste"), ta=$("#aiPasteTa");
+  ta.addEventListener("input",()=>{ clearTimeout(aiPasteT); aiPasteT=setTimeout(aiRenderPreview,120); });
+  ta.addEventListener("keydown",e=>{
+    if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ e.preventDefault(); clearTimeout(aiPasteT); aiRenderPreview(); aiCommitPaste(); }
+  });
+  $("#aiPasteAdd").addEventListener("click",()=>{ clearTimeout(aiPasteT); aiRenderPreview(); aiCommitPaste(); });
+  // focus trap (Esc is handled by the global overlay handler)
+  ov.addEventListener("keydown",e=>{
+    if(e.key!=="Tab") return;
+    const f=[...ov.querySelectorAll('button:not([disabled]), textarea, [href], input, [tabindex]:not([tabindex="-1"])')].filter(x=>x.getClientRects().length);
+    if(!f.length) return;
+    const i=f.indexOf(document.activeElement);
+    if(e.shiftKey && (i<=0)){ e.preventDefault(); f[f.length-1].focus(); }
+    else if(!e.shiftKey && (i===f.length-1 || i<0)){ e.preventDefault(); f[0].focus(); }
+  });
+  // closing (Cancel, ×, Esc, outside click) returns focus to where it was
+  new MutationObserver(()=>{
+    if(ov.classList.contains("open")) return;
+    clearTimeout(aiPasteT);
+    const r=aiPasteReturn; aiPasteReturn=null;
+    if(r && r.isConnected && r!==document.body) focusWithoutScrolling(r);
+  }).observe(ov,{attributes:true, attributeFilter:["class"]});
+  // Ctrl+V of an mdeverything answer anywhere outside a text field opens the dialog
+  document.addEventListener("paste",e=>{
+    if(w5IsTyping(e.target) || w5IsTyping(document.activeElement)) return;
+    if(w5DialogOpen() || mdeIsOpen() || !ANN.length) return;
+    const t=e.clipboardData ? e.clipboardData.getData("text/plain") : "";
+    if(!t || !AI_DETECT.test(t)) return;
+    e.preventDefault();
+    aiOpenPaste(t);
+  });
+})();
+
+/* ---------- word diff ---------- */
+function aiTokens(s){ return String(s||"").match(/\s+|[\p{L}\p{N}_'’]+|[^\s\p{L}\p{N}_]/gu) || []; }
+function aiDiff(a,b){
+  const A=aiTokens(a), B=aiTokens(b);
+  let p=0; while(p<A.length && p<B.length && A[p]===B[p]) p++;
+  let s=0; while(s<A.length-p && s<B.length-p && A[A.length-1-s]===B[B.length-1-s]) s++;
+  const a1=A.slice(p,A.length-s), b1=B.slice(p,B.length-s);
+  const seg=[]; const push=(t,v)=>{ if(v) seg.push({t,v}); };
+  push("eq",A.slice(0,p).join(""));
+  const n=a1.length, m=b1.length;
+  if(n*m>250000){ push("del",a1.join("")); push("ins",b1.join("")); }
+  else {
+    const W=m+1, dp=new Uint32Array((n+1)*W);
+    for(let i=n-1;i>=0;i--) for(let j=m-1;j>=0;j--)
+      dp[i*W+j] = a1[i]===b1[j] ? dp[(i+1)*W+j+1]+1 : Math.max(dp[(i+1)*W+j], dp[i*W+j+1]);
+    let i=0, j=0;
+    while(i<n && j<m){
+      if(a1[i]===b1[j]){ push("eq",a1[i]); i++; j++; }
+      else if(dp[(i+1)*W+j]>=dp[i*W+j+1]){ push("del",a1[i]); i++; }
+      else { push("ins",b1[j]); j++; }
+    }
+    while(i<n) push("del",a1[i++]);
+    while(j<m) push("ins",b1[j++]);
+  }
+  push("eq",A.slice(A.length-s).join(""));
+  // readability: whitespace kept between two changes joins them; each change run = all removed, then all added
+  for(let k=1;k<seg.length-1;k++){
+    if(seg[k].t==="eq" && !/\S/.test(seg[k].v) && seg[k-1].t!=="eq" && seg[k+1].t!=="eq"){
+      seg.splice(k,1,{t:"del",v:seg[k].v},{t:"ins",v:seg[k].v}); k++;
+    }
+  }
+  const out=[];
+  for(let k=0;k<seg.length;){
+    if(seg[k].t==="eq"){
+      const l=out[out.length-1];
+      if(l && l.t==="eq") l.v+=seg[k].v; else out.push({t:"eq",v:seg[k].v});
+      k++; continue;
+    }
+    let d="", ins="";
+    while(k<seg.length && seg[k].t!=="eq"){ if(seg[k].t==="del") d+=seg[k].v; else ins+=seg[k].v; k++; }
+    if(d) out.push({t:"del",v:d});
+    if(ins) out.push({t:"ins",v:ins});
+  }
+  return out;
+}
+function aiDiffEl(from,to){
+  const box=document.createElement("div"); box.className="ai-diff";
+  aiDiff(from,to).forEach(x=>{
+    if(x.t==="eq"){ box.appendChild(document.createTextNode(x.v)); return; }
+    const el=document.createElement(x.t==="del" ? "del" : "ins");
+    el.className = x.t==="del" ? "ai-del" : "ai-ins";
+    el.textContent=x.v; box.appendChild(el);
+  });
+  return box;
+}
+
+/* ---------- AI reply display (called from w5ReplyEl) ---------- */
+const AI_COPY_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>';
+function aiDecorateReply(el, a, r, pre, scope){
+  el.classList.add("ai-reply");
+  const body=el.querySelector("."+pre+"-rtext");
+  if(body){
+    body.classList.add("ai-md");
+    body.innerHTML=mdToHtml(r.text);
+    body.querySelectorAll("a[href]").forEach(x=>{ x.target="_blank"; x.rel="noopener noreferrer"; });
+  }
+  const time=el.querySelector("."+pre+"-time");
+  if(time){
+    const tag=document.createElement("span");
+    tag.className="ai-tag"; tag.textContent="AI"; tag.title="Answer pasted from your AI assistant";
+    time.insertBefore(tag, time.firstChild);
+  }
+  const acts=el.querySelector(".w5-racts");
+  if(acts){
+    const c=document.createElement("button");
+    c.type="button"; c.className="w5-rbtn ai-rcopy"; c.title="Copy answer"; c.setAttribute("aria-label","Copy AI answer");
+    c.innerHTML=AI_COPY_SVG;
+    c.addEventListener("click",e=>{ e.stopPropagation(); copyText(r.text).then(ok=>toast(ok?"Answer copied":"Couldn't copy, try again")); });
+    acts.insertBefore(c, acts.firstChild);
+  }
+  if(r.suggest){
+    const sg=aiSuggestEl(a, r, scope);
+    if(time) el.insertBefore(sg, time); else el.appendChild(sg);
+  }
+}
+function aiSuggestEl(a, r, scope){
+  const box=document.createElement("div");
+  box.className="ai-sugg"+(r.suggestState ? " is-"+r.suggestState : "");
+  const head=document.createElement("div"); head.className="ai-sugg-head";
+  const lbl=document.createElement("span"); lbl.className="ai-sugg-lbl"; lbl.textContent="Suggested edit";
+  head.appendChild(lbl);
+  if(r.suggestState){
+    const st=document.createElement("span"); st.className="ai-sugg-state";
+    st.textContent = r.suggestState==="accepted" ? "✓ Accepted" : "Rejected";
+    head.appendChild(st);
+  }
+  box.appendChild(head);
+  if(r.suggestState==="accepted"){
+    const d=document.createElement("div"); d.className="ai-diff"; d.textContent=r.suggest; box.appendChild(d);
+  } else box.appendChild(aiDiffEl(a.quote, r.suggest));
+  if(!r.suggestState){
+    const row=document.createElement("div"); row.className="ai-sugg-acts";
+    row.innerHTML='<button type="button" class="mini save ai-accept">Accept</button><button type="button" class="mini ai-reject">Reject</button><button type="button" class="mini ai-scopy">Copy</button>';
+    const num=ANN.indexOf(a)+1;
+    row.querySelector(".ai-accept").setAttribute("aria-label",`Accept suggested edit for note ${num}`);
+    row.querySelector(".ai-reject").setAttribute("aria-label",`Reject suggested edit for note ${num}`);
+    row.querySelector(".ai-scopy").setAttribute("aria-label","Copy suggested text");
+    row.querySelector(".ai-accept").addEventListener("click",e=>{ e.stopPropagation(); aiAccept([{a,r}]); });
+    row.querySelector(".ai-reject").addEventListener("click",e=>{ e.stopPropagation(); aiReject([{a,r}]); });
+    row.querySelector(".ai-scopy").addEventListener("click",e=>{ e.stopPropagation(); copyText(r.suggest).then(ok=>toast(ok?"Suggested text copied":"Couldn't copy, try again")); });
+    box.appendChild(row);
+  }
+  return box;
+}
+
+/* ---------- accept / reject ---------- */
+// where the quoted (rendered) passage sits in the Markdown source; null when it isn't there verbatim
+function aiLocate(a){
+  const q=a.quote; if(!q) return null;
+  const occ=[]; let i=-1;
+  while((i=SRC.indexOf(q,i+1))!==-1) occ.push(i);
+  if(!occ.length) return null;
+  if(occ.length===1) return occ[0];
+  // same number of occurrences in the rendered text → take the one this note is anchored to
+  const T=anchorText(doc), rocc=[]; let j=-1;
+  while((j=T.indexOf(q,j+1))!==-1) rocc.push(j);
+  const k=rocc.indexOf(findStart(T,a));
+  if(k>=0 && rocc.length===occ.length) return occ[k];
+  // otherwise: best prefix / suffix match, ignoring Markdown punctuation and spacing
+  const norm=s=>String(s||"").replace(/[*_`~#>\[\]()|\\]+/g,"").replace(/\s+/g," ");
+  const pref=norm(a.prefix), suf=norm(a.suffix);
+  let best=occ[0], bestScore=-Infinity;
+  occ.forEach((s,idx)=>{
+    const before=norm(SRC.slice(Math.max(0,s-pref.length*2-40), s)).trimEnd();
+    const after=norm(SRC.slice(s+q.length, s+q.length+suf.length*2+40)).trimStart();
+    const score=commonSuffixLen(pref.trimEnd(), before)+commonPrefixLen(suf.trimStart(), after);
+    if(score>bestScore){ bestScore=score; best=s; }
+  });
+  return best;
+}
+function aiAccept(pairs){
+  if(mdeIsOpen()){ toast("Finish editing first: Done applies, Discard reverts"); return; }
+  const plans=[], missed=[];
+  pairs.forEach(({a,r})=>{
+    if(!annById(a.id) || !a.replies.includes(r) || !aiIsPending(r)) return;
+    const s=aiLocate(a);
+    if(s==null) missed.push({a,r}); else plans.push({a, r, start:s, end:s+a.quote.length});
+  });
+  plans.sort((x,y)=>x.start-y.start);
+  const ok=[]; let lastEnd=-1;
+  plans.forEach(p=>{ if(p.start>=lastEnd){ ok.push(p); lastEnd=p.end; } else missed.push(p); });
+  if(!ok.length){
+    if(missed.length===1){
+      const t=missed[0].r.suggest;
+      toast("This passage isn't in the Markdown word for word (it may span formatting) — edit it by hand", { action:{ label:"Copy", run:()=>copyText(t).then(k=>toast(k?"Suggested text copied":"Couldn't copy, try again")) }, ms:9000 });
+    } else if(missed.length) toast(`Couldn't place ${missed.length} suggestions in the Markdown — apply them by hand`, { ms:6000 });
+    return;
+  }
+  const before={ src:SRC, ann:JSON.parse(JSON.stringify(ANN)), activeId };
+  let s=SRC;
+  for(let k=ok.length-1;k>=0;k--){ const p=ok[k]; s=s.slice(0,p.start)+p.r.suggest+s.slice(p.end); }
+  SRC=s;
+  ok.forEach(p=>{
+    p.r.suggestState="accepted";
+    const nq=aiPlainText(p.r.suggest);
+    if(nq){ p.a.quote=nq; delete p.a.start; }
+  });
+  const reopen = POP.mode==="card" ? POP.id : null;
+  if(POP.mode) closePop(true);
+  renderDoc();
+  if(reopen && annById(reopen)) openCard(reopen);
+  const lost=ok.filter(p=>annById(p.a.id) && annById(p.a.id).resolved===false).length;
+  const n=ok.length;
+  let msg = n===1 ? "Suggested edit applied" : `Applied ${n} suggested edits`;
+  if(missed.length) msg+=` · ${missed.length} couldn't be placed`;
+  if(lost) msg+=` · ${lost} note${lost===1?"":"s"} lost ${lost===1?"its":"their"} highlight`;
+  toast(msg, { action:{ label:"Undo", run:()=>{
+    if(mdeIsOpen()){ toast("Finish editing first"); return; }
+    if(POP.mode) closePop(true);
+    SRC=before.src; ANN=before.ann; activeId=before.activeId;
+    renderDoc(); toast(n===1 ? "Edit undone" : "Edits undone");
+  } }, ms:8000 });
+}
+function aiReject(pairs){
+  const done=[];
+  pairs.forEach(({a,r})=>{ if(aiIsPending(r)){ r.suggestState="rejected"; done.push(r); } });
+  if(!done.length) return;
+  libFp="";            // the content fingerprint ignores suggestState → force the autosave to write
+  aiRefreshViews();
+  const n=done.length;
+  toast(n===1 ? "Suggestion rejected" : `Rejected ${n} suggestions`, { action:{ label:"Undo", run:()=>{
+    done.forEach(r=>{ if(r.suggestState==="rejected") delete r.suggestState; });
+    libFp=""; aiRefreshViews();
+  } } });
+}
+
+/* ---------- suggestions shown inline in the document ---------- */
+function aiSetShowSugg(on){
+  aiShowSugg=!!on; aiLSSet(AI_SUGG_KEY, aiShowSugg ? "1" : "0");
+  aiSyncInline(true);
+}
+function aiMarks(id){ return [...doc.querySelectorAll("mark.hl")].filter(m=>m.dataset.id===id); }
+function aiSyncInline(force){
+  const pend=aiPendingList();
+  const items = aiShowSugg ? pend.filter(x=>aiMarks(x.a.id).length) : [];
+  const sig=items.map(x=>x.a.id+"\u0001"+x.r.id+"\u0001"+x.r.suggest+"\u0001"+(ANN.indexOf(x.a)+1)).join("\u0002");
+  const present=doc.querySelectorAll(".ai-sugg-new").length;
+  if(force || sig!==aiInlineSig || present!==items.length){
+    aiInlineSig=sig;
+    const had=present>0;
+    doc.querySelectorAll(".ai-sugg-new").forEach(n=>n.remove());
+    doc.querySelectorAll("mark.hl.ai-sugg-old").forEach(m=>m.classList.remove("ai-sugg-old"));
+    items.forEach(({a,r})=>{
+      const marks=aiMarks(a.id);
+      marks.forEach(m=>m.classList.add("ai-sugg-old"));
+      const num=ANN.indexOf(a)+1;
+      const ins=document.createElement("ins");
+      ins.className="no-anchor ai-sugg-new"; ins.dataset.id=a.id;
+      ins.innerHTML='<span class="ai-sn-txt"></span><span class="ai-sn-acts"><button type="button" class="ai-sn-ok">✓</button><button type="button" class="ai-sn-no">✕</button></span>';
+      ins.querySelector(".ai-sn-txt").textContent=aiPlainText(r.suggest) || r.suggest;
+      const okB=ins.querySelector(".ai-sn-ok"), noB=ins.querySelector(".ai-sn-no");
+      okB.title="Accept"; okB.setAttribute("aria-label",`Accept suggested edit for note ${num}`);
+      noB.title="Reject"; noB.setAttribute("aria-label",`Reject suggested edit for note ${num}`);
+      okB.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); aiAccept([{a,r}]); });
+      noB.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); aiReject([{a,r}]); });
+      const last=marks[marks.length-1];
+      last.parentNode.insertBefore(ins, last.nextSibling);
+    });
+    if(had || items.length){ try{ layoutCards(); }catch(e){} }
+  }
+  aiUpdateBar(items, pend);
+}
+function aiUpdateBar(items, pend){
+  const bar=$("#aiSuggBar");
+  if(bar){
+    bar.hidden = !(aiShowSugg && items.length) || isHomeMode;
+    bar.querySelector(".ai-sb-n").textContent = `${items.length} suggestion${items.length===1?"":"s"}`;
+  }
+  const tg=w5Bar && w5Bar.querySelector('[data-aw="sugg"]');
+  if(tg){
+    tg.hidden = !(pend.length || aiShowSugg);
+    tg.setAttribute("aria-pressed", aiShowSugg ? "true" : "false");
+    tg.querySelector(".ai-w5n").textContent = pend.length ? String(pend.length) : "";
+  }
+}
+function aiOnRendered(){ aiInlineSig=null; aiSyncInline(true); }
+
+(function aiInit(){
+  aiSyncFmtItem();
+  // comments panel: "Paste AI answer" + "Show suggestions" (sits in the W5 search / filter bar)
+  if(w5Bar){
+    const row=document.createElement("div"); row.className="ai-w5row";
+    row.innerHTML=
+      `<button type="button" class="ai-w5btn" data-aw="paste">${AI_COPY_SVG.replace('<svg','<svg class="ai-w5ico"')}Paste AI answer…</button>
+       <button type="button" class="ai-w5btn ai-w5toggle" data-aw="sugg" aria-pressed="false" title="Show suggested edits in the document" hidden><span class="ai-w5box" aria-hidden="true"></span>Show suggestions <span class="ai-w5n w5-n"></span></button>`;
+    w5Bar.insertBefore(row, w5Bar.querySelector(".w5-none"));
+    row.addEventListener("click",e=>{
+      const b=e.target.closest("[data-aw]"); if(!b) return;
+      if(b.dataset.aw==="paste") aiOpenPaste("");
+      else aiSetShowSugg(!aiShowSugg);
+    });
+  }
+  const bar=$("#aiSuggBar");
+  bar.addEventListener("click",e=>{
+    const b=e.target.closest("[data-sb]"); if(!b) return;
+    const list=aiPendingList().filter(x=>aiMarks(x.a.id).length);
+    if(b.dataset.sb==="accept") aiAccept(list);
+    else if(b.dataset.sb==="reject") aiReject(list);
+    else aiSetShowSugg(false);
+  });
+  // any re-render of the comment cards may change replies / suggestion states → keep the inline view in sync
+  let q=false;
+  new MutationObserver(()=>{
+    if(q) return; q=true;
+    requestAnimationFrame(()=>{ q=false; try{ aiSyncInline(); }catch(e){ console.error(e); } });
+  }).observe(railInner,{childList:true});
+})();
 /* ==[/AI]== */
 
 /* ==[LINKS]== B — in-document links */
