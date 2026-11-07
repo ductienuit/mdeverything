@@ -1,0 +1,41 @@
+[
+  {
+    "quote": "copias y pegas unos párrafos en un chatbot",
+    "note": "Ejemplo — haz una pregunta. ¿Este problema es el mejor gancho para la introducción, o debería ir primero “la IA edita la sección equivocada”? Sugiere dos frases de apertura alternativas.",
+    "replies": ["Me inclino por lo de la sección equivocada — es más concreto."]
+  },
+  {
+    "quote": "las frases repetidas nunca se confunden",
+    "note": "Ejemplo — verifica una afirmación. Agrega un ejemplo de una línea que muestre cómo el contexto de alrededor distingue dos frases idénticas."
+  },
+  {
+    "quote": "tus comentarios se vuelven a anclar solos",
+    "note": "Ejemplo — pide una edición. “Volver a anclar” puede sonar técnico para quien lee por primera vez; reescribe este paso con palabras sencillas."
+  },
+  {
+    "quote": "Un clic para comentar un párrafo, título o celda de tabla completos",
+    "note": "Ejemplo — comenta una celda de tabla. Acorta esta descripción a menos de 8 palabras sin perder el sentido.",
+    "replies": ["Quizás: “Comenta un bloque entero en un clic.”"]
+  },
+  {
+    "quote": "Ahora le toca a tu propio documento",
+    "note": "Ejemplo — convierte una tarea pendiente en una llamada a la acción. Sugiere una frase corta y amable que lleve a la gente al botón Abrir."
+  },
+  {
+    "quote": "tu trabajo se guarda localmente en este dispositivo",
+    "note": "Ejemplo — verifica un dato. Confirma que esto coincide con cómo funciona el guardado automático (almacenamiento del navegador, por dispositivo) y explica qué pasa en una ventana privada.",
+    "replies": ["Vale la pena mencionar que borrar los datos del sitio también lo elimina.", "De acuerdo — pero que sea una sola frase corta."]
+  },
+  {
+    "quote": "cada edición sugerida se muestra como un diff que puedes aceptar o rechazar",
+    "note": "Ejemplo — una respuesta de la IA con una edición sugerida. Haz esta frase más amigable para quien no conoce la palabra “diff”.",
+    "replies": [
+      {
+        "by": "ai",
+        "round": 1,
+        "text": "Aquí tienes una versión más sencilla, sin tecnicismos. Acéptala para reescribir la oración, o Recházala para conservar la tuya.",
+        "edits": [{ "kind": "quote", "text": "cada edición sugerida aparece como un cambio marcado que puedes aceptar o rechazar con un clic" }]
+      }
+    ]
+  }
+]
