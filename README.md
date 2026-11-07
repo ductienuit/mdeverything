@@ -5,7 +5,7 @@ web app that runs entirely in your browser: open a Markdown document, leave inli
 on any passage, tweak the source in a built-in editor, then export a clean, structured
 context package for ChatGPT, Claude, Gemini, or your coding assistant.
 
-🔗 **Live app:** https://ductienuit.github.io/mdeverything/
+🔗 **Live app:** https://ductienuit.github.io/mdeverything/ · Tiếng Việt: https://ductienuit.github.io/mdeverything/vi/
 
 > Formerly **Marginalia** (`ductienuit.github.io/marginalia`). The old address now shows a
 > short "what's new" page and then brings visitors here.
@@ -37,6 +37,8 @@ structured bundle an assistant can act on:
 - Renders GitHub-flavored Markdown, wide tables and **Mermaid** diagrams
 - Export modes: **full context**, **notes only**, or **raw Markdown**
 - Keyboard accessible, responsive from mobile to desktop, `prefers-reduced-motion` aware
+- **Multilingual UI** — English and Tiếng Việt, each on its own URL (🌐 language menu in the header);
+  the instructions inside the AI export stay in English so every assistant reads them the same way
 
 ## Privacy
 
@@ -47,14 +49,50 @@ loaded from public CDNs.
 
 ## Use it locally
 
-No build step. Either:
+Nothing to install. Serve the folder: `python -m http.server 8000`, then visit
+`http://localhost:8000/` (or `/vi/` for Vietnamese). Opening `index.html` straight from disk also works.
 
-- Open `index.html` directly in a browser, **or**
-- Serve the folder: `python -m http.server 8000` then visit `http://localhost:8000/`
+## Editing the app
+
+The pages are **generated**. Edit the sources, then rebuild (Node 18+, no dependencies):
+
+| Edit | What it is |
+| --- | --- |
+| `src/index.html` | the app template (HTML, CSS, JS). Text is never hard-coded: markup uses `data-i18n="key"`, `data-i18n-attr="title:key;aria-label:key"` or `<!--t:key-->…<!--/t-->`; scripts call `t("key", {n})` |
+| `locales/en.json` | every English string (the source of truth); `locales/vi.json` … one file per language |
+| `locales/samples/<lang>.md` + `<lang>.annotations.json` | the demo document and its 7 example comments |
+| `scripts/locales.mjs` | the list of languages that are built |
+
+```sh
+node scripts/build.mjs            # writes index.html, vi/index.html …, sitemap.xml
+node scripts/check-locales.mjs    # missing / extra keys, placeholder mismatches, demo quotes
+node scripts/test-roundtrip.mjs   # export bundle → sample AI answer → parser, for every language
+node scripts/build.mjs --check    # fails when a generated file is out of date
+```
+
+Commit the generated files together with the sources (GitHub Pages serves the repo root).
+Never edit `index.html` or `vi/index.html` by hand: the next build overwrites them.
+
+Message syntax: `"Deleted {name}"`; plurals use a small ICU subset,
+`"{n, plural, one {# comment} other {# comments}}"` (categories from `Intl.PluralRules`; `#` is the
+number). Keys ending in `_html` may contain markup. Dates and relative times use `Intl`.
+
+### Adding a language
+
+1. Copy `locales/en.json` to `locales/<code>.json` (for example `ja.json`, `pt-BR.json`) and translate the values.
+   Keep every `{placeholder}`, the HTML tags of `*_html` keys, and a leading " · " or " — ".
+   Do not translate mdeverything, Markdown, ChatGPT, Claude, Gemini, file extensions or key names.
+2. Optional: `locales/samples/<code>.md` + `<code>.annotations.json`: the demo, translated, with its
+   7 example comments rewritten so that each `quote` occurs exactly once in the translated text
+   (plain rendered text, no Markdown syntax inside). Without them the English demo is shown.
+3. Add one line to `LOCALES` in `scripts/locales.mjs`, for example
+   `{ code: "pt-BR", dir: "pt-br", htmlLang: "pt-BR", ogLocale: "pt_BR", nativeName: "Português (Brasil)", hreflang: "pt-BR" }`.
+4. Run the four commands above and commit `locales/`, `scripts/locales.mjs` and the generated files.
+   The language menu, homepage links, hreflang tags, sitemap and first-visit suggestion pick it up automatically.
 
 ## Tech
 
-`index.html` with vanilla JavaScript and CSS, plus logo assets in `assets/`. Uses
+`src/index.html` (built into one page per language) with vanilla JavaScript and CSS, plus logo assets in `assets/`. Uses
 [marked](https://github.com/markedjs/marked) for Markdown,
 [DOMPurify](https://github.com/cure53/DOMPurify) for sanitization and
 [Mermaid](https://github.com/mermaid-js/mermaid) for diagrams (all via CDN).

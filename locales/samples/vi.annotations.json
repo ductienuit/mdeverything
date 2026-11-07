@@ -1,0 +1,41 @@
+[
+  {
+    "quote": "sao chép vài đoạn văn rồi dán vào chatbot",
+    "note": "Ví dụ — đặt câu hỏi. Nỗi khổ này có phải là cách mở đầu hấp dẫn nhất chưa, hay nên để “AI sửa sai phần” lên trước? Gợi ý hai câu mở đầu khác.",
+    "replies": ["Mình nghiêng về hướng “sửa sai phần” — nó cụ thể hơn."]
+  },
+  {
+    "quote": "những câu chữ lặp lại không bao giờ bị nhầm lẫn",
+    "note": "Ví dụ — kiểm tra một nhận định. Thêm một ví dụ ngắn cho thấy ngữ cảnh xung quanh giúp phân biệt hai cụm từ giống hệt nhau như thế nào."
+  },
+  {
+    "quote": "bình luận của bạn sẽ tự động bám lại đúng chỗ",
+    "note": "Ví dụ — yêu cầu sửa. “Bám lại đúng chỗ” có thể khó hiểu với người mới đọc lần đầu; viết lại bước này bằng lời đơn giản hơn."
+  },
+  {
+    "quote": "Một cú bấm để bình luận cả đoạn văn, tiêu đề hoặc ô bảng",
+    "note": "Ví dụ — bình luận một ô bảng. Rút gọn mô tả này xuống dưới 8 từ mà không mất ý.",
+    "replies": ["Có thể là: “Bình luận cả khối chỉ một cú bấm.”"]
+  },
+  {
+    "quote": "Tiếp theo là tài liệu của chính bạn",
+    "note": "Ví dụ — biến một việc cần làm thành lời kêu gọi hành động. Gợi ý một câu ngắn, thân thiện hướng người đọc tới nút Mở."
+  },
+  {
+    "quote": "dữ liệu được lưu cục bộ trên thiết bị này",
+    "note": "Ví dụ — kiểm chứng thông tin. Xác nhận câu này đúng với cách tự động lưu hoạt động (bộ nhớ trình duyệt, theo từng thiết bị) và cho biết điều gì xảy ra trong cửa sổ ẩn danh.",
+    "replies": ["Nên nói thêm là xóa dữ liệu trang cũng sẽ xóa luôn.", "Đồng ý — nhưng gói gọn trong một câu ngắn thôi."]
+  },
+  {
+    "quote": "mỗi đề xuất sửa hiện thành một diff để bạn chấp nhận hoặc từ chối",
+    "note": "Ví dụ — câu trả lời của AI kèm đề xuất sửa. Viết cụm này thân thiện hơn cho người đọc không biết từ “diff”.",
+    "replies": [
+      {
+        "by": "ai",
+        "round": 1,
+        "text": "Đây là phiên bản dễ hiểu hơn, tránh thuật ngữ. Chấp nhận để viết lại câu, hoặc Từ chối để giữ bản của bạn.",
+        "edits": [{ "kind": "quote", "text": "mỗi đề xuất sửa hiện rõ chữ cũ và chữ mới để bạn chấp nhận hoặc từ chối chỉ bằng một cú bấm" }]
+      }
+    ]
+  }
+]

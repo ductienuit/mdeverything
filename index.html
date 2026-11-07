@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){try{var m={"vi":"vi/"},l=localStorage.getItem("marginalia:lang:v1");if(l&&m[l])location.replace(m[l]+location.search+location.hash);}catch(e){}})();</script>
 <title>mdeverything — read, comment and edit Markdown for AI review</title>
 
-<!-- ===== SEO / social / AI-crawler metadata ===== -->
+<!-- ===== SEO / social / AI-crawler metadata (filled per language by scripts/build.mjs) ===== -->
 <meta name="description" content="Free browser app to read, comment on and edit Markdown, then export a clean, structured context package for AI assistants like ChatGPT, Claude, and Gemini. Inline comments, outline, Markdown editor, three reading themes.">
 <meta name="keywords" content="markdown editor, markdown annotation, annotate markdown, markdown comments, AI document review, context for ChatGPT, Claude document review, Gemini, markdown reader">
 <meta name="author" content="mdeverything">
@@ -15,6 +16,9 @@
 <meta name="color-scheme" content="light dark">
 
 <link rel="canonical" href="https://ductienuit.github.io/mdeverything/">
+<link rel="alternate" hreflang="en" href="https://ductienuit.github.io/mdeverything/">
+<link rel="alternate" hreflang="vi" href="https://ductienuit.github.io/mdeverything/vi/">
+<link rel="alternate" hreflang="x-default" href="https://ductienuit.github.io/mdeverything/">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -27,6 +31,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="mdeverything — read, comment and edit Markdown for AI review">
 <meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="vi_VN">
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
@@ -55,7 +60,11 @@
   "browserRequirements": "Requires JavaScript",
   "isAccessibleForFree": true,
   "inLanguage": "en",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
   "featureList": [
     "Inline comments on any passage, with replies and resolve",
     "Document outline with scroll-spy",
@@ -297,8 +306,8 @@
    Every theme (see THEMES block) defines every token below. New CSS must use
    tokens only — no hard-coded colors or font stacks. ---- */
 :root{
-  --font-ui:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  --font-doc:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --font-ui:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Hiragino Sans","Yu Gothic UI","Noto Sans JP","Noto Sans CJK JP",sans-serif;
+  --font-doc:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Hiragino Sans","Yu Gothic UI","Noto Sans JP","Noto Sans CJK JP",sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
   --app-bg:#f7f7f5;             /* window chrome behind the page */
   --paper:#ffffff;              /* the document sheet */
@@ -1231,8 +1240,8 @@ body.rail-collapsed .rail{ display:none; }
 
 /* ======================= SEPIA (Calmly "Dune") ======================= */
 body[data-theme="beige"]{
-  --font-ui:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  --font-doc:"Merriweather",Georgia,"Times New Roman",serif;
+  --font-ui:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Hiragino Sans","Yu Gothic UI","Noto Sans JP","Noto Sans CJK JP",sans-serif;
+  --font-doc:"Merriweather",Georgia,"Times New Roman","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
   --font-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
   --app-bg:#f2ebd6; --paper:#fcf6e4; --surface:#fdf9ed; --surface-2:#f3ebd4;
   --ink:#3a3936; --ink-soft:#6b6456; --ink-faint:#958c76;
@@ -1254,8 +1263,8 @@ body[data-theme="beige"]{
 
 /* ======================= NIGHT (Bear Dark Graphite / Ulysses) ======================= */
 body[data-theme="dark"]{
-  --font-ui:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  --font-doc:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --font-ui:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Hiragino Sans","Yu Gothic UI","Noto Sans JP","Noto Sans CJK JP",sans-serif;
+  --font-doc:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Hiragino Sans","Yu Gothic UI","Noto Sans JP","Noto Sans CJK JP",sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
   --app-bg:#1c1d21; --paper:#232429; --surface:#2a2b31; --surface-2:#303137;
   --ink:#dcdde1; --ink-soft:#a3a6ae; --ink-faint:#787b84;
@@ -2480,6 +2489,33 @@ body.editing .tbl-layer{ display:none!important; }
 @media (max-width:1000px){ #home .how3{ grid-template-columns:1fr 1fr; } #home .h3-key{ grid-column:1 / -1; } }
 @media (max-width:560px){ #home .how3{ grid-template-columns:1fr; } #home .h3-key{ grid-column:auto; } #home .h3-mock{ min-height:0; } }
 /* ==[/HOW3]== */
+/* ==[I18N CSS]== language switcher (header), language links (homepage), language suggestion bar */
+header .lang-code{font-size:11.5px;font-weight:600;letter-spacing:.04em;line-height:1}
+@media (max-width:600px){ header .lang-code{display:none} }
+header .lang-menu{min-width:190px}
+header .lang-menu > a{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:8px;font-size:13.5px;
+  font-weight:500;line-height:1.3;color:var(--ink);text-decoration:none}
+header .lang-menu > a:hover,header .lang-menu > a:focus-visible{background:var(--surface-2)}
+header .lang-menu > a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+header .lang-menu .mi-txt{flex:1 1 auto;min-width:0}
+header .lang-menu .mi-check{visibility:hidden;color:var(--accent)}
+header .lang-menu > a[aria-checked="true"]{font-weight:600}
+header .lang-menu > a[aria-checked="true"] .mi-check{visibility:visible}
+#home .lang-links{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;margin:14px auto 0;
+  font:500 12.5px/1.5 var(--font-ui);color:var(--ink-faint)}
+#home .lang-links a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid transparent}
+#home .lang-links a:hover,#home .lang-links a:focus-visible{color:var(--accent);border-bottom-color:currentColor}
+#home .lang-links a[aria-current="page"]{color:var(--ink);font-weight:600}
+.lang-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:90;display:flex;align-items:center;gap:6px;
+  max-width:calc(100vw - 32px);box-sizing:border-box;padding:6px 6px 6px 14px;border:1px solid var(--line-strong);border-radius:999px;
+  background:var(--surface);color:var(--ink);box-shadow:var(--shadow-lg);font:500 13px/1.3 var(--font-ui)}
+.lang-bar[hidden]{display:none}
+.lang-bar .lb-txt{min-width:0}
+.lang-bar .lb-go{border:0;border-radius:999px;padding:6px 12px;background:var(--accent);color:var(--accent-contrast);
+  font:600 12.5px/1 var(--font-ui);text-decoration:none;white-space:nowrap}
+.lang-bar .lb-x{border:0;background:none;color:var(--ink-faint);font-size:17px;line-height:1;width:28px;height:28px;border-radius:50%;cursor:pointer}
+.lang-bar .lb-x:hover,.lang-bar .lb-x:focus-visible{background:var(--surface-2);color:var(--ink)}
+/* ==[/I18N CSS]== */
 </style>
 </head>
 <body>
@@ -2508,6 +2544,13 @@ body.editing .tbl-layer{ display:none!important; }
         <button type="button" role="menuitemradio" data-theme-set="light" aria-checked="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="mi-txt">Paper</span><svg class="ico mi-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <button type="button" role="menuitemradio" data-theme-set="beige" aria-checked="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></svg><span class="mi-txt">Sepia</span><svg class="ico mi-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <button type="button" role="menuitemradio" data-theme-set="dark" aria-checked="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span class="mi-txt">Night</span><svg class="ico mi-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+      </div>
+    </span>
+    <span class="pop hdr-pop" id="langWrap">
+      <button class="btn icon-btn hdr-menu-btn" id="bLang" type="button" title="Language" aria-label="Language: English" aria-haspopup="menu" aria-expanded="false" aria-controls="menuLang"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span class="lang-code" aria-hidden="true">EN</span><svg class="ico caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button>
+      <div class="menu hdr-menu lang-menu" id="menuLang" role="menu" aria-label="Language" hidden>
+        <a role="menuitemradio" href="./" hreflang="en" lang="en" data-lang="en" aria-checked="true"><span class="mi-txt">English</span><svg class="ico mi-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
+        <a role="menuitemradio" href="vi/" hreflang="vi" lang="vi" data-lang="vi" aria-checked="false"><span class="mi-txt">Tiếng Việt</span><svg class="ico mi-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
       </div>
     </span>
     <button class="btn icon-btn" id="bToggleRail" type="button" title="Show / hide comments panel" aria-label="Show / hide comments panel" aria-pressed="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg><span class="b-txt">Comments</span><span class="count" aria-live="polite"><b id="cnt">0</b><span id="cntLabel" class="sr-only">notes</span></span></button>
@@ -2613,6 +2656,7 @@ Note: Is that right? I thought…</pre>
     </div>
   </div>
   <p class="assure"><span>Free</span><span>No sign-up</span><span>Autosaves as you work</span><span>Keep up to 10 documents</span></p>
+  <nav class="lang-links" aria-label="Languages"><a href="./" hreflang="en" lang="en" data-lang="en" aria-current="page">English</a><a href="vi/" hreflang="vi" lang="vi" data-lang="vi">Tiếng Việt</a></nav>
 </section>
 
 
@@ -2621,10 +2665,7 @@ Note: Is that right? I thought…</pre>
   <section class="sheet"><div class="try-tip" id="tryTip" role="note" hidden><span class="try-ico" aria-hidden="true">✨</span><span class="try-txt"><b>Try it:</b> select any sentence below and press <kbd>Enter</kbd> to leave a comment.</span><button type="button" class="try-x" aria-label="Dismiss tip">×</button></div><div id="doc"></div></section>
   <aside class="rail">
     <div class="rail-inner" id="railInner"></div>
-    <div id="empty" class="rail-empty">
-      <b>Select any passage</b> in the document to add a note or question.
-      Notes anchor right beside the passage and travel with it when you copy.
-    </div>
+    <div id="empty" class="rail-empty"><b>Select any passage</b> in the document to add a note or question. Notes anchor right beside the passage and travel with it when you copy.</div>
   </aside>
 </main>
 
@@ -2724,15 +2765,131 @@ Note: Is that right? I thought…</pre>
 <div id="tblLayer" class="tbl-layer" hidden></div>
 <!-- ==[/TABLES HTML]== -->
 
+<script type="application/json" id="i18n">{"lang":"en","code":"en","nativeName":"English","base":"","locales":[{"code":"en","htmlLang":"en","dir":"ltr","nativeName":"English","href":"./"},{"code":"vi","htmlLang":"vi","dir":"ltr","nativeName":"Tiếng Việt","href":"vi/"}],"dict":{"lang.button":"Language","lang.buttonAria":"Language: English","lang.links":"Languages","lang.suggest":"This page is available in English","lang.suggestGo":"Switch","lang.suggestDismiss":"Dismiss","hdr.outline":"Outline","hdr.comments":"Comments","hdr.outlineToggle":"Show / hide outline","hdr.editMd":"Edit Markdown","hdr.importTitle":"Open, paste or restore","hdr.import":"Import","hdr.theme":"Theme","hdr.railToggle":"Show / hide comments panel","menu.openTitle":"Open a Markdown file","menu.open":"Open file…","menu.openSub":".md, .markdown or .txt from your computer","menu.pasteTitle":"Paste Markdown","menu.paste":"Paste Markdown…","menu.pasteSub":"Start from text on your clipboard","menu.restoreTitle":"Restore documents and comments from a backup file","menu.restore":"Restore from backup (.json)…","menu.restoreSub":"Bring back documents and their comments","theme.light":"Paper","theme.beige":"Sepia","theme.dark":"Night","theme.aria":"Theme: {name}","theme.ariaPaper":"Theme: Paper","export.noDoc":"No Markdown document to copy yet","export.copiedRaw":"Copied document only (Markdown, no comments)","export.copyFailed":"Couldn't copy, try again","export.needComment":"Add at least one comment before exporting","export.copiedFull":"Copied full context (document + {n, plural, one {# comment} other {# comments}}) — paste it into your AI assistant","export.copiedNotes":"Copied comments only ({n, plural, one {# comment} other {# comments}}) — paste them into your AI assistant","export.button":"Export for AI","export.options":"Export options","export.menu":"Export","export.copyHead":"Copy to clipboard","export.full":"Full context","export.fullSub":"Document + comments + instructions for the AI","export.notes":"Comments only","export.notesSub":"Comments with their quoted passages (no full document)","export.raw":"Document only","export.rawSub":"Just the Markdown text (no comments)","export.downloadHead":"Download file","export.dlFull":"Full context (.md)","export.dlNotes":"Comments only (.md)","export.dlDoc":"Document only (.md)","export.aiHead":"AI replies","export.aiFmt":"Let AI reply back into mdeverything","export.aiFmtSub":"Adds answer instructions so you can paste the reply here","export.paste":"Paste AI answer…","export.pasteSub":"Add the AI's answers and suggested edits to your comments","home.hideTitle":"Hide the intro and keep the demo","home.hide":"Hide intro","home.kicker":"Markdown review desk for AI","home.title_html":"Point at the exact words.\u003cbr>\u003cspan class=\"hero-em\">Tell your AI what to fix.\u003c/span>","home.sub":"Comment on any Markdown file, then export it with every comment pinned to its passage — so ChatGPT, Claude or Gemini answers in the right place.","home.open":"Open a Markdown file","home.paste":"Paste Markdown","home.demo":"Explore the demo below","home.dropAria":"Open a Markdown file — or drop one here","home.dropTitle":"Drop your .md file here","home.dropBrowse":"or click to browse your computer","home.dropHint":".md · .markdown · .txt — or a .mdeverything.json backup","how.title":"How it works","how.mockDoc_html":"Free for teams of up to 5 people. \u003cmark class=\"mk-hl\">Billing starts on day one\u003cspan class=\"mk-badge\">1\u003c/span>\u003c/mark> for everyone else.","how.mockNote":"Is that right? I thought there's a 14-day trial.","how.s1Title":"Point at the words","how.s1Text":"Open or paste any Markdown file. Select a passage and write what should change.","how.mockExport_html":"\u003cspan class=\"mk-k\">[1] {#n3f9a}\u003c/span> Location: section “Pricing”\nQuoted passage:\n\u003cspan class=\"mk-q\">\"Billing starts on day one\"\u003c/span>\nNote: Is that right? I thought…","how.s2Title":"Send it to your AI","how.s2Text":"Export copies the whole document with every comment pinned to its passage. Paste it into ChatGPT, Claude or Gemini.","how.mockReply":"Yes — paid plans start with a 14-day trial.","how.mockDiff_html":"Billing starts \u003cdel>on day one\u003c/del> \u003cins>after a 14-day free trial\u003c/ins>","how.s3Title":"Review answers in place","how.s3Text_html":"Paste the reply back. Each answer lands under its own comment, with suggested edits shown as \u003cdel>old\u003c/del> → \u003cins>new\u003c/ins>. Accept or reject each one.","how.loopTitle":"Not done yet?","how.loopText":"Reply or add comments and export again — only new and follow-up comments get answered.","how.foot":"Works with ChatGPT, Claude, Gemini — no account, nothing uploaded","why.aria":"Why mdeverything","why.c1Title":"Precise context for AI","why.c1Text":"Each comment carries its quote, section and surrounding text, so answers land on the right sentence.","why.c2Title":"Private — runs in your browser","why.c2Text":"No upload, no account, no tracking. Your work stays on this device.","why.c3Title":"Works in any language","why.c3Text":"Comments anchor to the exact words — English, Tiếng Việt, 日本語 alike.","assure.free":"Free","assure.noSignup":"No sign-up","assure.autosave":"Autosaves as you work","assure.docs":"Keep up to 10 documents","tip.text_html":"\u003cb>Try it:\u003c/b> select any sentence below and press \u003ckbd>Enter\u003c/kbd> to leave a comment.","tip.dismiss":"Dismiss tip","floater.add":"Add note","dropzone.text":"Drop a .md file — or a .mdeverything.json backup — to open it","source.newTitle":"New document from Markdown","source.create":"Create document","source.title":"Paste Markdown","source.render":"Render document","source.hint_html":"Paste Markdown and press \u003cb>Render document\u003c/b>. From the homepage, this replaces the demo sample. In workspace mode, existing notes are kept when possible and re-anchored to matching passages.","source.openFile":"Open Markdown…","confirm.defaultTitle":"Replace current document?","confirm.defaultMessage":"This action cannot be undone.","confirm.exportFirst":"Export your notes first if you want to keep a copy.","confirm.continue":"Continue","confirm.replaceMessage":"Loading a new document will remove the current annotations.","confirm.replaceOk":"Replace document","common.cancel":"Cancel","common.save":"Save","common.undo":"Undo","common.cancelEsc":"Cancel (Esc)","common.close":"Close","common.closeEsc":"Close (Esc)","common.edit":"Edit","common.delete":"Delete","common.open":"Open","doc.sampleName":"Sample document","doc.untitled":"Markdown document","doc.labelTitle":"{name} — Documents","doc.editedName":"Edited document","doc.sampleCopy":"Sample copy","doc.pastedName":"Pasted Markdown","doc.untitledShort":"Untitled","doc.recoveredName":"Recovered document","doc.importedName":"Imported document","sample.confirmTitle":"Open sample workspace?","sample.confirmMessage":"You currently have {n, plural, one {# note} other {# notes}}. Loading the sample will delete these annotations.","sample.confirmOk":"Open sample","sample.confirmKeep":"Keep current document","sample.loaded":"Sample loaded with {n, plural, one {# example comment} other {# example comments}}","sample.liveDemo":"Live demo · hover or click the highlights","render.failed":"Could not render markdown.","code.label":"code","code.copy":"Copy","code.copied":"Copied","code.error":"Error","mermaid.rendering":"Rendering diagram…","mermaid.error":"Diagram didn’t parse — showing source.","outline.untitled":"Untitled section","outline.title":"On this page","outline.close":"Close outline","outline.collapse":"Collapse outline","outline.empty_html":"No headings in this document yet. Add \u003ccode>#\u003c/code>, \u003ccode>##\u003c/code> or \u003ccode>###\u003c/code> headings to get an outline.","outline.expand":"Expand outline","outline.aria":"Document outline","gutter.comment":"Comment on this block","rail.countLabel":"{n, plural, one {note} other {notes}}","rail.show":"Show comments panel","rail.hide":"Hide comments panel","rail.collapse":"Collapse comments panel","rail.showCount":"Show comments panel ({n, plural, one {# comment} other {# comments}})","rail.notesWord":"notes","rail.empty_html":"\u003cb>Select any passage\u003c/b> in the document to add a note or question. Notes anchor right beside the passage and travel with it when you copy.","rail.reviewerNotes":"Reviewer notes","rail.exampleNotes":"Example notes","rail.demoHint":"Demo comments show how annotations connect to highlighted passages.","card.notFound":"This passage was not found in the document","card.exampleChip":"Example note","card.replies":"{n, plural, one {# reply} other {# replies}}","card.editNote":"Edit note","card.deleteNote":"Delete note","card.replyPlaceholder":"Reply…","card.replyToNote":"Reply to note {n}","card.reply":"Reply","card.addNotePlaceholder":"Click to add a note…","card.ariaNote":"Note {n}: {quote}","card.ariaEmpty":"Empty note {n} on “{quote}” — activate to write","card.deleteNoteN":"Delete note {n}","card.editNoteN":"Edit note {n}","pop.notesOnPassage":"{n, plural, one {# note on this passage} other {# notes on this passage}}","pop.noNoteClick":"No note yet — click to add","pop.preview":"Note preview","pop.newNote":"New note","pop.notePlaceholder":"Add a note or question…","pop.noteText":"Note text","pop.hint":"Enter to save · Shift+Enter new line","pop.noteN":"Note {n}","pop.notesHere":"{n, plural, one {# note here} other {# notes here}}","pop.showNote":"Show note {n}","pop.noNote":"No note yet","reply.deleted":"Reply deleted","reply.edit":"Edit reply","reply.delete":"Delete reply","reply.editHintTitle":"Enter to save · Shift+Enter new line · Esc to cancel","reply.editHint":"Enter to save · Esc to cancel","reply.edited":"edited","reply.editedAt":"Edited {date}","filter.none.all":"No comments.","filter.none.replies":"No comments with replies.","filter.none.unanchored":"No unanchored comments.","filter.none.ai":"No comments with an AI answer.","filter.none.noai":"No comments without an AI answer.","filter.none.sugg":"No comments with pending suggestions.","filter.noneQ.all":"No comments match “{q}”.","filter.noneQ.replies":"No comments with replies match “{q}”.","filter.noneQ.unanchored":"No unanchored comments match “{q}”.","filter.noneQ.ai":"No comments with an AI answer match “{q}”.","filter.noneQ.noai":"No comments without an AI answer match “{q}”.","filter.noneQ.sugg":"No comments with pending suggestions match “{q}”.","filter.label":"Filter comments","filter.all":"All","filter.replies":"With replies","filter.unanchored":"Unanchored","filter.unanchoredTitle":"Notes whose passage is no longer in the document","filter.ai":"With AI answer","filter.noai":"No AI answer","filter.sugg":"Pending suggestions","filter.suggTitle":"AI suggested edits not yet accepted or rejected","filter.clear":"Clear filters","search.placeholder":"Search comments","help.titleShort":"Keyboard shortcuts (?)","help.title":"Keyboard shortcuts","help.nextPrev":"Next / previous comment","help.search":"Search comments","help.addNote":"Add a note on the selected text","help.close":"Close a card, menu or dialog","help.show":"Show these shortcuts","nav.noComments":"No comments yet","nav.noMatch":"No comments match the filter","nav.noHighlight":"No comments with a highlight in this document","toast.noteGone":"That note no longer exists","toast.noteDeleted":"Note deleted","toast.noteRestoredOrphan":"Note restored — its passage is no longer in the document","toast.storageFull":"Browser storage is full — your latest changes aren't saved","toast.manageStorage":"Manage storage","toast.storageUnavailable":"Browser storage isn't available here — changes won't be kept after a reload","toast.savedAs":"Your changes are saved as “{name}”","toast.opened":"Opened {name}","toast.docLoaded":"Document loaded","toast.cantRead":"Couldn't read “{name}”","toast.pasteFirst":"Paste Markdown first","toast.rendered":"Markdown rendered","time.justNow":"just now","time.yesterday":"yesterday","editor.undo":"Undo","editor.redo":"Redo","editor.bold":"Bold","editor.italic":"Italic","editor.strike":"Strikethrough","editor.h1":"Heading 1","editor.h2":"Heading 2","editor.h3":"Heading 3","editor.ul":"Bulleted list","editor.ol":"Numbered list","editor.task":"Task list","editor.quote":"Quote","editor.code":"Inline code","editor.codeblock":"Code block","editor.link":"Link","editor.table":"Insert table","editor.hr":"Horizontal rule","editor.region":"Markdown editor","editor.formatting":"Formatting","editor.discardTitle":"Discard changes and return to the document","editor.discard":"Discard","editor.applyTitle":"Apply changes ({key})","editor.done":"Done","editor.view":"Editor view","editor.write":"Write","editor.preview":"Preview","editor.source":"Markdown source","editor.placeholder":"Write Markdown…","editor.livePreview":"Live preview","editor.hint_html":"\u003ckbd>{key}\u003c/kbd> apply · \u003ckbd>Esc\u003c/kbd> then \u003ckbd>Tab\u003c/kbd> leaves the editor","editor.finishTitle":"Finish editing and apply changes ({key})","editor.editTitle":"Edit Markdown source with live preview","editor.editing":"Editing","editor.edit":"Edit","editor.draftRestored":"Restored your unsaved draft","editor.noChanges":"No changes to apply","editor.applied":"Changes applied","editor.lost":"{n, plural, one {# comment lost its anchor} other {# comments lost their anchor}}","editor.reanchored":"{n, plural, one {# comment re-anchored} other {# comments re-anchored}}","editor.discardConfirmTitle":"Discard your edits?","editor.discardConfirmMessage":"Your changes to the Markdown source will be lost.","editor.discardConfirmNote":"The document and its comments stay exactly as they were before you started editing.","editor.discardConfirmOk":"Discard edits","editor.keepEditing":"Keep editing","editor.discarded":"Edits discarded","editor.count":"{w, plural, one {# word} other {# words}} · {c, plural, one {# character} other {# characters}}","editor.unsaved":"Unsaved changes","editor.clean":"No changes","editor.nothingToPreview":"Nothing to preview yet.","editor.ph.linkText":"link text","editor.ph.bold":"bold text","editor.ph.italic":"italic text","editor.ph.strike":"strikethrough","editor.ph.code":"code","editor.ph.column":"Column {n}","editor.ph.cell":"Cell","editor.finishFirst":"Finish editing first: Done ({key}) applies, Discard reverts","editor.finishBeforeOpen":"Finish editing before opening another file","editor.finishFirstShort":"Finish editing first","lib.documents":"Documents","lib.full":"You can keep up to {max} documents — delete one to add another","lib.manage":"Manage","lib.recovered":"Recovered {n, plural, one {# document that wasn't} other {# documents that weren't}} listed in Documents","lib.cantOpen":"Couldn't open “{name}” — its saved data is missing","lib.deletedOne":"Deleted “{name}”","lib.deletedMany":"Deleted {n} documents","lib.restoredOne":"Restored “{name}”","lib.restoredMany":"Restored {n} documents","lib.notRestored":" — {n, plural, one {# document} other {# documents}} not restored (limit {max})","lib.nothingToBackup":"Nothing to back up yet","lib.downloaded":"Downloaded {file}","lib.importFailed":"Couldn't import “{name}” — {why}","lib.importNotJson":"it isn't valid JSON","lib.importNotBackup":"it isn't an mdeverything backup","lib.importEmpty":"it contains no documents","lib.dupSkipped":" — {n, plural, one {# duplicate} other {# duplicates}} skipped (already in Documents)","lib.imported":"Imported {docs, plural, one {# document} other {# documents}} · {notes, plural, one {# comment} other {# comments}}","lib.importFull":" — storage is full, the rest were skipped","lib.importCapped":" — {n, plural, one {# document} other {# documents}} skipped (limit {max})","lib.dupOne":"“{name}” is already in Documents — nothing new to import","lib.dupAll":"All {n} documents are already in Documents — nothing new to import","lib.backupNag":"No backup in over {days} days — browsers can clear site data. Keep a copy of your documents as a file.","lib.downloadBackup":"Download backup","lib.changedElsewhere":"“{name}” was changed in another tab","lib.loadLatest":"Load latest","lib.deletedElsewhere":"“{name}” was deleted in another tab — it stays open here, and your next change saves it again","lib.cantLoadLatest":"Couldn't load the latest version","lib.loadedLatest":"Loaded the latest “{name}”","lib.quotaWarn":"Storage is almost full — only ~{free} left. Download a backup and remove documents you no longer need.","lib.lsWarn":"This site's small-document storage is almost full (it's shared with other pages on this domain). Remove documents you no longer need.","lib.backupFirst":"Download backup first","lib.backupFirstMany":"Download backup of {n} documents first","lib.backupDone":"Backup downloaded ✓","lib.noOld":"No documents older than {days} days","lib.andMore":"…and {n} more","lib.oldTitle":"Remove {n, plural, one {# old document} other {# old documents}}?","lib.oldMessage":"Not changed in the last {days} days:","lib.oldNote":"This frees browser storage. You can undo right after.","lib.oldOk":"Remove {n}","lib.oldKeep":"Keep them","lib.wipeTitle":"Delete all data?","lib.wipeMessage":"This permanently removes {docs, plural, one {# document} other {# documents}}, {notes, plural, one {# comment} other {# comments}} and your saved preferences from this browser.","lib.wipeNote":"This can't be undone.","lib.wipeOk":"Delete everything","lib.wiped":"All data deleted from this browser","lib.new":"New","lib.newOpen":"Open file…","lib.newOpenSub":".md, .markdown or .txt","lib.newPaste":"Paste Markdown…","lib.newPasteSub":"Start a new document from text","lib.newSample":"Sample document","lib.newSampleSub":"The guided demo (not saved)","lib.close":"Close documents","lib.search":"Search documents","lib.searchAria":"Search documents by name","lib.listAria":"Saved documents","lib.backup":"Backup","lib.backupAll":"Download backup (.json)","lib.restore":"Restore from backup…","lib.backupNote":"A backup keeps your documents and comments in one file — use it to move to another browser or keep a safe copy.","lib.removeOld":"Remove documents older than {days} days","lib.wipe":"Delete all data","lib.showingSample":"Showing the sample document","lib.sampleNotice":"You're viewing the sample document. It isn't saved unless you change it — then it's kept here as “{name}”.","lib.emptyTitle":"No saved documents yet","lib.emptyText":"Open or paste a Markdown file — it's kept here automatically, with its comments.","lib.noMatch":"No documents match “{q}”.","lib.rowComments":"{n, plural, one {# comment} other {# comments}}","lib.renameAria":"Rename {name}","lib.openTitle":"Open {name}","lib.current":"Open","lib.rename":"Rename","lib.backupOne":"Download backup","lib.backupOneAria":"Download backup of {name}","lib.deleteAria":"Delete {name}","lib.hostStorage":"Storage is managed by the app hosting this page, so usage can't be measured here.","lib.noStorage":"Browser storage isn't available here — documents won't be kept after a reload.","lib.storage":"Storage","lib.used_html":"\u003cb>~{size}\u003c/b> used","lib.meterTitle":"Small documents: ~{ls} in localStorage · large documents: ~{idb} in IndexedDB","lib.meterFree":" · the browser has ~{free} free for this site","lib.meterAria":"Browser storage used","ai.fmtOn":"AI replies on — exports ask the AI to answer in a format you can paste back","ai.fmtOff":"AI replies off — exports use the plain format","ai.noDocDownload":"No Markdown document to download yet","ai.noNoteId":"No note with id {id} in this document","ai.noNoteNum":"No note [{n}] in this document","ai.emptyAnswer":"Empty answer","ai.suggestedEdits":"{n, plural, one {Suggested an edit.} other {Suggested # edits.}}","ai.addAnswers":"Add answers","ai.noNotes":"This document has no notes yet, so there is nothing to attach answers to.","ai.srAdd":"Will be added: ","ai.srDup":"Skipped, duplicate: ","ai.srSkip":"Skipped: ","ai.prevNote":"Note {n} · {snippet}","ai.byNumber":"Matched by number","ai.byId":"Matched by id","ai.includes":"{n, plural, one {includes a suggested edit} other {includes # suggested edits}}","ai.round":"Note {n} already has an AI answer — this will be round {round}","ai.roundSuperseded":" (its pending edits will be marked superseded)","ai.dupSkipped":"Identical answer already added — skipped","ai.skippedWhy":"{why} — skipped","ai.general":"General","ai.generalNote":"Not stored — copy it if you need it","ai.generalCopied":"General comments copied","ai.noneFound_html":"No answers found. Each answer should start with a heading like \u003ccode>{example}\u003c/code> — turn on “{option}” in the Export menu before exporting.","ai.addN":"{n, plural, one {Add # answer} other {Add # answers}}","ai.added":"{n, plural, one {Added # AI answer} other {Added # AI answers}}","ai.removed":"{n, plural, one {Removed # AI answer} other {Removed # AI answers}}","ai.line":"Line {n}","ai.moreChanges":"{n, plural, one {… and # more change — use Review} other {… and # more changes — use Review}}","ai.noChanges":"No changes","ai.scope.quote":"Quoted passage","ai.scope.everywhere":"{n, plural, one {Everywhere · # place} other {Everywhere · # places}}","ai.scope.section":"Section: {name}","ai.scope.document":"{n, plural, one {Whole document · # change} other {Whole document · # changes}}","ai.scope.sentence":"Sentence · paragraph","ai.scope.elsewhereLine":"Elsewhere · line ~{n}","ai.scope.elsewhere":"Elsewhere","ai.scope.deletion":" · deletion","ai.scope.addition":" · addition","ai.miss.overlap":"Overlaps an accepted change","ai.miss.conflict":"Overlaps another edit in this batch","ai.miss.same":"Already in the document","ai.miss.format":"Not word for word in the Markdown (the passage spans formatting)","ai.miss.changed":"Text changed since the AI answered","ai.byHand":"{why} — apply it by hand","ai.suggCopied":"Suggested text copied","ai.cantApplyN":"Couldn't apply {n} edits — see their notes","ai.finishFirst":"Finish editing first: Done applies, Discard reverts","ai.applied":"{n, plural, one {Suggested edit applied} other {Applied # suggested edits}}","ai.notApplied":" · {n} couldn't be applied","ai.lostHighlight":" · {n, plural, one {# note lost its highlight} other {# notes lost their highlight}}","ai.undone":"{n, plural, one {Edit undone} other {Edits undone}}","ai.rejected":"{n, plural, one {Suggestion rejected} other {Rejected # suggestions}}","ai.noReview":"No changes to review","ai.revHint":"Note {num} · {scope} · {n, plural, one {# change} other {# changes}}. Accept or reject each change, then apply.","ai.revChange":"Change {n} · line ~{line}","ai.accept":"Accept","ai.reject":"Reject","ai.acceptN":"Accept change {n}","ai.rejectN":"Reject change {n}","ai.apply":"Apply","ai.applyNofM":"{m, plural, one {Apply {k} of # change} other {Apply {k} of # changes}}","ai.rejectEdit":"Reject this edit","ai.docChanged":"The document changed — open Review again","ai.tag":"AI","ai.tagRound":"AI · round {n}","ai.tagTitle":"Answer pasted from your AI assistant","ai.copyAnswer":"Copy answer","ai.copyAnswerAria":"Copy AI answer","ai.answerCopied":"Answer copied","ai.earlier":"Earlier AI answer · round {n}","ai.editN":"Edit {n} · ","ai.st.accepted":"✓ Accepted","ai.st.rejected":"Rejected","ai.st.superseded":"Superseded","ai.supersededTitle":"A newer AI answer replaced this suggestion","ai.copySugg":"Copy suggested text","ai.dismiss":"Dismiss","ai.dismissAria":"Dismiss suggested edit for note {n}","ai.review":"Review…","ai.reviewAria":"Review suggested changes for note {n}","ai.acceptAria":"Accept suggested edit for note {n}","ai.rejectAria":"Reject suggested edit for note {n}","ai.chipRewrite":"Note {n} · Suggested rewrite · Review","ai.chipPlaces":"Note {n} · Suggested change · {k} places","ai.chipChange":"Note {n} · Suggested change · Review","ai.chipShowNote":"Show the note","ai.chipReview":"Review the suggested changes","ai.suggCount":"{n, plural, one {# suggestion} other {# suggestions}}","ai.pasteAnswer":"Paste AI answer…","ai.showSuggTitle":"Show suggested edits in the document","ai.showSugg":"Show suggestions","ai.pasteTitle":"Paste AI answer","ai.pasteHint_html":"Paste your assistant's reply. Each answer is matched to its note by \u003ccode>{#id}\u003c/code> (or by number) and added as an AI reply.","ai.pasteAria":"AI answer","ai.pastePlaceholder":"```mdeverything\n## [1] {#n3f9a}\nYour answer…\n```","ai.suggBar":"Suggested edits","ai.acceptAll":"Accept all","ai.rejectAll":"Reject all","ai.hideSuggAria":"Hide suggestions in the document","ai.hideSugg":"Hide suggestions","ai.reviewTitle":"Review changes","bundle.section":"section “{name}”","bundle.line":"line ~{n}","bundle.notFound":"(not found in the current document)","bundle.location":"Location:","bundle.quoted":"Quoted passage:","bundle.context":"Context:","bundle.note":"Note / question:","bundle.noNote":"(no note)","bundle.replies":"Replies ({n}):","bundle.aiRound":"(AI, round {n})","bundle.editsSummary":"({n, plural, one {suggested edit} other {suggested edits}}: {list})","bundle.state.accepted":"{n} accepted","bundle.state.rejected":"{n} rejected","bundle.state.superseded":"{n} superseded","bundle.state.pending":"{n} pending","link.kind.section":"Section","link.kind.p":"Paragraph","link.kind.li":"List item","link.kind.td":"Table cell","link.kind.quote":"Quote","link.kind.pre":"Code block","link.kind.table":"Table","link.kind.figure":"Figure","link.kind.dd":"Definition","link.kind.dt":"Term","link.broken":"Broken link","link.notFound":"Section not found","link.noMatch":"{frag} doesn't match any heading in this document","link.jumpHint":"Click to jump · ↩ Back afterwards","link.email":"Email","link.external":"External link","link.copy":"Copy link","link.opensMail":"Opens your email app","link.opensTab":"Opens in a new tab","link.otherFile":"Other file","link.fileBlocked":"Links to other files can't be opened here","link.copied":"Link copied","link.copyFailed":"Couldn't copy the link","link.backAria":"Back to where you were (Alt+Left)","link.back":"Back","table.region":"Table {n}","table.optionsN":"Table {n} options","table.options":"Table options","table.colWidth":"Column {n} width","table.rowHeight":"Row {n} height","table.reset":"Reset sizes","table.density":"Density","table.compact":"Compact","table.default":"Default","table.comfortable":"Comfortable","table.resetDone":"Table sizes reset","pane.resizeOutline":"Resize outline","pane.resizeRail":"Resize comments panel","pane.resizeTitle":"Drag to resize · double-click to reset"},"suggest":{"vi":{"text":"Trang này có bản Tiếng Việt","go":"Chuyển","dismiss":"Đóng"}}}</script>
+<script type="application/json" id="i18n-sample">{"md":"# Welcome to mdeverything ✨\n\n**Read, comment and edit Markdown — then hand it to your AI.** mdeverything is a quiet, fast review desk for any `.md` file: point at the exact words that matter, say what you want, and export a package your assistant can act on without guessing.\n\n> 👋 **This page is a live document.** Hover a highlighted phrase to peek at an example comment, click it to open the thread, or select any sentence below and press **Enter** to add your own. Nothing you do here leaves your browser.\n\n## 1. Why mdeverything?\n\nMost AI reviews start the same way: you copy-paste a few paragraphs into a chatbot, type \"can you improve this?\", and get back a rewrite of the wrong section. The model never saw the whole document, and it can't tell which sentence you meant.\n\nmdeverything fixes the handoff:\n\n- **Precise** — every comment is pinned to a quoted passage, its section and the text around it, so repeated wording is never confused.\n- **Complete** — export the full document together with every comment and reply, in one copy.\n- **Fast** — no sign-up, no upload, no plug-ins. Open a file and start reviewing in seconds.\n- **Calm** — a distraction-free reading view with an outline, three themes and typography made for long specs.\n\n## 2. How it works\n\n1. **Open** a Markdown file, drop it on the page, or paste the text.\n2. **Comment** on the words that matter — select a passage, or use the margin button to cover a whole paragraph.\n3. **Refine** the source in the built-in editor when you spot a typo; your comments re-anchor automatically.\n4. **Export for AI** and paste the bundle into ChatGPT, Claude, Gemini or your coding assistant.\n\n```mermaid\nflowchart LR\n    A[Open .md] --> B[Read]\n    B --> C[Comment]\n    C --> D[Edit]\n    D --> E[Export]\n    E --> F[Your AI]\n```\n\nCurious what the export looks like? Hover or click [What your AI receives](#31-what-your-ai-receives) to peek at it.\n\n### 2.1 Ask, answer, accept\n\nTurn on **Let AI reply back into mdeverything** in the Export menu and your assistant answers in a format this page understands. Paste its reply with **Paste AI answer…**: each answer lands under its comment, and every suggested edit shows as a diff you can accept or reject. Accepting rewrites the Markdown for you, and Undo is always one click away.\n\n## 3. Features at a glance\n\n| Feature | What you get | How |\n| --- | --- | --- |\n| Inline comments | Comment right on the selected words, with reply threads | Select text, press `Enter` |\n| Margin comments | One click to comment on a whole paragraph, heading or table cell | Hover a block, use the left margin |\n| Outline | A table of contents that follows your reading position | `☰` in the top bar |\n| Markdown editor | Formatting toolbar, shortcuts and a live preview | `✎ Edit`, then `Ctrl + Enter` to apply |\n| Reading themes | Paper, Sepia (cream paper with a bookish serif) and Night | Theme switch in the top bar |\n| Autosave | Your document and comments are still here when you come back | Automatic |\n| AI answers in place | Paste the AI's reply back: each answer lands under its comment, edits shown as old → new | **Paste AI answer** in the Export menu |\n| Follow-up rounds | Export again and only new and follow-up comments get answered | Automatic |\n\n### 3.1 What your AI receives\n\nEvery export starts with clear instructions, then the document, then one block per comment:\n\n```text\n[1] Location: section “Pricing” · line ~42\nQuoted passage:\n\"\"\"\nFree for teams of up to 5 people\n\"\"\"\nContext: …Our plans start simple: 〈Free for teams of up to 5 people〉, then $8 per seat…\nNote / question:\n\"\"\"\nIs 5 still the right limit? Check it against the FAQ section.\n\"\"\"\nReplies (1):\n- Also confirm the per-seat price in the table below.\n```\n\nThe assistant knows exactly **where** to look and **what** you want — so it answers the question you asked, in the place you asked it.\n\n## 4. Made for real documents\n\n- 📐 **Product specs** — PRDs, BRDs and user requirements with wide tables and flow diagrams.\n- 💻 **Technical docs** — READMEs, API guides and runbooks with code blocks you can copy in one click.\n- 🧪 **Research & analysis** — long notes where every claim needs a second look.\n- ✍️ **Drafts** — blog posts, proposals and release notes before they ship.\n\nIt works in any language — English, Tiếng Việt, 日本語 — because comments anchor to the exact words, not to line numbers.\n\nAlready handled for you:\n\n- [x] Wide tables scroll sideways instead of breaking words\n- [x] Mermaid diagrams render right in the page\n- [x] Code blocks get a language label and a copy button\n- [ ] Your own document is next\n\n## 5. Private by design\n\n> **No account. No upload. No tracking.** mdeverything runs entirely in your browser, and your work is saved locally on this device. Close the tab, come back tomorrow, and pick up where you left off.\n\n## 6. Try it now\n\n1. Select any sentence on this page and press **Enter** to leave a comment.\n2. Click a highlight, then write a **Reply** to start a thread.\n3. Press **Export for AI** in the top bar and paste the result into your favourite assistant.\n\nReady for your own file? Use **Open** in the top bar, or drop a `.md` file anywhere on this page. 🚀","notes":[{"quote":"copy-paste a few paragraphs into a chatbot","note":"Example — ask a question. Is this pain point the strongest hook for the intro, or should “AI edits the wrong section” lead? Suggest two alternative opening lines.","replies":["Leaning towards the wrong-section angle — it's more concrete."]},{"quote":"repeated wording is never confused","note":"Example — check a claim. Add a one-line example that shows how the surrounding context tells two identical phrases apart."},{"quote":"your comments re-anchor automatically","note":"Example — request an edit. “Re-anchor” may be jargon for first-time readers; rewrite this step in plain words."},{"quote":"One click to comment on a whole paragraph, heading or table cell","note":"Example — comment on a table cell. Shorten this description to under 8 words without losing the meaning.","replies":["Maybe: “Comment on a whole block in one click.”"]},{"quote":"Your own document is next","note":"Example — turn a to-do into a call to action. Suggest a short, friendly line that points people to the Open button."},{"quote":"your work is saved locally on this device","note":"Example — fact-check. Confirm this matches how autosave works (browser storage, per device) and say what happens in a private window.","replies":["Worth mentioning that clearing site data removes it too.","Agreed — keep it to one short sentence though."]},{"quote":"every suggested edit shows as a diff you can accept or reject","note":"Example — an AI answer with a suggested edit. Make this phrase friendlier for readers who don't know the word “diff”.","replies":[{"by":"ai","round":1,"text":"Here's a plainer version that avoids the jargon. Accept it to rewrite the sentence, or Reject to keep yours.","edits":[{"kind":"quote","text":"every suggested edit appears as a tracked change you can accept or reject in one click"}]}]}]}</script>
 <script>
 "use strict";
+/* ============ i18n ============
+   Every user-facing string lives in locales/<lang>.json (English = locales/en.json, the source of
+   truth). scripts/build.mjs fills the markup at build time and embeds this page's dictionary as
+   #i18n, so there is no extra request and no runtime translation.
+   t(key, params): "{name}" parameters and a small ICU subset for plurals:
+     "{n, plural, one {# note} other {# notes}}"  (# = the number; categories from Intl.PluralRules)
+   Keys ending in _html may contain markup (their parameters are escaped); te() = t() escaped for HTML. */
+const I18N = (()=>{ try{ return JSON.parse(document.getElementById("i18n").textContent) || {}; }catch(e){ return {}; } })();
+const LANG = I18N.lang || "en";
+const ASSET_BASE = I18N.base || "";           // "" on /, "../" on /vi/ … (favicons, assets)
+const I18N_DICT = I18N.dict || {};
+const i18nAst = new Map();
+let i18nPR = null; try{ i18nPR = new Intl.PluralRules(LANG); }catch(e){}
+const i18nEsc = s => String(s).replace(/[&<>"]/g, ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+function i18nParse(s){
+  let i = 0;
+  const seq = inBranch => {
+    const out = []; let buf = "";
+    const flush = () => { if(buf){ out.push(buf); buf = ""; } };
+    while(i < s.length){
+      const c = s[i];
+      if(inBranch && c === "}") break;
+      if(inBranch && c === "#"){ flush(); out.push({ hash:true }); i++; continue; }
+      if(c === "{"){
+        const rest = s.slice(i);
+        let m = /^\{\s*([A-Za-z_]\w*)\s*\}/.exec(rest);
+        if(m){ flush(); out.push({ arg:m[1] }); i += m[0].length; continue; }
+        m = /^\{\s*([A-Za-z_]\w*)\s*,\s*(plural|select)\s*,/.exec(rest);
+        if(m){
+          flush(); i += m[0].length;
+          const node = { arg:m[1], type:m[2], br:{} };
+          for(;;){
+            while(i < s.length && /\s/.test(s[i])) i++;
+            if(i >= s.length){ break; }
+            if(s[i] === "}"){ i++; break; }
+            const k = /^(=\d+|[A-Za-z]+)\s*\{/.exec(s.slice(i));
+            if(!k){ i = s.length; break; }
+            i += k[0].length;
+            node.br[k[1]] = seq(true);
+            i++;                                  // the branch's closing }
+          }
+          out.push(node); continue;
+        }
+      }
+      buf += c; i++;
+    }
+    flush();
+    return out;
+  };
+  return seq(false);
+}
+function i18nNum(n){ try{ return Number(n).toLocaleString(LANG); }catch(e){ return String(n); } }
+function i18nRender(ast, p, html, n){
+  let out = "";
+  for(const node of ast){
+    if(typeof node === "string") out += node;
+    else if(node.hash) out += i18nNum(n);
+    else if(node.type){
+      const raw = p[node.arg], v = Number(raw);
+      let br = node.br["=" + v];
+      if(!br){
+        let cat = String(raw);
+        if(node.type === "plural"){ cat = "other"; try{ cat = i18nPR ? i18nPR.select(v) : (v === 1 ? "one" : "other"); }catch(e){} }
+        br = node.br[cat] || node.br.other || [];
+      }
+      out += i18nRender(br, p, html, v);
+    } else {
+      const v = p[node.arg];
+      const s = v == null ? "" : String(v);
+      out += html ? i18nEsc(s) : s;
+    }
+  }
+  return out;
+}
+function t(key, params){
+  const src = I18N_DICT[key];
+  if(src == null) return key;                 // the build warns about missing keys (English fills them in)
+  if(src.indexOf("{") < 0) return src;
+  let ast = i18nAst.get(key);
+  if(!ast){ ast = i18nParse(src); i18nAst.set(key, ast); }
+  return i18nRender(ast, params || {}, /_html$/.test(key));
+}
+function te(key, params){ return i18nEsc(t(key, params)); }
+// relative time in the page language ("5m ago", "5 phút trước", "5分前" …)
+const i18nRtf = {};
+function relFmt(v, unit, style){
+  style = style || "narrow";
+  try{
+    if(!i18nRtf[style]) i18nRtf[style] = new Intl.RelativeTimeFormat(LANG, { style, numeric:"always" });
+    return i18nRtf[style].format(v, unit);
+  }catch(e){ return Math.abs(v) + unit[0] + " ago"; }
+}
+// CJK text has no spaces between words: word counts and word diffs split it with Intl.Segmenter
+// (fallback: one token per character). Text without CJK characters is handled exactly as before.
+const CJK_CHARS = "\\p{Script=Han}\\p{Script=Hiragana}\\p{Script=Katakana}\\p{Script=Hangul}ー々〆";
+const CJK_RE = new RegExp("[" + CJK_CHARS + "]", "u");
+let i18nSeg = null;
+function cjkSegments(run){
+  try{
+    if(typeof Intl.Segmenter === "function"){
+      if(!i18nSeg) i18nSeg = new Intl.Segmenter(/^(ja|zh|ko)/i.test(LANG) ? LANG : "ja", { granularity:"word" });
+      return [...i18nSeg.segment(run)].map(x => x.segment);
+    }
+  }catch(e){}
+  return [...run];
+}
+function wordCount(v){
+  let n = 0;
+  if(CJK_RE.test(v)){
+    v = v.replace(new RegExp("[" + CJK_CHARS + "]+", "gu"), run => { n += cjkSegments(run).filter(x => /[\p{L}\p{N}]/u.test(x)).length; return " "; });
+  }
+  return n + (v.match(/[\p{L}\p{N}][\p{L}\p{N}'’_-]*/gu) || []).length;
+}
+
 /* ============ state ============ */
 let SRC = "";                 // markdown source
 let ANN = [];                 // annotations
 let activeId = null;
 let isHomeMode = true;
 let isSampleMode = true;
-let currentFileName = "Sample document";
+let currentFileName = t("doc.sampleName");
 // Storage keys keep the original "marginalia:" prefix (the app's former name); renaming
 // them would drop preferences already saved on this origin.
 const STORE_KEY = "marginalia:workspace:v1";
@@ -2750,19 +2907,19 @@ function updateWorkspaceChrome(){
   document.body.classList.toggle("sample-mode", isSampleMode);
   const label = $("#docLabel");
   if(label){
-    const name = isSampleMode ? "Sample document" : (currentFileName || "Markdown document");
+    const name = isSampleMode ? t("doc.sampleName") : (currentFileName || t("doc.untitled"));
     const span = document.createElement("span");   // own box so a long name ellipsizes before the ▾
     span.className = "doc-label-text"; span.textContent = name;
     label.replaceChildren(span);
-    label.title = `${name} — Documents`;
+    label.title = t("doc.labelTitle",{name});
   }
 }
 function setWorkspaceMode({home=false, sample=false, fileName=""}={}){
   // the editor applying changes to the demo turns it into the user's own copy (see W6 library)
-  if(isSampleMode && !sample && fileName==="Edited document") fileName = "Sample copy";
+  if(isSampleMode && !sample && fileName===t("doc.editedName")) fileName = t("doc.sampleCopy");
   isHomeMode = !!home;
   isSampleMode = !!sample;
-  currentFileName = sample ? "Sample document" : (fileName || "Markdown document");
+  currentFileName = sample ? t("doc.sampleName") : (fileName || t("doc.untitled"));
   if(sample) libDetach();           // the demo is never a library document
   updateWorkspaceChrome();
 }
@@ -2773,35 +2930,16 @@ function openSourceDrawer(){
   setTimeout(()=>focusWithoutScrolling($("#srcArea")),0);
 }
 function sampleAnnotations(){
-  const notes = [
-    { quote:"copy-paste a few paragraphs into a chatbot",
-      note:"Example — ask a question. Is this pain point the strongest hook for the intro, or should “AI edits the wrong section” lead? Suggest two alternative opening lines.",
-      replies:["Leaning towards the wrong-section angle — it's more concrete."] },
-    { quote:"repeated wording is never confused",
-      note:"Example — check a claim. Add a one-line example that shows how the surrounding context tells two identical phrases apart." },
-    { quote:"your comments re-anchor automatically",
-      note:"Example — request an edit. “Re-anchor” may be jargon for first-time readers; rewrite this step in plain words." },
-    { quote:"One click to comment on a whole paragraph, heading or table cell",
-      note:"Example — comment on a table cell. Shorten this description to under 8 words without losing the meaning.",
-      replies:["Maybe: “Comment on a whole block in one click.”"] },
-    { quote:"Your own document is next",
-      note:"Example — turn a to-do into a call to action. Suggest a short, friendly line that points people to the Open button." },
-    { quote:"your work is saved locally on this device",
-      note:"Example — fact-check. Confirm this matches how autosave works (browser storage, per device) and say what happens in a private window.",
-      replies:["Worth mentioning that clearing site data removes it too.","Agreed — keep it to one short sentence though."] },
-    { quote:"every suggested edit shows as a diff you can accept or reject",
-      note:"Example — an AI answer with a suggested edit. Make this phrase friendlier for readers who don't know the word “diff”.",
-      replies:[{ by:"ai", round:1, text:"Here's a plainer version that avoids the jargon. Accept it to rewrite the sentence, or Reject to keep yours.",
-        edits:[{ kind:"quote", text:"every suggested edit appears as a tracked change you can accept or reject in one click" }] }] }
-  ];
+  const notes = Array.isArray(SAMPLE_DATA.notes) ? SAMPLE_DATA.notes : [];   // locales/samples/<lang>.annotations.json
   const CTX=70;
   return notes.map((n,i)=>{
     const s=SAMPLE.indexOf(n.quote);
     const e=s+n.quote.length;
     return {
       id:"demo"+(i+1), quote:n.quote, start:s,
-      prefix:s>=0 ? SAMPLE.slice(Math.max(0,s-CTX),s) : "",
-      suffix:s>=0 ? SAMPLE.slice(e,e+CTX) : "",
+      // prefix / suffix default to the text around the first occurrence; a sample may set them itself
+      prefix:typeof n.prefix==="string" ? n.prefix : s>=0 ? SAMPLE.slice(Math.max(0,s-CTX),s) : "",
+      suffix:typeof n.suffix==="string" ? n.suffix : s>=0 ? SAMPLE.slice(e,e+CTX) : "",
       note:n.note,
       // a reply is a string, or an object (the demo AI answer with its suggested edit)
       replies:(n.replies||[]).map((x,k,all)=>{
@@ -2823,7 +2961,7 @@ function loadSample({home=false}={}){
   renderDoc();
 }
 
-function askConfirm({title="Replace current document?", message="This action cannot be undone.", note="Export your notes first if you want to keep a copy.", confirmText="Continue", cancelText="Cancel", icon="⚠"}={}){
+function askConfirm({title=t("confirm.defaultTitle"), message=t("confirm.defaultMessage"), note=t("confirm.exportFirst"), confirmText=t("confirm.continue"), cancelText=t("common.cancel"), icon="⚠"}={}){
   const modal = $("#confirmModal");
   const titleEl = $("#confirmTitle");
   const descEl = $("#confirmDesc");
@@ -2868,16 +3006,16 @@ function askConfirm({title="Replace current document?", message="This action can
 async function useSampleDocument(){
   if(hasRealNotes()){
     const ok = await askConfirm({
-      title:"Open sample workspace?",
-      message:`You currently have ${ANN.length} notes. Loading the sample will delete these annotations.`,
-      note:"Export your notes first if you want to keep a copy.",
-      confirmText:"Open sample",
-      cancelText:"Keep current document"
+      title:t("sample.confirmTitle"),
+      message:t("sample.confirmMessage",{n:ANN.length}),
+      note:t("confirm.exportFirst"),
+      confirmText:t("sample.confirmOk"),
+      cancelText:t("sample.confirmKeep")
     });
     if(!ok) return false;
   }
   loadSample({home:false});
-  toast(`Sample loaded with ${ANN.length} example comments`);
+  toast(t("sample.loaded",{n:ANN.length}));
   return true;
 }
 
@@ -2888,7 +3026,7 @@ if (window.marked) marked.setOptions({ gfm:true, breaks:false });   // headerIds
 function mdToHtml(md){
   let html;
   try { html = window.marked ? marked.parse(md) : md.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\n/g,"<br>"); }
-  catch(e){ html = "<p>Could not render markdown.</p>"; }
+  catch(e){ html = "<p>"+esc(t("render.failed"))+"</p>"; }
   return window.DOMPurify ? DOMPurify.sanitize(html) : html;
 }
 
@@ -2928,14 +3066,14 @@ function enhanceCodeBlocks(){
     bar.className="code-bar no-anchor";
     const label=document.createElement("span");
     label.className="code-lang";
-    label.textContent=lang || "code";
+    label.textContent=lang || t("code.label");
     const btn=document.createElement("button");
-    btn.type="button"; btn.className="code-copy"; btn.textContent="Copy";
+    btn.type="button"; btn.className="code-copy"; btn.textContent=t("code.copy");
     btn.addEventListener("click",e=>{
       e.stopPropagation();
       copyText((code?code.textContent:pre.textContent)).then(ok=>{
-        btn.textContent=ok?"Copied":"Error";
-        setTimeout(()=>{ btn.textContent="Copy"; },1400);
+        btn.textContent=ok?t("code.copied"):t("code.error");
+        setTimeout(()=>{ btn.textContent=t("code.copy"); },1400);
       });
     });
     bar.appendChild(label); bar.appendChild(btn);
@@ -3046,7 +3184,7 @@ function findStart(T,a){
 let mermaidReady=false;
 function mermaidThemeVars(){
   const t=document.body.dataset.theme||"light";
-  const ui='"Inter",ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif';
+  const ui='"Inter",ui-sans-serif,system-ui,"Segoe UI",Arial,"Hiragino Sans","Yu Gothic UI","Noto Sans JP",sans-serif';
   if(t==="dark") return { background:"#232429", primaryColor:"#2c3348", primaryBorderColor:"#8fa8f8",
     primaryTextColor:"#dcdde1", lineColor:"#a3a6ae", secondaryColor:"#303137", secondaryBorderColor:"#43454c",
     tertiaryColor:"#2a2b31", tertiaryBorderColor:"#43454c", textColor:"#dcdde1",
@@ -3080,7 +3218,7 @@ function prepMermaid(){
     const wrap = document.createElement("div");
     wrap.className = "mermaid-wrap no-anchor";
     wrap.dataset.src = code.textContent;
-    wrap.innerHTML = '<div class="mmd-loading">Rendering diagram…</div>';
+    wrap.innerHTML = '<div class="mmd-loading">'+esc(t("mermaid.rendering"))+'</div>';
     host.replaceWith(wrap);
   });
 }
@@ -3099,7 +3237,7 @@ async function drawMermaid(){
       w.innerHTML=svg;
     }catch(e){
       w.classList.add("mmd-error");
-      w.innerHTML='<div class="mmd-errmsg">Diagram didn’t parse — showing source.</div><pre>'+esc(src)+'</pre>';
+      w.innerHTML='<div class="mmd-errmsg">'+esc(t("mermaid.error"))+'</div><pre>'+esc(src)+'</pre>';
     }
   }
   layoutCards();   // diagram heights changed → re-anchor the notes
@@ -3190,7 +3328,7 @@ function nearestHeading(node){
 function renderCards(){
   ANN.forEach(normAnn);              // replies defaults for old + sample data
   $("#cnt").textContent = ANN.length;
-  const lbl=$("#cntLabel"); if(lbl) lbl.textContent = ANN.length===1 ? "note" : "notes";
+  const lbl=$("#cntLabel"); if(lbl) lbl.textContent = t("rail.countLabel",{n:ANN.length});
   empty.style.display = ANN.length ? "none" : "block";
   // No notes yet → let the document use the full width (wide tables need room).
   document.body.classList.toggle("no-notes", ANN.length===0);
@@ -3212,26 +3350,26 @@ function renderCards(){
     c.className="card"+(a.id===activeId?" on":"")+(isExample?" example":"");
     c.dataset.id=a.id;
     const warn = a.resolved===false
-      ? `<span class="warn" title="This passage was not found in the document">⚠</span>` : "";
-    const exampleChip = isExample ? `<div class="example-chip">Example note</div>` : "";
+      ? `<span class="warn" title="${te("card.notFound")}">⚠</span>` : "";
+    const exampleChip = isExample ? `<div class="example-chip">${te("card.exampleChip")}</div>` : "";
     const nRep=a.replies.length;
     const meta = nRep
-      ? `<div class="c-meta"><span class="c-replies">${nRep} ${nRep===1?"reply":"replies"}</span></div>` : "";
+      ? `<div class="c-meta"><span class="c-replies">${te("card.replies",{n:nRep})}</span></div>` : "";
     c.innerHTML =
       `<div class="c-top">
          <span class="badge">${i+1}</span>
          <span class="c-quote">${esc(a.quote)}</span>
          ${warn}
-         <button class="c-editbtn" title="Edit note" aria-label="Edit note">✎</button>
-         <button class="c-del" title="Delete note">×</button>
+         <button class="c-editbtn" title="${te("card.editNote")}" aria-label="${te("card.editNote")}">✎</button>
+         <button class="c-del" title="${te("card.deleteNote")}">×</button>
        </div>
        ${exampleChip}
        <div class="c-note${a.note?'':' placeholder'}"></div>
        ${meta}
        ${a.note ? `<div class="c-thread"></div>
-       <div class="c-replybox"><textarea class="c-reply-ta" rows="1" placeholder="Reply…" aria-label="Reply to note ${i+1}"></textarea>
-         <button type="button" class="c-send" disabled>Reply</button></div>` : ""}`;
-    c.querySelector(".c-note").textContent = a.note || "Click to add a note…";
+       <div class="c-replybox"><textarea class="c-reply-ta" rows="1" placeholder="${te("card.replyPlaceholder")}" aria-label="${te("card.replyToNote",{n:i+1})}"></textarea>
+         <button type="button" class="c-send" disabled>${te("card.reply")}</button></div>` : ""}`;
+    c.querySelector(".c-note").textContent = a.note || t("card.addNotePlaceholder");
     // replies thread + reply box: shown when the card is the active one (same thread as the inline card)
     const th=c.querySelector(".c-thread");
     if(th){
@@ -3259,16 +3397,16 @@ function renderCards(){
     }
     c.tabIndex = 0;
     c.setAttribute("role","button");
-    c.setAttribute("aria-label", a.note ? `Note ${i+1}: ${a.quote}` : `Empty note ${i+1} on “${a.quote}” — activate to write`);
+    c.setAttribute("aria-label", a.note ? t("card.ariaNote",{n:i+1,quote:a.quote}) : t("card.ariaEmpty",{n:i+1,quote:a.quote}));
 
     // delete is immediate; the toast offers Undo (restoreAnn re-anchors the note in place)
     const del=c.querySelector(".c-del");
-    del.title="Delete note"; del.setAttribute("aria-label","Delete note "+(i+1));
+    del.title=t("card.deleteNote"); del.setAttribute("aria-label",t("card.deleteNoteN",{n:i+1}));
     del.addEventListener("click",e=>{ e.stopPropagation(); deleteAnnWithUndo(a.id); });
 
     // explicit edit button (editing is also possible via click / double-click)
     const editBtn=c.querySelector(".c-editbtn");
-    editBtn.setAttribute("aria-label","Edit note "+(i+1));
+    editBtn.setAttribute("aria-label",t("card.editNoteN",{n:i+1}));
     editBtn.addEventListener("click",e=>{ e.stopPropagation(); editCard(c,a); });
 
     c.addEventListener("click",e=>{
@@ -3337,7 +3475,7 @@ function deleteReply(a,rid){
 }
 function restoreReply(aid,reply,index){
   const a=annById(aid);
-  if(!a){ toast("That note no longer exists"); return false; }
+  if(!a){ toast(t("toast.noteGone")); return false; }
   if(a.replies.some(x=>x.id===reply.id)) return false;
   a.replies.splice(Math.max(0,Math.min(index,a.replies.length)),0,reply);
   syncReplyViews(a);
@@ -3351,7 +3489,7 @@ function editCard(c,a){
   const box=document.createElement("div");
   box.className="c-edit";
   box.innerHTML=`<textarea>${esc(a.note||"")}</textarea>
-    <div class="c-act"><button class="mini cancel">Cancel</button><button class="mini save">Save</button></div>`;
+    <div class="c-act"><button class="mini cancel">${te("common.cancel")}</button><button class="mini save">${te("common.save")}</button></div>`;
   note.replaceWith(box);
   const ta=box.querySelector("textarea");
   focusWithoutScrolling(ta); ta.setSelectionRange(ta.value.length,ta.value.length);
@@ -3389,7 +3527,7 @@ function deleteAnnWithUndo(id){
   const a=annById(id); if(!a) return;
   const snap=JSON.parse(JSON.stringify(a));   // id, quote, anchor context, note, replies
   delAnn(id);
-  toast("Note deleted",{action:{label:"Undo", run:()=>restoreAnn(snap)}});
+  toast(t("toast.noteDeleted"),{action:{label:t("common.undo"), run:()=>restoreAnn(snap)}});
 }
 // Re-insert a deleted note with the same id / note / replies and re-anchor it
 // incrementally (same path as commitPending: findStart → wrapRange → renumber),
@@ -3405,7 +3543,7 @@ function restoreAnn(snap){
   renumber();
   renderCards(); save();
   if(a.resolved){ pulseMark(a.id); focusCard(a.id,true); }
-  else toast("Note restored — its passage is no longer in the document");
+  else toast(t("toast.noteRestoredOrphan"));
   return true;
 }
 
@@ -3601,11 +3739,11 @@ function marksAtPoint(mark){
 function relTime(ts){
   const s=Math.round((Date.now()-ts)/1000);
   if(!isFinite(s)) return "";
-  if(s<45) return "just now";
-  const m=Math.round(s/60); if(m<60) return m+"m ago";
-  const h=Math.round(m/60); if(h<24) return h+"h ago";
-  const d=Math.round(h/24); if(d<7) return d+"d ago";
-  return new Date(ts).toLocaleDateString();
+  if(s<45) return t("time.justNow");
+  const m=Math.round(s/60); if(m<60) return relFmt(-m,"minute");
+  const h=Math.round(m/60); if(h<24) return relFmt(-h,"hour");
+  const d=Math.round(h/24); if(d<7) return relFmt(-d,"day");
+  return new Date(ts).toLocaleDateString(LANG);
 }
 function showHlPop(mark){
   if(POP.mode==="card" || POP.mode==="composer") return;   // a pinned card / composer wins over hover
@@ -3615,7 +3753,7 @@ function showHlPop(mark){
   hlPop.innerHTML="";
   if(items.length>1){
     const g=document.createElement("div"); g.className="pop-group";
-    g.textContent=items.length+" notes on this passage";
+    g.textContent=t("pop.notesOnPassage",{n:items.length});
     hlPop.appendChild(g);
   }
   items.forEach(a=>{
@@ -3625,10 +3763,10 @@ function showHlPop(mark){
     row.querySelector(".pop-badge").textContent=num;
     row.querySelector(".pop-quote").textContent=a.quote;
     const note=row.querySelector(".pop-note");
-    note.textContent=a.note || "No note yet — click to add";
+    note.textContent=a.note || t("pop.noNoteClick");
     if(!a.note) note.classList.add("muted");
     const nRep=(a.replies||[]).length;
-    const meta=nRep?(nRep+(nRep===1?" reply":" replies")):"";
+    const meta=nRep?t("card.replies",{n:nRep}):"";
     const metaEl=row.querySelector(".pop-meta");
     if(meta) metaEl.textContent=meta; else metaEl.remove();
     const go=()=>{ if(a.note) openCard(a.id,{anchor:mark}); else openComposer(a.id,{isNew:false}); };
@@ -3638,7 +3776,7 @@ function showHlPop(mark){
   });
   POP.mode="preview"; POP.id=null; POP.anchor=mark;
   hlPop.dataset.mode="preview"; 
-  hlPop.setAttribute("aria-label","Note preview");
+  hlPop.setAttribute("aria-label",t("pop.preview"));
   showPopEl();
 }
 function showPopEl(){
@@ -3705,16 +3843,16 @@ function openComposer(id,{isNew=false}={}){
     if(dc){ dc.remove(); try{ doLayout(); }catch(e){} }
   }
   hlPop.dataset.mode="composer"; 
-  hlPop.setAttribute("aria-label", isNew?"New note":"Edit note");
+  hlPop.setAttribute("aria-label", isNew?t("pop.newNote"):t("card.editNote"));
   hlPop.innerHTML=
     `<div class="pc-head"><span class="pop-badge"></span><span class="pc-title"></span>
-       <button type="button" class="pc-x" aria-label="Cancel" title="Cancel (Esc)">×</button></div>
+       <button type="button" class="pc-x" aria-label="${te("common.cancel")}" title="${te("common.cancelEsc")}">×</button></div>
      <div class="pc-quote"></div>
-     <textarea class="pc-ta" rows="2" placeholder="Add a note or question…" aria-label="Note text"></textarea>
-     <div class="pc-foot"><span class="pc-hint">Enter to save · Shift+Enter new line</span>
-       <button type="button" class="mini cancel">Cancel</button><button type="button" class="mini save">Save</button></div>`;
+     <textarea class="pc-ta" rows="2" placeholder="${te("pop.notePlaceholder")}" aria-label="${te("pop.noteText")}"></textarea>
+     <div class="pc-foot"><span class="pc-hint">${te("pop.hint")}</span>
+       <button type="button" class="mini cancel">${te("common.cancel")}</button><button type="button" class="mini save">${te("common.save")}</button></div>`;
   hlPop.querySelector(".pop-badge").textContent=ANN.indexOf(a)+1;
-  hlPop.querySelector(".pc-title").textContent=isNew?"New note":"Edit note";
+  hlPop.querySelector(".pc-title").textContent=isNew?t("pop.newNote"):t("card.editNote");
   hlPop.querySelector(".pc-quote").textContent=a.quote;
   const ta=hlPop.querySelector(".pc-ta");
   ta.value=a.note||"";
@@ -3775,35 +3913,35 @@ function renderPop(){
   const draft=prev ? prev.value : "", hadFocus=!!prev && document.activeElement===prev;
   const refocusEdit=w5EditFocused(hlPop);
   const num=ANN.indexOf(a)+1;
-  hlPop.setAttribute("aria-label",`Note ${num}`);
+  hlPop.setAttribute("aria-label",t("pop.noteN",{n:num}));
   hlPop.innerHTML=
     `<div class="pc-head"><span class="pop-badge"></span><span class="pc-sw"></span>
-       <button type="button" class="pc-x" aria-label="Close" title="Close (Esc)">×</button></div>
+       <button type="button" class="pc-x" aria-label="${te("common.close")}" title="${te("common.closeEsc")}">×</button></div>
      <div class="pc-quote"></div>
      <div class="pc-note"></div>
      <div class="pc-thread"></div>
      <div class="pc-actions">
-       <button type="button" data-act="edit">Edit</button>
-       <button type="button" data-act="delete" class="pc-del">Delete</button>
+       <button type="button" data-act="edit">${te("common.edit")}</button>
+       <button type="button" data-act="delete" class="pc-del">${te("common.delete")}</button>
      </div>
-     <div class="pc-replybox"><textarea class="pc-reply-ta" rows="1" placeholder="Reply…" aria-label="Reply"></textarea>
-       <button type="button" class="pc-send" disabled>Reply</button></div>`;
+     <div class="pc-replybox"><textarea class="pc-reply-ta" rows="1" placeholder="${te("card.replyPlaceholder")}" aria-label="${te("card.reply")}"></textarea>
+       <button type="button" class="pc-send" disabled>${te("card.reply")}</button></div>`;
   hlPop.querySelector(".pop-badge").textContent=num;
   // several notes on the clicked spot → number chips to switch between them
   const sw=hlPop.querySelector(".pc-sw");
   if(POP.group.length>1){
-    sw.textContent=POP.group.length+" notes here";
+    sw.textContent=t("pop.notesHere",{n:POP.group.length});
     POP.group.forEach(gid=>{
       const g=annById(gid); if(!g || gid===a.id) return;
       const b=document.createElement("button"); b.type="button"; b.className="pc-chip";
-      b.textContent=ANN.indexOf(g)+1; b.title="Show note "+(ANN.indexOf(g)+1);
+      b.textContent=ANN.indexOf(g)+1; b.title=t("pop.showNote",{n:ANN.indexOf(g)+1});
       b.addEventListener("click",()=>openCard(gid));
       sw.appendChild(b);
     });
   } else sw.remove();
   hlPop.querySelector(".pc-quote").textContent=a.quote;
   const note=hlPop.querySelector(".pc-note");
-  note.textContent=a.note||"No note yet";
+  note.textContent=a.note||t("pop.noNote");
   if(!a.note) note.classList.add("muted");
   const th=hlPop.querySelector(".pc-thread");
   if(a.replies.length) a.replies.forEach(r=>th.appendChild(w5ReplyEl(a,r,"pop")));
@@ -3886,7 +4024,7 @@ function setRailCollapsed(v){
   const b=$("#bToggleRail");
   if(b){
     b.setAttribute("aria-pressed", v?"false":"true");   // pressed = comments panel visible
-    b.title = v ? "Show comments panel" : "Hide comments panel";
+    b.title = v ? t("rail.show") : t("rail.hide");
     b.setAttribute("aria-label", b.title);
   }
   layoutCards();
@@ -3913,7 +4051,7 @@ function applyTheme(name){
   const mc={light:"#f7f7f5",dark:"#1c1d21",beige:"#f2ebd6"}[name];
   const meta=document.querySelector('meta[name="theme-color"]'); if(meta) meta.setAttribute("content",mc);
   const ico={light:"light",beige:"sepia",dark:"dark"}[name];
-  [["#favicon",64],["#favicon32",32],["#appleIcon",180]].forEach(([sel,sz])=>{ const l=document.querySelector(sel); if(l) l.href=`assets/icon-${ico}-${sz}.png`; });
+  [["#favicon",64],["#favicon32",32],["#appleIcon",180]].forEach(([sel,sz])=>{ const l=document.querySelector(sel); if(l) l.href=`${ASSET_BASE}assets/icon-${ico}-${sz}.png`; });
   try{ localStorage.setItem(THEME_KEY,name); }catch(e){}
   if(mermaidReady) rethemeMermaid();   // only once diagrams exist; boot inits with the theme already set
 }
@@ -3935,24 +4073,26 @@ function buildBundle(incDoc){
   const fmt=aiExportFmtOn(), sids=fmt ? aiNoteIds() : null;   // AI answer format: stable {#id} per note
   const L=[];
   L.push(HEAD.en,"");
+  // translated pages: the instructions stay English (parser keywords too); only the labels below are localized
+  if(LANG!=="en") L.push("The reviewer's UI language is "+(I18N.nativeName||LANG)+".","");
   if(incDoc){ L.push("===== DOCUMENT (markdown) =====","",SRC.trim(),""); }
   L.push(`===== NOTES (${ANN.length}) =====`,"");
   ANN.forEach((a,i)=>{
     const loc=[];
-    if(a.section) loc.push(`section “${clean(a.section)}”`);
-    const ln=sourceLine(a.quote); if(ln) loc.push(`line ~${ln}`);
-    if(a.resolved===false) loc.push("(not found in the current document)");
+    if(a.section) loc.push(t("bundle.section",{name:clean(a.section)}));
+    const ln=sourceLine(a.quote); if(ln) loc.push(t("bundle.line",{n:ln}));
+    if(a.resolved===false) loc.push(t("bundle.notFound"));
     // with AI replies on: [NEW] / [FOLLOW-UP] / [ANSWERED] tells the AI which notes to answer this round
-    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${fmt?" ["+aiNoteStatus(a)+"]":""}${loc.length?" Location: "+loc.join(" · "):""}`);
-    L.push(`Quoted passage:`,`"""`,clean(a.quote),`"""`);
-    L.push(`Context: …${clean(a.prefix)} 〈${clean(a.quote)}〉 ${clean(a.suffix)}…`);
-    L.push(`Note / question:`,`"""`,(a.note||"(no note)"),`"""`);
+    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${fmt?" ["+aiNoteStatus(a)+"]":""}${loc.length?" "+t("bundle.location")+" "+loc.join(" · "):""}`);
+    L.push(t("bundle.quoted"),`"""`,clean(a.quote),`"""`);
+    L.push(`${t("bundle.context")} …${clean(a.prefix)} 〈${clean(a.quote)}〉 ${clean(a.suffix)}…`);
+    L.push(t("bundle.note"),`"""`,(a.note||t("bundle.noNote")),`"""`);
     const reps=Array.isArray(a.replies)?a.replies:[];
     if(reps.length){
-      L.push(`Replies (${reps.length}):`);
+      L.push(t("bundle.replies",{n:reps.length}));
       reps.forEach(r=>{
         const ai=r.by==="ai", sum=ai ? aiEditsSummary(r) : "";
-        L.push("- "+(ai?`(AI, round ${r.round||1}) `:"")+String(r.text||"").trim().replace(/\n/g,"\n  ")+(sum?"\n  "+sum:""));
+        L.push("- "+(ai?t("bundle.aiRound",{n:r.round||1})+" ":"")+String(r.text||"").trim().replace(/\n/g,"\n  ")+(sum?"\n  "+sum:""));
       });
     }
     L.push("");
@@ -4026,8 +4166,8 @@ function storeFailed(e){
   if(quotaWarned) return;
   quotaWarned=true;
   const full = !!window.storage || (e && (e.name==="QuotaExceededError" || e.name==="NS_ERROR_DOM_QUOTA_REACHED" || e.code===22 || e.code===1014));
-  if(full) toast("Browser storage is full — your latest changes aren't saved", {action:{label:"Manage storage", run:()=>libOpenPanel()}, ms:9000});
-  else toast("Browser storage isn't available here — changes won't be kept after a reload");
+  if(full) toast(t("toast.storageFull"), {action:{label:t("toast.manageStorage"), run:()=>libOpenPanel()}, ms:9000});
+  else toast(t("toast.storageUnavailable"));
 }
 // Autosave. save() is called after every change; it waits SAVE_DELAY ms so a burst of edits
 // is written once. saveFlush() captures the current document synchronously (so switching
@@ -4085,7 +4225,7 @@ async function saveWrite(job){
   await libWriteIndex();
   libRenderPanel();
   libAfterSave();
-  if(job.promoted) toast("Your changes are saved as “Sample copy”", { action:{ label:"Documents", run:()=>libOpenPanel() } });
+  if(job.promoted) toast(t("toast.savedAs",{name:t("doc.sampleCopy")}), { action:{ label:t("lib.documents"), run:()=>libOpenPanel() } });
 }
 // write what's pending before the tab goes away (localStorage writes are synchronous)
 window.addEventListener("pagehide", ()=>saveFlush());
@@ -4117,16 +4257,16 @@ async function copyText(t){
 }
 function doExport(mode="full"){
   if(mode==="raw"){
-    if(!SRC.trim()){ toast("No Markdown document to copy yet"); return; }
-    copyText(SRC.trim()+"\n").then(ok=>toast(ok ? "Copied document only (Markdown, no comments)" : "Couldn't copy, try again"));
+    if(!SRC.trim()){ toast(t("export.noDoc")); return; }
+    copyText(SRC.trim()+"\n").then(ok=>toast(ok ? t("export.copiedRaw") : t("export.copyFailed")));
     return;
   }
-  if(!ANN.length){ toast("Add at least one comment before exporting"); return; }
-  const incDoc = mode !== "notes", n=ANN.length, w=n===1 ? "comment" : "comments";
+  if(!ANN.length){ toast(t("export.needComment")); return; }
+  const incDoc = mode !== "notes", n=ANN.length;
   copyText(buildBundle(incDoc)).then(ok=>
-    toast(ok ? (incDoc ? `Copied full context (document + ${n} ${w}) — paste it into your AI assistant`
-                       : `Copied comments only (${n} ${w}) — paste them into your AI assistant`)
-             : "Couldn't copy, try again"));
+    toast(ok ? (incDoc ? t("export.copiedFull",{n})
+                       : t("export.copiedNotes",{n}))
+             : t("export.copyFailed")));
 }
 
 /* ============ overlays ============ */
@@ -4141,10 +4281,10 @@ async function loadNewDoc(src, name){
   if(libFull()){ libFullToast(); return false; }
   libLeaveCurrent();
   SRC=src; ANN=[]; VIEW={tables:{}}; activeId=null; LIB.activeId=null; libFp="";
-  setWorkspaceMode({home:false, sample:false, fileName:name || "Markdown document"});
+  setWorkspaceMode({home:false, sample:false, fileName:name || t("doc.untitled")});
   renderDoc();                       // save() files it as a new library document (unique name)
   window.scrollTo(0,0);
-  toast(name ? ("Opened "+currentFileName) : "Document loaded");
+  toast(name ? t("toast.opened",{name:currentFileName}) : t("toast.docLoaded"));
   libRenderPanel();
   return true;
 }
@@ -4152,7 +4292,7 @@ async function loadNewDoc(src, name){
 async function loadMdFile(f){
   if(libIsJson(f)) return libImportFile(f);
   let text;
-  try{ text=await f.text(); }catch(e){ toast(`Couldn't read “${f.name}”`); return false; }
+  try{ text=await f.text(); }catch(e){ toast(t("toast.cantRead",{name:f.name})); return false; }
   return loadNewDoc(text, f.name);
 }
 
@@ -4173,17 +4313,17 @@ $("#fileMd").addEventListener("change",async e=>{
 // Documents → New → Paste (libPasteNew) creates a new library document instead.
 $("#bRender").addEventListener("click",()=>{
   const next=$("#srcArea").value;
-  if(!next.trim()){ toast("Paste Markdown first"); return; }
+  if(!next.trim()){ toast(t("toast.pasteFirst")); return; }
   if(libPasteNew){
     if(libFull()){ libFullToast(); return; }   // keep the drawer (and the pasted text) open
-    closeOverlays(); libResetPasteMode(); loadNewDoc(next, "Pasted Markdown"); return;
+    closeOverlays(); libResetPasteMode(); loadNewDoc(next, t("doc.pastedName")); return;
   }
   if(isSampleMode && libFull()){ libFullToast(); return; }   // would become a new library document
   const replaceDemo = isHomeMode && isSampleMode;
   SRC=next; if(replaceDemo) ANN=[]; activeId=null; closeOverlays();
-  if(isSampleMode) setWorkspaceMode({home:false, sample:false, fileName: replaceDemo ? "Pasted Markdown" : "Sample copy"});
+  if(isSampleMode) setWorkspaceMode({home:false, sample:false, fileName: replaceDemo ? t("doc.pastedName") : t("doc.sampleCopy")});
   else updateWorkspaceChrome();      // a library document keeps its name
-  renderDoc(); toast("Markdown rendered");
+  renderDoc(); toast(t("toast.rendered"));
 });
 
 /* ============ export ============ */
@@ -4229,106 +4369,9 @@ function toast(m,opts={}){
 }
 
 /* ============ sample ============ */
-const SAMPLE=`# Welcome to mdeverything ✨
-
-**Read, comment and edit Markdown — then hand it to your AI.** mdeverything is a quiet, fast review desk for any \`.md\` file: point at the exact words that matter, say what you want, and export a package your assistant can act on without guessing.
-
-> 👋 **This page is a live document.** Hover a highlighted phrase to peek at an example comment, click it to open the thread, or select any sentence below and press **Enter** to add your own. Nothing you do here leaves your browser.
-
-## 1. Why mdeverything?
-
-Most AI reviews start the same way: you copy-paste a few paragraphs into a chatbot, type "can you improve this?", and get back a rewrite of the wrong section. The model never saw the whole document, and it can't tell which sentence you meant.
-
-mdeverything fixes the handoff:
-
-- **Precise** — every comment is pinned to a quoted passage, its section and the text around it, so repeated wording is never confused.
-- **Complete** — export the full document together with every comment and reply, in one copy.
-- **Fast** — no sign-up, no upload, no plug-ins. Open a file and start reviewing in seconds.
-- **Calm** — a distraction-free reading view with an outline, three themes and typography made for long specs.
-
-## 2. How it works
-
-1. **Open** a Markdown file, drop it on the page, or paste the text.
-2. **Comment** on the words that matter — select a passage, or use the margin button to cover a whole paragraph.
-3. **Refine** the source in the built-in editor when you spot a typo; your comments re-anchor automatically.
-4. **Export for AI** and paste the bundle into ChatGPT, Claude, Gemini or your coding assistant.
-
-\`\`\`mermaid
-flowchart LR
-    A[Open .md] --> B[Read]
-    B --> C[Comment]
-    C --> D[Edit]
-    D --> E[Export]
-    E --> F[Your AI]
-\`\`\`
-
-Curious what the export looks like? Hover or click [What your AI receives](#31-what-your-ai-receives) to peek at it.
-
-### 2.1 Ask, answer, accept
-
-Turn on **Let AI reply back into mdeverything** in the Export menu and your assistant answers in a format this page understands. Paste its reply with **Paste AI answer…**: each answer lands under its comment, and every suggested edit shows as a diff you can accept or reject. Accepting rewrites the Markdown for you, and Undo is always one click away.
-
-## 3. Features at a glance
-
-| Feature | What you get | How |
-| --- | --- | --- |
-| Inline comments | Comment right on the selected words, with reply threads | Select text, press \`Enter\` |
-| Margin comments | One click to comment on a whole paragraph, heading or table cell | Hover a block, use the left margin |
-| Outline | A table of contents that follows your reading position | \`☰\` in the top bar |
-| Markdown editor | Formatting toolbar, shortcuts and a live preview | \`✎ Edit\`, then \`Ctrl + Enter\` to apply |
-| Reading themes | Paper, Sepia (cream paper with a bookish serif) and Night | Theme switch in the top bar |
-| Autosave | Your document and comments are still here when you come back | Automatic |
-| AI answers in place | Paste the AI's reply back: each answer lands under its comment, edits shown as old → new | **Paste AI answer** in the Export menu |
-| Follow-up rounds | Export again and only new and follow-up comments get answered | Automatic |
-
-### 3.1 What your AI receives
-
-Every export starts with clear instructions, then the document, then one block per comment:
-
-\`\`\`text
-[1] Location: section “Pricing” · line ~42
-Quoted passage:
-"""
-Free for teams of up to 5 people
-"""
-Context: …Our plans start simple: 〈Free for teams of up to 5 people〉, then $8 per seat…
-Note / question:
-"""
-Is 5 still the right limit? Check it against the FAQ section.
-"""
-Replies (1):
-- Also confirm the per-seat price in the table below.
-\`\`\`
-
-The assistant knows exactly **where** to look and **what** you want — so it answers the question you asked, in the place you asked it.
-
-## 4. Made for real documents
-
-- 📐 **Product specs** — PRDs, BRDs and user requirements with wide tables and flow diagrams.
-- 💻 **Technical docs** — READMEs, API guides and runbooks with code blocks you can copy in one click.
-- 🧪 **Research & analysis** — long notes where every claim needs a second look.
-- ✍️ **Drafts** — blog posts, proposals and release notes before they ship.
-
-It works in any language — English, Tiếng Việt, 日本語 — because comments anchor to the exact words, not to line numbers.
-
-Already handled for you:
-
-- [x] Wide tables scroll sideways instead of breaking words
-- [x] Mermaid diagrams render right in the page
-- [x] Code blocks get a language label and a copy button
-- [ ] Your own document is next
-
-## 5. Private by design
-
-> **No account. No upload. No tracking.** mdeverything runs entirely in your browser, and your work is saved locally on this device. Close the tab, come back tomorrow, and pick up where you left off.
-
-## 6. Try it now
-
-1. Select any sentence on this page and press **Enter** to leave a comment.
-2. Click a highlight, then write a **Reply** to start a thread.
-3. Press **Export for AI** in the top bar and paste the result into your favourite assistant.
-
-Ready for your own file? Use **Open** in the top bar, or drop a \`.md\` file anywhere on this page. 🚀`;
+/* the demo document + its example comments come from locales/samples/<lang>.md / .annotations.json (embedded by the build) */
+const SAMPLE_DATA=(()=>{ try{ return JSON.parse(document.getElementById("i18n-sample").textContent); }catch(e){ return { md:"", notes:[] }; } })();
+const SAMPLE=SAMPLE_DATA.md;
 
 /* ============ boot ============ */
 /* ==[W2 OUTLINE]== owned by the outline workstream (also wires #bOutline) */
@@ -4365,13 +4408,13 @@ function buildOutline(){
       h.id = id;
     }
     used.add(h.id);
-    return { id:h.id, level:+h.tagName[1], text:olHeadingText(h) || "Untitled section" };
+    return { id:h.id, level:+h.tagName[1], text:olHeadingText(h) || t("outline.untitled") };
   });
   const minLevel = items.length ? Math.min(...items.map(i=>i.level)) : 1;
-  const head = `<div class="ol-head"><span class="ol-title" id="olTitle">On this page</span>`+
-    `<button type="button" class="ol-close" aria-label="Close outline" title="Close (Esc)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`+
+  const head = `<div class="ol-head"><span class="ol-title" id="olTitle">${te("outline.title")}</span>`+
+    `<button type="button" class="ol-close" aria-label="${te("outline.close")}" title="${te("common.closeEsc")}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`+
     // wide screens: collapse the outline to a thin strip (same path as the header toggle)
-    `<button type="button" class="pane-chev ol-collapse" data-pane-collapse="outline" aria-label="Collapse outline" title="Collapse outline"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7l-5 5 5 5M18 7l-5 5 5 5"/></svg></button>`+
+    `<button type="button" class="pane-chev ol-collapse" data-pane-collapse="outline" aria-label="${te("outline.collapse")}" title="${te("outline.collapse")}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7l-5 5 5 5M18 7l-5 5 5 5"/></svg></button>`+
     (items.length ? `<span class="ol-progress" aria-hidden="true"><i></i></span>` : ``)+`</div>`;
   olNav.innerHTML = head + (items.length
     ? `<ol class="ol-list" aria-labelledby="olTitle">` + items.map(i=>{
@@ -4379,7 +4422,7 @@ function buildOutline(){
         // single line + ellipsis; the full text shows in an instant tooltip when truncated (layout module)
         return `<li><a class="ol-item" href="#${olEsc(i.id)}" data-target="${olEsc(i.id)}" data-depth="${d}" style="--d:${d}">${olEsc(i.text)}</a></li>`;
       }).join("") + `</ol>`
-    : `<p class="ol-empty">No headings in this document yet. Add <code>#</code>, <code>##</code> or <code>###</code> headings to get an outline.</p>`);
+    : `<p class="ol-empty">${t("outline.empty_html")}</p>`);
   olNav.querySelectorAll(".ol-item").forEach(a=>olLinks.set(a.dataset.target, a));
   if(olHeads.length && "IntersectionObserver" in window){
     olObserver = new IntersectionObserver(()=>olSpy(), { rootMargin:"-60px 0px -55% 0px", threshold:[0,1] });
@@ -4531,7 +4574,7 @@ const GUTTER_BLOCKS="p, li, h1, h2, h3, h4, blockquote, td, th";
 const sheetEl=document.querySelector(".sheet");
 const gutBtn=document.createElement("button");
 gutBtn.type="button"; gutBtn.className="w3-gutter"; gutBtn.tabIndex=-1;
-gutBtn.title="Comment on this block"; gutBtn.setAttribute("aria-label","Comment on this block");
+gutBtn.title=t("gutter.comment"); gutBtn.setAttribute("aria-label",t("gutter.comment"));
 gutBtn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M12 8v5M9.5 10.5h5"/></svg>';
 if(sheetEl) sheetEl.appendChild(gutBtn);
 let gutBlock=null;
@@ -4615,7 +4658,7 @@ let mdePreviewT = null, mdeDraftT = null;
 let mdeTabEscape = false;       // Esc then Tab lets keyboard users leave the textarea
 const mdeMmdCache = new Map();  // theme+source → {svg}|{err}
 let mdeMmdQueue = Promise.resolve();
-const MDE_BLOCKED = "#bOpenMd,#bSource,#bCopy,#bCopyOpts,#bOutline,#bToggleRail,#bImport,#bRestore";
+const MDE_BLOCKED = "#bOpenMd,#bSource,#bCopy,#bCopyOpts,#bOutline,#bToggleRail,#bImport,#bRestore,#bLang";
 
 const mdeSvg = d => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
 const MDE_ICON = {
@@ -4640,11 +4683,11 @@ const MDE_ICON = {
 };
 // [action, label, shortcut]
 const MDE_TOOLS = [
-  ["undo","Undo",mdeMod+"Z"], ["redo","Redo",mdeIsMac?"⇧⌘Z":"Ctrl+Y"], "|",
-  ["bold","Bold",mdeMod+"B"], ["italic","Italic",mdeMod+"I"], ["strike","Strikethrough"], "|",
-  ["h1","Heading 1"], ["h2","Heading 2"], ["h3","Heading 3"], "|",
-  ["ul","Bulleted list"], ["ol","Numbered list"], ["task","Task list"], ["quote","Quote"], "|",
-  ["code","Inline code"], ["codeblock","Code block"], ["link","Link",mdeMod+"K"], ["table","Insert table"], ["hr","Horizontal rule"]
+  ["undo",t("editor.undo"),mdeMod+"Z"], ["redo",t("editor.redo"),mdeIsMac?"⇧⌘Z":"Ctrl+Y"], "|",
+  ["bold",t("editor.bold"),mdeMod+"B"], ["italic",t("editor.italic"),mdeMod+"I"], ["strike",t("editor.strike")], "|",
+  ["h1",t("editor.h1")], ["h2",t("editor.h2")], ["h3",t("editor.h3")], "|",
+  ["ul",t("editor.ul")], ["ol",t("editor.ol")], ["task",t("editor.task")], ["quote",t("editor.quote")], "|",
+  ["code",t("editor.code")], ["codeblock",t("editor.codeblock")], ["link",t("editor.link"),mdeMod+"K"], ["table",t("editor.table")], ["hr",t("editor.hr")]
 ];
 
 const mdeIsOpen = () => document.body.classList.contains("editing");
@@ -4656,36 +4699,36 @@ function mdeBuild(){
   const sheet = document.querySelector("main .sheet");
   const root = document.createElement("div");
   root.className = "mde"; root.dataset.tab = "write";
-  root.setAttribute("role","region"); root.setAttribute("aria-label","Markdown editor");
+  root.setAttribute("role","region"); root.setAttribute("aria-label",t("editor.region"));
   const tools = MDE_TOOLS.map(t => t==="|" ? '<span class="mde-sep" aria-hidden="true"></span>' :
-    `<button type="button" class="mde-btn" data-act="${t[0]}" title="${t[1]}${t[2]?` (${t[2]})`:""}" aria-label="${t[1]}">${mdeSvg(MDE_ICON[t[0]])}</button>`).join("");
+    `<button type="button" class="mde-btn" data-act="${t[0]}" title="${esc(t[1])}${t[2]?` (${t[2]})`:""}" aria-label="${esc(t[1])}">${mdeSvg(MDE_ICON[t[0]])}</button>`).join("");
   root.innerHTML = `
     <div class="mde-bar">
-      <div class="mde-tools" role="toolbar" aria-label="Formatting" aria-controls="mdeTa">${tools}</div>
+      <div class="mde-tools" role="toolbar" aria-label="${te("editor.formatting")}" aria-controls="mdeTa">${tools}</div>
       <div class="mde-actions">
-        <button type="button" class="btn" data-act="discard" title="Discard changes and return to the document">Discard</button>
-        <button type="button" class="btn primary" data-act="apply" title="Apply changes (${mdeMod}Enter)">${mdeSvg(MDE_ICON.check)}<span>Done</span></button>
+        <button type="button" class="btn" data-act="discard" title="${te("editor.discardTitle")}">${te("editor.discard")}</button>
+        <button type="button" class="btn primary" data-act="apply" title="${te("editor.applyTitle",{key:mdeMod+"Enter"})}">${mdeSvg(MDE_ICON.check)}<span>${te("editor.done")}</span></button>
       </div>
     </div>
-    <div class="mde-tabs" role="tablist" aria-label="Editor view">
-      <button type="button" class="mde-tab" role="tab" id="mdeTabWrite" data-tab="write" aria-controls="mdePaneWrite" aria-selected="true">Write</button>
-      <button type="button" class="mde-tab" role="tab" id="mdeTabPreview" data-tab="preview" aria-controls="mdePanePreview" aria-selected="false" tabindex="-1">Preview</button>
+    <div class="mde-tabs" role="tablist" aria-label="${te("editor.view")}">
+      <button type="button" class="mde-tab" role="tab" id="mdeTabWrite" data-tab="write" aria-controls="mdePaneWrite" aria-selected="true">${te("editor.write")}</button>
+      <button type="button" class="mde-tab" role="tab" id="mdeTabPreview" data-tab="preview" aria-controls="mdePanePreview" aria-selected="false" tabindex="-1">${te("editor.preview")}</button>
     </div>
     <div class="mde-split">
       <div class="mde-pane mde-pane-write" id="mdePaneWrite" role="tabpanel" aria-labelledby="mdeTabWrite">
         <div class="mde-phead" aria-hidden="true">Markdown</div>
         <textarea class="mde-ta" id="mdeTa" spellcheck="true" autocapitalize="off" autocomplete="off"
-          aria-label="Markdown source" aria-describedby="mdeHint" placeholder="Write Markdown…"></textarea>
+          aria-label="${te("editor.source")}" aria-describedby="mdeHint" placeholder="${te("editor.placeholder")}"></textarea>
       </div>
       <div class="mde-pane mde-pane-preview" id="mdePanePreview" role="tabpanel" aria-labelledby="mdeTabPreview">
-        <div class="mde-phead" aria-hidden="true">Preview</div>
-        <div class="mde-preview" tabindex="0" aria-label="Live preview"><div class="mde-doc"></div></div>
+        <div class="mde-phead" aria-hidden="true">${te("editor.preview")}</div>
+        <div class="mde-preview" tabindex="0" aria-label="${te("editor.livePreview")}"><div class="mde-doc"></div></div>
       </div>
     </div>
     <div class="mde-foot">
       <span class="mde-count"></span>
       <span class="mde-dirty" aria-live="polite"></span>
-      <span class="mde-hint" id="mdeHint"><kbd>${mdeMod}Enter</kbd> apply · <kbd>Esc</kbd> then <kbd>Tab</kbd> leaves the editor</span>
+      <span class="mde-hint" id="mdeHint">${t("editor.hint_html",{key:mdeMod+"Enter"})}</span>
     </div>`;
   sheet.appendChild(root);
   mde = {
@@ -4743,8 +4786,8 @@ function mdeBuild(){
 function mdeSyncButton(on){
   const b = $("#bEdit"); if(!b) return;
   b.setAttribute("aria-pressed", on ? "true" : "false");
-  b.title = on ? `Finish editing and apply changes (${mdeMod}Enter)` : "Edit Markdown source with live preview";
-  const t = b.querySelector(".b-txt"); if(t) t.textContent = on ? "Editing" : "Edit";
+  b.title = on ? t("editor.finishTitle",{key:mdeMod+"Enter"}) : t("editor.editTitle");
+  const bt = b.querySelector(".b-txt"); if(bt) bt.textContent = on ? t("editor.editing") : t("editor.edit");
   document.querySelectorAll(MDE_BLOCKED).forEach(x => {
     if(on) x.setAttribute("aria-disabled","true"); else x.removeAttribute("aria-disabled");
   });
@@ -4772,7 +4815,7 @@ function mdeOpen(){
   window.scrollTo(0, 0);
   m.ta.setSelectionRange(0, 0); m.ta.scrollTop = 0; m.preview.scrollTop = 0;
   focusWithoutScrolling(m.ta);
-  if(restored) toast("Restored your unsaved draft");
+  if(restored) toast(t("editor.draftRestored"));
 }
 function mdeClose(){
   clearTimeout(mdePreviewT); clearTimeout(mdeDraftT);
@@ -4788,19 +4831,19 @@ function mdeApply(){
   const text = mde.ta.value, changed = text !== mdeBase;
   mdeClearDraft();
   mdeClose();
-  if(!changed){ mdeRestoreView(); toast("No changes to apply"); return; }
+  if(!changed){ mdeRestoreView(); toast(t("editor.noChanges")); return; }
   const wasAnchored = new Set(ANN.filter(a => a.resolved !== false).map(a => a.id));
   SRC = text;
   if(isHomeMode || isSampleMode){
     setWorkspaceMode({ home:false, sample:false,
-      fileName: (!isSampleMode && currentFileName) || "Edited document" });
+      fileName: (!isSampleMode && currentFileName) || t("doc.editedName") });
   }
   renderDoc();   // re-anchors every comment by its quote + context
   const lost = ANN.filter(a => a.resolved === false && wasAnchored.has(a.id)).length;
   const back = ANN.filter(a => a.resolved !== false && !wasAnchored.has(a.id)).length;
-  let msg = "Changes applied";
-  if(lost) msg += ` · ${lost} comment${lost>1?"s":""} lost ${lost>1?"their":"its"} anchor`;
-  if(back) msg += ` · ${back} comment${back>1?"s":""} re-anchored`;
+  let msg = t("editor.applied");
+  if(lost) msg += " · "+t("editor.lost",{n:lost});
+  if(back) msg += " · "+t("editor.reanchored",{n:back});
   toast(msg);
   mdeRestoreView();
 }
@@ -4809,17 +4852,17 @@ async function mdeDiscard(){
   const dirty = mdeIsDirty();
   if(dirty){
     const ok = await askConfirm({
-      title:"Discard your edits?",
-      message:"Your changes to the Markdown source will be lost.",
-      note:"The document and its comments stay exactly as they were before you started editing.",
-      confirmText:"Discard edits", cancelText:"Keep editing"
+      title:t("editor.discardConfirmTitle"),
+      message:t("editor.discardConfirmMessage"),
+      note:t("editor.discardConfirmNote"),
+      confirmText:t("editor.discardConfirmOk"), cancelText:t("editor.keepEditing")
     });
     if(!ok){ focusWithoutScrolling(mde.ta); return; }
   }
   mdeClearDraft();
   mdeClose();
   mdeRestoreView();
-  if(dirty) toast("Edits discarded");
+  if(dirty) toast(t("editor.discarded"));
 }
 function mdeSetTab(tab, focus){
   if(!mde) return;
@@ -4836,18 +4879,18 @@ function mdeSetTab(tab, focus){
 /* ---------- status, preview, draft ---------- */
 function mdeUpdateStatus(){
   const v = mde.ta.value;
-  const w = (v.match(/[\p{L}\p{N}][\p{L}\p{N}'’_-]*/gu) || []).length;
-  mde.count.textContent = `${w.toLocaleString()} word${w===1?"":"s"} · ${v.length.toLocaleString()} character${v.length===1?"":"s"}`;
+  const w = wordCount(v);
+  mde.count.textContent = t("editor.count",{w, c:v.length});
   const dirty = mdeIsDirty();
   if(!mde.dirty.textContent || mde.dirty.classList.contains("on") !== dirty){   // only touch the live region on change
     mde.dirty.classList.toggle("on", dirty);
-    mde.dirty.textContent = dirty ? "Unsaved changes" : "No changes";
+    mde.dirty.textContent = dirty ? t("editor.unsaved") : t("editor.clean");
   }
 }
 function mdeRenderPreview(){
   if(!mde) return;
   const out = mde.out, v = mde.ta.value;
-  if(!v.trim()){ out.innerHTML = '<p class="mde-empty">Nothing to preview yet.</p>'; return; }
+  if(!v.trim()){ out.innerHTML = '<p class="mde-empty">'+esc(t("editor.nothingToPreview"))+'</p>'; return; }
   out.innerHTML = mdToHtml(v);
   out.querySelectorAll("table").forEach(t => {
     const w = document.createElement("div"); w.className = "mde-tscroll";
@@ -4864,7 +4907,7 @@ function mdePaintMermaid(box, res, src){
   box.classList.remove("pending");
   if(res.svg){ box.innerHTML = res.svg; return; }
   box.classList.add("err");
-  box.innerHTML = '<div class="mde-mmd-msg">Diagram didn’t parse — showing source.</div><pre><code>' + esc(src) + '</code></pre>';
+  box.innerHTML = '<div class="mde-mmd-msg">'+esc(t("mermaid.error"))+'</div><pre><code>' + esc(src) + '</code></pre>';
 }
 function mdeFillMermaid(box, src){
   const key = (document.body.dataset.theme || "light") + "\n" + src;
@@ -4872,7 +4915,7 @@ function mdeFillMermaid(box, src){
   if(hit){ mdePaintMermaid(box, hit, src); return; }
   if(!window.mermaid){ mdePaintMermaid(box, { err:true }, src); return; }
   box.classList.add("pending"); box.dataset.key = key;
-  box.innerHTML = '<div class="mde-mmd-msg">Rendering diagram…</div>';
+  box.innerHTML = '<div class="mde-mmd-msg">'+esc(t("mermaid.rendering"))+'</div>';
   // render one diagram at a time; skip work for previews that were already replaced
   mdeMmdQueue = mdeMmdQueue.then(async () => {
     const waiting = () => mde ? [...mde.out.querySelectorAll(".mde-mmd.pending")].filter(b => b.dataset.key === key) : [];
@@ -5047,12 +5090,12 @@ function mdeLink(){
   const core = v.slice(s, e);
   const m = core.match(/^\[([^\]]*)\]\([^)]*\)$/);
   if(m){ mdeReplace(s, e, m[1], s, s + m[1].length); return; }     // toggle off
-  if(!core){ const t = "[link text](https://)"; mdeReplace(s, e, t, s + 1, s + 10); return; }
+  const lt = t("editor.ph.linkText"); if(!core){ const lk = "["+lt+"](https://)"; mdeReplace(s, e, lk, s + 1, s + 1 + lt.length); return; }
   if(/^(https?:\/\/|www\.)\S+$/i.test(core)){
-    const t = `[link text](${core})`; mdeReplace(s, e, t, s + 1, s + 10); return;
+    const lk = `[${lt}](${core})`; mdeReplace(s, e, lk, s + 1, s + 1 + lt.length); return;
   }
-  const t = `[${core}](https://)`, u = s + core.length + 3;
-  mdeReplace(s, e, t, u, u + 8);   // select the URL placeholder so typing replaces it
+  const lk = `[${core}](https://)`, u = s + core.length + 3;
+  mdeReplace(s, e, lk, u, u + 8);   // select the URL placeholder so typing replaces it
 }
 // insert a block on its own lines with blank lines around it; sel offsets are relative to text (null = after it)
 function mdeInsertBlock(text, selS, selE){
@@ -5069,7 +5112,7 @@ function mdeInsertBlock(text, selS, selE){
 }
 function mdeCodeBlock(){
   const ta = mde.ta, v = ta.value, s = ta.selectionStart, e = ta.selectionEnd;
-  if(s === e){ mdeInsertBlock("```\ncode\n```", 4, 8); return; }
+  if(s === e){ const ph = t("editor.ph.code"); mdeInsertBlock("```\n"+ph+"\n```", 4, 4 + ph.length); return; }
   const [ls, le] = mdeLineRange(v, s, e), block = v.slice(ls, le);
   const m = block.match(/^```[^\n]*\n([\s\S]*?)\n?```\s*$/);
   if(m){ mdeReplace(ls, le, m[1], ls, ls + m[1].length); return; }  // toggle off
@@ -5126,10 +5169,10 @@ function mdeAction(act){
     case "undo": case "redo":
       try{ document.execCommand(act); }catch(e){}
       break;
-    case "bold": mdeInline("**", "bold text"); break;
-    case "italic": mdeInline("*", "italic text"); break;
-    case "strike": mdeInline("~~", "strikethrough"); break;
-    case "code": mdeInline("`", "code"); break;
+    case "bold": mdeInline("**", t("editor.ph.bold")); break;
+    case "italic": mdeInline("*", t("editor.ph.italic")); break;
+    case "strike": mdeInline("~~", t("editor.ph.strike")); break;
+    case "code": mdeInline("`", t("editor.ph.code")); break;
     case "h1": mdeHeading(1); break;
     case "h2": mdeHeading(2); break;
     case "h3": mdeHeading(3); break;
@@ -5137,7 +5180,7 @@ function mdeAction(act){
     case "quote": mdeQuote(); break;
     case "codeblock": mdeCodeBlock(); break;
     case "link": mdeLink(); break;
-    case "table": mdeInsertBlock("| Column 1 | Column 2 |\n| --- | --- |\n| Cell | Cell |\n| Cell | Cell |", 2, 10); break;
+    case "table": { const c1 = t("editor.ph.column",{n:1}), c2 = t("editor.ph.column",{n:2}), cl = t("editor.ph.cell"); mdeInsertBlock(`| ${c1} | ${c2} |\n| --- | --- |\n| ${cl} | ${cl} |\n| ${cl} | ${cl} |`, 2, 2 + c1.length); break; }
     case "hr": mdeInsertBlock("---", null); break;
   }
 }
@@ -5150,13 +5193,13 @@ document.addEventListener("click", e => {
   const b = e.target.closest && e.target.closest(MDE_BLOCKED);
   if(!b) return;
   e.preventDefault(); e.stopPropagation();
-  toast(`Finish editing first: Done (${mdeMod}Enter) applies, Discard reverts`);
+  toast(t("editor.finishFirst",{key:mdeMod+"Enter"}));
 }, true);
 window.addEventListener("drop", e => {
   if(!mdeIsOpen() || !e.dataTransfer || ![...e.dataTransfer.types].includes("Files")) return;
   e.preventDefault(); e.stopPropagation();
   dragDepth = 0; $("#dropzone").classList.remove("show");
-  toast("Finish editing before opening another file");
+  toast(t("editor.finishBeforeOpen"));
 }, true);
 window.addEventListener("resize", () => { if(mdeIsOpen()) mdeUpdateTop(); });
 $("#themeSeg").addEventListener("click", () => { if(mdeIsOpen()) setTimeout(mdeRenderPreview, 0); });
@@ -5203,7 +5246,7 @@ function w5StartReplyEdit(a, r, scope){
 function w5DeleteReplyUndo(a, rid){
   const res=deleteReply(a, rid); if(!res) return;
   const aid=a.id;
-  toast("Reply deleted",{action:{label:"Undo", run:()=>restoreReply(aid, res.reply, res.index)}});
+  toast(t("reply.deleted"),{action:{label:t("common.undo"), run:()=>restoreReply(aid, res.reply, res.index)}});
 }
 // one reply row, shared by the inline card (scope "pop", .pc-*) and the panel card (scope "panel", .c-*)
 function w5ReplyEl(a, r, scope){
@@ -5213,9 +5256,9 @@ function w5ReplyEl(a, r, scope){
   el.addEventListener("dblclick",e=>e.stopPropagation());   // never opens the note editor of the card
   if(replyEdit && replyEdit.scope===scope && replyEdit.aid===a.id && replyEdit.rid===r.id){
     el.classList.add("w5-editing");
-    el.innerHTML=`<textarea class="w5-redit-ta" rows="1" aria-label="Edit reply"></textarea>
-      <div class="w5-redit-foot"><span class="w5-redit-hint" title="Enter to save · Shift+Enter new line · Esc to cancel">Enter to save · Esc to cancel</span>
-        <button type="button" class="mini cancel">Cancel</button><button type="button" class="mini save">Save</button></div>`;
+    el.innerHTML=`<textarea class="w5-redit-ta" rows="1" aria-label="${te("reply.edit")}"></textarea>
+      <div class="w5-redit-foot"><span class="w5-redit-hint" title="${te("reply.editHintTitle")}">${te("reply.editHint")}</span>
+        <button type="button" class="mini cancel">${te("common.cancel")}</button><button type="button" class="mini save">${te("common.save")}</button></div>`;
     const ta=el.querySelector(".w5-redit-ta");
     ta.value=replyEdit.draft;
     const grow=()=>{ ta.style.height="auto"; ta.style.height=Math.min(ta.scrollHeight,180)+"px";
@@ -5241,14 +5284,14 @@ function w5ReplyEl(a, r, scope){
     return el;
   }
   el.innerHTML=`<div class="${pre}-rtext"></div><div class="${pre}-time"><span class="w5-rtime"></span></div>
-    <div class="w5-racts"><button type="button" class="w5-rbtn" data-r="edit" title="Edit reply" aria-label="Edit reply">✎</button><button type="button" class="w5-rbtn w5-rdel" data-r="del" title="Delete reply" aria-label="Delete reply">×</button></div>`;
+    <div class="w5-racts"><button type="button" class="w5-rbtn" data-r="edit" title="${te("reply.edit")}" aria-label="${te("reply.edit")}">✎</button><button type="button" class="w5-rbtn w5-rdel" data-r="del" title="${te("reply.delete")}" aria-label="${te("reply.delete")}">×</button></div>`;
   el.querySelector("."+pre+"-rtext").textContent=r.text;
-  const t=el.querySelector(".w5-rtime");
-  t.textContent=relTime(r.ts); t.title=new Date(r.ts).toLocaleString();
+  const tm=el.querySelector(".w5-rtime");
+  tm.textContent=relTime(r.ts); tm.title=new Date(r.ts).toLocaleString(LANG);
   if(r.editedAt){
     const ed=document.createElement("span"); ed.className="w5-edited";
-    ed.textContent=" · edited"; ed.title="Edited "+new Date(r.editedAt).toLocaleString();
-    t.parentNode.appendChild(ed);
+    ed.textContent=" · "+t("reply.edited"); ed.title=t("reply.editedAt",{date:new Date(r.editedAt).toLocaleString(LANG)});
+    tm.parentNode.appendChild(ed);
   }
   el.querySelector('[data-r="edit"]').addEventListener("click",e=>{ e.stopPropagation(); w5StartReplyEdit(a, r, scope); });
   el.querySelector('[data-r="del"]').addEventListener("click",e=>{ e.stopPropagation(); w5DeleteReplyUndo(a, r.id); });
@@ -5299,13 +5342,13 @@ function w5ApplyFilter(){
   w5Bar.classList.toggle("w5-filtering", !!(terms.length || w5F!=="all"));
   const none=w5Bar.querySelector(".w5-none");
   if(ANN.length && !shown){
-    const what = w5F==="replies" ? "with replies" : w5F==="unanchored" ? "unanchored"
-      : w5F==="ai" ? "with an AI answer" : w5F==="noai" ? "without an AI answer" : w5F==="sugg" ? "with pending suggestions" : "";
-    const post=/^with/.test(what);   // "comments with replies" reads better than "with replies comments"
-    const noun = post ? `comments ${what}` : `${what?what+" ":""}comments`;
+    const fk = ["replies","unanchored","ai","noai","sugg"].includes(w5F) ? w5F : "all";
+
+
+
     none.querySelector(".w5-none-msg").textContent = terms.length
-      ? `No ${noun} match “${w5Q.trim()}”.`
-      : `No ${noun}.`;
+      ? t("filter.noneQ."+fk,{q:w5Q.trim()})
+      : t("filter.none."+fk);
     none.hidden=false;
   } else none.hidden=true;
 }
@@ -5322,21 +5365,21 @@ function w5ClearFilter(){
   w5Bar.innerHTML=
     `<div class="w5-sbox">
        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
-       <input id="w5Search" type="search" placeholder="Search comments" autocomplete="off" spellcheck="false" aria-label="Search comments">
+       <input id="w5Search" type="search" placeholder="${te("search.placeholder")}" autocomplete="off" spellcheck="false" aria-label="${te("search.placeholder")}">
        <kbd class="w5-kbd" aria-hidden="true">/</kbd>
      </div>
      <div class="w5-row">
-       <div class="w5-chips" role="group" aria-label="Filter comments">
-         <button type="button" class="w5-chip" data-f="all" aria-pressed="true">All <span class="w5-n">0</span></button>
-         <button type="button" class="w5-chip" data-f="replies" aria-pressed="false">With replies <span class="w5-n">0</span></button>
-         <button type="button" class="w5-chip" data-f="unanchored" aria-pressed="false" title="Notes whose passage is no longer in the document">Unanchored <span aria-hidden="true">⚠</span> <span class="w5-n">0</span></button>
-         <button type="button" class="w5-chip ai-chip" data-f="ai" aria-pressed="false" hidden>With AI answer <span class="w5-n">0</span></button>
-         <button type="button" class="w5-chip ai-chip" data-f="noai" aria-pressed="false" hidden>No AI answer <span class="w5-n">0</span></button>
-         <button type="button" class="w5-chip ai-chip" data-f="sugg" aria-pressed="false" title="AI suggested edits not yet accepted or rejected" hidden>Pending suggestions <span class="w5-n">0</span></button>
+       <div class="w5-chips" role="group" aria-label="${te("filter.label")}">
+         <button type="button" class="w5-chip" data-f="all" aria-pressed="true">${te("filter.all")} <span class="w5-n">0</span></button>
+         <button type="button" class="w5-chip" data-f="replies" aria-pressed="false">${te("filter.replies")} <span class="w5-n">0</span></button>
+         <button type="button" class="w5-chip" data-f="unanchored" aria-pressed="false" title="${te("filter.unanchoredTitle")}">${te("filter.unanchored")} <span aria-hidden="true">⚠</span> <span class="w5-n">0</span></button>
+         <button type="button" class="w5-chip ai-chip" data-f="ai" aria-pressed="false" hidden>${te("filter.ai")} <span class="w5-n">0</span></button>
+         <button type="button" class="w5-chip ai-chip" data-f="noai" aria-pressed="false" hidden>${te("filter.noai")} <span class="w5-n">0</span></button>
+         <button type="button" class="w5-chip ai-chip" data-f="sugg" aria-pressed="false" title="${te("filter.suggTitle")}" hidden>${te("filter.sugg")} <span class="w5-n">0</span></button>
        </div>
-       <button type="button" class="w5-help-btn" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">?</button>
+       <button type="button" class="w5-help-btn" title="${te("help.titleShort")}" aria-label="${te("help.title")}">?</button>
      </div>
-     <div class="w5-none" role="status" hidden><span class="w5-none-msg"></span> <button type="button" class="w5-clear">Clear filters</button></div>`;
+     <div class="w5-none" role="status" hidden><span class="w5-none-msg"></span> <button type="button" class="w5-clear">${te("filter.clear")}</button></div>`;
   railInner.parentNode.insertBefore(w5Bar, railInner);
   const inp=w5Bar.querySelector("#w5Search");
   inp.addEventListener("input",()=>{ w5Q=inp.value; w5Refilter(); });
@@ -5368,15 +5411,15 @@ function w5OpenHelp(){
     const K=(...k)=>k.map(x=>`<kbd>${x}</kbd>`).join("");
     w5HelpEl.innerHTML=
       `<div class="panel w5-help" role="dialog" aria-modal="true" aria-labelledby="w5HelpTitle">
-         <div class="panel-head"><h3 id="w5HelpTitle">Keyboard shortcuts</h3>
-           <button class="x" type="button" aria-label="Close" title="Close (Esc)">×</button></div>
+         <div class="panel-head"><h3 id="w5HelpTitle">${te("help.title")}</h3>
+           <button class="x" type="button" aria-label="${te("common.close")}" title="${te("common.closeEsc")}">×</button></div>
          <dl class="w5-keys">
-           <div><dt>${K("J")}<span class="w5-or">/</span>${K("K")}</dt><dd>Next / previous comment</dd></div>
-           <div><dt>${K("Alt","↓")}<span class="w5-or">/</span>${K("Alt","↑")}</dt><dd>Next / previous comment</dd></div>
-           <div><dt>${K("/")}</dt><dd>Search comments</dd></div>
-           <div><dt>${K("Enter")}</dt><dd>Add a note on the selected text</dd></div>
-           <div><dt>${K("Esc")}</dt><dd>Close a card, menu or dialog</dd></div>
-           <div><dt>${K("?")}</dt><dd>Show these shortcuts</dd></div>
+           <div><dt>${K("J")}<span class="w5-or">/</span>${K("K")}</dt><dd>${te("help.nextPrev")}</dd></div>
+           <div><dt>${K("Alt","↓")}<span class="w5-or">/</span>${K("Alt","↑")}</dt><dd>${te("help.nextPrev")}</dd></div>
+           <div><dt>${K("/")}</dt><dd>${te("help.search")}</dd></div>
+           <div><dt>${K("Enter")}</dt><dd>${te("help.addNote")}</dd></div>
+           <div><dt>${K("Esc")}</dt><dd>${te("help.close")}</dd></div>
+           <div><dt>${K("?")}</dt><dd>${te("help.show")}</dd></div>
          </dl>
        </div>`;
     document.body.appendChild(w5HelpEl);
@@ -5415,7 +5458,7 @@ function w5Nav(dir){
     ? ANN.filter(a=>w5Passes(a, terms))                          // respect the panel filter
     : ANN.filter(a=>doc.querySelector(`mark.hl[data-id="${a.id}"]`));   // inline cards need a highlight
   if(!list.length){
-    toast(!ANN.length ? "No comments yet" : panel ? "No comments match the filter" : "No comments with a highlight in this document");
+    toast(!ANN.length ? t("nav.noComments") : panel ? t("nav.noMatch") : t("nav.noHighlight"));
     return;
   }
   const cur = (POP.mode==="card" && POP.id) ? POP.id : activeId;
@@ -5441,7 +5484,7 @@ function w5Nav(dir){
 }
 function w5FocusSearch(){
   if(document.body.classList.contains("rail-collapsed")) $("#bToggleRail").click();   // same path as the toggle (remembers the choice)
-  if(!ANN.length){ toast("No comments yet"); return; }
+  if(!ANN.length){ toast(t("nav.noComments")); return; }
   const inp=$("#w5Search"); if(!inp) return;
   const r=inp.getBoundingClientRect();
   if(r.top<70 || r.bottom>window.innerHeight) inp.scrollIntoView({block:"center"});
@@ -5482,8 +5525,8 @@ const LIB_BACKUP_DAYS = 7;                  // remind to download a backup after
 const LIB_MAX = 10;                         // documents kept in the browser (homepage promises "up to 10")
 function libFull(){ return LIB.docs.length >= LIB_MAX; }
 function libFullToast(){
-  toast(`You can keep up to ${LIB_MAX} documents — delete one to add another`,
-    { action:{ label:"Manage", run:()=>libOpenPanel() }, ms:7000 });
+  toast(t("lib.full",{max:LIB_MAX}),
+    { action:{ label:t("lib.manage"), run:()=>libOpenPanel() }, ms:7000 });
 }
 let libFullWarned = false;
 const LIB_QUOTA = 5 * 1024 * 1024;        // typical per-origin localStorage budget (characters) — only for the near-full warning
@@ -5494,7 +5537,7 @@ let libFp = "";                           // content fingerprint of the active d
 let libPasteNew = false;                  // paste drawer opened from Documents → New → Paste
 const libSizes = new Map();               // id → stored characters (key + value)
 
-const libPlural = (n, one, many) => `${n} ${n===1 ? one : (many || one+"s")}`;
+
 function libUid(){
   let id;
   do{ id = "d" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); } while(libMeta(id));
@@ -5503,7 +5546,7 @@ function libUid(){
 function libMeta(id){ return LIB.docs.find(d => d.id === id) || null; }
 function libSorted(){ return [...LIB.docs].sort((a,b) => b.updatedAt - a.updatedAt); }
 function libUniqueName(base, exceptId){
-  base = String(base || "").trim() || "Untitled";
+  base = String(base || "").trim() || t("doc.untitledShort");
   const taken = new Set(LIB.docs.filter(d => d.id !== exceptId).map(d => d.name.toLowerCase()));
   if(!taken.has(base.toLowerCase())) return base;
   for(let n = 2; ; n++){ const c = `${base} (${n})`; if(!taken.has(c.toLowerCase())) return c; }
@@ -5532,7 +5575,7 @@ function libTime(v, fallback){
 const libGoneIds = new Set();             // deleted in this tab: never merged back from another tab's index
 function libUseIdb(){ return !window.storage && !!window.indexedDB; }
 function libNormMeta(d, now){
-  const m = { id:d.id, name:String(d.name || "Untitled"), createdAt:libTime(d.createdAt, now), updatedAt:libTime(d.updatedAt, now),
+  const m = { id:d.id, name:String(d.name || t("doc.untitledShort")), createdAt:libTime(d.createdAt, now), updatedAt:libTime(d.updatedAt, now),
     notes:Number(d.notes) || 0, chars:Number(d.chars) || 0 };
   if(d.store === "idb") m.store = "idb";
   if(Number(d.size) > 0) m.size = Number(d.size);
@@ -5657,14 +5700,14 @@ async function libRecoverOrphans(){
     }
     if(libFull()) continue;                // keep the data; it comes back once there's room
     const now = Date.now(), ann = libCleanAnn(d.ann);
-    const m = { id, name:libUniqueName(d.currentFileName || "Recovered document"), createdAt:now, updatedAt:now,
+    const m = { id, name:libUniqueName(d.currentFileName || t("doc.recoveredName")), createdAt:now, updatedAt:now,
       notes:ann.length, chars:d.src.length, size:(LIB_DOC + id).length + raw.length };
     if(where === "idb") m.store = "idb";
     LIB.docs.push(m); recovered++; changed = true;
   }
   if(changed) await libWriteIndex();
-  if(recovered) setTimeout(() => toast(`Recovered ${libPlural(recovered, "document")} that weren't listed in Documents`,
-    { action:{ label:"Documents", run:() => libOpenPanel() }, ms:7000 }), 600);
+  if(recovered) setTimeout(() => toast(t("lib.recovered",{n:recovered}),
+    { action:{ label:t("lib.documents"), run:() => libOpenPanel() }, ms:7000 }), 600);
 }
 // one-time: the pre-library single workspace (marginalia:workspace:v1) becomes the first document
 async function libMigrate(){
@@ -5676,11 +5719,11 @@ async function libMigrate(){
   const ann = keep ? libCleanAnn(d.ann) : [];
   if(keep && d.isSampleMode){   // demo-only → drop; demo carrying the user's own comments → keep a copy
     keep = ann.some(a => !String(a.id).startsWith("demo") && String(a.note || "").trim());
-    name = "Sample copy";
+    name = t("doc.sampleCopy");
   }
   if(keep){
     const now = Date.now();
-    const meta = { id:libUid(), name:libUniqueName(name || "Markdown document"), createdAt:now, updatedAt:now,
+    const meta = { id:libUid(), name:libUniqueName(name || t("doc.untitled")), createdAt:now, updatedAt:now,
       notes:ann.length, chars:d.src.length };
     if(!(await libWriteDoc(meta.id, JSON.stringify({ src:d.src, ann, currentFileName:meta.name }), meta))) return;
     LIB.docs.push(meta); LIB.activeId = meta.id;
@@ -5719,7 +5762,7 @@ function libSampleChanged(){
 }
 function libPromoteSample(){
   const before = doc.getBoundingClientRect().top;
-  setWorkspaceMode({ home:false, sample:false, fileName:"Sample copy" });
+  setWorkspaceMode({ home:false, sample:false, fileName:t("doc.sampleCopy") });
   const shift = doc.getBoundingClientRect().top - before;   // the intro hid → keep the text in place
   if(Math.abs(shift) > 1) window.scrollBy(0, shift);
   renderCards();                                            // drop the "Example note" chips
@@ -5730,7 +5773,7 @@ async function libOpen(id, { quiet=false } = {}){
   const meta = libMeta(id); if(!meta) return false;
   if(id === LIB.activeId && !isSampleMode){ libClosePanel(); return true; }
   let d = null; try{ d = await libReadDoc(id); }catch(e){}
-  if(!d){ toast(`Couldn't open “${meta.name}” — its saved data is missing`); return false; }
+  if(!d){ toast(t("lib.cantOpen",{name:meta.name})); return false; }
   libLeaveCurrent();
   libApplyDoc(meta, d);
   updateWorkspaceChrome();
@@ -5738,7 +5781,7 @@ async function libOpen(id, { quiet=false } = {}){
   window.scrollTo(0, 0);
   await libWriteIndex();
   libRenderPanel();
-  if(!quiet) toast(`Opened ${meta.name}`);
+  if(!quiet) toast(t("toast.opened",{name:meta.name}));
   return true;
 }
 function libRename(id, name){
@@ -5773,8 +5816,8 @@ async function libDeleteMany(ids){
     if(!opened){ libLeaveCurrent(); loadSample({ home:false }); }
   }
   libRenderPanel();
-  const msg = items.length === 1 ? `Deleted “${items[0].meta.name}”` : `Deleted ${items.length} documents`;
-  toast(msg, { action:{ label:"Undo", run:() => libUndoDelete(items, gone.has(activeWas) ? activeWas : null) }, ms:8000 });
+  const msg = items.length === 1 ? t("lib.deletedOne",{name:items[0].meta.name}) : t("lib.deletedMany",{n:items.length});
+  toast(msg, { action:{ label:t("common.undo"), run:() => libUndoDelete(items, gone.has(activeWas) ? activeWas : null) }, ms:8000 });
 }
 async function libUndoDelete(items, reopenId){
   let n = 0, capped = 0;
@@ -5788,8 +5831,8 @@ async function libUndoDelete(items, reopenId){
   await libWriteIndex();
   if(reopenId && libMeta(reopenId)) await libOpen(reopenId, { quiet:true });
   libRenderPanel();
-  if(n) toast((n === 1 ? `Restored “${items[0].meta.name}”` : `Restored ${n} documents`)
-    + (capped ? ` — ${libPlural(capped, "document")} not restored (limit ${LIB_MAX})` : ""), { ms:capped ? 6000 : 3000 });
+  if(n) toast((n === 1 ? t("lib.restoredOne",{name:items[0].meta.name}) : t("lib.restoredMany",{n}))
+    + (capped ? t("lib.notRestored",{n:capped,max:LIB_MAX}) : ""), { ms:capped ? 6000 : 3000 });
   else if(capped) libFullToast();
 }
 
@@ -5822,22 +5865,22 @@ async function libBackup(ids, { all=false } = {}){
       ann:(Array.isArray(d.ann) ? d.ann : []).map(a => { const c = { ...a }; delete c.resolved; delete c.section; return c; }),
       createdAt:new Date(m.createdAt).toISOString(), updatedAt:new Date(m.updatedAt).toISOString() });
   }
-  if(!docs.length){ toast("Nothing to back up yet"); return false; }
+  if(!docs.length){ toast(t("lib.nothingToBackup")); return false; }
   const file = (!all && docs.length === 1) ? libBackupName(docs[0].name) : `mdeverything-backup-${libLocalDate()}.json`;
   libDownload(file, JSON.stringify({ format:"mdeverything", version:1, exportedAt:new Date().toISOString(), docs }, null, 2));
   if(all || docs.length >= LIB.docs.length) libBackupState({ at:Date.now() });
-  toast(`Downloaded ${file}`);
+  toast(t("lib.downloaded",{file}));
   return true;
 }
 function libIsJson(f){ return /\.json$/i.test(f.name || "") || f.type === "application/json"; }
 async function libImportFile(f){
-  const fail = why => { toast(`Couldn't import “${f.name}” — ${why}`, { ms:5000 }); return false; };
+  const fail = why => { toast(t("lib.importFailed",{name:f.name, why}), { ms:5000 }); return false; };
   let data;
-  try{ data = JSON.parse(await f.text()); }catch(e){ return fail("it isn't valid JSON"); }
+  try{ data = JSON.parse(await f.text()); }catch(e){ return fail(t("lib.importNotJson")); }
   if(!data || typeof data !== "object" || data.format !== "mdeverything" || !Array.isArray(data.docs))
-    return fail("it isn't an mdeverything backup");
+    return fail(t("lib.importNotBackup"));
   const list = data.docs.filter(d => d && typeof d.src === "string");
-  if(!list.length) return fail("it contains no documents");
+  if(!list.length) return fail(t("lib.importEmpty"));
   // documents already here with identical text + comments are skipped (re-importing a backup)
   await saveFlush();
   const have = new Map();                  // fingerprint → meta
@@ -5854,7 +5897,7 @@ async function libImportFile(f){
     const fp = libContentFp(d.src, ann);
     if(have.has(fp)){ dup++; dupMeta = dupMeta || have.get(fp); continue; }
     if(libFull()){ capped = list.length - i; break; }
-    const meta = { id:libUid(), name:libUniqueName(d.name || "Imported document"),
+    const meta = { id:libUid(), name:libUniqueName(d.name || t("doc.importedName")),
       createdAt:libTime(d.createdAt, now), updatedAt:libTime(d.updatedAt, now), notes:ann.length, chars:d.src.length };
     if(!(await libWriteDoc(meta.id, JSON.stringify({ src:d.src, ann, currentFileName:meta.name }), meta))){ full = true; break; }
     LIB.docs.push(meta); have.set(fp, meta); nDocs++; nNotes += ann.length;
@@ -5863,12 +5906,12 @@ async function libImportFile(f){
   await libWriteIndex();
   if(first) await libOpen(first.id, { quiet:true });
   libRenderPanel();
-  const dupMsg = dup ? ` — ${libPlural(dup, "duplicate")} skipped (already in Documents)` : "";
-  if(nDocs) toast(`Imported ${libPlural(nDocs, "document")} · ${libPlural(nNotes, "comment")}` + (full ? " — storage is full, the rest were skipped" : "")
-    + (capped ? ` — ${libPlural(capped, "document")} skipped (limit ${LIB_MAX})` : "") + dupMsg, { ms:5000 });
+  const dupMsg = dup ? t("lib.dupSkipped",{n:dup}) : "";
+  if(nDocs) toast(t("lib.imported",{docs:nDocs, notes:nNotes}) + (full ? t("lib.importFull") : "")
+    + (capped ? t("lib.importCapped",{n:capped,max:LIB_MAX}) : "") + dupMsg, { ms:5000 });
   else if(capped) libFullToast();
-  else if(dup) toast(dup === 1 ? `“${dupMeta.name}” is already in Documents — nothing new to import` : `All ${dup} documents are already in Documents — nothing new to import`,
-    { action:{ label:"Open", run:() => libOpen(dupMeta.id) }, ms:6000 });
+  else if(dup) toast(dup === 1 ? t("lib.dupOne",{name:dupMeta.name}) : t("lib.dupAll",{n:dup}),
+    { action:{ label:t("common.open"), run:() => libOpen(dupMeta.id) }, ms:6000 });
   return nDocs > 0;
 }
 
@@ -5894,8 +5937,8 @@ function libAfterSave(){
   if(!st.at){ libBackupState({ at:now }); return; }        // the clock starts with the first saved document
   if(now - st.at < LIB_BACKUP_DAYS * 864e5 || now - (st.nag || 0) < 864e5 || !LIB.docs.length) return;
   libBackupState({ nag:now });
-  toast(`No backup in over ${LIB_BACKUP_DAYS} days — browsers can clear site data. Keep a copy of your documents as a file.`,
-    { action:{ label:"Download backup", run:() => libBackup(libSorted().map(d => d.id), { all:true }) }, ms:10000 });
+  toast(t("lib.backupNag",{days:LIB_BACKUP_DAYS}),
+    { action:{ label:t("lib.downloadBackup"), run:() => libBackup(libSorted().map(d => d.id), { all:true }) }, ms:10000 });
 }
 
 /* ---------- several tabs: keep the library in sync ----------
@@ -5923,9 +5966,9 @@ function libSyncFromOtherTab(){
   libRenderPanel();
   if(changedActive){
     const id = changedActive.id;
-    toast(`“${changedActive.name}” was changed in another tab`, { action:{ label:"Load latest", run:() => libReload(id) }, ms:10000 });
+    toast(t("lib.changedElsewhere",{name:changedActive.name}), { action:{ label:t("lib.loadLatest"), run:() => libReload(id) }, ms:10000 });
   } else if(removedActive){
-    toast(`“${removedActive.name}” was deleted in another tab — it stays open here, and your next change saves it again`, { ms:8000 });
+    toast(t("lib.deletedElsewhere",{name:removedActive.name}), { ms:8000 });
   }
 }
 // re-read the open document from storage (after another tab changed it)
@@ -5934,12 +5977,12 @@ async function libReload(id){
   saveCancel();
   const meta = libMeta(id); if(!meta) return;
   let d = null; try{ d = await libReadDoc(id); }catch(e){}
-  if(!d){ toast("Couldn't load the latest version"); return; }
+  if(!d){ toast(t("lib.cantLoadLatest")); return; }
   libLeaveCurrent();
   libApplyDoc(meta, d);
   updateWorkspaceChrome();
   renderDoc();
-  toast(`Loaded the latest “${meta.name}”`);
+  toast(t("lib.loadedLatest",{name:meta.name}));
 }
 window.addEventListener("storage", e => {
   if(window.storage) return;
@@ -5963,9 +6006,9 @@ async function libStorageStatus(){
     }
   }catch(e){}
   if(st.free != null && (st.free < LIB_WARN_FREE || st.usage / st.quota >= LIB_WARN_SHARE))
-    st.kind = "quota", st.warn = `Storage is almost full — only ~${libFmt(st.free)} left. Download a backup and remove documents you no longer need.`;
+    st.kind = "quota", st.warn = t("lib.quotaWarn",{free:libFmt(st.free)});
   else if(ls >= LIB_WARN_LS)
-    st.kind = "ls", st.warn = "This site's small-document storage is almost full (it's shared with other pages on this domain). Remove documents you no longer need.";
+    st.kind = "ls", st.warn = t("lib.lsWarn");
   return st;
 }
 // after a save: tell the user (at most once a day) before writes start failing
@@ -5975,7 +6018,7 @@ async function libCheckSpace(){
   const now = Date.now(), b = libBackupState();
   if(now - (b.fullNag || 0) < 864e5) return;
   libBackupState({ fullNag:now });
-  toast(st.warn, { action:{ label:"Manage storage", run:() => libOpenPanel() }, ms:10000 });
+  toast(st.warn, { action:{ label:t("toast.manageStorage"), run:() => libOpenPanel() }, ms:10000 });
 }
 
 /* ---------- storage meter + cleanup ---------- */
@@ -6005,14 +6048,14 @@ function libFmt(n){
 }
 function libRel(t){
   const s = (Date.now() - t) / 1000;
-  if(s < 45) return "just now";
-  if(s < 3600) return `${Math.max(1, Math.round(s / 60))} min ago`;
-  if(s < 86400) return `${Math.round(s / 3600)} h ago`;
+  if(s < 45) return t("time.justNow");
+  if(s < 3600) return relFmt(-Math.max(1, Math.round(s / 60)), "minute", "long");
+  if(s < 86400) return relFmt(-Math.round(s / 3600), "hour", "long");
   const d = Math.round(s / 86400);
-  if(d === 1) return "yesterday";
-  if(d < 30) return `${d} days ago`;
+  if(d === 1) return t("time.yesterday");
+  if(d < 30) return relFmt(-d, "day", "long");
   const dt = new Date(t);
-  return dt.toLocaleDateString(undefined, { month:"short", day:"numeric", year:dt.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined });
+  return dt.toLocaleDateString(LANG, { month:"short", day:"numeric", year:dt.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined });
 }
 // askConfirm + a "Download backup first" button in the note; the message may list lines
 function libConfirm(opts, backupIds){
@@ -6022,9 +6065,9 @@ function libConfirm(opts, backupIds){
   if(backupIds && backupIds.length){
     const b = document.createElement("button");
     b.type = "button"; b.className = "lib-btn lib-confirm-backup";
-    b.textContent = backupIds.length === 1 ? "Download backup first" : `Download backup of ${backupIds.length} documents first`;
+    b.textContent = backupIds.length === 1 ? t("lib.backupFirst") : t("lib.backupFirstMany",{n:backupIds.length});
     b.addEventListener("click", async () => {
-      if(await libBackup(backupIds, { all:backupIds.length > 1 })){ b.textContent = "Backup downloaded ✓"; b.classList.add("done"); }
+      if(await libBackup(backupIds, { all:backupIds.length > 1 })){ b.textContent = t("lib.backupDone"); b.classList.add("done"); }
     });
     note.appendChild(document.createElement("br"));
     note.appendChild(b);
@@ -6041,24 +6084,24 @@ window.addEventListener("keydown", e => {
 async function libCleanupOld(){
   const cutoff = Date.now() - LIB_OLD_DAYS * 864e5;
   const old = libSorted().filter(d => d.updatedAt < cutoff);
-  if(!old.length){ toast(`No documents older than ${LIB_OLD_DAYS} days`); return; }
+  if(!old.length){ toast(t("lib.noOld",{days:LIB_OLD_DAYS})); return; }
   const shown = old.slice(0, 8).map(d => `• ${d.name} — ${libRel(d.updatedAt)}`).join("\n")
-    + (old.length > 8 ? `\n…and ${old.length - 8} more` : "");
+    + (old.length > 8 ? "\n"+t("lib.andMore",{n:old.length - 8}) : "");
   const ok = await libConfirm({
-    title:`Remove ${libPlural(old.length, "old document")}?`,
-    message:`Not changed in the last ${LIB_OLD_DAYS} days:\n${shown}`,
-    note:"This frees browser storage. You can undo right after.",
-    confirmText:`Remove ${old.length}`, cancelText:"Keep them", icon:"🗑"
+    title:t("lib.oldTitle",{n:old.length}),
+    message:t("lib.oldMessage",{days:LIB_OLD_DAYS})+"\n"+shown,
+    note:t("lib.oldNote"),
+    confirmText:t("lib.oldOk",{n:old.length}), cancelText:t("lib.oldKeep"), icon:"🗑"
   }, old.map(d => d.id));
   if(ok) await libDeleteMany(old.map(d => d.id));
 }
 async function libDeleteAll(){
   const n = LIB.docs.length, c = LIB.docs.reduce((s, d) => s + (d.notes || 0), 0);
   const ok = await libConfirm({
-    title:"Delete all data?",
-    message:`This permanently removes ${libPlural(n, "document")}, ${libPlural(c, "comment")} and your saved preferences from this browser.`,
-    note:"This can't be undone.",
-    confirmText:"Delete everything", cancelText:"Cancel"
+    title:t("lib.wipeTitle"),
+    message:t("lib.wipeMessage",{docs:n, notes:c}),
+    note:t("lib.wipeNote"),
+    confirmText:t("lib.wipeOk"), cancelText:t("common.cancel")
   }, n ? LIB.docs.map(d => d.id) : null);
   if(!ok) return;
   const keys = new Set([LIB_KEY, STORE_KEY, ...LIB.docs.map(d => LIB_DOC + d.id)]);
@@ -6079,7 +6122,7 @@ async function libDeleteAll(){
   loadSample({ home:true });
   window.scrollTo(0, 0);
   libRenderPanel();
-  toast("All data deleted from this browser");
+  toast(t("lib.wiped"));
 }
 
 /* ---------- Documents panel (opened from the header document name) ---------- */
@@ -6096,37 +6139,37 @@ function libBuildPanel(){
   if(libPanel) return libPanel;
   const p = document.createElement("div");
   p.className = "lib-panel"; p.id = "libPanel"; p.hidden = true;
-  p.setAttribute("role", "dialog"); p.setAttribute("aria-label", "Documents");
+  p.setAttribute("role", "dialog"); p.setAttribute("aria-label", t("lib.documents"));
   p.innerHTML = `
     <div class="lib-head">
-      <h2>Documents <span class="lib-count"></span></h2>
+      <h2>${te("lib.documents")} <span class="lib-count"></span></h2>
       <span class="lib-new">
-        <button type="button" class="lib-btn primary" data-lib="new" aria-haspopup="menu" aria-expanded="false">${LIB_ICONS.plus}New</button>
+        <button type="button" class="lib-btn primary" data-lib="new" aria-haspopup="menu" aria-expanded="false">${LIB_ICONS.plus}${te("lib.new")}</button>
         <span class="lib-menu" role="menu" hidden>
-          <button type="button" role="menuitem" data-lib="open-file">Open file…<span class="sub">.md, .markdown or .txt</span></button>
-          <button type="button" role="menuitem" data-lib="paste">Paste Markdown…<span class="sub">Start a new document from text</span></button>
-          <button type="button" role="menuitem" data-lib="sample">Sample document<span class="sub">The guided demo (not saved)</span></button>
+          <button type="button" role="menuitem" data-lib="open-file">${te("lib.newOpen")}<span class="sub">${te("lib.newOpenSub")}</span></button>
+          <button type="button" role="menuitem" data-lib="paste">${te("lib.newPaste")}<span class="sub">${te("lib.newPasteSub")}</span></button>
+          <button type="button" role="menuitem" data-lib="sample">${te("lib.newSample")}<span class="sub">${te("lib.newSampleSub")}</span></button>
         </span>
       </span>
-      <button type="button" class="lib-x" data-lib="close" aria-label="Close documents">×</button>
+      <button type="button" class="lib-x" data-lib="close" aria-label="${te("lib.close")}">×</button>
     </div>
     <div class="lib-notice" hidden></div>
-    <div class="lib-search-wrap"><input type="search" class="lib-search" placeholder="Search documents" aria-label="Search documents by name"></div>
-    <div class="lib-list" role="list" aria-label="Saved documents"></div>
+    <div class="lib-search-wrap"><input type="search" class="lib-search" placeholder="${te("lib.search")}" aria-label="${te("lib.searchAria")}"></div>
+    <div class="lib-list" role="list" aria-label="${te("lib.listAria")}"></div>
     <div class="lib-foot">
       <div class="lib-meter"></div>
       <div class="lib-backup" role="group" aria-labelledby="libBackupTitle">
-        <div class="lib-backup-head"><span class="lib-backup-title" id="libBackupTitle">Backup</span>
+        <div class="lib-backup-head"><span class="lib-backup-title" id="libBackupTitle">${te("lib.backup")}</span>
           <span class="lib-backup-acts">
-            <button type="button" class="lib-btn" data-lib="backup-all">${LIB_ICONS.backup}Download backup (.json)</button>
-            <button type="button" class="lib-btn" data-lib="import">${LIB_ICONS.imp}Restore from backup…</button>
+            <button type="button" class="lib-btn" data-lib="backup-all">${LIB_ICONS.backup}${te("lib.backupAll")}</button>
+            <button type="button" class="lib-btn" data-lib="import">${LIB_ICONS.imp}${te("lib.restore")}</button>
           </span>
         </div>
-        <p class="lib-backup-note">A backup keeps your documents and comments in one file — use it to move to another browser or keep a safe copy.</p>
+        <p class="lib-backup-note">${te("lib.backupNote")}</p>
       </div>
       <div class="lib-foot-acts">
-        <button type="button" class="lib-link" data-lib="old">Remove documents older than ${LIB_OLD_DAYS} days</button>
-        <button type="button" class="lib-link danger" data-lib="wipe">Delete all data</button>
+        <button type="button" class="lib-link" data-lib="old">${te("lib.removeOld",{days:LIB_OLD_DAYS})}</button>
+        <button type="button" class="lib-link danger" data-lib="wipe">${te("lib.wipe")}</button>
       </div>
     </div>
     <input type="file" class="lib-import-input" accept=".json,application/json" hidden>`;
@@ -6150,9 +6193,9 @@ function libBuildPanel(){
       case "paste":
         libClosePanel(); openSourceDrawer();
         libPasteNew = true; $("#srcArea").value = "";
-        $("#ovSourceTitle").textContent = "New document from Markdown"; $("#bRender").textContent = "Create document";
+        $("#ovSourceTitle").textContent = t("source.newTitle"); $("#bRender").textContent = t("source.create");
         break;
-      case "sample": libClosePanel(); libLeaveCurrent(); loadSample({ home:false }); window.scrollTo(0,0); toast("Showing the sample document"); break;
+      case "sample": libClosePanel(); libLeaveCurrent(); loadSample({ home:false }); window.scrollTo(0,0); toast(t("lib.showingSample")); break;
       case "import": p.querySelector(".lib-import-input").click(); break;
       case "close": libClosePanel(true); break;
       case "open": libOpen(id).then(ok => { if(ok) libClosePanel(); }); break;
@@ -6191,30 +6234,30 @@ function libRenderPanel(){
   cnt.classList.toggle("full", libFull());
   const notice = p.querySelector(".lib-notice");
   notice.hidden = !isSampleMode;
-  notice.textContent = isSampleMode ? "You're viewing the sample document. It isn't saved unless you change it — then it's kept here as “Sample copy”." : "";
+  notice.textContent = isSampleMode ? t("lib.sampleNotice",{name:t("doc.sampleCopy")}) : "";
   // list
   if(libRenamingId && !libMeta(libRenamingId)) libRenamingId = null;
   const q = p.querySelector(".lib-search").value.trim().toLowerCase();
   const all = libSorted(), docs = q ? all.filter(d => d.name.toLowerCase().includes(q)) : all;
   const list = p.querySelector(".lib-list");
   if(!all.length){
-    list.innerHTML = `<div class="lib-empty"><b>No saved documents yet</b>Open or paste a Markdown file — it's kept here automatically, with its comments.</div>`;
+    list.innerHTML = `<div class="lib-empty"><b>${te("lib.emptyTitle")}</b>${te("lib.emptyText")}</div>`;
   } else if(!docs.length){
-    list.innerHTML = `<div class="lib-empty">No documents match “${esc(q)}”.</div>`;
+    list.innerHTML = `<div class="lib-empty">${te("lib.noMatch",{q})}</div>`;
   } else {
     list.innerHTML = docs.map(d => {
       const on = d.id === LIB.activeId && !isSampleMode;
-      const meta = `${libPlural(d.notes || 0, "comment")} · ${libRel(d.updatedAt)} · ${libFmt(libDocSize(d))}`;
+      const meta = `${t("lib.rowComments",{n:d.notes || 0})} · ${libRel(d.updatedAt)} · ${libFmt(libDocSize(d))}`;
       const main = d.id === libRenamingId
-        ? `<span class="lib-rename-wrap"><input class="lib-rename" type="text" value="${esc(d.name).replace(/"/g, "&quot;")}" aria-label="Rename ${esc(d.name).replace(/"/g, "&quot;")}" maxlength="120"></span>`
-        : `<button type="button" class="lib-open" data-lib="open" title="Open ${esc(d.name).replace(/"/g, "&quot;")}"${on ? ' aria-current="true"' : ""}>
-             <span class="lib-name-line"><span class="lib-name">${esc(d.name)}</span>${on ? '<span class="lib-cur">Open</span>' : ""}</span>
+        ? `<span class="lib-rename-wrap"><input class="lib-rename" type="text" value="${esc(d.name).replace(/"/g, "&quot;")}" aria-label="${te("lib.renameAria",{name:d.name})}" maxlength="120"></span>`
+        : `<button type="button" class="lib-open" data-lib="open" title="${te("lib.openTitle",{name:d.name})}"${on ? ' aria-current="true"' : ""}>
+             <span class="lib-name-line"><span class="lib-name">${esc(d.name)}</span>${on ? '<span class="lib-cur">'+te("lib.current")+'</span>' : ""}</span>
              <span class="lib-meta">${esc(meta)}</span></button>`;
       return `<div class="lib-row${on ? " on" : ""}" role="listitem" data-id="${esc(d.id)}">${main}
         <span class="lib-acts">
-          <button type="button" class="lib-ico" data-lib="rename" title="Rename" aria-label="Rename ${esc(d.name).replace(/"/g, "&quot;")}">${LIB_ICONS.rename}</button>
-          <button type="button" class="lib-ico" data-lib="backup" title="Download backup" aria-label="Download backup of ${esc(d.name).replace(/"/g, "&quot;")}">${LIB_ICONS.backup}</button>
-          <button type="button" class="lib-ico danger" data-lib="delete" title="Delete" aria-label="Delete ${esc(d.name).replace(/"/g, "&quot;")}">${LIB_ICONS.del}</button>
+          <button type="button" class="lib-ico" data-lib="rename" title="${te("lib.rename")}" aria-label="${te("lib.renameAria",{name:d.name})}">${LIB_ICONS.rename}</button>
+          <button type="button" class="lib-ico" data-lib="backup" title="${te("lib.backupOne")}" aria-label="${te("lib.backupOneAria",{name:d.name})}">${LIB_ICONS.backup}</button>
+          <button type="button" class="lib-ico danger" data-lib="delete" title="${te("common.delete")}" aria-label="${te("lib.deleteAria",{name:d.name})}">${LIB_ICONS.del}</button>
         </span></div>`;
     }).join("");
     const inp = list.querySelector(".lib-rename");
@@ -6226,19 +6269,19 @@ function libRenderPanel(){
   if(used == null){
     meter.className = "lib-meter";
     meter.innerHTML = `<div class="lib-meter-note">${window.storage
-      ? "Storage is managed by the app hosting this page, so usage can't be measured here."
-      : "Browser storage isn't available here — documents won't be kept after a reload."}</div>`;
+      ? te("lib.hostStorage")
+      : te("lib.noStorage")}</div>`;
   } else {
-    if(!meter.firstChild) meter.innerHTML = `<div class="lib-meter-row"><span>Storage</span><span><b>~${libFmt(used)}</b> used</span></div>`;
+    if(!meter.firstChild) meter.innerHTML = `<div class="lib-meter-row"><span>${te("lib.storage")}</span><span>${t("lib.used_html",{size:libFmt(used)})}</span></div>`;
     // no fixed limit is shown: the real room is large (IndexedDB) — only warn when it's running out
     libStorageStatus().then(st => {
       if(!meter.isConnected || !st) return;
       meter.className = "lib-meter" + (st.warn ? " warn" : "");
-      meter.title = `Small documents: ~${libFmt(st.ls)} in localStorage · large documents: ~${libFmt(st.idb)} in IndexedDB`
-        + (st.free != null ? ` · the browser has ~${libFmt(st.free)} free for this site` : "");
+      meter.title = t("lib.meterTitle",{ls:libFmt(st.ls), idb:libFmt(st.idb)})
+        + (st.free != null ? t("lib.meterFree",{free:libFmt(st.free)}) : "");
       const pct = st.quota ? Math.min(100, st.usage / st.quota * 100) : 0;
-      meter.innerHTML = `<div class="lib-meter-row"><span>Storage</span><span><b>~${libFmt(st.used)}</b> used</span></div>`
-        + (st.warn ? (st.kind === "quota" ? `<div class="lib-bar" role="meter" aria-label="Browser storage used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><i style="width:${pct.toFixed(1)}%"></i></div>` : "")
+      meter.innerHTML = `<div class="lib-meter-row"><span>${te("lib.storage")}</span><span>${t("lib.used_html",{size:libFmt(st.used)})}</span></div>`
+        + (st.warn ? (st.kind === "quota" ? `<div class="lib-bar" role="meter" aria-label="${te("lib.meterAria")}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><i style="width:${pct.toFixed(1)}%"></i></div>` : "")
           + `<div class="lib-meter-note">${esc(st.warn)}</div>` : "");
     });
   }
@@ -6267,7 +6310,7 @@ function libWireRename(inp, id){
 function libIsOpen(){ return !!(libPanel && !libPanel.hidden); }
 function libOpenPanel(){
   if(document.body.classList.contains("editing")){
-    toast(typeof mdeMod !== "undefined" ? `Finish editing first: Done (${mdeMod}Enter) applies, Discard reverts` : "Finish editing first");
+    toast(typeof mdeMod !== "undefined" ? t("editor.finishFirst",{key:mdeMod+"Enter"}) : t("editor.finishFirstShort"));
     return;
   }
   const p = libBuildPanel();
@@ -6313,7 +6356,7 @@ new MutationObserver(() => {
 // the normal Paste buttons edit the current document again
 function libResetPasteMode(){
   libPasteNew = false;
-  $("#ovSourceTitle").textContent = "Paste Markdown"; $("#bRender").textContent = "Render document";
+  $("#ovSourceTitle").textContent = t("source.title"); $("#bRender").textContent = t("source.render");
 }
 ["#bSource", "#bHeroPaste"].forEach(s => { const b = $(s); if(b) b.addEventListener("click", libResetPasteMode, true); });
 new MutationObserver(() => { if(libPasteNew && !$("#ovSource").classList.contains("open")) libResetPasteMode(); })
@@ -6459,7 +6502,7 @@ function aiSyncFmtItem(){
 }
 function aiToggleExportFmt(){
   aiFmt=!aiFmt; aiLSSet(AI_FMT_KEY, aiFmt ? "1" : "0"); aiSyncFmtItem();
-  toast(aiFmt ? "AI replies on — exports ask the AI to answer in a format you can paste back" : "AI replies off — exports use the plain format");
+  toast(aiFmt ? t("ai.fmtOn") : t("ai.fmtOff"));
 }
 function aiHowToAnswer(incDoc){
   const sids=aiNoteIds(), first=ANN[0];
@@ -6512,10 +6555,10 @@ function aiEditsSummary(r){
   const ed=aiEdits(r); if(!ed.length) return "";
   const c={};
   ed.forEach(e=>{ const s=e.state||"pending"; c[s]=(c[s]||0)+1; });
-  return `(suggested edit${ed.length>1?"s":""}: ${Object.keys(c).map(s=>`${c[s]} ${s}`).join(", ")})`;
+  return t("bundle.editsSummary",{n:ed.length, list:Object.keys(c).map(s=>t("bundle.state."+s,{n:c[s]})).join(", ")});
 }
 function aiBaseName(){
-  const n = isSampleMode ? "Sample document" : (currentFileName || "document");
+  const n = isSampleMode ? t("doc.sampleName") : (currentFileName || "document");
   return n.replace(/\.(md|markdown|txt)$/i,"").replace(/[\\/:*?"<>|\u0000-\u001f]+/g,"-").trim() || "document";
 }
 function aiDownload(name, text){
@@ -6537,13 +6580,13 @@ function aiMenuAction(act){
   if(act==="dl-bundle") act="dl-full";            // older names
   if(act==="dl-md") act="dl-doc";
   if(act==="dl-full" || act==="dl-notes"){
-    if(!ANN.length){ toast("Add at least one comment before exporting"); return; }
+    if(!ANN.length){ toast(t("export.needComment")); return; }
     const name=aiBaseName()+AI_DL_NAMES[act];
-    aiDownload(name, buildBundle(act==="dl-full")); toast(`Downloaded ${name}`);
+    aiDownload(name, buildBundle(act==="dl-full")); toast(t("lib.downloaded",{file:name}));
   } else if(act==="dl-doc"){
-    if(!SRC.trim()){ toast("No Markdown document to download yet"); return; }
+    if(!SRC.trim()){ toast(t("ai.noDocDownload")); return; }
     const name=aiBaseName()+".md";
-    aiDownload(name, SRC.replace(/\s+$/,"")+"\n"); toast(`Downloaded ${name}`);
+    aiDownload(name, SRC.replace(/\s+$/,"")+"\n"); toast(t("lib.downloaded",{file:name}));
   } else if(act==="paste") aiOpenPaste("");
 }
 // Export menu keyboard: ↑ / ↓ (headings are skipped), Home / End, Esc returns to the ▾ button
@@ -6692,16 +6735,16 @@ function aiMatch(parsed){
     const it={...p, status:"ok", a:null, num:0, why:"", round:1};
     if(p.sid){
       const a=bySid.has(p.sid) ? annById(bySid.get(p.sid)) : null;
-      if(!a){ it.status="nomatch"; it.why=`No note with id {#${p.sid}} in this document`; return it; }
+      if(!a){ it.status="nomatch"; it.why=t("ai.noNoteId",{id:`{#${p.sid}}`}); return it; }
       it.a=a; it.how="id";
     } else {
       const a=ANN[p.n-1];
-      if(!a){ it.status="nomatch"; it.why=`No note [${p.n}] in this document`; return it; }
+      if(!a){ it.status="nomatch"; it.why=t("ai.noNoteNum",{n:p.n}); return it; }
       it.a=a; it.how="number";
     }
     it.num=ANN.indexOf(it.a)+1;
-    if(!it.text && !it.edits.length){ it.status="empty"; it.why="Empty answer"; return it; }
-    if(!it.text) it.text = it.edits.length===1 ? "Suggested an edit." : `Suggested ${it.edits.length} edits.`;
+    if(!it.text && !it.edits.length){ it.status="empty"; it.why=t("ai.emptyAnswer"); return it; }
+    if(!it.text) it.text = t("ai.suggestedEdits",{n:it.edits.length});
     const key=aiEditsKey(it.edits);
     const same=r=>r.by==="ai" && String(r.text).trim()===it.text && aiEditsKey(aiEdits(r))===key;
     if(it.a.replies.some(same) || taken.some(t=>t.a===it.a && same({by:"ai", text:t.text, edits:t.edits}))){ it.status="dup"; return it; }
@@ -6748,7 +6791,7 @@ function aiRemoveAnswers(res){
 var aiPasteReturn=null, aiPasteT=0, aiPasteItems=[];
 function aiPasteOpen(){ return $("#ovAiPaste").classList.contains("open"); }
 function aiOpenPaste(text){
-  if(mdeIsOpen()){ toast("Finish editing first"); return; }
+  if(mdeIsOpen()){ toast(t("editor.finishFirstShort")); return; }
   const ov=$("#ovAiPaste"), ta=$("#aiPasteTa");
   if(!aiPasteOpen()){
     const ae=document.activeElement;
@@ -6770,10 +6813,10 @@ function aiRenderPreview(){
   const box=$("#aiPrev"), btn=$("#aiPasteAdd"), raw=$("#aiPasteTa").value;
   box.textContent="";
   aiPasteItems=[];
-  if(!raw.trim()){ btn.disabled=true; btn.textContent="Add answers"; return; }
+  if(!raw.trim()){ btn.disabled=true; btn.textContent=t("ai.addAnswers"); return; }
   if(!ANN.length){
-    box.innerHTML='<p class="ai-prev-empty">This document has no notes yet, so there is nothing to attach answers to.</p>';
-    btn.disabled=true; btn.textContent="Add answers"; return;
+    box.innerHTML='<p class="ai-prev-empty">'+te("ai.noNotes")+'</p>';
+    btn.disabled=true; btn.textContent=t("ai.addAnswers"); return;
   }
   const parsed=aiParseAnswer(raw), items=aiMatch(parsed);
   aiPasteItems=items;
@@ -6782,46 +6825,46 @@ function aiRenderPreview(){
     const li=document.createElement("li");
     const ico=document.createElement("span"); ico.className="ai-prev-ico"; ico.setAttribute("aria-hidden","true");
     const main=document.createElement("div"); main.className="ai-prev-main";
-    const t=document.createElement("div"); t.className="ai-prev-t";
+    const tt=document.createElement("div"); tt.className="ai-prev-t";
     const s=document.createElement("div"); s.className="ai-prev-s";
     const label=it.sid ? `[${it.n}] {#${it.sid}}` : `[${it.n}]`;
     const sr=document.createElement("span"); sr.className="sr-only";
-    sr.textContent = it.status==="ok" ? "Will be added: " : it.status==="dup" ? "Skipped, duplicate: " : "Skipped: ";
-    main.append(sr,t,s);
+    sr.textContent = it.status==="ok" ? t("ai.srAdd") : it.status==="dup" ? t("ai.srDup") : t("ai.srSkip");
+    main.append(sr,tt,s);
     if(it.status==="ok"){
       li.className="ok"; ico.textContent="✓";
-      t.textContent=`Note ${it.num} · ${aiNoteSnippet(it.a)}`;
+      tt.textContent=t("ai.prevNote",{n:it.num, snippet:aiNoteSnippet(it.a)});
       const ne=it.edits.length;
-      s.textContent=(it.how==="number" ? "Matched by number" : "Matched by id")+(ne ? ` · includes ${ne===1?"a suggested edit":ne+" suggested edits"}` : "");
+      s.textContent=(it.how==="number" ? t("ai.byNumber") : t("ai.byId"))+(ne ? " · "+t("ai.includes",{n:ne}) : "");
       if(it.round>1){
         const s2=document.createElement("div"); s2.className="ai-prev-s ai-prev-round";
-        s2.textContent=`Note ${it.num} already has an AI answer — this will be round ${it.round}`+(ne && aiPendingCount(it.a) ? " (its pending edits will be marked superseded)" : "");
+        s2.textContent=t("ai.round",{n:it.num, round:it.round})+(ne && aiPendingCount(it.a) ? t("ai.roundSuperseded") : "");
         main.appendChild(s2);
       }
     } else if(it.status==="dup"){
       li.className="dup"; ico.textContent="↻";
-      t.textContent=`Note ${it.num} · ${aiNoteSnippet(it.a)}`;
-      s.textContent="Identical answer already added — skipped";
+      tt.textContent=t("ai.prevNote",{n:it.num, snippet:aiNoteSnippet(it.a)});
+      s.textContent=t("ai.dupSkipped");
     } else {
       li.className="warn"; ico.textContent="⚠";
-      t.textContent=label; s.textContent=it.why+" — skipped";
+      tt.textContent=label; s.textContent=t("ai.skippedWhy",{why:it.why});
     }
     li.append(ico,main); ul.appendChild(li);
   });
   if(items.length) box.appendChild(ul);
   if(parsed.general){
     const g=document.createElement("div"); g.className="ai-prev-gen";
-    g.innerHTML='<div class="ai-prev-gen-h"><b>General</b><span>Not stored — copy it if you need it</span><button type="button" class="mini">Copy</button></div><div class="ai-prev-gen-b"></div>';
+    g.innerHTML='<div class="ai-prev-gen-h"><b>'+te("ai.general")+'</b><span>'+te("ai.generalNote")+'</span><button type="button" class="mini">'+te("code.copy")+'</button></div><div class="ai-prev-gen-b"></div>';
     g.querySelector(".ai-prev-gen-b").textContent=parsed.general;
-    g.querySelector("button").addEventListener("click",()=>copyText(parsed.general).then(ok=>toast(ok?"General comments copied":"Couldn't copy, try again")));
+    g.querySelector("button").addEventListener("click",()=>copyText(parsed.general).then(ok=>toast(ok?t("ai.generalCopied"):t("export.copyFailed"))));
     box.appendChild(g);
   }
   if(!items.length && !parsed.general){
-    box.innerHTML='<p class="ai-prev-empty">No answers found. Each answer should start with a heading like <code>## [1] {#n3f9a}</code> — turn on “Let AI reply back into mdeverything” in the Export menu before exporting.</p>';
+    box.innerHTML='<p class="ai-prev-empty">'+t("ai.noneFound_html",{example:"## [1] {#n3f9a}", option:t("export.aiFmt")})+'</p>';
   }
   const n=items.filter(x=>x.status==="ok").length;
   btn.disabled=!n;
-  btn.textContent = n ? `Add ${n} answer${n===1?"":"s"}` : "Add answers";
+  btn.textContent = n ? t("ai.addN",{n}) : t("ai.addAnswers");
 }
 function aiCommitPaste(){
   const ok=aiPasteItems.filter(x=>x.status==="ok" && annById(x.a.id));
@@ -6829,7 +6872,7 @@ function aiCommitPaste(){
   closeOverlays();
   const res=aiAddAnswers(ok);
   const n=res.added.length;
-  toast(`Added ${n} AI answer${n===1?"":"s"}`, { action:{ label:"Undo", run:()=>{ aiRemoveAnswers(res); toast(`Removed ${n} AI answer${n===1?"":"s"}`); } }, ms:8000 });
+  toast(t("ai.added",{n}), { action:{ label:t("common.undo"), run:()=>{ aiRemoveAnswers(res); toast(t("ai.removed",{n})); } }, ms:8000 });
 }
 // Tab stays inside a dialog; closing it (Cancel, ×, Esc, outside click) returns focus
 function aiTrapFocus(ov, getReturn, onClose){
@@ -6868,7 +6911,18 @@ function aiTrapFocus(ov, getReturn, onClose){
 })();
 
 /* ---------- diffs ---------- */
-function aiTokens(s){ return String(s||"").match(/\s+|[\p{L}\p{N}_'’]+|[^\s\p{L}\p{N}_]/gu) || []; }
+function aiTokens(s){
+  s=String(s||"");
+  const base=s.match(/\s+|[\p{L}\p{N}_'’]+|[^\s\p{L}\p{N}_]/gu) || [];
+  if(!CJK_RE.test(s)) return base;
+  // Japanese / Chinese / Korean runs have no spaces: split them into words (Intl.Segmenter) or characters
+  const out=[], split=new RegExp("([" + CJK_CHARS + "]+)", "u");
+  base.forEach(tok=>{
+    if(!CJK_RE.test(tok)){ out.push(tok); return; }
+    tok.split(split).forEach((part,k)=>{ if(!part) return; if(k%2) out.push(...cjkSegments(part)); else out.push(part); });
+  });
+  return out;
+}
 // LCS edit script over two arrays (common prefix / suffix trimmed first); above `limit` cells the
 // changed middle is reported as one removal + one addition
 function aiSeqOps(A, B, limit){
@@ -6962,16 +7016,16 @@ function aiHunksEl(oldT, newT, max){
   box.className="ai-hunks";
   hunks.slice(0, max||8).forEach(h=>{
     const w=document.createElement("div"); w.className="ai-hunk";
-    const l=document.createElement("div"); l.className="ai-hunk-l"; l.textContent=`Line ${h.line}`;
+    const l=document.createElement("div"); l.className="ai-hunk-l"; l.textContent=t("ai.line",{n:h.line});
     w.append(l, aiDiffEl(h.del.join("\n"), h.ins.join("\n")));
     box.appendChild(w);
   });
   if(hunks.length>(max||8)){
     const more=document.createElement("div"); more.className="ai-hunk-l";
-    more.textContent=`… and ${hunks.length-(max||8)} more change${hunks.length-(max||8)===1?"":"s"} — use Review`;
+    more.textContent=t("ai.moreChanges",{n:hunks.length-(max||8)});
     box.appendChild(more);
   }
-  if(!hunks.length){ const n=document.createElement("div"); n.className="ai-hunk-l"; n.textContent="No changes"; box.appendChild(n); }
+  if(!hunks.length){ const n=document.createElement("div"); n.className="ai-hunk-l"; n.textContent=t("ai.noChanges"); box.appendChild(n); }
   return box;
 }
 
@@ -7143,42 +7197,42 @@ function aiDocChanges(e){
 function aiScopeLabel(a, e, plan){
   const ok=plan && plan.ranges;
   let lbl;
-  if(e.kind==="quote") lbl="Quoted passage";
-  else if(e.kind==="replaceAll"){ const n=ok ? plan.ranges.length : aiFindAll(SRC, e.find).length; lbl=`Everywhere · ${n} place${n===1?"":"s"}`; }
-  else if(e.kind==="section") lbl="Section: "+e.section;
-  else if(e.kind==="document"){ const n=aiDocChanges(e); lbl=`Whole document · ${n} change${n===1?"":"s"}`; }
+  if(e.kind==="quote") lbl=t("ai.scope.quote");
+  else if(e.kind==="replaceAll"){ const n=ok ? plan.ranges.length : aiFindAll(SRC, e.find).length; lbl=t("ai.scope.everywhere",{n}); }
+  else if(e.kind==="section") lbl=t("ai.scope.section",{name:e.section});
+  else if(e.kind==="document"){ const n=aiDocChanges(e); lbl=t("ai.scope.document",{n}); }
   else {
     const q=a.quote||"", qs=ok ? aiLocate(a) : null;
     if(ok){
       const [s,en]=plan.ranges[0];
-      if(qs!=null && qs>=s && qs+q.length<=en) lbl = en-s>q.length ? "Sentence · paragraph" : "Quoted passage";
-      else if(q && aiPlainText(e.find)===q) lbl="Quoted passage";
-      else lbl=`Elsewhere · line ~${aiLineOf(s)}`;
-    } else lbl = q && e.find.includes(q) ? (e.find.length>q.length ? "Sentence · paragraph" : "Quoted passage") : "Elsewhere";
-    if(!e.text) lbl+=" · deletion";
-    else if(e.text.length>e.find.length && (e.text.startsWith(e.find.trimEnd()) || e.text.endsWith(e.find.trimStart()))) lbl+=" · addition";
+      if(qs!=null && qs>=s && qs+q.length<=en) lbl = en-s>q.length ? t("ai.scope.sentence") : t("ai.scope.quote");
+      else if(q && aiPlainText(e.find)===q) lbl=t("ai.scope.quote");
+      else lbl=t("ai.scope.elsewhereLine",{n:aiLineOf(s)});
+    } else lbl = q && e.find.includes(q) ? (e.find.length>q.length ? t("ai.scope.sentence") : t("ai.scope.quote")) : t("ai.scope.elsewhere");
+    if(!e.text) lbl+=t("ai.scope.deletion");
+    else if(e.text.length>e.find.length && (e.text.startsWith(e.find.trimEnd()) || e.text.endsWith(e.find.trimStart()))) lbl+=t("ai.scope.addition");
   }
   return lbl;
 }
 
 /* ---------- accept / reject ---------- */
 function aiMissedMsg(why){
-  return why==="overlap" ? "Overlaps an accepted change"
-    : why==="conflict" ? "Overlaps another edit in this batch"
-    : why==="same" ? "Already in the document"
-    : why==="format" ? "Not word for word in the Markdown (the passage spans formatting)"
-    : "Text changed since the AI answered";
+  return why==="overlap" ? t("ai.miss.overlap")
+    : why==="conflict" ? t("ai.miss.conflict")
+    : why==="same" ? t("ai.miss.same")
+    : why==="format" ? t("ai.miss.format")
+    : t("ai.miss.changed");
 }
 function aiMissedToast(missed){
   if(!missed.length) return;
   if(missed.length===1){
-    const t=missed[0].e.text;
-    toast(aiMissedMsg(missed[0].why)+" — apply it by hand", { action:{ label:"Copy", run:()=>copyText(t).then(k=>toast(k?"Suggested text copied":"Couldn't copy, try again")) }, ms:9000 });
-  } else toast(`Couldn't apply ${missed.length} edits — see their notes`, { ms:6000 });
+    const txt=missed[0].e.text;
+    toast(t("ai.byHand",{why:aiMissedMsg(missed[0].why)}), { action:{ label:t("code.copy"), run:()=>copyText(txt).then(k=>toast(k?t("ai.suggCopied"):t("export.copyFailed"))) }, ms:9000 });
+  } else toast(t("ai.cantApplyN",{n:missed.length}), { ms:6000 });
 }
 // items: [{a, r, e, ranges?}] — `ranges` overrides the located target (Review → accepted hunks only)
 function aiAccept(items){
-  if(mdeIsOpen()){ toast("Finish editing first: Done applies, Discard reverts"); return; }
+  if(mdeIsOpen()){ toast(t("ai.finishFirst")); return; }
   const plans=[], missed=[];
   items.forEach(it=>{
     const {a,r,e}=it;
@@ -7239,14 +7293,14 @@ function aiAccept(items){
   if(reopen && annById(reopen)) openCard(reopen);
   const lost=new Set(ok.filter(p=>annById(p.a.id) && annById(p.a.id).resolved===false).map(p=>p.a.id)).size;
   const n=ok.length;
-  let msg = n===1 ? "Suggested edit applied" : `Applied ${n} suggested edits`;
-  if(missed.length) msg+=` · ${missed.length} couldn't be applied`;
-  if(lost) msg+=` · ${lost} note${lost===1?"":"s"} lost ${lost===1?"its":"their"} highlight`;
-  toast(msg, { action:{ label:"Undo", run:()=>{
-    if(mdeIsOpen()){ toast("Finish editing first"); return; }
+  let msg = t("ai.applied",{n});
+  if(missed.length) msg+=t("ai.notApplied",{n:missed.length});
+  if(lost) msg+=t("ai.lostHighlight",{n:lost});
+  toast(msg, { action:{ label:t("common.undo"), run:()=>{
+    if(mdeIsOpen()){ toast(t("editor.finishFirstShort")); return; }
     if(POP.mode) closePop(true);
     SRC=before.src; ANN=before.ann; activeId=before.activeId; aiVer++;
-    renderDoc(); toast(n===1 ? "Edit undone" : "Edits undone");
+    renderDoc(); toast(t("ai.undone",{n}));
   } }, ms:8000 });
 }
 function aiReject(items){
@@ -7256,7 +7310,7 @@ function aiReject(items){
   aiVer++; libFp="";
   aiRefreshViews();
   const n=done.length;
-  toast(n===1 ? "Suggestion rejected" : `Rejected ${n} suggestions`, { action:{ label:"Undo", run:()=>{
+  toast(t("ai.rejected",{n}), { action:{ label:t("common.undo"), run:()=>{
     done.forEach(e=>{ if(e.state==="rejected") delete e.state; });
     aiVer++; libFp=""; aiRefreshViews();
   } } });
@@ -7265,13 +7319,13 @@ function aiReject(items){
 /* ---------- Review changes (sections, whole document, multi-block edits) ---------- */
 var aiRev=null, aiRevReturn=null;
 function aiOpenReview(a, r, e){
-  if(mdeIsOpen()){ toast("Finish editing first"); return; }
+  if(mdeIsOpen()){ toast(t("editor.finishFirstShort")); return; }
   const p=aiPlanEdit(a,r,e);
   if(p.err){ aiMissedToast([{a,r,e,why:p.err}]); return; }
   if(p.ranges.length!==1){ aiAccept([{a,r,e}]); return; }
-  const [s,en,t]=p.ranges[0], old=SRC.slice(s,en);
-  const {ops,hunks}=aiLineHunks(old, t);
-  if(!hunks.length){ toast("No changes to review"); return; }
+  const [s,en,nt]=p.ranges[0], old=SRC.slice(s,en);
+  const {ops,hunks}=aiLineHunks(old, nt);
+  if(!hunks.length){ toast(t("ai.noReview")); return; }
   const ae=document.activeElement;
   aiRevReturn = ae && ae.isConnected ? ae : null;
   aiRev={ a, r, e, s, en, src:SRC, ops, hunks, dec:hunks.map(()=>null), line:aiLineOf(s), scope:aiScopeLabel(a, e, p) };
@@ -7285,18 +7339,18 @@ function aiRenderReview(){
   const list=$("#aiRevList"), n=R.hunks.length, num=ANN.indexOf(R.a)+1;
   const keep=list.scrollTop;
   list.textContent="";
-  $("#aiRevHint").textContent=`Note ${num} · ${R.scope} · ${n} change${n===1?"":"s"}. Accept or reject each change, then apply.`;
+  $("#aiRevHint").textContent=t("ai.revHint",{num, scope:R.scope, n});
   R.hunks.forEach((h,i)=>{
     const d=R.dec[i];
     const box=document.createElement("div");
     box.className="ai-rev-h"+(d===true ? " is-acc" : d===false ? " is-rej" : "");
     const head=document.createElement("div"); head.className="ai-rev-hh";
     const l=document.createElement("span"); l.className="ai-rev-l";
-    l.textContent=`Change ${i+1} · line ~${R.line+h.line-1}`;
-    const acc=document.createElement("button"); acc.type="button"; acc.className="mini ai-rev-acc"; acc.textContent="Accept";
-    const rej=document.createElement("button"); rej.type="button"; rej.className="mini ai-rev-rej"; rej.textContent="Reject";
-    acc.setAttribute("aria-pressed", d===true ? "true" : "false"); acc.setAttribute("aria-label", `Accept change ${i+1}`);
-    rej.setAttribute("aria-pressed", d===false ? "true" : "false"); rej.setAttribute("aria-label", `Reject change ${i+1}`);
+    l.textContent=t("ai.revChange",{n:i+1, line:R.line+h.line-1});
+    const acc=document.createElement("button"); acc.type="button"; acc.className="mini ai-rev-acc"; acc.textContent=t("ai.accept");
+    const rej=document.createElement("button"); rej.type="button"; rej.className="mini ai-rev-rej"; rej.textContent=t("ai.reject");
+    acc.setAttribute("aria-pressed", d===true ? "true" : "false"); acc.setAttribute("aria-label", t("ai.acceptN",{n:i+1}));
+    rej.setAttribute("aria-pressed", d===false ? "true" : "false"); rej.setAttribute("aria-label", t("ai.rejectN",{n:i+1}));
     acc.addEventListener("click",()=>{ R.dec[i] = d===true ? null : true; aiRenderReview(); focusWithoutScrolling(list.querySelectorAll(".ai-rev-acc")[i]); });
     rej.addEventListener("click",()=>{ R.dec[i] = d===false ? null : false; aiRenderReview(); focusWithoutScrolling(list.querySelectorAll(".ai-rev-rej")[i]); });
     head.append(l, acc, rej);
@@ -7307,11 +7361,11 @@ function aiRenderReview(){
   const nAcc=R.dec.filter(x=>x===true).length, nDec=R.dec.filter(x=>x!==null).length;
   const ap=$("#aiRevApply");
   ap.disabled=!nDec;
-  ap.textContent = !nDec ? "Apply" : nAcc ? `Apply ${nAcc} of ${n} change${n===1?"":"s"}` : "Reject this edit";
+  ap.textContent = !nDec ? t("ai.apply") : nAcc ? t("ai.applyNofM",{k:nAcc, m:n}) : t("ai.rejectEdit");
 }
 function aiReviewDone(mode){
   const R=aiRev; if(!R) return;
-  if(SRC!==R.src){ closeOverlays(); toast("The document changed — open Review again"); return; }
+  if(SRC!==R.src){ closeOverlays(); toast(t("ai.docChanged")); return; }
   const dec = mode==="all" ? R.dec.map(()=>true) : mode==="none" ? R.dec.map(()=>false) : R.dec;
   const any=dec.some(x=>x===true);
   closeOverlays();
@@ -7340,16 +7394,16 @@ function aiDecorateReply(el, a, r, pre, scope){
   const time=el.querySelector("."+pre+"-time");
   if(time){
     const tag=document.createElement("span");
-    tag.className="ai-tag"; tag.textContent = r.round>1 ? `AI · round ${r.round}` : "AI";
-    tag.title="Answer pasted from your AI assistant";
+    tag.className="ai-tag"; tag.textContent = r.round>1 ? t("ai.tagRound",{n:r.round}) : t("ai.tag");
+    tag.title=t("ai.tagTitle");
     time.insertBefore(tag, time.firstChild);
   }
   const acts=el.querySelector(".w5-racts");
   if(acts){
     const c=document.createElement("button");
-    c.type="button"; c.className="w5-rbtn ai-rcopy"; c.title="Copy answer"; c.setAttribute("aria-label","Copy AI answer");
+    c.type="button"; c.className="w5-rbtn ai-rcopy"; c.title=t("ai.copyAnswer"); c.setAttribute("aria-label",t("ai.copyAnswerAria"));
     c.innerHTML=AI_COPY_SVG;
-    c.addEventListener("click",e=>{ e.stopPropagation(); copyText(r.text).then(ok=>toast(ok?"Answer copied":"Couldn't copy, try again")); });
+    c.addEventListener("click",e=>{ e.stopPropagation(); copyText(r.text).then(ok=>toast(ok?t("ai.answerCopied"):t("export.copyFailed"))); });
     acts.insertBefore(c, acts.firstChild);
   }
   const ed=aiEdits(r);
@@ -7367,7 +7421,7 @@ function aiDecorateReply(el, a, r, pre, scope){
     const tg=document.createElement("button");
     tg.type="button"; tg.className="ai-old-tg"; tg.setAttribute("aria-expanded", open ? "true" : "false");
     tg.innerHTML='<span class="ai-old-car" aria-hidden="true">▸</span><span class="ai-old-txt"></span>';
-    tg.querySelector(".ai-old-txt").textContent=`Earlier AI answer · round ${r.round||1}`;
+    tg.querySelector(".ai-old-txt").textContent=t("ai.earlier",{n:r.round||1});
     tg.addEventListener("click",e=>{
       e.stopPropagation();
       const o=!aiOldOpen.has(r.id);
@@ -7385,12 +7439,12 @@ function aiEditEl(a, r, e, i, n){
   box.className="ai-sugg"+(st ? " is-"+st : "")+(err ? " is-stale" : "");
   const head=document.createElement("div"); head.className="ai-sugg-head";
   const lbl=document.createElement("span"); lbl.className="ai-sugg-lbl";
-  lbl.textContent=(n>1 ? `Edit ${i+1} · ` : "")+aiScopeLabel(a, e, plan);
+  lbl.textContent=(n>1 ? t("ai.editN",{n:i+1}) : "")+aiScopeLabel(a, e, plan);
   head.appendChild(lbl);
   if(st){
     const s=document.createElement("span"); s.className="ai-sugg-state";
-    s.textContent = st==="accepted" ? "✓ Accepted" : st==="rejected" ? "Rejected" : "Superseded";
-    if(st==="superseded") s.title="A newer AI answer replaced this suggestion";
+    s.textContent = st==="accepted" ? t("ai.st.accepted") : st==="rejected" ? t("ai.st.rejected") : t("ai.st.superseded");
+    if(st==="superseded") s.title=t("ai.supersededTitle");
     head.appendChild(s);
   }
   box.appendChild(head);
@@ -7416,17 +7470,17 @@ function aiEditEl(a, r, e, i, n){
     b.addEventListener("click",ev=>{ ev.stopPropagation(); fn(); });
     row.appendChild(b);
   };
-  const copy=()=>btn("ai-scopy", "Copy", "Copy suggested text", ()=>copyText(e.text).then(ok=>toast(ok?"Suggested text copied":"Couldn't copy, try again")));
+  const copy=()=>btn("ai-scopy", t("code.copy"), t("ai.copySugg"), ()=>copyText(e.text).then(ok=>toast(ok?t("ai.suggCopied"):t("export.copyFailed"))));
   if(st==="superseded"){ copy(); box.appendChild(row); return box; }
   if(err){
     copy();
-    btn("ai-reject", "Dismiss", `Dismiss suggested edit for note ${num}`, ()=>aiReject([{a,r,e}]));
+    btn("ai-reject", t("ai.dismiss"), t("ai.dismissAria",{n:num}), ()=>aiReject([{a,r,e}]));
   } else {
     const multi=aiIsMulti(e, plan), big = e.kind==="section" || e.kind==="document";
-    if(big) btn("save ai-review", "Review…", `Review suggested changes for note ${num}`, ()=>aiOpenReview(a,r,e));
-    else btn("save ai-accept", "Accept", `Accept suggested edit for note ${num}`, ()=>aiAccept([{a,r,e}]));
-    btn("ai-reject", "Reject", `Reject suggested edit for note ${num}`, ()=>aiReject([{a,r,e}]));
-    if(multi && !big) btn("ai-review", "Review…", `Review suggested changes for note ${num}`, ()=>aiOpenReview(a,r,e));
+    if(big) btn("save ai-review", t("ai.review"), t("ai.reviewAria",{n:num}), ()=>aiOpenReview(a,r,e));
+    else btn("save ai-accept", t("ai.accept"), t("ai.acceptAria",{n:num}), ()=>aiAccept([{a,r,e}]));
+    btn("ai-reject", t("ai.reject"), t("ai.rejectAria",{n:num}), ()=>aiReject([{a,r,e}]));
+    if(multi && !big) btn("ai-review", t("ai.review"), t("ai.reviewAria",{n:num}), ()=>aiOpenReview(a,r,e));
     copy();
   }
   box.appendChild(row);
@@ -7484,25 +7538,25 @@ function aiInlineActs(x, num){
   const box=document.createElement("span"); box.className="ai-sn-acts";
   box.innerHTML='<button type="button" class="ai-sn-ok">✓</button><button type="button" class="ai-sn-no">✕</button>';
   const okB=box.querySelector(".ai-sn-ok"), noB=box.querySelector(".ai-sn-no");
-  okB.title="Accept"; okB.setAttribute("aria-label",`Accept suggested edit for note ${num}`);
-  noB.title="Reject"; noB.setAttribute("aria-label",`Reject suggested edit for note ${num}`);
+  okB.title=t("ai.accept"); okB.setAttribute("aria-label",t("ai.acceptAria",{n:num}));
+  noB.title=t("ai.reject"); noB.setAttribute("aria-label",t("ai.rejectAria",{n:num}));
   okB.addEventListener("click",ev=>{ ev.preventDefault(); ev.stopPropagation(); aiAccept([{a,r,e}]); });
   noB.addEventListener("click",ev=>{ ev.preventDefault(); ev.stopPropagation(); aiReject([{a,r,e}]); });
   return box;
 }
 function aiPlaceInline(x, tops){
   const {a, e, plan}=x, num=ANN.indexOf(a)+1;
-  const [s, en, t]=plan.ranges[0], old=SRC.slice(s, en);
+  const [s, en, nt]=plan.ranges[0], old=SRC.slice(s, en);
   const marks=aiMarks(a.id), qs=aiLocate(a), q=a.quote||"";
   const onQuote = qs!=null && s===qs && en===qs+q.length;
-  if(plan.ranges.length===1 && !aiIsMulti(e, plan) && aiSingleBlock(s, en, old, t)){
+  if(plan.ranges.length===1 && !aiIsMulti(e, plan) && aiSingleBlock(s, en, old, nt)){
     const ins=document.createElement("ins");
     ins.className="no-anchor ai-inl ai-sugg-new"; ins.dataset.id=a.id;
     const txt=document.createElement("span"); txt.className="ai-sn-txt";
     if((e.kind==="quote" || onQuote) && marks.length){
       // the quoted words are struck through in place, the new text follows them
       marks.forEach(m=>m.classList.add("ai-sugg-old"));
-      txt.textContent=aiPlainText(t) || t;
+      txt.textContent=aiPlainText(nt) || nt;
       ins.append(txt, aiInlineActs(x, num));
       const last=marks[marks.length-1];
       last.parentNode.insertBefore(ins, last.nextSibling);
@@ -7511,7 +7565,7 @@ function aiPlaceInline(x, tops){
     // a wider / other passage: a small word diff after the quote (or at the end of its block)
     ins.classList.add("ai-sugg-diff");
     txt.classList.add("ai-diff");
-    aiDiffInto(txt, aiPlainText(old) || old, aiPlainText(t) || t, 3);
+    aiDiffInto(txt, aiPlainText(old) || old, aiPlainText(nt) || nt, 3);
     ins.append(txt, aiInlineActs(x, num));
     if(qs!=null && qs>=s && qs+q.length<=en && marks.length){
       const last=marks[marks.length-1];
@@ -7526,8 +7580,8 @@ function aiPlaceInline(x, tops){
   anc.className="no-anchor ai-inl ai-mb-anchor"; anc.dataset.id=a.id;
   const chip=document.createElement("button"); chip.type="button"; chip.className="ai-mb-chip";
   const many=e.kind==="replaceAll";
-  chip.textContent = e.kind==="document" ? `Note ${num} · Suggested rewrite · Review` : many ? `Note ${num} · Suggested change · ${plan.ranges.length} places` : `Note ${num} · Suggested change · Review`;
-  chip.title = many ? "Show the note" : "Review the suggested changes";
+  chip.textContent = e.kind==="document" ? t("ai.chipRewrite",{n:num}) : many ? t("ai.chipPlaces",{n:num, k:plan.ranges.length}) : t("ai.chipChange",{n:num});
+  chip.title = many ? t("ai.chipShowNote") : t("ai.chipReview");
   chip.addEventListener("click",ev=>{ ev.preventDefault(); ev.stopPropagation(); if(many) focusCard(a.id, true); else aiOpenReview(a, x.r, e); });
   anc.appendChild(chip);
   if(e.kind==="document"){ anc.classList.add("is-top"); doc.insertBefore(anc, doc.firstChild); return true; }
@@ -7571,7 +7625,7 @@ function aiUpdateBar(pend){
   const bar=$("#aiSuggBar");
   if(bar){
     bar.hidden = !(aiShowSugg && pend.length) || isHomeMode;
-    bar.querySelector(".ai-sb-n").textContent = `${pend.length} suggestion${pend.length===1?"":"s"}`;
+    bar.querySelector(".ai-sb-n").textContent = t("ai.suggCount",{n:pend.length});
   }
   const tg=w5Bar && w5Bar.querySelector('[data-aw="sugg"]');
   if(tg){
@@ -7588,8 +7642,8 @@ function aiOnRendered(){ aiInlineSig=null; aiSyncInline(true); }
   if(w5Bar){
     const row=document.createElement("div"); row.className="ai-w5row";
     row.innerHTML=
-      `<button type="button" class="ai-w5btn" data-aw="paste">${AI_COPY_SVG.replace('<svg','<svg class="ai-w5ico"')}Paste AI answer…</button>
-       <button type="button" class="ai-w5btn ai-w5toggle" data-aw="sugg" aria-pressed="false" title="Show suggested edits in the document" hidden><span class="ai-w5box" aria-hidden="true"></span>Show suggestions <span class="ai-w5n w5-n"></span></button>`;
+      `<button type="button" class="ai-w5btn" data-aw="paste">${AI_COPY_SVG.replace('<svg','<svg class="ai-w5ico"')}${te("ai.pasteAnswer")}</button>
+       <button type="button" class="ai-w5btn ai-w5toggle" data-aw="sugg" aria-pressed="false" title="${te("ai.showSuggTitle")}" hidden><span class="ai-w5box" aria-hidden="true"></span>${te("ai.showSugg")} <span class="ai-w5n w5-n"></span></button>`;
     w5Bar.insertBefore(row, w5Bar.querySelector(".w5-none"));
     row.addEventListener("click",e=>{
       const b=e.target.closest("[data-aw]"); if(!b) return;
@@ -7700,11 +7754,11 @@ function linksOnRendered(){
 
 /* ---- preview popover ---- */
 function lkBlockKind(el){
-  const t = el.tagName;
-  if(/^H[1-6]$/.test(t)) return "Section";
+  const tg = el.tagName;
+  if(/^H[1-6]$/.test(tg)) return t("link.kind.section");
   const b = el.closest("p,li,td,th,blockquote,pre,table,figure,dd,dt") || el;
-  return ({P:"Paragraph", LI:"List item", TD:"Table cell", TH:"Table cell", BLOCKQUOTE:"Quote", PRE:"Code block",
-    TABLE:"Table", FIGURE:"Figure", DD:"Definition", DT:"Term"})[b.tagName] || "Paragraph";
+  return t("link.kind."+(({P:"p", LI:"li", TD:"td", TH:"td", BLOCKQUOTE:"quote", PRE:"pre",
+    TABLE:"table", FIGURE:"figure", DD:"dd", DT:"dt"})[b.tagName] || "p"));
 }
 function lkTextOf(node){
   const c = node.cloneNode ? node.cloneNode(true) : node;
@@ -7729,47 +7783,47 @@ function lkFill(a){
   lkPop.className = ""; lkPop.innerHTML = "";
   const add = (tag, cls, text)=>{ const e = document.createElement(tag); e.className = cls; e.textContent = text; lkPop.appendChild(e); return e; };
   if(k.kind === "int"){
-    const t = lkResolve(k.frag);
-    if(!t){
+    const tgt = lkResolve(k.frag);
+    if(!tgt){
       lkPop.classList.add("is-broken");
-      add("span","lp-kind","Broken link");
-      add("span","lp-title","Section not found");
-      add("span","lp-hint","#"+k.frag+" doesn't match any heading in this document");
+      add("span","lp-kind",t("link.broken"));
+      add("span","lp-title",t("link.notFound"));
+      add("span","lp-hint",t("link.noMatch",{frag:"#"+k.frag}));
       return true;
     }
-    const isHead = /^H[1-6]$/.test(t.tagName);
-    const kind = lkBlockKind(t);
+    const isHead = /^H[1-6]$/.test(tgt.tagName);
+    const kind = lkBlockKind(tgt);
     add("span","lp-kind", kind);
-    if(isHead) add("span","lp-title", olHeadingText(t) || "Untitled section");
-    const snip = lkClip(lkSectionText(t), 300);
+    if(isHead) add("span","lp-title", olHeadingText(tgt) || t("outline.untitled"));
+    const snip = lkClip(lkSectionText(tgt), 300);
     if(snip) add("p","lp-snip", snip);
     else if(!isHead) add("span","lp-title", kind);
-    add("span","lp-hint","Click to jump · ↩ Back afterwards");
+    add("span","lp-hint",t("link.jumpHint"));
     return true;
   }
   if(k.kind === "ext"){
     let host = k.href, isMail = /^mailto:/i.test(k.href);
     try{ const u = new URL(k.href); host = isMail ? u.pathname : u.hostname.replace(/^www\./,""); }catch(e){}
-    add("span","lp-kind", isMail ? "Email" : "External link");
+    add("span","lp-kind", isMail ? t("link.email") : t("link.external"));
     add("span","lp-title", host);
     const row = document.createElement("div"); row.className = "lp-row";
     const url = document.createElement("span"); url.className = "lp-url"; url.textContent = k.href;
-    const btn = document.createElement("button"); btn.type = "button"; btn.className = "lp-copy"; btn.textContent = "Copy link";
+    const btn = document.createElement("button"); btn.type = "button"; btn.className = "lp-copy"; btn.textContent = t("link.copy");
     btn.addEventListener("click", e=>{ e.stopPropagation(); lkCopy(isMail ? k.href.replace(/^mailto:/i,"") : k.href); });
     row.append(url, btn); lkPop.appendChild(row);
-    add("span","lp-hint", isMail ? "Opens your email app" : "Opens in a new tab");
+    add("span","lp-hint", isMail ? t("link.opensMail") : t("link.opensTab"));
     return true;
   }
   if(k.kind === "file"){
-    add("span","lp-kind","Other file");
+    add("span","lp-kind",t("link.otherFile"));
     add("span","lp-title", k.path);
-    add("span","lp-hint","Links to other files can't be opened here");
+    add("span","lp-hint",t("link.fileBlocked"));
     return true;
   }
   return false;
 }
 function lkCopy(text){
-  const done = ()=>toast("Link copied");
+  const done = ()=>toast(t("link.copied"));
   if(navigator.clipboard && window.isSecureContext){
     navigator.clipboard.writeText(text).then(done, ()=>lkCopyFallback(text, done));
   } else lkCopyFallback(text, done);
@@ -7779,7 +7833,7 @@ function lkCopyFallback(text, done){
   ta.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
   document.body.appendChild(ta); ta.select();
   let ok = false; try{ ok = document.execCommand("copy"); }catch(e){}
-  ta.remove(); ok ? done() : toast("Couldn't copy the link");
+  ta.remove(); ok ? done() : toast(t("link.copyFailed"));
 }
 function lkPlace(a){
   const rects = a.getClientRects(); const r = rects.length ? rects[0] : a.getBoundingClientRect();
@@ -7905,10 +7959,10 @@ document.addEventListener("click", e=>{
     return;
   }
   e.preventDefault();
-  if(k.kind === "file"){ toast("Links to other files can't be opened here"); return; }
-  const t = lkResolve(k.frag);
-  if(!t){ toast("Section not found" + (k.frag ? ": #" + k.frag : "")); return; }
-  lkJump(t);
+  if(k.kind === "file"){ toast(t("link.fileBlocked")); return; }
+  const tgt = lkResolve(k.frag);
+  if(!tgt){ toast(t("link.notFound") + (k.frag ? ": #" + k.frag : "")); return; }
+  lkJump(tgt);
 }, true);
 document.addEventListener("keydown", e=>{
   if(e.key === "Escape" && lkCur){ lkHide(true); return; }
@@ -7929,7 +7983,8 @@ const lyIco = d => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><pat
 /* ---------- C1 header menus (Import ▾, Theme ▾) ---------- */
 const lyMenus = [
   { btn:$("#bImport"), menu:$("#menuImport") },
-  { btn:$("#bTheme"),  menu:$("#themeSeg") }
+  { btn:$("#bTheme"),  menu:$("#themeSeg") },
+  { btn:$("#bLang"),   menu:$("#menuLang") }
 ].filter(m => m.btn && m.menu);
 const lyItems = m => [...m.menu.querySelectorAll('[role^="menuitem"]')];
 function lySyncMenus(){ lyMenus.forEach(m => m.btn.setAttribute("aria-expanded", m.menu.hidden ? "false" : "true")); }
@@ -7990,7 +8045,7 @@ lyRestoreInput.addEventListener("change", async e => {
 });
 
 // Theme ▾: applyTheme() still drives everything; the menu mirrors it as menuitemradio
-const LY_THEME_LABEL = { light:"Paper", beige:"Sepia", dark:"Night" };
+const LY_THEME_LABEL = { light:t("theme.light"), beige:t("theme.beige"), dark:t("theme.dark") };
 function lyThemeSync(){
   const cur = document.body.dataset.theme || "light";
   document.querySelectorAll("#themeSeg [data-theme-set]").forEach(b => {
@@ -7998,22 +8053,22 @@ function lyThemeSync(){
     b.removeAttribute("aria-pressed");
   });
   const tb = $("#bTheme");
-  if(tb){ const l = `Theme: ${LY_THEME_LABEL[cur] || "Paper"}`; tb.setAttribute("aria-label", l); tb.title = l; }
+  if(tb){ const l = t("theme.aria",{name:LY_THEME_LABEL[cur] || LY_THEME_LABEL.light}); tb.setAttribute("aria-label", l); tb.title = l; }
 }
 
 /* ---------- C2 collapsed strips + chevrons (wide screens; the drawer at <=1100px is unchanged) ---------- */
 const lyOlStrip = document.createElement("button");
 lyOlStrip.type = "button"; lyOlStrip.className = "pane-strip ol-strip";
 lyOlStrip.setAttribute("aria-controls", "outline");
-lyOlStrip.setAttribute("aria-label", "Expand outline"); lyOlStrip.title = "Expand outline";
-lyOlStrip.innerHTML = lyIco("M4 6h16M4 12h10M4 18h13") + `<span class="strip-lbl" aria-hidden="true">Outline</span>`;
+lyOlStrip.setAttribute("aria-label", t("outline.expand")); lyOlStrip.title = t("outline.expand");
+lyOlStrip.innerHTML = lyIco("M4 6h16M4 12h10M4 18h13") + `<span class="strip-lbl" aria-hidden="true">${te("hdr.outline")}</span>`;
 const lyRailStrip = document.createElement("button");
 lyRailStrip.type = "button"; lyRailStrip.className = "pane-strip rail-strip";
 lyRailStrip.innerHTML = lyIco("M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z") +
-  `<span class="strip-cnt" aria-hidden="true">0</span><span class="strip-lbl" aria-hidden="true">Comments</span>`;
+  `<span class="strip-cnt" aria-hidden="true">0</span><span class="strip-lbl" aria-hidden="true">${te("hdr.comments")}</span>`;
 const lyRailChev = document.createElement("button");
 lyRailChev.type = "button"; lyRailChev.className = "pane-chev rail-collapse";
-lyRailChev.setAttribute("aria-label", "Collapse comments panel"); lyRailChev.title = "Collapse comments panel";
+lyRailChev.setAttribute("aria-label", t("rail.collapse")); lyRailChev.title = t("rail.collapse");
 lyRailChev.innerHTML = lyIco("M6 7l5 5-5 5M12 7l5 5-5 5");
 if(lyMain){
   const ol = $("#outline");
@@ -8051,7 +8106,7 @@ function lyCountSync(){
   const n = +(($("#cnt") || {}).textContent || 0);
   const c = lyRailStrip.querySelector(".strip-cnt");
   c.textContent = n; c.toggleAttribute("data-zero", !n);
-  const l = `Show comments panel (${n} ${n === 1 ? "comment" : "comments"})`;
+  const l = t("rail.showCount",{n});
   lyRailStrip.setAttribute("aria-label", l); lyRailStrip.title = l;
 }
 if($("#cnt")) new MutationObserver(lyCountSync).observe($("#cnt"), { childList:true, characterData:true, subtree:true });
@@ -8114,8 +8169,8 @@ function lyMakeHandle(w){
   h.setAttribute("role", "separator");
   h.setAttribute("aria-orientation", "vertical");
   h.setAttribute("aria-controls", w === "ol" ? "outline" : "railInner");
-  h.setAttribute("aria-label", w === "ol" ? "Resize outline" : "Resize comments panel");
-  h.title = "Drag to resize · double-click to reset";
+  h.setAttribute("aria-label", w === "ol" ? t("pane.resizeOutline") : t("pane.resizeRail"));
+  h.title = t("pane.resizeTitle");
   h.addEventListener("pointerdown", e => {
     if(e.button !== 0 || !lyPaneShown(w)) return;
     e.preventDefault();
@@ -8325,20 +8380,20 @@ function tablesOnRendered(){
   let changed = false;
   for(const k of Object.keys(VIEW.tables)) if(+k >= tables.length){ delete VIEW.tables[k]; changed = true; }
   const pairs = [];
-  tables.forEach((t, i) => {
-    const wrap = t.parentElement;
+  tables.forEach((tb, i) => {
+    const wrap = tb.parentElement;
     if(!wrap.hasAttribute("tabindex")){     // keyboard access to the scroll region + its handles
-      wrap.tabIndex = 0; wrap.setAttribute("role", "region"); wrap.setAttribute("aria-label", `Table ${i + 1}`);
+      wrap.tabIndex = 0; wrap.setAttribute("role", "region"); wrap.setAttribute("aria-label", t("table.region",{n:i + 1}));
     }
     const e = VIEW.tables[i]; if(!e) return;
-    const cols = tblCols(t), rows = t.rows.length;
+    const cols = tblCols(tb), rows = tb.rows.length;
     if(cols <= 0){ delete VIEW.tables[i]; changed = true; return; }
     if(e.cols !== cols){ if(e.w){ delete e.w; changed = true; } e.cols = cols; }
     if(e.rows !== rows){ if(e.h){ delete e.h; changed = true; } e.rows = rows; }
     if(e.w && e.w.length !== cols){ delete e.w; changed = true; }
     if(e.h && e.h.length !== rows){ delete e.h; changed = true; }
     if(tblTidy(i)){ changed = true; return; }
-    pairs.push([t, e]);
+    pairs.push([tb, e]);
   });
   if(pairs.length){ tblSync(pairs); layoutCards(); }
   if(changed) save();
@@ -8360,19 +8415,19 @@ function tblActivate(wrap){
   if(idx < 0 || cols <= 0) return;
   tblDeactivate();
   tblLayer.textContent = "";
-  const more = tblEl("button", "tbl-more", { type:"button", "aria-label":`Table ${idx + 1} options`, "aria-haspopup":"menu", "aria-expanded":"false", title:"Table options" });
+  const more = tblEl("button", "tbl-more", { type:"button", "aria-label":t("table.optionsN",{n:idx + 1}), "aria-haspopup":"menu", "aria-expanded":"false", title:t("table.options") });
   more.textContent = "⋯";
-  const menu = tblEl("div", "tbl-menu", { role:"menu", "aria-label":"Table options" });
+  const menu = tblEl("div", "tbl-menu", { role:"menu", "aria-label":t("table.options") });
   menu.hidden = true;
   const colH = [], rowH = [];
   for(let i = 0; i < cols; i++){
     const h = tblEl("div", "tbl-h col", { role:"separator", "aria-orientation":"vertical", tabindex:"0",
-      "aria-label":`Column ${i + 1} width`, "aria-valuemin":String(TBL_MIN_W) });
+      "aria-label":t("table.colWidth",{n:i + 1}), "aria-valuemin":String(TBL_MIN_W) });
     h.dataset.i = i; colH.push(h);
   }
   for(let r = 0; r < rows; r++){
     const h = tblEl("div", "tbl-h row", { role:"separator", "aria-orientation":"horizontal", tabindex:"0",
-      "aria-label":`Row ${r + 1} height` });
+      "aria-label":t("table.rowHeight",{n:r + 1}) });
     h.dataset.i = r; rowH.push(h);
   }
   tblLayer.append(...colH, ...rowH, more, menu);
@@ -8668,13 +8723,13 @@ function tblMenuItems(){
     b.dataset.act = act;
     return b;
   };
-  const reset = item("Reset sizes", "reset");
+  const reset = item(t("table.reset"), "reset");
   if(!sized) reset.setAttribute("aria-disabled", "true");
-  const lab = tblEl("div", "tbl-label", { role:"presentation" }); lab.textContent = "Density";
+  const lab = tblEl("div", "tbl-label", { role:"presentation" }); lab.textContent = t("table.density");
   m.append(reset, tblEl("div", "tbl-sep", { role:"separator" }), lab,
-    item("Compact", "compact", e.density === "compact"),
-    item("Default", "default", !e.density),
-    item("Comfortable", "comfortable", e.density === "comfortable"));
+    item(t("table.compact"), "compact", e.density === "compact"),
+    item(t("table.default"), "default", !e.density),
+    item(t("table.comfortable"), "comfortable", e.density === "comfortable"));
 }
 function tblOpenMenu(){
   if(!TBL) return;
@@ -8699,7 +8754,7 @@ tblLayer.addEventListener("click", e => {
     if(e2){ delete e2.w; delete e2.h; }
     tblTidy(T.idx);
     tblSync([[T.table, VIEW.tables[T.idx]]]);
-    toast("Table sizes reset");
+    toast(t("table.resetDone"));
   } else {
     const e2 = tblEntry(T.idx, T.table);
     if(act === "default") delete e2.density; else e2.density = act;
@@ -8721,6 +8776,57 @@ tblLayer.addEventListener("keydown", e => {
   else if(e.key === "Tab"){ e.preventDefault(); tblCloseMenu(true); }
 });
 /* ==[/TABLES]== */
+
+/* ==[I18N]== language switcher, homepage language links, first-visit language suggestion
+   Every language is its own page (/, /vi/, …) built from the same template; storage is shared
+   (same origin), so the open document, comments and theme carry over when switching. */
+const LANG_KEY = "marginalia:lang:v1";               // an explicit choice → / redirects to it (see <head>)
+const LANG_HINT_KEY = "marginalia:langhint:v1";      // the suggestion bar was dismissed
+function langSave(code){ try{ localStorage.setItem(LANG_KEY, code); }catch(e){} }
+// header menu + homepage links: remember the choice, then let the link navigate
+document.addEventListener("click", e => {
+  const a = e.target.closest && e.target.closest("a[data-lang]");
+  if(a) langSave(a.dataset.lang);
+}, true);
+// which other built language fits navigator.languages best (null when the page language already does)
+function langSuggestFor(prefs){
+  const locs = Array.isArray(I18N.locales) ? I18N.locales : [];
+  for(const raw of prefs || []){
+    const p = String(raw || "").toLowerCase(); if(!p) continue;
+    const hit = locs.find(l => l.code.toLowerCase() === p) || locs.find(l => l.code.toLowerCase().split("-")[0] === p.split("-")[0]);
+    if(hit) return hit.code === LANG ? null : hit;
+  }
+  return null;
+}
+function langShowBar(loc){
+  const s = I18N.suggest && I18N.suggest[loc.code];
+  if(!s) return false;
+  let bar = $("#langBar");
+  if(!bar){
+    bar = document.createElement("div");
+    bar.id = "langBar"; bar.className = "lang-bar"; bar.setAttribute("role", "region");
+    document.body.appendChild(bar);
+  }
+  bar.lang = loc.htmlLang || loc.code; bar.dir = loc.dir || "ltr";
+  bar.setAttribute("aria-label", s.text);
+  bar.innerHTML = `<span class="lb-txt"></span><a class="lb-go" data-lang=""></a><button type="button" class="lb-x">×</button>`;
+  bar.querySelector(".lb-txt").textContent = s.text;
+  const go = bar.querySelector(".lb-go");
+  go.textContent = s.go; go.href = loc.href; go.dataset.lang = loc.code; go.hreflang = loc.code;
+  const x = bar.querySelector(".lb-x");
+  x.title = s.dismiss; x.setAttribute("aria-label", s.dismiss);
+  x.addEventListener("click", () => { bar.hidden = true; try{ localStorage.setItem(LANG_HINT_KEY, "1"); }catch(e){} });
+  bar.hidden = false;
+  return true;
+}
+// only the default page (/) suggests, only without a saved choice, and only until dismissed
+(function langSuggest(){
+  if(!I18N.suggest) return;
+  try{ if(localStorage.getItem(LANG_KEY) || localStorage.getItem(LANG_HINT_KEY)) return; }catch(e){ return; }
+  const loc = langSuggestFor(navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language]);
+  if(loc) langShowBar(loc);
+})();
+/* ==[/I18N]== */
 
 // called at the end of every full renderDoc(); feature errors must not break rendering
 // Each workstream defines its hook (aiOnRendered / linksOnRendered / layoutOnRendered / tablesOnRendered).

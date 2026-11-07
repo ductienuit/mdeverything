@@ -1,0 +1,41 @@
+[
+  {
+    "quote": "copy-paste a few paragraphs into a chatbot",
+    "note": "Example — ask a question. Is this pain point the strongest hook for the intro, or should “AI edits the wrong section” lead? Suggest two alternative opening lines.",
+    "replies": ["Leaning towards the wrong-section angle — it's more concrete."]
+  },
+  {
+    "quote": "repeated wording is never confused",
+    "note": "Example — check a claim. Add a one-line example that shows how the surrounding context tells two identical phrases apart."
+  },
+  {
+    "quote": "your comments re-anchor automatically",
+    "note": "Example — request an edit. “Re-anchor” may be jargon for first-time readers; rewrite this step in plain words."
+  },
+  {
+    "quote": "One click to comment on a whole paragraph, heading or table cell",
+    "note": "Example — comment on a table cell. Shorten this description to under 8 words without losing the meaning.",
+    "replies": ["Maybe: “Comment on a whole block in one click.”"]
+  },
+  {
+    "quote": "Your own document is next",
+    "note": "Example — turn a to-do into a call to action. Suggest a short, friendly line that points people to the Open button."
+  },
+  {
+    "quote": "your work is saved locally on this device",
+    "note": "Example — fact-check. Confirm this matches how autosave works (browser storage, per device) and say what happens in a private window.",
+    "replies": ["Worth mentioning that clearing site data removes it too.", "Agreed — keep it to one short sentence though."]
+  },
+  {
+    "quote": "every suggested edit shows as a diff you can accept or reject",
+    "note": "Example — an AI answer with a suggested edit. Make this phrase friendlier for readers who don't know the word “diff”.",
+    "replies": [
+      {
+        "by": "ai",
+        "round": 1,
+        "text": "Here's a plainer version that avoids the jargon. Accept it to rewrite the sentence, or Reject to keep yours.",
+        "edits": [{ "kind": "quote", "text": "every suggested edit appears as a tracked change you can accept or reject in one click" }]
+      }
+    ]
+  }
+]

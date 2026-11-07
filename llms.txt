@@ -19,9 +19,11 @@ context, comments and replies) to paste into an AI assistant for review.
 - Export modes: full context, notes only, or raw Markdown
 - Renders GitHub-flavored Markdown and Mermaid diagrams
 - 100% client-side: no tracking, no account, no upload
+- Interface in English and Vietnamese (one URL per language); AI export instructions stay in English
 
 ## Links
 - Live app: https://ductienuit.github.io/mdeverything/
+- Vietnamese (Tiếng Việt): https://ductienuit.github.io/mdeverything/vi/
 - Source code: https://github.com/ductienuit/mdeverything
 - Previous address (redirects here): https://ductienuit.github.io/marginalia/
 - License: MIT
