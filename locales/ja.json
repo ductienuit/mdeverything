@@ -75,6 +75,8 @@
     "downloadHead": "ファイルをダウンロード",
     "dlFull": "全コンテキスト（.md）",
     "dlNotes": "コメントのみ（.md）",
+    "fileFull": "-AI用",
+    "fileNotes": "-コメント",
     "dlDoc": "文書のみ（.md）",
     "aiHead": "AIの回答",
     "aiFmt": "AIの回答をmdeverythingに戻す",

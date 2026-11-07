@@ -2485,6 +2485,11 @@ header .lang-menu > a[aria-checked="true"] .mi-check{visibility:visible}
 .lang-bar .lb-x{border:0;background:none;color:var(--ink-faint);font-size:17px;line-height:1;width:28px;height:28px;border-radius:50%;cursor:pointer}
 .lang-bar .lb-x:hover,.lang-bar .lb-x:focus-visible{background:var(--surface-2);color:var(--ink)}
 /* ==[/I18N CSS]== */
+
+/* CJK: big headings break only at punctuation / spaces, never inside a word */
+html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-step > b{ word-break:keep-all; overflow-wrap:anywhere; }
+/* menu sub-lines may wrap so longer translations never make a menu scroll sideways */
+.menu .sub{ white-space:normal; overflow-wrap:anywhere; }
 </style>
 </head>
 <body>
@@ -2593,7 +2598,7 @@ Note: Is that right? I thought…</pre>
       <div class="h3-mock" aria-hidden="true">
         <div class="mk-card"><span class="mk-badge">1</span><span data-i18n="how.mockNote">Is that right? I thought there's a 14-day trial.</span></div>
         <div class="mk-reply">
-          <span class="mk-tag">AI</span> <!--t:how.mockReply-->Yes — paid plans start with a 14-day trial.<!--/t-->
+          <span class="mk-tag"><!--t:ai.tag-->AI<!--/t--></span> <!--t:how.mockReply-->Yes — paid plans start with a 14-day trial.<!--/t-->
           <div class="mk-diff" data-i18n="how.mockDiff_html">Billing starts <del>on day one</del> <ins>after a 14-day free trial</ins></div>
           <div class="mk-btns"><span class="mk-btn on" data-i18n="ai.accept">Accept</span><span class="mk-btn" data-i18n="ai.reject">Reject</span></div>
         </div>
@@ -6539,7 +6544,7 @@ function aiDownload(name, text){
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url), 5000);
 }
-const AI_DL_NAMES={ "dl-full":"-for-ai.md", "dl-notes":"-comments.md", "dl-doc":".md" };
+const AI_DL_NAMES={ "dl-full":t("export.fileFull")+".md", "dl-notes":t("export.fileNotes")+".md", "dl-doc":".md" };   // suffixes are localized (export.fileFull / fileNotes)
 function aiSyncMenuNames(){
   const base=aiBaseName();
   document.querySelectorAll("#menuCopy [data-ai^='dl-']").forEach(b=>{

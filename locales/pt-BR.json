@@ -75,6 +75,8 @@
     "downloadHead": "Baixar arquivo",
     "dlFull": "Contexto completo (.md)",
     "dlNotes": "Só comentários (.md)",
+    "fileFull": "-para-IA",
+    "fileNotes": "-comentarios",
     "dlDoc": "Só o documento (.md)",
     "aiHead": "Respostas da IA",
     "aiFmt": "Deixar a IA responder no mdeverything",

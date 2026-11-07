@@ -75,6 +75,8 @@
     "downloadHead": "Tải file về",
     "dlFull": "Toàn bộ ngữ cảnh (.md)",
     "dlNotes": "Chỉ bình luận (.md)",
+    "fileFull": "-cho-AI",
+    "fileNotes": "-binh-luan",
     "dlDoc": "Chỉ tài liệu (.md)",
     "aiHead": "Phản hồi của AI",
     "aiFmt": "Cho AI trả lời ngược vào mdeverything",

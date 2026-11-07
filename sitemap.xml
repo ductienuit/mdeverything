@@ -7,6 +7,9 @@
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://ductienuit.github.io/mdeverything/"/>
     <xhtml:link rel="alternate" hreflang="vi" href="https://ductienuit.github.io/mdeverything/vi/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://ductienuit.github.io/mdeverything/ja/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ductienuit.github.io/mdeverything/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ductienuit.github.io/mdeverything/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://ductienuit.github.io/mdeverything/"/>
   </url>
   <url>
@@ -16,6 +19,45 @@
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://ductienuit.github.io/mdeverything/"/>
     <xhtml:link rel="alternate" hreflang="vi" href="https://ductienuit.github.io/mdeverything/vi/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://ductienuit.github.io/mdeverything/ja/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ductienuit.github.io/mdeverything/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ductienuit.github.io/mdeverything/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ductienuit.github.io/mdeverything/"/>
+  </url>
+  <url>
+    <loc>https://ductienuit.github.io/mdeverything/ja/</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ductienuit.github.io/mdeverything/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://ductienuit.github.io/mdeverything/vi/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://ductienuit.github.io/mdeverything/ja/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ductienuit.github.io/mdeverything/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ductienuit.github.io/mdeverything/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ductienuit.github.io/mdeverything/"/>
+  </url>
+  <url>
+    <loc>https://ductienuit.github.io/mdeverything/pt-br/</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ductienuit.github.io/mdeverything/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://ductienuit.github.io/mdeverything/vi/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://ductienuit.github.io/mdeverything/ja/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ductienuit.github.io/mdeverything/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ductienuit.github.io/mdeverything/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ductienuit.github.io/mdeverything/"/>
+  </url>
+  <url>
+    <loc>https://ductienuit.github.io/mdeverything/es/</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ductienuit.github.io/mdeverything/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://ductienuit.github.io/mdeverything/vi/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://ductienuit.github.io/mdeverything/ja/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://ductienuit.github.io/mdeverything/pt-br/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ductienuit.github.io/mdeverything/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://ductienuit.github.io/mdeverything/"/>
   </url>
 </urlset>

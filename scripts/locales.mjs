@@ -18,7 +18,7 @@ export const SITE_LASTMOD = "2026-11-07";
 export const LOCALES = [
   { code: "en", dir: "",   htmlLang: "en", ogLocale: "en_US", nativeName: "English",    hreflang: "en" },
   { code: "vi", dir: "vi", htmlLang: "vi", ogLocale: "vi_VN", nativeName: "Tiếng Việt", hreflang: "vi" },
-  // { code: "ja",    dir: "ja",    htmlLang: "ja",    ogLocale: "ja_JP", nativeName: "日本語",              hreflang: "ja" },
-  // { code: "pt-BR", dir: "pt-br", htmlLang: "pt-BR", ogLocale: "pt_BR", nativeName: "Português (Brasil)", hreflang: "pt-BR" },
-  // { code: "es",    dir: "es",    htmlLang: "es",    ogLocale: "es_LA", nativeName: "Español",            hreflang: "es" },
+  { code: "ja",    dir: "ja",    htmlLang: "ja",    ogLocale: "ja_JP", nativeName: "日本語",              hreflang: "ja" },
+  { code: "pt-BR", dir: "pt-br", htmlLang: "pt-BR", ogLocale: "pt_BR", nativeName: "Português (Brasil)", hreflang: "pt-BR" },
+  { code: "es",    dir: "es",    htmlLang: "es",    ogLocale: "es_ES", nativeName: "Español",            hreflang: "es" },
 ];

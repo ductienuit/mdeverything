@@ -75,6 +75,8 @@
     "downloadHead": "Download file",
     "dlFull": "Full context (.md)",
     "dlNotes": "Comments only (.md)",
+    "fileFull": "-for-ai",
+    "fileNotes": "-comments",
     "dlDoc": "Document only (.md)",
     "aiHead": "AI replies",
     "aiFmt": "Let AI reply back into mdeverything",
