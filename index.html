@@ -2037,6 +2037,11 @@ body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8
 .ai-menu-check[aria-checked="true"] .ai-check::after{ content:""; position:absolute; left:4px; top:1px; width:4px; height:8px;
   border:solid var(--accent-contrast); border-width:0 2px 2px 0; transform:rotate(45deg); }
 .menu>button:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+#menuCopy{ min-width:270px; max-height:calc(100vh - 72px); overflow:auto; }
+.menu .ai-menu-h{ padding:9px 11px 3px; font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--ink-faint); user-select:none; }
+.menu .ai-menu-h:first-child{ padding-top:4px; }
+.menu .ai-menu-h:not(:first-child){ margin-top:3px; border-top:1px solid var(--line); padding-top:10px; }
 
 /* AI replies (panel card + inline card) */
 .card .c-reply.ai-reply,#hlPop .pc-reply.ai-reply{ border-left-color:var(--accent); padding-right:74px; }
@@ -2074,6 +2079,40 @@ body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8
 .ai-sugg-acts .mini{ padding:4px 10px; font-size:12px; border:1px solid var(--line-strong); }
 .ai-sugg-acts .mini.save{ border-color:var(--accent); }
 .ai-sugg-acts .mini:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.ai-edits{ display:flex; flex-direction:column; gap:6px; margin:7px 0 2px; }
+.ai-edits .ai-sugg{ margin:0; }
+.ai-sugg-lbl{ min-width:0; overflow-wrap:anywhere; }
+.ai-sugg.is-superseded{ opacity:.55; }
+.ai-sugg.is-superseded .ai-diff{ text-decoration:none; }
+.ai-sugg.is-stale .ai-diff{ opacity:.7; }
+.ai-sugg-msg{ margin-top:5px; font-size:12px; font-weight:600; color:var(--ink-soft); }
+.ai-hunks{ max-height:240px; overflow:auto; }
+.ai-hunk + .ai-hunk{ margin-top:6px; padding-top:6px; border-top:1px dashed var(--line); }
+.ai-hunk-l{ font-size:11px; color:var(--ink-faint); margin-bottom:2px; }
+/* earlier AI answers fold into one line */
+.ai-old-tg{ display:flex; align-items:center; gap:6px; width:100%; margin:0; padding:2px 0; border:none; background:none; cursor:pointer;
+  font:600 12px/1.4 var(--font-ui); color:var(--ink-soft); text-align:left; }
+.ai-old-tg:hover{ color:var(--ink); }
+.ai-old-tg:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; border-radius:4px; }
+.ai-old-car{ display:inline-block; font-size:10px; transition:transform .12s; }
+.ai-old-tg[aria-expanded="true"] .ai-old-car{ transform:rotate(90deg); }
+.ai-reply.ai-old.is-collapsed > :not(.ai-old-tg){ display:none !important; }
+.card .c-reply.ai-reply.is-collapsed,#hlPop .pc-reply.ai-reply.is-collapsed{ padding-right:8px; }
+.ai-prev-round{ color:var(--accent-soft-fg); }
+/* Review changes dialog */
+.ai-review{ width:min(820px,100%); font-family:var(--font-ui); }
+.ai-rev-list{ display:flex; flex-direction:column; gap:8px; max-height:58vh; overflow:auto; padding:2px; }
+.ai-rev-h{ padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:var(--surface); font-size:13px; }
+.ai-rev-h.is-acc{ border-color:var(--success); }
+.ai-rev-h.is-rej .ai-diff{ opacity:.5; }
+.ai-rev-hh{ display:flex; align-items:center; gap:6px; margin-bottom:5px; }
+.ai-rev-l{ margin-right:auto; font-size:11.5px; font-weight:600; color:var(--ink-faint); }
+.ai-rev-hh .mini{ padding:3px 10px; font-size:12px; border:1px solid var(--line-strong); }
+.ai-rev-hh .mini[aria-pressed="true"].ai-rev-acc{ background:var(--success); border-color:var(--success); color:#fff; }
+.ai-rev-hh .mini[aria-pressed="true"].ai-rev-rej{ background:var(--surface-2); border-color:var(--ink-faint); }
+.ai-rev-hh .mini:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.ai-review .panel-foot{ flex-wrap:wrap; }
+.ai-rev-sp{ flex:1; }
 
 /* paste-back dialog */
 .ai-paste{ width:min(720px,100%); font-family:var(--font-ui); }
@@ -2126,6 +2165,23 @@ body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8
 .ai-sn-acts .ai-sn-ok:hover{ color:var(--success); border-color:var(--success); }
 .ai-sn-acts .ai-sn-no:hover{ color:var(--danger); border-color:var(--danger); }
 .ai-sn-acts button:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+/* a wider single-block edit: small word diff after the passage */
+#doc ins.ai-sugg-diff{ color:inherit; background:none; padding:0; }
+#doc ins.ai-sugg-diff .ai-diff{ line-height:inherit; white-space:normal; padding:1px 4px; border-radius:4px; background:var(--ins-bg);
+  font-size:.92em; }
+/* multi-block edits: purple bar beside the blocks + a chip that opens Review changes */
+#doc .ai-mb-blk{ position:relative; }
+#doc .ai-mb-blk::before{ content:""; position:absolute; left:-14px; top:2px; bottom:2px; width:3px; border-radius:2px; background:var(--ins); }
+#doc .table-scroll.ai-mb-blk::before{ content:none; }
+#doc .table-scroll.ai-mb-blk{ box-shadow:-14px 0 0 -11px var(--ins); }
+#doc .ai-mb-anchor{ position:relative; height:0; margin:0; padding:0; }
+#doc .ai-mb-anchor.is-top{ height:auto; margin:0 0 14px; }
+.ai-mb-chip{ position:absolute; right:0; bottom:3px; z-index:2; display:inline-flex; align-items:center; gap:5px; padding:2px 9px;
+  border-radius:999px; border:1px solid color-mix(in srgb,var(--ins) 45%,transparent); background:var(--surface); color:var(--ins);
+  font:600 11.5px/1.5 var(--font-ui); cursor:pointer; white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis; }
+.ai-mb-anchor.is-top .ai-mb-chip{ position:static; }
+.ai-mb-chip:hover{ background:var(--ins-bg); }
+.ai-mb-chip:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
 
 /* floating "N suggestions · Accept all · Reject all" bar */
 .ai-sugg-bar{ position:fixed; left:16px; bottom:20px; z-index:55; display:flex; align-items:center; gap:4px; padding:5px 6px 5px 12px;
@@ -2420,16 +2476,18 @@ body.editing .tbl-layer{ display:none!important; }
     <span class="pop copy-wrap">
       <button class="btn primary" id="bCopy">Export for AI</button>
       <button class="btn primary split" id="bCopyOpts" title="Export options" aria-label="Export options" aria-haspopup="menu" aria-expanded="false" aria-controls="menuCopy">▾</button>
-      <div class="menu" id="menuCopy" role="menu" hidden>
-        <button type="button" role="menuitem" data-mode="full">Full context<span class="sub">Document + annotations for any AI assistant</span></button>
-        <button type="button" role="menuitem" data-mode="notes">Notes only<span class="sub">Annotations without full document</span></button>
-        <button type="button" role="menuitem" data-mode="raw">Raw markdown<span class="sub">Current document only</span></button>
-        <div class="ai-menu-sep" role="separator"></div>
-        <button type="button" role="menuitem" data-ai="dl-bundle">Download as file<span class="sub">Full context as a .md file</span></button>
-        <button type="button" role="menuitem" data-ai="dl-md">Download Markdown<span class="sub">Current document as .md</span></button>
-        <div class="ai-menu-sep" role="separator"></div>
-        <button type="button" role="menuitemcheckbox" aria-checked="false" data-ai="fmt" class="ai-menu-check"><span class="ai-check" aria-hidden="true"></span>Ask AI to reply in mdeverything format<span class="sub">So you can paste the answers back as replies</span></button>
-        <button type="button" role="menuitem" data-ai="paste">Paste AI answer…<span class="sub">Add the AI's answers to your notes</span></button>
+      <div class="menu" id="menuCopy" role="menu" aria-label="Export" hidden>
+        <div class="ai-menu-h" role="presentation">Copy to clipboard</div>
+        <button type="button" role="menuitem" data-mode="full">Full context<span class="sub">Document + comments + instructions for the AI</span></button>
+        <button type="button" role="menuitem" data-mode="notes">Comments only<span class="sub">Comments with their quoted passages (no full document)</span></button>
+        <button type="button" role="menuitem" data-mode="raw">Document only<span class="sub">Just the Markdown text (no comments)</span></button>
+        <div class="ai-menu-h" role="presentation">Download file</div>
+        <button type="button" role="menuitem" data-ai="dl-full">Full context (.md)<span class="sub">→ document-for-ai.md</span></button>
+        <button type="button" role="menuitem" data-ai="dl-notes">Comments only (.md)<span class="sub">→ document-comments.md</span></button>
+        <button type="button" role="menuitem" data-ai="dl-doc">Document only (.md)<span class="sub">→ document.md</span></button>
+        <div class="ai-menu-h" role="presentation">AI replies</div>
+        <button type="button" role="menuitemcheckbox" aria-checked="false" data-ai="fmt" class="ai-menu-check"><span class="ai-check" aria-hidden="true"></span>Let AI reply back into mdeverything<span class="sub">Adds answer instructions so you can paste the reply here</span></button>
+        <button type="button" role="menuitem" data-ai="paste">Paste AI answer…<span class="sub">Add the AI's answers and suggested edits to your comments</span></button>
       </div>
     </span>
   </div>
@@ -2656,6 +2714,23 @@ body.editing .tbl-layer{ display:none!important; }
   <button type="button" data-sb="reject">Reject all</button>
   <button type="button" class="ai-sb-x" data-sb="hide" aria-label="Hide suggestions in the document" title="Hide suggestions">×</button>
 </div>
+<div class="overlay" id="ovAiReview">
+  <div class="panel ai-review" role="dialog" aria-modal="true" aria-labelledby="aiRevTitle" aria-describedby="aiRevHint">
+    <div class="panel-head"><h3 id="aiRevTitle">Review changes</h3>
+      <button class="x" type="button" data-close aria-label="Close" title="Close (Esc)">×</button></div>
+    <div class="panel-body">
+      <p class="hint" id="aiRevHint"></p>
+      <div class="ai-rev-list" id="aiRevList"></div>
+    </div>
+    <div class="panel-foot">
+      <button class="btn" type="button" data-rv="rejectall">Reject all</button>
+      <button class="btn" type="button" data-rv="acceptall">Accept all</button>
+      <span class="ai-rev-sp"></span>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="button" data-rv="apply" id="aiRevApply" disabled>Apply</button>
+    </div>
+  </div>
+</div>
 <!-- ==[/AI HTML]== -->
 <!-- ==[LINKS HTML]== B — in-document links -->
 <div id="linkPop" role="tooltip" aria-hidden="true"></div>
@@ -2733,7 +2808,11 @@ function sampleAnnotations(){
       note:"Example — turn a to-do into a call to action. Suggest a short, friendly line that points people to the Open button." },
     { quote:"your work is saved locally on this device",
       note:"Example — fact-check. Confirm this matches how autosave works (browser storage, per device) and say what happens in a private window.",
-      replies:["Worth mentioning that clearing site data removes it too.","Agreed — keep it to one short sentence though."] }
+      replies:["Worth mentioning that clearing site data removes it too.","Agreed — keep it to one short sentence though."] },
+    { quote:"every suggested edit shows as a diff you can accept or reject",
+      note:"Example — an AI answer with a suggested edit. Make this phrase friendlier for readers who don't know the word “diff”.",
+      replies:[{ by:"ai", round:1, text:"Here's a plainer version that avoids the jargon. Accept it to rewrite the sentence, or Reject to keep yours.",
+        edits:[{ kind:"quote", text:"every suggested edit appears as a tracked change you can accept or reject in one click" }] }] }
   ];
   const CTX=70;
   return notes.map((n,i)=>{
@@ -2744,7 +2823,13 @@ function sampleAnnotations(){
       prefix:s>=0 ? SAMPLE.slice(Math.max(0,s-CTX),s) : "",
       suffix:s>=0 ? SAMPLE.slice(e,e+CTX) : "",
       note:n.note,
-      replies:(n.replies||[]).map((text,k,all)=>({text, ts:Date.now()-(all.length-k)*45*60000}))
+      // a reply is a string, or an object (the demo AI answer with its suggested edit)
+      replies:(n.replies||[]).map((x,k,all)=>{
+        const r = typeof x==="string" ? {text:x} : {...x, edits:(x.edits||[]).map(e=>({...e}))};
+        if(r.by==="ai") r.nh=aiHash36(n.note);
+        r.ts=Date.now()-(all.length-k)*45*60000;
+        return r;
+      })
     };
   });
 }
@@ -3866,18 +3951,22 @@ function buildBundle(incDoc){
     if(a.section) loc.push(`section “${clean(a.section)}”`);
     const ln=sourceLine(a.quote); if(ln) loc.push(`line ~${ln}`);
     if(a.resolved===false) loc.push("(not found in the current document)");
-    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${loc.length?" Location: "+loc.join(" · "):""}`);
+    // with AI replies on: [NEW] / [FOLLOW-UP] / [ANSWERED] tells the AI which notes to answer this round
+    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${fmt?" ["+aiNoteStatus(a)+"]":""}${loc.length?" Location: "+loc.join(" · "):""}`);
     L.push(`Quoted passage:`,`"""`,clean(a.quote),`"""`);
     L.push(`Context: …${clean(a.prefix)} 〈${clean(a.quote)}〉 ${clean(a.suffix)}…`);
     L.push(`Note / question:`,`"""`,(a.note||"(no note)"),`"""`);
     const reps=Array.isArray(a.replies)?a.replies:[];
     if(reps.length){
       L.push(`Replies (${reps.length}):`);
-      reps.forEach(r=>L.push("- "+(r.by==="ai"?"(AI) ":"")+String(r.text||"").trim().replace(/\n/g,"\n  ")));
+      reps.forEach(r=>{
+        const ai=r.by==="ai", sum=ai ? aiEditsSummary(r) : "";
+        L.push("- "+(ai?`(AI, round ${r.round||1}) `:"")+String(r.text||"").trim().replace(/\n/g,"\n  ")+(sum?"\n  "+sum:""));
+      });
     }
     L.push("");
   });
-  if(fmt) L.push(aiHowToAnswer(),"");
+  if(fmt) L.push(aiHowToAnswer(incDoc),"");
   return L.join("\n").trim()+"\n";
 }
 
@@ -4038,13 +4127,14 @@ async function copyText(t){
 function doExport(mode="full"){
   if(mode==="raw"){
     if(!SRC.trim()){ toast("No Markdown document to copy yet"); return; }
-    copyText(SRC.trim()+"\n").then(ok=>toast(ok ? "Copied raw Markdown" : "Couldn't copy, try again"));
+    copyText(SRC.trim()+"\n").then(ok=>toast(ok ? "Copied document only (Markdown, no comments)" : "Couldn't copy, try again"));
     return;
   }
-  if(!ANN.length){ toast("Add at least one note before exporting AI context"); return; }
-  const incDoc = mode !== "notes";
+  if(!ANN.length){ toast("Add at least one comment before exporting"); return; }
+  const incDoc = mode !== "notes", n=ANN.length, w=n===1 ? "comment" : "comments";
   copyText(buildBundle(incDoc)).then(ok=>
-    toast(ok ? `Exported ${ANN.length} notes${incDoc?" with full context":" only"} — paste into your AI assistant`
+    toast(ok ? (incDoc ? `Copied full context (document + ${n} ${w}) — paste it into your AI assistant`
+                       : `Copied comments only (${n} ${w}) — paste them into your AI assistant`)
              : "Couldn't copy, try again"));
 }
 
@@ -4108,10 +4198,13 @@ $("#bRender").addEventListener("click",()=>{
 /* ============ export ============ */
 function syncCopyMenu(){ $("#bCopyOpts").setAttribute("aria-expanded", $("#menuCopy").hidden ? "false" : "true"); }
 $("#bCopy").addEventListener("click",()=>doExport("full"));
-$("#bCopyOpts").addEventListener("click",e=>{e.stopPropagation(); const mn=$("#menuCopy"); mn.hidden=!mn.hidden; syncCopyMenu();});
-$("#menuCopy").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b)return;
+$("#bCopyOpts").addEventListener("click",e=>{e.stopPropagation(); const mn=$("#menuCopy"); mn.hidden=!mn.hidden; syncCopyMenu(); if(!mn.hidden) aiSyncMenuNames();});
+$("#menuCopy").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b){ e.stopPropagation(); return; }   // headings keep it open
   if(b.dataset.ai==="fmt"){ e.stopPropagation(); aiToggleExportFmt(); return; }   // toggle keeps the menu open
-  $("#menuCopy").hidden=true; syncCopyMenu();
+  const mn=$("#menuCopy"), hadFocus=mn.contains(document.activeElement);
+  if(b.dataset.ai==="paste"){ aiMenuAction("paste"); return; }   // the dialog closes the menu and remembers ▾ for focus
+  mn.hidden=true; syncCopyMenu();
+  if(hadFocus) $("#bCopyOpts").focus();
   if(b.dataset.ai){ aiMenuAction(b.dataset.ai); return; }
   doExport(b.dataset.mode || "full"); });
 document.addEventListener("click",e=>{ if(!e.target.closest(".pop")){ $("#menuCopy").hidden=true; syncCopyMenu(); } });
@@ -4179,6 +4272,10 @@ flowchart LR
 \`\`\`
 
 Curious what the export looks like? Hover or click [What your AI receives](#31-what-your-ai-receives) to peek at it.
+
+### 2.1 Ask, answer, accept
+
+Turn on **Let AI reply back into mdeverything** in the Export menu and your assistant answers in a format this page understands. Paste its reply with **Paste AI answer…**: each answer lands under its comment, and every suggested edit shows as a diff you can accept or reject. Accepting rewrites the Markdown for you, and Undo is always one click away.
 
 ## 3. Features at a glance
 
@@ -4424,13 +4521,12 @@ function normAnn(a){
           r.ts=Number(r.ts)||Date.now();
           if(!r.id || typeof r.id!=="string") r.id=newReplyId(r.ts);
           if(r.editedAt!=null){ const e=Number(r.editedAt); if(e) r.editedAt=e; else delete r.editedAt; }
-          // AI answers (pasted back): by:"ai", optional suggested replacement + its accepted / rejected state
+          // AI answers (pasted back): by:"ai", round, edits[] — see aiNormReplies (AI region)
           if(r.by!=="ai") delete r.by;
-          if(typeof r.suggest!=="string" || !r.suggest.trim()){ delete r.suggest; delete r.suggestState; }
-          else if(r.suggestState!=="accepted" && r.suggestState!=="rejected") delete r.suggestState;
           return r;
         })
     : [];
+  aiNormReplies(a);                    // rounds; legacy `suggest` → edits[0]
   const seen=new Set();                // ids must be unique within a thread
   a.replies.forEach(r=>{ if(seen.has(r.id)) r.id=newReplyId(r.ts); seen.add(r.id); });
   delete a.done;                     // the resolve feature was removed; drop old flags
@@ -5429,7 +5525,7 @@ function libHash(str){
 function libContentFp(src, ann, view){
   const vk = tblViewKey(view);             // table sizes (tables workstream); "" when none → old fingerprints unchanged
   const list = (ann || []).map(a => [String(a.id), a.quote, a.note || "", a.prefix || "", a.suffix || "",
-    (a.replies || []).map(r => r.suggestState ? [r.text, r.ts, r.suggestState] : [r.text, r.ts])]);
+    (a.replies || []).map(r => { const k = aiReplyStateKey(r); return k ? [r.text, r.ts, k] : [r.text, r.ts]; })]);
   list.sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0);
   const notes = JSON.stringify(list);
   return `${src.length}.${libHash(src)}.${notes.length}.${libHash(notes)}` + (vk ? `.${vk.length}.${libHash(vk)}` : "");
@@ -6256,34 +6352,79 @@ $("#bHeroDemo").addEventListener("click", () => {
 
 /* ==[AI]== A — AI answers, suggestions, export options */
 /* Round trip with an AI assistant:
-   1. Export (optionally) asks the AI to answer in a fixed format: one ```mdeverything block with
-      "## [n] {#id}" per note and an optional "### Suggested edit" (full replacement of the quote).
-   2. "Paste AI answer…" parses that reply, previews the matches and adds them as replies {by:"ai"}.
-   3. Suggested edits show as a word diff in the reply (Accept / Reject) and, optionally, inline in
-      the document. Accept rewrites the passage in SRC (Undo restores SRC + notes).
-   Everything inserted into #doc is .no-anchor, so highlight anchoring is never affected.
+   1. With "Let AI reply back into mdeverything" on, exports tag every note [NEW] / [FOLLOW-UP] / [ANSWERED]
+      and ask the AI to answer in one ```mdeverything block: "## [n] {#id}" per note plus optional edit
+      parts (### Suggested edit · ### Replace + ### With · ### Replace all + ### With ·
+      ### Section: <heading> + ### With · ### Whole document).
+   2. "Paste AI answer…" parses that reply and adds replies {by:"ai", round, nh, edits:[…]}
+      (nh = hash of the note text it answered, so an edited note becomes [FOLLOW-UP]).
+   3. Each edit shows as a Markdown word diff with Accept / Reject / Copy (Review… for multi-block
+      edits, sections and whole-document rewrites) and, optionally, inline in the document.
+      Accept rewrites SRC; Undo restores SRC + notes. Accepted ranges are remembered (e.rs) so a
+      later edit that overlaps a change the AI didn't know about is blocked.
+   Everything inserted into #doc is .no-anchor and never splits text nodes, so anchoring is unaffected.
    `var` for state read from earlier sections (renderCards → w5ApplyFilter → aiHasAnswer). */
 var AI_FMT_KEY="marginalia:exportfmt:v1", AI_SUGG_KEY="marginalia:aisugg:v1";
 function aiLSGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function aiLSSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 var aiFmt = aiLSGet(AI_FMT_KEY)==="1";
-var aiShowSugg = aiLSGet(AI_SUGG_KEY)==="1";
+var aiShowSugg = aiLSGet(AI_SUGG_KEY)!=="0";     // inline suggestions are on unless the user hid them
 var aiInlineSig = null;
+var aiOldOpen = new Set();                         // earlier AI answers the user expanded (reply ids)
+var aiVer = 0;                                     // bumps on every edit-state change (cache key)
 // a pasted reply in this format is recognised on a plain Ctrl+V anywhere outside text fields
 var AI_DETECT = /^\s*#{1,6}\s*\[\d+\]\s*\{#n[a-z0-9]+\}/m;
 
 /* ---------- model helpers ---------- */
 function aiHasAnswer(a){ return !!a && (a.replies||[]).some(r=>r.by==="ai"); }
-function aiIsPending(r){ return !!r && r.by==="ai" && typeof r.suggest==="string" && !!r.suggest.trim() && !r.suggestState; }
-function aiPendingCount(a){ return a ? (a.replies||[]).filter(aiIsPending).length : 0; }
-// newest pending suggestion per note, in reading order
+function aiEdits(r){ return r && r.by==="ai" && Array.isArray(r.edits) ? r.edits : []; }
+function aiIsPending(r){ return aiEdits(r).some(e=>!e.state); }
+function aiPendingCount(a){
+  let n=0;
+  if(a) (a.replies||[]).forEach(r=>aiEdits(r).forEach(e=>{ if(!e.state) n++; }));
+  return n;
+}
+// every pending edit, notes in reading order: [{a, r, e}]
 function aiPendingList(){
   const out=[];
-  ANN.forEach(a=>{
-    const reps=(a.replies||[]).filter(aiIsPending);
-    if(reps.length) out.push({a, r:reps[reps.length-1]});
-  });
+  ANN.forEach(a=>(a.replies||[]).forEach(r=>aiEdits(r).forEach(e=>{ if(!e.state) out.push({a, r, e}); })));
   return out;
+}
+function aiLatest(a){ let l=null; ((a && a.replies)||[]).forEach(r=>{ if(r.by==="ai") l=r; }); return l; }
+// compact edit-state string for the library fingerprint ("" while every edit is pending)
+function aiReplyStateKey(r){
+  const k=aiEdits(r).map(e=>e.state ? e.state[0] : "-").join("");
+  return /[^-]/.test(k) ? k : "";
+}
+// normalise replies in place (called from normAnn): round numbers, legacy `suggest` → edits[0]
+function aiNormReplies(a){
+  const KINDS={ quote:1, replace:1, replaceAll:1, section:1, document:1 };
+  let k=0;
+  a.replies.forEach(r=>{
+    if(r.by!=="ai"){ delete r.edits; delete r.suggest; delete r.suggestState; delete r.round; delete r.nh; return; }
+    k++;
+    const rd=Math.floor(Number(r.round)); r.round = rd>0 ? rd : k;
+    if(typeof r.nh!=="string") delete r.nh;
+    let edits=Array.isArray(r.edits) ? r.edits : [];
+    if(typeof r.suggest==="string" && r.suggest.trim() && !edits.length){
+      const e={ kind:"quote", text:r.suggest };
+      if(r.suggestState==="accepted" || r.suggestState==="rejected") e.state=r.suggestState;
+      edits=[e];
+    }
+    delete r.suggest; delete r.suggestState;
+    edits=edits.filter(e=>{
+      if(!e || typeof e!=="object" || !KINDS[e.kind] || typeof e.text!=="string") return false;
+      if((e.kind==="replace" || e.kind==="replaceAll") && (typeof e.find!=="string" || !e.find)) return false;
+      if(e.kind==="section" && (typeof e.section!=="string" || !e.section.trim())) return false;
+      if(e.kind!=="replace" && e.kind!=="replaceAll") delete e.find;
+      if(e.kind!=="section") delete e.section;
+      if(e.state!=="accepted" && e.state!=="rejected" && e.state!=="superseded") delete e.state;
+      if(e.state!=="accepted"){ delete e.at; delete e.rs; }
+      else if(!Array.isArray(e.rs)) delete e.rs;
+      return true;
+    });
+    if(edits.length) r.edits=edits; else delete r.edits;
+  });
 }
 function aiHash36(str){
   let h=0x811c9dc5;
@@ -6306,6 +6447,16 @@ function aiPlainText(md){
   d.innerHTML=mdToHtml(String(md||""));
   return anchorText(d).replace(/^\s+|\s+$/g,"");
 }
+// round state of a note for the export: NEW (no AI answer yet), FOLLOW-UP (the user replied or
+// edited the note after the latest AI answer), ANSWERED (nothing new since)
+function aiNoteStatus(a){
+  const reps=a.replies||[], last=aiLatest(a);
+  if(!last) return "NEW";
+  const user=reps.filter(r=>r.by!=="ai").reduce((m,r)=>Math.max(m, Number(r.ts)||0, Number(r.editedAt)||0), 0);
+  if(user>last.ts) return "FOLLOW-UP";
+  if(last.nh && last.nh!==aiHash36(String(a.note||""))) return "FOLLOW-UP";
+  return "ANSWERED";
+}
 
 /* ---------- export options ---------- */
 function aiExportFmtOn(){ return aiFmt; }
@@ -6315,28 +6466,60 @@ function aiSyncFmtItem(){
 }
 function aiToggleExportFmt(){
   aiFmt=!aiFmt; aiLSSet(AI_FMT_KEY, aiFmt ? "1" : "0"); aiSyncFmtItem();
-  toast(aiFmt ? "Exports now ask the AI to answer in mdeverything format" : "Exports use the plain format");
+  toast(aiFmt ? "AI replies on — exports ask the AI to answer in a format you can paste back" : "AI replies off — exports use the plain format");
 }
-function aiHowToAnswer(){
+function aiHowToAnswer(incDoc){
   const sids=aiNoteIds(), first=ANN[0];
   const ex = first ? `[1] {#${sids.get(first.id)}}` : "[1] {#n3f9a}";
   return [
     "===== HOW TO ANSWER =====",
     "",
-    "Reply with ONE fenced code block whose language is `mdeverything` (open it with ````mdeverything — four backticks — if your answers contain ``` code blocks). Inside it, for each note you answer:",
+    "Reply with ONE fenced code block whose language is `mdeverything`. Open it with ````mdeverything (four backticks) so ``` blocks inside stay intact. Write nothing outside it.",
+    "",
+    "Answer only the notes tagged [NEW] or [FOLLOW-UP]. Notes tagged [ANSWERED] are context only — skip them.",
+    "",
+    "For each note you answer:",
     "",
     `## ${ex}`,
-    "Your answer to that note (Markdown allowed).",
-    "",
-    "### Suggested edit",
-    "The full replacement text for the quoted passage, in the document's Markdown, without quotes around it.",
+    "Your answer (Markdown allowed).",
     "",
     "Rules:",
-    "- Start each answer with `## [number] {#id}`, copying the number and id shown next to the note above.",
-    "- Add `### Suggested edit` ONLY when the note asks for a wording change; it replaces exactly the quoted passage.",
+    "- Start each answer with `## [number] {#id}`, copied from the note.",
+    "- Answer each note in the language the note is written in.",
+    "- If the note only asks a question, just answer it — no edit.",
+    "- If the note asks for a change, add an edit below your answer with exactly the scope the note asks for: by default only the quoted passage; a wider scope (sentence or paragraph, a whole section, several places, the whole document) only when the note asks for it.",
+    "- Text under `### Replace` or `### Replace all` must be copied character for character from the document's Markdown" + (incDoc ? " above" : " (only the quoted passages are included here, so prefer `### Suggested edit`)") + ", including Markdown symbols such as **, `, | or list markers.",
     "- Optional: a `## General` section for comments not tied to one note.",
-    "- Write nothing outside the code block."
+    "",
+    "Edits (use the one that fits; several `### Replace` / `### With` pairs are allowed in one answer):",
+    "",
+    "### Suggested edit",
+    "New Markdown for exactly the quoted passage.",
+    "",
+    "### Replace",
+    "Exact original Markdown (for example the whole sentence or paragraph)",
+    "### With",
+    "The new Markdown. To add text, repeat the original and add the new text. To delete, leave this part empty.",
+    "",
+    "### Replace all",
+    "Exact original text that appears in several places",
+    "### With",
+    "Its replacement (applied to every occurrence).",
+    "",
+    "### Section: <heading text exactly as in the document>",
+    "### With",
+    "The new content of that section, up to the next heading of the same or higher level.",
+    "",
+    "### Whole document",
+    "The complete new Markdown document (only when the note asks to rework everything)."
   ].join("\n");
+}
+// one line under an exported AI reply: what happened to its suggested edits
+function aiEditsSummary(r){
+  const ed=aiEdits(r); if(!ed.length) return "";
+  const c={};
+  ed.forEach(e=>{ const s=e.state||"pending"; c[s]=(c[s]||0)+1; });
+  return `(suggested edit${ed.length>1?"s":""}: ${Object.keys(c).map(s=>`${c[s]} ${s}`).join(", ")})`;
 }
 function aiBaseName(){
   const n = isSampleMode ? "Sample document" : (currentFileName || "document");
@@ -6349,27 +6532,75 @@ function aiDownload(name, text){
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url), 5000);
 }
+const AI_DL_NAMES={ "dl-full":"-for-ai.md", "dl-notes":"-comments.md", "dl-doc":".md" };
+function aiSyncMenuNames(){
+  const base=aiBaseName();
+  document.querySelectorAll("#menuCopy [data-ai^='dl-']").forEach(b=>{
+    const s=b.querySelector(".sub"), suf=AI_DL_NAMES[b.dataset.ai];
+    if(s && suf) s.textContent="→ "+base+suf;
+  });
+}
 function aiMenuAction(act){
-  if(act==="dl-bundle"){
-    if(!ANN.length){ toast("Add at least one note before exporting AI context"); return; }
-    const name=aiBaseName()+"-for-ai.md";
-    aiDownload(name, buildBundle(true)); toast(`Downloaded ${name}`);
-  } else if(act==="dl-md"){
+  if(act==="dl-bundle") act="dl-full";            // older names
+  if(act==="dl-md") act="dl-doc";
+  if(act==="dl-full" || act==="dl-notes"){
+    if(!ANN.length){ toast("Add at least one comment before exporting"); return; }
+    const name=aiBaseName()+AI_DL_NAMES[act];
+    aiDownload(name, buildBundle(act==="dl-full")); toast(`Downloaded ${name}`);
+  } else if(act==="dl-doc"){
     if(!SRC.trim()){ toast("No Markdown document to download yet"); return; }
     const name=aiBaseName()+".md";
     aiDownload(name, SRC.replace(/\s+$/,"")+"\n"); toast(`Downloaded ${name}`);
   } else if(act==="paste") aiOpenPaste("");
 }
+// Export menu keyboard: ↑ / ↓ (headings are skipped), Home / End, Esc returns to the ▾ button
+function aiMenuItems(){ return [...$("#menuCopy").querySelectorAll('[role^="menuitem"]')]; }
+(function aiWireCopyMenu(){
+  const mn=$("#menuCopy"), btn=$("#bCopyOpts");
+  if(!mn || !btn) return;
+  const focusAt=i=>{ const it=aiMenuItems(); if(it.length) it[(i+it.length)%it.length].focus(); };
+  btn.addEventListener("keydown",e=>{
+    if(e.key!=="ArrowDown" && e.key!=="ArrowUp") return;
+    e.preventDefault();
+    if(mn.hidden){ mn.hidden=false; syncCopyMenu(); aiSyncMenuNames(); }
+    focusAt(e.key==="ArrowUp" ? -1 : 0);
+  });
+  // opened from the keyboard (Enter / Space → click with detail 0): move focus into the menu
+  btn.addEventListener("click",e=>{ if(!mn.hidden && e.detail===0) setTimeout(()=>focusAt(0),0); });
+  mn.addEventListener("keydown",e=>{
+    const it=aiMenuItems(), i=it.indexOf(document.activeElement);
+    if(e.key==="ArrowDown"){ e.preventDefault(); focusAt(i+1); }
+    else if(e.key==="ArrowUp"){ e.preventDefault(); focusAt(i<0 ? -1 : i-1); }
+    else if(e.key==="Home"){ e.preventDefault(); focusAt(0); }
+    else if(e.key==="End"){ e.preventDefault(); focusAt(-1); }
+    else if(e.key==="Escape"){ e.preventDefault(); e.stopPropagation(); mn.hidden=true; syncCopyMenu(); btn.focus(); }
+    else if(e.key==="Tab"){ mn.hidden=true; syncCopyMenu(); }
+  });
+})();
 
 /* ---------- parser (tolerant) ---------- */
 const AI_FENCE_RE=/^\s{0,3}(`{3,}|~{3,})/;
+function aiHeadText(L){
+  return L.replace(/^#{1,6}\s*/,"").replace(/\*\*|__/g,"").trim().replace(/\s+#+\s*$/,"").replace(/\s*[:：]\s*$/,"").trim();
+}
+function aiCleanSection(s){
+  return String(s||"").trim().replace(/^#{1,6}\s+/,"").replace(/^["“”'`«]+|["“”'`»]+$/g,"").replace(/\s*[:：]\s*$/,"").trim();
+}
 function aiHeading(line){
   const L=line.trim(); if(!L) return null;
   const hasHash=/^#{1,6}(?!#)/.test(L), hasBold=/^(\*\*|__)/.test(L);
   let m=L.match(/^(?:#{1,6}\s*)?(?:\*\*|__)?\s*\[\s*(\d{1,4})\s*\]\s*(?:\*\*|__)?\s*(?:\{\s*#\s*(n[a-z0-9]{2,8})\s*\})?\s*(?:\*\*|__)?\s*(.*)$/i);
   if(m && (hasHash || m[2] || (hasBold && m[3].length<=60))) return {kind:"note", n:Number(m[1]), sid:m[2] ? m[2].toLowerCase() : ""};
-  if((hasHash || hasBold) && /^(?:#{1,6}\s*)?(?:\*\*|__)?\s*General\b[\s:*_]*$/i.test(L)) return {kind:"general"};
-  if((hasHash || hasBold) && /^(?:#{1,6}\s*)?(?:\*\*|__)?\s*Suggest(?:ed)?\s+(?:edit|rewrite|wording|change)\b[\s:*_]*$/i.test(L)) return {kind:"sugg"};
+  if(!hasHash && !hasBold) return null;
+  const t=aiHeadText(L);
+  if(/^General$/i.test(t)) return {kind:"general"};
+  if(/^Suggest(?:ed)?\s+(?:edit|rewrite|wording|change)s?$/i.test(t)) return {kind:"part", part:"sugg"};
+  if(/^Replace\s+all(?:\s+occurrences)?(?:\s*\([^)]*\))?$/i.test(t)) return {kind:"part", part:"replaceAll"};
+  if(/^(?:Replace|Find|Original)(?:\s*\([^)]*\))?$/i.test(t)) return {kind:"part", part:"replace"};
+  if(/^(?:With|Replacement|New text)(?:\s*\([^)]*\))?$/i.test(t)) return {kind:"part", part:"with"};
+  m=t.match(/^Section\s*[:：]\s*(.+)$/i);
+  if(m && aiCleanSection(m[1])) return {kind:"part", part:"section", name:aiCleanSection(m[1])};
+  if(/^(?:Whole|Full|Entire)\s+document(?:\s*\([^)]*\))?$/i.test(t)) return {kind:"part", part:"document"};
   return null;
 }
 function aiTidy(lines){
@@ -6377,13 +6608,47 @@ function aiTidy(lines){
   t=t.replace(/\n\s*(?:-{3,}|\*{3,}|_{3,})\s*$/,"").replace(/\s+$/,"");   // trailing separator between answers
   return t.replace(/^\s+/,"");
 }
+// edit text: leading blank lines + trailing whitespace / separator removed, indentation kept
+function aiPartText(lines){
+  let t=lines.join("\n").replace(/^(?:[ \t]*\n)+/,"").replace(/\s+$/,"");
+  t=t.replace(/\n\s*(?:-{3,}|\*{3,}|_{3,})\s*$/,"").replace(/\s+$/,"");
+  return t;
+}
+// strip ONE code fence the AI wrapped around the text (```, ```markdown, ```text…); a fence with a
+// programming language is kept, since it may be a code block of the document itself
+function aiUnfence(t){
+  if(/^\s{0,3}(`{3,}|~{3,})[\w-]*[ \t]*\n\s{0,3}\1[ \t]*$/.test(t)) return "";
+  const m=t.match(/^\s{0,3}(`{3,}|~{3,})[ \t]*([\w-]*)[^\n]*\n([\s\S]*?)\n\s{0,3}\1[ \t]*$/);
+  if(m && (!m[2] || /^(?:markdown|md|text|txt|mdeverything|plain|plaintext)$/i.test(m[2]))) return m[3];
+  return t;
+}
+// placeholders meaning "nothing" in a With part (a deletion)
+function aiEmptyMarker(t){ return /^[(\[]\s*(?:empty|nothing|none|delete(?:d)?|remove(?:d)?|leave (?:it )?empty|no text)\s*[)\]]\.?$/i.test(t.trim()) ? "" : t; }
 function aiUnwrapSuggest(t){
-  let s=t;
-  const fm=s.match(/^(`{3,}|~{3,})[^\n]*\n([\s\S]*?)\n\1\s*$/);   // wrapped in a code fence
-  if(fm) s=fm[2];
+  let s=aiUnfence(t);
   const ls=s.split("\n");
   if(ls.every(l=>/^\s*>/.test(l) || !l.trim())) s=ls.map(l=>l.replace(/^\s*>\s?/,"")).join("\n");   // blockquoted
   return s.trim();
+}
+function aiBuildEdits(parts){
+  const edits=[]; let pend=null;
+  parts.forEach(p=>{
+    const raw=aiPartText(p.lines);
+    if(p.part==="sugg"){ pend=null; edits.push({kind:"quote", text:aiEmptyMarker(aiUnwrapSuggest(raw))}); }
+    else if(p.part==="replace" || p.part==="replaceAll"){ pend={kind:p.part, find:aiUnfence(raw)}; }
+    else if(p.part==="section"){ pend={kind:"section", section:p.name, body:aiUnfence(raw)}; }
+    else if(p.part==="document"){ pend=null; const t=aiUnfence(raw); if(t.trim()) edits.push({kind:"document", text:t}); }
+    else if(p.part==="with"){
+      if(!pend) return;
+      const t=aiEmptyMarker(aiUnfence(raw));
+      if(pend.kind==="section") edits.push({kind:"section", section:pend.section, text:t});
+      else if(pend.find.trim() && pend.find!==t) edits.push({kind:pend.kind, find:pend.find, text:t});
+      pend=null;
+    }
+  });
+  // "### Section: X" followed directly by the new body (no "### With")
+  if(pend && pend.kind==="section" && pend.body.trim()) edits.push({kind:"section", section:pend.section, text:pend.body});
+  return edits;
 }
 function aiParseAnswer(raw){
   const lines=String(raw||"").replace(/\r\n?/g,"\n").split("\n");
@@ -6412,25 +6677,26 @@ function aiParseAnswer(raw){
       else if(fm[1][0]===inFence[0] && fm[1].length>=inFence.length && !line.trim().slice(fm[1].length).trim()) inFence=null;
     } else if(!inFence){
       const h=aiHeading(line);
-      if(h && h.kind==="note"){ cur={n:h.n, sid:h.sid, lines:[], sugg:null}; answers.push(cur); inGen=false; continue; }
+      if(h && h.kind==="note"){ cur={n:h.n, sid:h.sid, lines:[], parts:[]}; answers.push(cur); inGen=false; continue; }
       if(h && h.kind==="general"){ cur=null; inGen=true; continue; }
-      if(h && h.kind==="sugg" && cur){ cur.sugg=[]; continue; }
+      if(h && h.kind==="part" && cur){ cur.parts.push({part:h.part, name:h.name||"", lines:[]}); continue; }
     }
-    if(cur) (cur.sugg||cur.lines).push(line);
+    if(cur){ const p=cur.parts[cur.parts.length-1]; (p ? p.lines : cur.lines).push(line); }
     else if(inGen) gen.push(line);
   }
   return {
-    answers: answers.map(a=>({ n:a.n, sid:a.sid, text:aiTidy(a.lines), suggest: a.sugg ? aiUnwrapSuggest(aiTidy(a.sugg)) : "" })),
+    answers: answers.map(a=>({ n:a.n, sid:a.sid, text:aiTidy(a.lines), edits:aiBuildEdits(a.parts) })),
     general: aiTidy(gen)
   };
 }
+function aiEditsKey(list){ return JSON.stringify((list||[]).map(e=>[e.kind, e.find||"", e.section||"", e.text])); }
 // match parsed answers to notes: {#id} first, the [n] number only when no id was given
 function aiMatch(parsed){
   const ids=aiNoteIds(), bySid=new Map();
   ids.forEach((sid,aid)=>bySid.set(sid,aid));
   const taken=[];   // answers already accepted in this paste (to skip repeats)
   return parsed.answers.map(p=>{
-    const it={...p, status:"ok", a:null, num:0, why:""};
+    const it={...p, status:"ok", a:null, num:0, why:"", round:1};
     if(p.sid){
       const a=bySid.has(p.sid) ? annById(bySid.get(p.sid)) : null;
       if(!a){ it.status="nomatch"; it.why=`No note with id {#${p.sid}} in this document`; return it; }
@@ -6441,10 +6707,12 @@ function aiMatch(parsed){
       it.a=a; it.how="number";
     }
     it.num=ANN.indexOf(it.a)+1;
-    if(!it.text && !it.suggest){ it.status="empty"; it.why="Empty answer"; return it; }
-    if(!it.text) it.text="Suggested an edit.";
-    const same=r=>String(r.text).trim()===it.text && (r.suggest||"")===(it.suggest||"");
-    if(it.a.replies.some(same) || taken.some(t=>t.a===it.a && same(t))){ it.status="dup"; return it; }
+    if(!it.text && !it.edits.length){ it.status="empty"; it.why="Empty answer"; return it; }
+    if(!it.text) it.text = it.edits.length===1 ? "Suggested an edit." : `Suggested ${it.edits.length} edits.`;
+    const key=aiEditsKey(it.edits);
+    const same=r=>r.by==="ai" && String(r.text).trim()===it.text && aiEditsKey(aiEdits(r))===key;
+    if(it.a.replies.some(same) || taken.some(t=>t.a===it.a && same({by:"ai", text:t.text, edits:t.edits}))){ it.status="dup"; return it; }
+    it.round = 1 + it.a.replies.filter(r=>r.by==="ai").length + taken.filter(t=>t.a===it.a).length;
     taken.push(it);
     return it;
   });
@@ -6456,22 +6724,30 @@ function aiRefreshViews(){
   if(POP.mode==="card"){ renderPop(); positionPop(); }
   aiSyncInline();
 }
+// a new answer with edits supersedes the note's earlier pending edits
 function aiAddAnswers(items){
-  const ts=Date.now(), added=[];
+  const ts=Date.now(), added=[], sup=[];
   items.forEach((it,k)=>{
-    const r={ id:newReplyId(ts+k), text:it.text, ts:ts+k, by:"ai" };
-    if(it.suggest) r.suggest=it.suggest;
+    const prev=it.a.replies.filter(r=>r.by==="ai").length;
+    const r={ id:newReplyId(ts+k), text:it.text, ts:ts+k, by:"ai", round:prev+1, nh:aiHash36(String(it.a.note||"")) };
+    if(it.edits && it.edits.length){
+      it.a.replies.forEach(o=>aiEdits(o).forEach(e=>{ if(!e.state){ e.state="superseded"; sup.push(e); } }));
+      r.edits=it.edits.map(e=>({...e}));
+    }
     it.a.replies.push(r); added.push({aid:it.a.id, rid:r.id});
   });
+  aiVer++;
   aiRefreshViews();
-  return added;
+  return {added, sup};
 }
-function aiRemoveAnswers(added){
-  added.forEach(({aid,rid})=>{
+function aiRemoveAnswers(res){
+  res.added.forEach(({aid,rid})=>{
     const a=annById(aid); if(!a) return;
     const i=a.replies.findIndex(r=>r.id===rid); if(i>=0) a.replies.splice(i,1);
     if(replyEdit && replyEdit.rid===rid) replyEdit=null;
   });
+  res.sup.forEach(e=>{ if(e.state==="superseded") delete e.state; });
+  aiVer++; libFp="";
   aiRefreshViews();
 }
 
@@ -6481,7 +6757,10 @@ function aiPasteOpen(){ return $("#ovAiPaste").classList.contains("open"); }
 function aiOpenPaste(text){
   if(mdeIsOpen()){ toast("Finish editing first"); return; }
   const ov=$("#ovAiPaste"), ta=$("#aiPasteTa");
-  if(!aiPasteOpen()) aiPasteReturn=document.activeElement;
+  if(!aiPasteOpen()){
+    const ae=document.activeElement;
+    aiPasteReturn = ae && ae.closest && ae.closest("#menuCopy") ? $("#bCopyOpts") : ae;   // the menu item is about to hide
+  }
   closeOverlays();
   const mn=$("#menuCopy"); if(mn && !mn.hidden){ mn.hidden=true; syncCopyMenu(); }
   ta.value=text||"";
@@ -6513,10 +6792,19 @@ function aiRenderPreview(){
     const t=document.createElement("div"); t.className="ai-prev-t";
     const s=document.createElement("div"); s.className="ai-prev-s";
     const label=it.sid ? `[${it.n}] {#${it.sid}}` : `[${it.n}]`;
+    const sr=document.createElement("span"); sr.className="sr-only";
+    sr.textContent = it.status==="ok" ? "Will be added: " : it.status==="dup" ? "Skipped, duplicate: " : "Skipped: ";
+    main.append(sr,t,s);
     if(it.status==="ok"){
       li.className="ok"; ico.textContent="✓";
       t.textContent=`Note ${it.num} · ${aiNoteSnippet(it.a)}`;
-      s.textContent=(it.how==="number" ? "Matched by number" : "Matched by id")+(it.suggest ? " · includes a suggested edit" : "");
+      const ne=it.edits.length;
+      s.textContent=(it.how==="number" ? "Matched by number" : "Matched by id")+(ne ? ` · includes ${ne===1?"a suggested edit":ne+" suggested edits"}` : "");
+      if(it.round>1){
+        const s2=document.createElement("div"); s2.className="ai-prev-s ai-prev-round";
+        s2.textContent=`Note ${it.num} already has an AI answer — this will be round ${it.round}`+(ne && aiPendingCount(it.a) ? " (its pending edits will be marked superseded)" : "");
+        main.appendChild(s2);
+      }
     } else if(it.status==="dup"){
       li.className="dup"; ico.textContent="↻";
       t.textContent=`Note ${it.num} · ${aiNoteSnippet(it.a)}`;
@@ -6525,9 +6813,7 @@ function aiRenderPreview(){
       li.className="warn"; ico.textContent="⚠";
       t.textContent=label; s.textContent=it.why+" — skipped";
     }
-    const sr=document.createElement("span"); sr.className="sr-only";
-    sr.textContent = it.status==="ok" ? "Will be added: " : it.status==="dup" ? "Skipped, duplicate: " : "Skipped: ";
-    main.append(sr,t,s); li.append(ico,main); ul.appendChild(li);
+    li.append(ico,main); ul.appendChild(li);
   });
   if(items.length) box.appendChild(ul);
   if(parsed.general){
@@ -6538,7 +6824,7 @@ function aiRenderPreview(){
     box.appendChild(g);
   }
   if(!items.length && !parsed.general){
-    box.innerHTML='<p class="ai-prev-empty">No answers found. Each answer should start with a heading like <code>## [1] {#n3f9a}</code> — turn on “Ask AI to reply in mdeverything format” in the Export menu before exporting.</p>';
+    box.innerHTML='<p class="ai-prev-empty">No answers found. Each answer should start with a heading like <code>## [1] {#n3f9a}</code> — turn on “Let AI reply back into mdeverything” in the Export menu before exporting.</p>';
   }
   const n=items.filter(x=>x.status==="ok").length;
   btn.disabled=!n;
@@ -6548,18 +6834,12 @@ function aiCommitPaste(){
   const ok=aiPasteItems.filter(x=>x.status==="ok" && annById(x.a.id));
   if(!ok.length) return;
   closeOverlays();
-  const added=aiAddAnswers(ok);
-  const n=added.length;
-  toast(`Added ${n} AI answer${n===1?"":"s"}`, { action:{ label:"Undo", run:()=>{ aiRemoveAnswers(added); toast(`Removed ${n} AI answer${n===1?"":"s"}`); } }, ms:8000 });
+  const res=aiAddAnswers(ok);
+  const n=res.added.length;
+  toast(`Added ${n} AI answer${n===1?"":"s"}`, { action:{ label:"Undo", run:()=>{ aiRemoveAnswers(res); toast(`Removed ${n} AI answer${n===1?"":"s"}`); } }, ms:8000 });
 }
-(function aiWirePaste(){
-  const ov=$("#ovAiPaste"), ta=$("#aiPasteTa");
-  ta.addEventListener("input",()=>{ clearTimeout(aiPasteT); aiPasteT=setTimeout(aiRenderPreview,120); });
-  ta.addEventListener("keydown",e=>{
-    if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ e.preventDefault(); clearTimeout(aiPasteT); aiRenderPreview(); aiCommitPaste(); }
-  });
-  $("#aiPasteAdd").addEventListener("click",()=>{ clearTimeout(aiPasteT); aiRenderPreview(); aiCommitPaste(); });
-  // focus trap (Esc is handled by the global overlay handler)
+// Tab stays inside a dialog; closing it (Cancel, ×, Esc, outside click) returns focus
+function aiTrapFocus(ov, getReturn, onClose){
   ov.addEventListener("keydown",e=>{
     if(e.key!=="Tab") return;
     const f=[...ov.querySelectorAll('button:not([disabled]), textarea, [href], input, [tabindex]:not([tabindex="-1"])')].filter(x=>x.getClientRects().length);
@@ -6568,13 +6848,21 @@ function aiCommitPaste(){
     if(e.shiftKey && (i<=0)){ e.preventDefault(); f[f.length-1].focus(); }
     else if(!e.shiftKey && (i===f.length-1 || i<0)){ e.preventDefault(); f[0].focus(); }
   });
-  // closing (Cancel, ×, Esc, outside click) returns focus to where it was
   new MutationObserver(()=>{
     if(ov.classList.contains("open")) return;
-    clearTimeout(aiPasteT);
-    const r=aiPasteReturn; aiPasteReturn=null;
-    if(r && r.isConnected && r!==document.body) focusWithoutScrolling(r);
+    if(onClose) onClose();
+    const r=getReturn();
+    if(r && r.isConnected && r!==document.body && r.getClientRects().length) focusWithoutScrolling(r);
   }).observe(ov,{attributes:true, attributeFilter:["class"]});
+}
+(function aiWirePaste(){
+  const ov=$("#ovAiPaste"), ta=$("#aiPasteTa");
+  ta.addEventListener("input",()=>{ clearTimeout(aiPasteT); aiPasteT=setTimeout(aiRenderPreview,120); });
+  ta.addEventListener("keydown",e=>{
+    if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ e.preventDefault(); clearTimeout(aiPasteT); aiRenderPreview(); aiCommitPaste(); }
+  });
+  $("#aiPasteAdd").addEventListener("click",()=>{ clearTimeout(aiPasteT); aiRenderPreview(); aiCommitPaste(); });
+  aiTrapFocus(ov, ()=>{ const r=aiPasteReturn; aiPasteReturn=null; return r; }, ()=>clearTimeout(aiPasteT));
   // Ctrl+V of an mdeverything answer anywhere outside a text field opens the dialog
   document.addEventListener("paste",e=>{
     if(w5IsTyping(e.target) || w5IsTyping(document.activeElement)) return;
@@ -6586,31 +6874,36 @@ function aiCommitPaste(){
   });
 })();
 
-/* ---------- word diff ---------- */
+/* ---------- diffs ---------- */
 function aiTokens(s){ return String(s||"").match(/\s+|[\p{L}\p{N}_'’]+|[^\s\p{L}\p{N}_]/gu) || []; }
-function aiDiff(a,b){
-  const A=aiTokens(a), B=aiTokens(b);
+// LCS edit script over two arrays (common prefix / suffix trimmed first); above `limit` cells the
+// changed middle is reported as one removal + one addition
+function aiSeqOps(A, B, limit){
   let p=0; while(p<A.length && p<B.length && A[p]===B[p]) p++;
   let s=0; while(s<A.length-p && s<B.length-p && A[A.length-1-s]===B[B.length-1-s]) s++;
-  const a1=A.slice(p,A.length-s), b1=B.slice(p,B.length-s);
-  const seg=[]; const push=(t,v)=>{ if(v) seg.push({t,v}); };
-  push("eq",A.slice(0,p).join(""));
+  const a1=A.slice(p,A.length-s), b1=B.slice(p,B.length-s), ops=[];
+  for(let i=0;i<p;i++) ops.push({t:"eq", v:A[i]});
   const n=a1.length, m=b1.length;
-  if(n*m>250000){ push("del",a1.join("")); push("ins",b1.join("")); }
+  if(n*m>limit){ a1.forEach(v=>ops.push({t:"del", v})); b1.forEach(v=>ops.push({t:"ins", v})); }
   else {
     const W=m+1, dp=new Uint32Array((n+1)*W);
     for(let i=n-1;i>=0;i--) for(let j=m-1;j>=0;j--)
       dp[i*W+j] = a1[i]===b1[j] ? dp[(i+1)*W+j+1]+1 : Math.max(dp[(i+1)*W+j], dp[i*W+j+1]);
     let i=0, j=0;
     while(i<n && j<m){
-      if(a1[i]===b1[j]){ push("eq",a1[i]); i++; j++; }
-      else if(dp[(i+1)*W+j]>=dp[i*W+j+1]){ push("del",a1[i]); i++; }
-      else { push("ins",b1[j]); j++; }
+      if(a1[i]===b1[j]){ ops.push({t:"eq", v:a1[i]}); i++; j++; }
+      else if(dp[(i+1)*W+j]>=dp[i*W+j+1]){ ops.push({t:"del", v:a1[i]}); i++; }
+      else { ops.push({t:"ins", v:b1[j]}); j++; }
     }
-    while(i<n) push("del",a1[i++]);
-    while(j<m) push("ins",b1[j++]);
+    while(i<n) ops.push({t:"del", v:a1[i++]});
+    while(j<m) ops.push({t:"ins", v:b1[j++]});
   }
-  push("eq",A.slice(A.length-s).join(""));
+  for(let i=A.length-s;i<A.length;i++) ops.push({t:"eq", v:A[i]});
+  return ops;
+}
+// word-level diff: [{t:"eq"|"del"|"ins", v}]
+function aiDiff(a,b){
+  const seg=aiSeqOps(aiTokens(a), aiTokens(b), 250000);
   // readability: whitespace kept between two changes joins them; each change run = all removed, then all added
   for(let k=1;k<seg.length-1;k++){
     if(seg[k].t==="eq" && !/\S/.test(seg[k].v) && seg[k-1].t!=="eq" && seg[k+1].t!=="eq"){
@@ -6631,9 +6924,16 @@ function aiDiff(a,b){
   }
   return out;
 }
-function aiDiffEl(from,to){
-  const box=document.createElement("div"); box.className="ai-diff";
-  aiDiff(from,to).forEach(x=>{
+// ctx: keep only that many words of unchanged text before the first / after the last change
+function aiDiffInto(box, from, to, ctx){
+  const segs=aiDiff(from,to);
+  if(ctx && segs.length>1){
+    const words=s=>s.match(/\S+\s*/g)||[];
+    const f=segs[0], l=segs[segs.length-1];
+    if(f.t==="eq"){ const w=words(f.v); if(w.length>ctx) f.v="…"+(/^\s/.test(f.v)?"":" ")+w.slice(-ctx).join(""); }
+    if(l.t==="eq" && l!==f){ const lead=(l.v.match(/^\s*/)||[""])[0], w=words(l.v.slice(lead.length)); if(w.length>ctx) l.v=lead+w.slice(0,ctx).join("").replace(/\s+$/,"")+" …"; }
+  }
+  segs.forEach(x=>{
     if(x.t==="eq"){ box.appendChild(document.createTextNode(x.v)); return; }
     const el=document.createElement(x.t==="del" ? "del" : "ins");
     el.className = x.t==="del" ? "ai-del" : "ai-ins";
@@ -6641,67 +6941,48 @@ function aiDiffEl(from,to){
   });
   return box;
 }
-
-/* ---------- AI reply display (called from w5ReplyEl) ---------- */
-const AI_COPY_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>';
-function aiDecorateReply(el, a, r, pre, scope){
-  el.classList.add("ai-reply");
-  const body=el.querySelector("."+pre+"-rtext");
-  if(body){
-    body.classList.add("ai-md");
-    body.innerHTML=mdToHtml(r.text);
-    body.querySelectorAll("a[href]").forEach(x=>{ x.target="_blank"; x.rel="noopener noreferrer"; });
-  }
-  const time=el.querySelector("."+pre+"-time");
-  if(time){
-    const tag=document.createElement("span");
-    tag.className="ai-tag"; tag.textContent="AI"; tag.title="Answer pasted from your AI assistant";
-    time.insertBefore(tag, time.firstChild);
-  }
-  const acts=el.querySelector(".w5-racts");
-  if(acts){
-    const c=document.createElement("button");
-    c.type="button"; c.className="w5-rbtn ai-rcopy"; c.title="Copy answer"; c.setAttribute("aria-label","Copy AI answer");
-    c.innerHTML=AI_COPY_SVG;
-    c.addEventListener("click",e=>{ e.stopPropagation(); copyText(r.text).then(ok=>toast(ok?"Answer copied":"Couldn't copy, try again")); });
-    acts.insertBefore(c, acts.firstChild);
-  }
-  if(r.suggest){
-    const sg=aiSuggestEl(a, r, scope);
-    if(time) el.insertBefore(sg, time); else el.appendChild(sg);
-  }
+function aiDiffEl(from,to){ const box=document.createElement("div"); box.className="ai-diff"; return aiDiffInto(box, from, to); }
+// line-level hunks between two Markdown texts; ops carry their hunk index (o.h) for rebuilding
+function aiLineHunks(oldT, newT){
+  const ops=aiSeqOps(String(oldT).split("\n"), String(newT).split("\n"), 1500000);
+  const hunks=[]; let cur=null, line=1;
+  ops.forEach(o=>{
+    if(o.t==="eq"){ cur=null; line++; return; }
+    if(!cur){ cur={line, del:[], ins:[]}; hunks.push(cur); }
+    o.h=hunks.length-1;
+    if(o.t==="del"){ cur.del.push(o.v); line++; } else cur.ins.push(o.v);
+  });
+  return {ops, hunks};
 }
-function aiSuggestEl(a, r, scope){
-  const box=document.createElement("div");
-  box.className="ai-sugg"+(r.suggestState ? " is-"+r.suggestState : "");
-  const head=document.createElement("div"); head.className="ai-sugg-head";
-  const lbl=document.createElement("span"); lbl.className="ai-sugg-lbl"; lbl.textContent="Suggested edit";
-  head.appendChild(lbl);
-  if(r.suggestState){
-    const st=document.createElement("span"); st.className="ai-sugg-state";
-    st.textContent = r.suggestState==="accepted" ? "✓ Accepted" : "Rejected";
-    head.appendChild(st);
+// rebuild the text keeping the hunks whose decision is true (accepted) and the old lines elsewhere
+function aiApplyHunks(ops, dec){
+  const out=[];
+  ops.forEach(o=>{
+    if(o.t==="eq") out.push(o.v);
+    else if(o.t==="del"){ if(!dec[o.h]) out.push(o.v); }
+    else if(dec[o.h]) out.push(o.v);
+  });
+  return out.join("\n");
+}
+function aiHunksEl(oldT, newT, max){
+  const {hunks}=aiLineHunks(oldT, newT), box=document.createElement("div");
+  box.className="ai-hunks";
+  hunks.slice(0, max||8).forEach(h=>{
+    const w=document.createElement("div"); w.className="ai-hunk";
+    const l=document.createElement("div"); l.className="ai-hunk-l"; l.textContent=`Line ${h.line}`;
+    w.append(l, aiDiffEl(h.del.join("\n"), h.ins.join("\n")));
+    box.appendChild(w);
+  });
+  if(hunks.length>(max||8)){
+    const more=document.createElement("div"); more.className="ai-hunk-l";
+    more.textContent=`… and ${hunks.length-(max||8)} more change${hunks.length-(max||8)===1?"":"s"} — use Review`;
+    box.appendChild(more);
   }
-  box.appendChild(head);
-  if(r.suggestState==="accepted"){
-    const d=document.createElement("div"); d.className="ai-diff"; d.textContent=r.suggest; box.appendChild(d);
-  } else box.appendChild(aiDiffEl(a.quote, r.suggest));
-  if(!r.suggestState){
-    const row=document.createElement("div"); row.className="ai-sugg-acts";
-    row.innerHTML='<button type="button" class="mini save ai-accept">Accept</button><button type="button" class="mini ai-reject">Reject</button><button type="button" class="mini ai-scopy">Copy</button>';
-    const num=ANN.indexOf(a)+1;
-    row.querySelector(".ai-accept").setAttribute("aria-label",`Accept suggested edit for note ${num}`);
-    row.querySelector(".ai-reject").setAttribute("aria-label",`Reject suggested edit for note ${num}`);
-    row.querySelector(".ai-scopy").setAttribute("aria-label","Copy suggested text");
-    row.querySelector(".ai-accept").addEventListener("click",e=>{ e.stopPropagation(); aiAccept([{a,r}]); });
-    row.querySelector(".ai-reject").addEventListener("click",e=>{ e.stopPropagation(); aiReject([{a,r}]); });
-    row.querySelector(".ai-scopy").addEventListener("click",e=>{ e.stopPropagation(); copyText(r.suggest).then(ok=>toast(ok?"Suggested text copied":"Couldn't copy, try again")); });
-    box.appendChild(row);
-  }
+  if(!hunks.length){ const n=document.createElement("div"); n.className="ai-hunk-l"; n.textContent="No changes"; box.appendChild(n); }
   return box;
 }
 
-/* ---------- accept / reject ---------- */
+/* ---------- locating edits in the Markdown source ---------- */
 // where the quoted (rendered) passage sits in the Markdown source; null when it isn't there verbatim
 function aiLocate(a){
   const q=a.quote; if(!q) return null;
@@ -6718,7 +6999,7 @@ function aiLocate(a){
   const norm=s=>String(s||"").replace(/[*_`~#>\[\]()|\\]+/g,"").replace(/\s+/g," ");
   const pref=norm(a.prefix), suf=norm(a.suffix);
   let best=occ[0], bestScore=-Infinity;
-  occ.forEach((s,idx)=>{
+  occ.forEach(s=>{
     const before=norm(SRC.slice(Math.max(0,s-pref.length*2-40), s)).trimEnd();
     const after=norm(SRC.slice(s+q.length, s+q.length+suf.length*2+40)).trimStart();
     const score=commonSuffixLen(pref.trimEnd(), before)+commonPrefixLen(suf.trimStart(), after);
@@ -6726,60 +7007,437 @@ function aiLocate(a){
   });
   return best;
 }
-function aiAccept(pairs){
+// rough source position of a note: its quote, else its rendered offset scaled to the source
+function aiRefPos(a){
+  const s=aiLocate(a); if(s!=null) return s;
+  if(a.start!=null){ const n=anchorText(doc).length || 1; return Math.round(Math.min(1, a.start/n)*SRC.length); }
+  return 0;
+}
+function aiEscRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }
+// non-overlapping [start, end) occurrences of `find`; whitespace-tolerant when there is no exact match
+function aiFindAll(src, find){
+  const out=[]; if(!find) return out;
+  let i=src.indexOf(find);
+  while(i!==-1){ out.push([i, i+find.length]); i=src.indexOf(find, i+find.length); }
+  if(out.length) return out;
+  const t=find.replace(/\r\n?/g,"\n").trim(); if(!t) return out;
+  const re=new RegExp(t.split(/\s+/).map(aiEscRe).join("\\s+"),"g");
+  let m; while((m=re.exec(src))){ if(!m[0].length){ re.lastIndex++; continue; } out.push([m.index, m.index+m[0].length]); }
+  return out;
+}
+function aiLineOf(pos){ return SRC.slice(0,pos).split("\n").length; }
+// ATX headings outside fenced code: [{start, level, text}]
+function aiHeadings(src){
+  const out=[]; let pos=0, fence=null;
+  src.split("\n").forEach(line=>{
+    const fm=line.match(/^\s{0,3}(`{3,}|~{3,})/);
+    if(fm){
+      if(!fence) fence=fm[1];
+      else if(fm[1][0]===fence[0] && fm[1].length>=fence.length && !line.trim().slice(fm[1].length).trim()) fence=null;
+    } else if(!fence){
+      const m=line.match(/^\s{0,3}(#{1,6})[ \t]+(.*?)(?:[ \t]+#+)?[ \t\r]*$/);
+      if(m) out.push({start:pos, level:m[1].length, text:m[2]});
+    }
+    pos+=line.length+1;
+  });
+  return out;
+}
+// fenced code ranges [start, end) of the source
+function aiFences(src){
+  const out=[]; let pos=0, fence=null, st=0;
+  src.split("\n").forEach(line=>{
+    const fm=line.match(/^\s{0,3}(`{3,}|~{3,})/);
+    if(fm){
+      if(!fence){ fence=fm[1]; st=pos; }
+      else if(fm[1][0]===fence[0] && fm[1].length>=fence.length && !line.trim().slice(fm[1].length).trim()){ fence=null; out.push([st, pos+line.length]); }
+    }
+    pos+=line.length+1;
+  });
+  if(fence) out.push([st, src.length]);
+  return out;
+}
+// the section under a heading: from its heading line to the next heading of the same or higher level
+function aiSectionRange(name){
+  const hs=aiHeadings(SRC);
+  const norm=s=>String(s||"").replace(/\{#[^}]*\}\s*$/,"").replace(/[*_`~\[\]()]/g,"").replace(/\s+/g," ").trim().toLowerCase();
+  const strip=s=>s.replace(/^\d+(?:\.\d+)*\.?\s+/,"");
+  const want=norm(aiCleanSection(name)); if(!want) return null;
+  let h=hs.find(x=>norm(x.text)===want) || hs.find(x=>strip(norm(x.text))===strip(want));
+  if(!h){ const c=hs.filter(x=>norm(x.text).includes(strip(want))); if(c.length===1) h=c[0]; }
+  if(!h) return null;
+  const i=hs.indexOf(h); let end=SRC.length;
+  for(let j=i+1;j<hs.length;j++) if(hs[j].level<=h.level){ end=hs[j].start; break; }
+  const nl=SRC.indexOf("\n", h.start);
+  return { start:h.start, end, level:h.level, head:SRC.slice(h.start, nl<0 || nl>end ? end : nl).replace(/\s+$/,"") };
+}
+// the new Markdown for a section range (the AI may or may not repeat the heading line)
+function aiSectionText(rg, text){
+  const old=SRC.slice(rg.start, rg.end);
+  const sep=(old.match(/\s*$/)||[""])[0] || (rg.end<SRC.length ? "\n\n" : "");
+  let core=String(text).replace(/^(?:[ \t]*\n)+/,"").replace(/\s+$/,"");
+  if(!/^\s{0,3}#{1,6}[ \t]/.test(core)) core = core ? rg.head+"\n\n"+core : rg.head;
+  return core+sep;
+}
+function aiOverlap(s1,e1,s2,e2){
+  if(s2===e2) return s1<s2 && s2<e1;
+  if(s1===e1) return s2<s1 && s1<e2;
+  return s1<e2 && s2<e1;
+}
+// ranges of accepted edits that are still in the source unchanged: [{e, pos, len}]
+var aiLiveMemo=null;
+function aiLiveRanges(){
+  if(aiLiveMemo && aiLiveMemo.src===SRC && aiLiveMemo.ann===ANN && aiLiveMemo.ver===aiVer) return aiLiveMemo.out;
+  const out=[];
+  ANN.forEach(a=>(a.replies||[]).forEach(r=>aiEdits(r).forEach(e=>{
+    if(e.state!=="accepted" || !Array.isArray(e.rs)) return;
+    e.rs.forEach(x=>{
+      if(!Array.isArray(x) || x.length!==3) return;
+      const p=Number(x[0]), l=Number(x[1]);
+      if(p>=0 && l>=0 && p+l<=SRC.length && aiHash36(SRC.substr(p,l))===x[2]) out.push({e, pos:p, len:l});
+    });
+  })));
+  aiLiveMemo={src:SRC, ann:ANN, ver:aiVer, out};
+  return out;
+}
+// where an edit applies now: {ranges:[[start, end, newText], …]} or {err:"missing"|"same"|"overlap"}
+function aiPlanEdit(a, r, e){
+  let ranges=null;
+  if(e.kind==="quote"){
+    const s=aiLocate(a);
+    if(s!=null) ranges=[[s, s+a.quote.length, e.text]];
+    else if(a.quote && a.resolved!==false) return {err:"format"};
+  } else if(e.kind==="replace"){
+    const occ=aiFindAll(SRC, e.find);
+    if(occ.length){
+      const ref=occ.length>1 ? aiRefPos(a) : 0;
+      let b=occ[0]; occ.forEach(o=>{ if(Math.abs(o[0]-ref)<Math.abs(b[0]-ref)) b=o; });
+      ranges=[[b[0], b[1], e.text]];
+    }
+  } else if(e.kind==="replaceAll"){
+    const occ=aiFindAll(SRC, e.find);
+    if(occ.length) ranges=occ.map(o=>[o[0], o[1], e.text]);
+  } else if(e.kind==="section"){
+    const rg=aiSectionRange(e.section);
+    if(rg) ranges=[[rg.start, rg.end, aiSectionText(rg, e.text)]];
+  } else if(e.kind==="document"){
+    let t=e.text.replace(/\s+$/,"");
+    if(/\n$/.test(SRC)) t+="\n";
+    ranges=[[0, SRC.length, t]];
+  }
+  if(!ranges) return {err:"missing"};
+  if(ranges.every(([s,en,t])=>SRC.slice(s,en)===t)) return {err:"same", ranges};
+  // a change accepted after this answer arrived (the AI never saw it) must not be overwritten
+  const live=aiLiveRanges();
+  if(live.some(L=>L.e!==e && (Number(L.e.at)||0)>r.ts && ranges.some(g=>aiOverlap(g[0], g[1], L.pos, L.pos+L.len)))) return {err:"overlap", ranges};
+  return {ranges};
+}
+// does the edit span more than one text block (→ Review, no inline preview)?
+function aiIsMulti(e, plan){
+  if(e.kind==="section" || e.kind==="document") return true;
+  if(e.kind==="replaceAll") return false;
+  const old = plan && plan.ranges ? SRC.slice(plan.ranges[0][0], plan.ranges[0][1]) : (e.find || "");
+  return /\n/.test(old) || /\n/.test(e.text);
+}
+var aiCountMemo=new WeakMap();
+function aiDocChanges(e){
+  const c=aiCountMemo.get(e);
+  if(c && c.src===SRC) return c.n;
+  let t=e.text.replace(/\s+$/,""); if(/\n$/.test(SRC)) t+="\n";
+  const n=aiLineHunks(SRC, t).hunks.length;
+  aiCountMemo.set(e, {src:SRC, n});
+  return n;
+}
+function aiScopeLabel(a, e, plan){
+  const ok=plan && plan.ranges;
+  let lbl;
+  if(e.kind==="quote") lbl="Quoted passage";
+  else if(e.kind==="replaceAll"){ const n=ok ? plan.ranges.length : aiFindAll(SRC, e.find).length; lbl=`Everywhere · ${n} place${n===1?"":"s"}`; }
+  else if(e.kind==="section") lbl="Section: "+e.section;
+  else if(e.kind==="document"){ const n=aiDocChanges(e); lbl=`Whole document · ${n} change${n===1?"":"s"}`; }
+  else {
+    const q=a.quote||"", qs=ok ? aiLocate(a) : null;
+    if(ok){
+      const [s,en]=plan.ranges[0];
+      if(qs!=null && qs>=s && qs+q.length<=en) lbl = en-s>q.length ? "Sentence · paragraph" : "Quoted passage";
+      else if(q && aiPlainText(e.find)===q) lbl="Quoted passage";
+      else lbl=`Elsewhere · line ~${aiLineOf(s)}`;
+    } else lbl = q && e.find.includes(q) ? (e.find.length>q.length ? "Sentence · paragraph" : "Quoted passage") : "Elsewhere";
+    if(!e.text) lbl+=" · deletion";
+    else if(e.text.length>e.find.length && (e.text.startsWith(e.find.trimEnd()) || e.text.endsWith(e.find.trimStart()))) lbl+=" · addition";
+  }
+  return lbl;
+}
+
+/* ---------- accept / reject ---------- */
+function aiMissedMsg(why){
+  return why==="overlap" ? "Overlaps an accepted change"
+    : why==="conflict" ? "Overlaps another edit in this batch"
+    : why==="same" ? "Already in the document"
+    : why==="format" ? "Not word for word in the Markdown (the passage spans formatting)"
+    : "Text changed since the AI answered";
+}
+function aiMissedToast(missed){
+  if(!missed.length) return;
+  if(missed.length===1){
+    const t=missed[0].e.text;
+    toast(aiMissedMsg(missed[0].why)+" — apply it by hand", { action:{ label:"Copy", run:()=>copyText(t).then(k=>toast(k?"Suggested text copied":"Couldn't copy, try again")) }, ms:9000 });
+  } else toast(`Couldn't apply ${missed.length} edits — see their notes`, { ms:6000 });
+}
+// items: [{a, r, e, ranges?}] — `ranges` overrides the located target (Review → accepted hunks only)
+function aiAccept(items){
   if(mdeIsOpen()){ toast("Finish editing first: Done applies, Discard reverts"); return; }
   const plans=[], missed=[];
-  pairs.forEach(({a,r})=>{
-    if(!annById(a.id) || !a.replies.includes(r) || !aiIsPending(r)) return;
-    const s=aiLocate(a);
-    if(s==null) missed.push({a,r}); else plans.push({a, r, start:s, end:s+a.quote.length});
+  items.forEach(it=>{
+    const {a,r,e}=it;
+    if(!a || !annById(a.id) || !a.replies.includes(r) || !aiEdits(r).includes(e) || e.state) return;
+    const p = it.ranges ? {ranges:it.ranges} : aiPlanEdit(a,r,e);
+    if(p.err){ missed.push({a,r,e,why:p.err}); return; }
+    plans.push({ a, r, e, ranges:p.ranges,
+      lo:Math.min(...p.ranges.map(x=>x[0])), hi:Math.max(...p.ranges.map(x=>x[1])) });
   });
-  plans.sort((x,y)=>x.start-y.start);
-  const ok=[]; let lastEnd=-1;
-  plans.forEach(p=>{ if(p.start>=lastEnd){ ok.push(p); lastEnd=p.end; } else missed.push(p); });
-  if(!ok.length){
-    if(missed.length===1){
-      const t=missed[0].r.suggest;
-      toast("This passage isn't in the Markdown word for word (it may span formatting) — edit it by hand", { action:{ label:"Copy", run:()=>copyText(t).then(k=>toast(k?"Suggested text copied":"Couldn't copy, try again")) }, ms:9000 });
-    } else if(missed.length) toast(`Couldn't place ${missed.length} suggestions in the Markdown — apply them by hand`, { ms:6000 });
-    return;
-  }
+  // overlapping edits in one batch: the narrower one wins
+  plans.sort((x,y)=>(x.hi-x.lo)-(y.hi-y.lo) || x.lo-y.lo);
+  const ok=[];
+  plans.forEach(p=>{
+    if(ok.some(q=>q.ranges.some(u=>p.ranges.some(v=>aiOverlap(u[0],u[1],v[0],v[1]))))) missed.push({...p, why:"conflict"});
+    else ok.push(p);
+  });
+  if(!ok.length){ aiMissedToast(missed); return; }
   const before={ src:SRC, ann:JSON.parse(JSON.stringify(ANN)), activeId };
+  const live=aiLiveRanges().map(L=>({...L})), fresh=[];
+  const cuts=[];
+  ok.forEach(p=>p.ranges.forEach(g=>cuts.push({p, s:g[0], en:g[1], t:g[2]})));
+  cuts.sort((x,y)=>y.s-x.s);
   let s=SRC;
-  for(let k=ok.length-1;k>=0;k--){ const p=ok[k]; s=s.slice(0,p.start)+p.r.suggest+s.slice(p.end); }
-  SRC=s;
-  ok.forEach(p=>{
-    p.r.suggestState="accepted";
-    const nq=aiPlainText(p.r.suggest);
-    if(nq){ p.a.quote=nq; delete p.a.start; }
+  cuts.forEach(c=>{
+    const st=c.s, t=c.t; let en=c.en;
+    if(t===""){   // a deletion leaves no double space / extra blank lines behind
+      if(s[st-1]===" " && s[en]===" ") en++;
+      else if((st===0 || /\n\n$/.test(s.slice(Math.max(0,st-2), st))) && s[en]==="\n") while(s[en]==="\n") en++;
+    }
+    s=s.slice(0,st)+t+s.slice(en);
+    const d=t.length-(en-st);
+    live.concat(fresh).forEach(L=>{
+      if(L.dead) return;
+      if(L.pos>=en) L.pos+=d;
+      else if(aiOverlap(L.pos, L.pos+L.len, st, en)) L.dead=true;
+    });
+    if(c.p.e.kind!=="document") fresh.push({e:c.p.e, pos:st, len:t.length});
   });
+  SRC=s;
+  const now=Date.now(), byE=new Map();
+  live.concat(fresh).forEach(L=>{
+    if(!byE.has(L.e)) byE.set(L.e, []);
+    if(!L.dead) byE.get(L.e).push([L.pos, L.len, aiHash36(s.substr(L.pos, L.len))]);
+  });
+  live.forEach(L=>{ L.e.rs=byE.get(L.e); });
+  ok.forEach(p=>{
+    const e=p.e;
+    e.state="accepted"; e.at=now;
+    if(byE.has(e)) e.rs=byE.get(e); else delete e.rs;
+    // the note follows a rewrite of exactly its passage; wider edits re-anchor (or go "Unanchored")
+    const exact = e.kind==="quote" || (e.kind==="replace" && p.a.quote && aiPlainText(e.find)===p.a.quote);
+    if(exact){ const nq=aiPlainText(e.text); if(nq){ p.a.quote=nq; delete p.a.start; } }
+  });
+  aiVer++;
   const reopen = POP.mode==="card" ? POP.id : null;
   if(POP.mode) closePop(true);
   renderDoc();
   if(reopen && annById(reopen)) openCard(reopen);
-  const lost=ok.filter(p=>annById(p.a.id) && annById(p.a.id).resolved===false).length;
+  const lost=new Set(ok.filter(p=>annById(p.a.id) && annById(p.a.id).resolved===false).map(p=>p.a.id)).size;
   const n=ok.length;
   let msg = n===1 ? "Suggested edit applied" : `Applied ${n} suggested edits`;
-  if(missed.length) msg+=` · ${missed.length} couldn't be placed`;
+  if(missed.length) msg+=` · ${missed.length} couldn't be applied`;
   if(lost) msg+=` · ${lost} note${lost===1?"":"s"} lost ${lost===1?"its":"their"} highlight`;
   toast(msg, { action:{ label:"Undo", run:()=>{
     if(mdeIsOpen()){ toast("Finish editing first"); return; }
     if(POP.mode) closePop(true);
-    SRC=before.src; ANN=before.ann; activeId=before.activeId;
+    SRC=before.src; ANN=before.ann; activeId=before.activeId; aiVer++;
     renderDoc(); toast(n===1 ? "Edit undone" : "Edits undone");
   } }, ms:8000 });
 }
-function aiReject(pairs){
+function aiReject(items){
   const done=[];
-  pairs.forEach(({a,r})=>{ if(aiIsPending(r)){ r.suggestState="rejected"; done.push(r); } });
+  items.forEach(({e})=>{ if(e && !e.state){ e.state="rejected"; done.push(e); } });
   if(!done.length) return;
-  libFp="";            // the content fingerprint ignores suggestState → force the autosave to write
+  aiVer++; libFp="";
   aiRefreshViews();
   const n=done.length;
   toast(n===1 ? "Suggestion rejected" : `Rejected ${n} suggestions`, { action:{ label:"Undo", run:()=>{
-    done.forEach(r=>{ if(r.suggestState==="rejected") delete r.suggestState; });
-    libFp=""; aiRefreshViews();
+    done.forEach(e=>{ if(e.state==="rejected") delete e.state; });
+    aiVer++; libFp=""; aiRefreshViews();
   } } });
+}
+
+/* ---------- Review changes (sections, whole document, multi-block edits) ---------- */
+var aiRev=null, aiRevReturn=null;
+function aiOpenReview(a, r, e){
+  if(mdeIsOpen()){ toast("Finish editing first"); return; }
+  const p=aiPlanEdit(a,r,e);
+  if(p.err){ aiMissedToast([{a,r,e,why:p.err}]); return; }
+  if(p.ranges.length!==1){ aiAccept([{a,r,e}]); return; }
+  const [s,en,t]=p.ranges[0], old=SRC.slice(s,en);
+  const {ops,hunks}=aiLineHunks(old, t);
+  if(!hunks.length){ toast("No changes to review"); return; }
+  const ae=document.activeElement;
+  aiRevReturn = ae && ae.isConnected ? ae : null;
+  aiRev={ a, r, e, s, en, src:SRC, ops, hunks, dec:hunks.map(()=>null), line:aiLineOf(s), scope:aiScopeLabel(a, e, p) };
+  closeOverlays();
+  openOverlay($("#ovAiReview"));
+  aiRenderReview();
+  setTimeout(()=>{ const b=$("#aiRevList button"); if(b) focusWithoutScrolling(b); },0);
+}
+function aiRenderReview(){
+  const R=aiRev; if(!R) return;
+  const list=$("#aiRevList"), n=R.hunks.length, num=ANN.indexOf(R.a)+1;
+  const keep=list.scrollTop;
+  list.textContent="";
+  $("#aiRevHint").textContent=`Note ${num} · ${R.scope} · ${n} change${n===1?"":"s"}. Accept or reject each change, then apply.`;
+  R.hunks.forEach((h,i)=>{
+    const d=R.dec[i];
+    const box=document.createElement("div");
+    box.className="ai-rev-h"+(d===true ? " is-acc" : d===false ? " is-rej" : "");
+    const head=document.createElement("div"); head.className="ai-rev-hh";
+    const l=document.createElement("span"); l.className="ai-rev-l";
+    l.textContent=`Change ${i+1} · line ~${R.line+h.line-1}`;
+    const acc=document.createElement("button"); acc.type="button"; acc.className="mini ai-rev-acc"; acc.textContent="Accept";
+    const rej=document.createElement("button"); rej.type="button"; rej.className="mini ai-rev-rej"; rej.textContent="Reject";
+    acc.setAttribute("aria-pressed", d===true ? "true" : "false"); acc.setAttribute("aria-label", `Accept change ${i+1}`);
+    rej.setAttribute("aria-pressed", d===false ? "true" : "false"); rej.setAttribute("aria-label", `Reject change ${i+1}`);
+    acc.addEventListener("click",()=>{ R.dec[i] = d===true ? null : true; aiRenderReview(); focusWithoutScrolling(list.querySelectorAll(".ai-rev-acc")[i]); });
+    rej.addEventListener("click",()=>{ R.dec[i] = d===false ? null : false; aiRenderReview(); focusWithoutScrolling(list.querySelectorAll(".ai-rev-rej")[i]); });
+    head.append(l, acc, rej);
+    box.append(head, aiDiffEl(h.del.join("\n"), h.ins.join("\n")));
+    list.appendChild(box);
+  });
+  list.scrollTop=keep;
+  const nAcc=R.dec.filter(x=>x===true).length, nDec=R.dec.filter(x=>x!==null).length;
+  const ap=$("#aiRevApply");
+  ap.disabled=!nDec;
+  ap.textContent = !nDec ? "Apply" : nAcc ? `Apply ${nAcc} of ${n} change${n===1?"":"s"}` : "Reject this edit";
+}
+function aiReviewDone(mode){
+  const R=aiRev; if(!R) return;
+  if(SRC!==R.src){ closeOverlays(); toast("The document changed — open Review again"); return; }
+  const dec = mode==="all" ? R.dec.map(()=>true) : mode==="none" ? R.dec.map(()=>false) : R.dec;
+  const any=dec.some(x=>x===true);
+  closeOverlays();
+  if(!any){ aiReject([{a:R.a, r:R.r, e:R.e}]); return; }
+  aiAccept([{ a:R.a, r:R.r, e:R.e, ranges:[[R.s, R.en, aiApplyHunks(R.ops, dec)]] }]);
+}
+(function aiWireReview(){
+  const ov=$("#ovAiReview"); if(!ov) return;
+  ov.querySelector(".panel-foot").addEventListener("click",e=>{
+    const b=e.target.closest("[data-rv]"); if(!b) return;
+    aiReviewDone(b.dataset.rv==="acceptall" ? "all" : b.dataset.rv==="rejectall" ? "none" : "picked");
+  });
+  aiTrapFocus(ov, ()=>{ const r=aiRevReturn; aiRevReturn=null; return r; }, ()=>{ aiRev=null; });
+})();
+
+/* ---------- AI reply display (called from w5ReplyEl) ---------- */
+const AI_COPY_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>';
+function aiDecorateReply(el, a, r, pre, scope){
+  el.classList.add("ai-reply");
+  const body=el.querySelector("."+pre+"-rtext");
+  if(body){
+    body.classList.add("ai-md");
+    body.innerHTML=mdToHtml(r.text);
+    body.querySelectorAll("a[href]").forEach(x=>{ x.target="_blank"; x.rel="noopener noreferrer"; });
+  }
+  const time=el.querySelector("."+pre+"-time");
+  if(time){
+    const tag=document.createElement("span");
+    tag.className="ai-tag"; tag.textContent = r.round>1 ? `AI · round ${r.round}` : "AI";
+    tag.title="Answer pasted from your AI assistant";
+    time.insertBefore(tag, time.firstChild);
+  }
+  const acts=el.querySelector(".w5-racts");
+  if(acts){
+    const c=document.createElement("button");
+    c.type="button"; c.className="w5-rbtn ai-rcopy"; c.title="Copy answer"; c.setAttribute("aria-label","Copy AI answer");
+    c.innerHTML=AI_COPY_SVG;
+    c.addEventListener("click",e=>{ e.stopPropagation(); copyText(r.text).then(ok=>toast(ok?"Answer copied":"Couldn't copy, try again")); });
+    acts.insertBefore(c, acts.firstChild);
+  }
+  const ed=aiEdits(r);
+  if(ed.length){
+    const box=document.createElement("div"); box.className="ai-edits";
+    ed.forEach((e,i)=>box.appendChild(aiEditEl(a, r, e, i, ed.length)));
+    if(time) el.insertBefore(box, time); else el.appendChild(box);
+  }
+  // earlier AI answers fold into one line ("Earlier AI answer · round n")
+  const latest=aiLatest(a);
+  if(latest && latest!==r){
+    const open=aiOldOpen.has(r.id);
+    el.classList.add("ai-old");
+    el.classList.toggle("is-collapsed", !open);
+    const tg=document.createElement("button");
+    tg.type="button"; tg.className="ai-old-tg"; tg.setAttribute("aria-expanded", open ? "true" : "false");
+    tg.innerHTML='<span class="ai-old-car" aria-hidden="true">▸</span><span class="ai-old-txt"></span>';
+    tg.querySelector(".ai-old-txt").textContent=`Earlier AI answer · round ${r.round||1}`;
+    tg.addEventListener("click",e=>{
+      e.stopPropagation();
+      const o=!aiOldOpen.has(r.id);
+      if(o) aiOldOpen.add(r.id); else aiOldOpen.delete(r.id);
+      el.classList.toggle("is-collapsed", !o); tg.setAttribute("aria-expanded", o ? "true" : "false");
+      try{ w5Relayout(scope); }catch(err){}
+    });
+    el.insertBefore(tg, el.firstChild);
+  }
+}
+function aiEditEl(a, r, e, i, n){
+  const st=e.state, plan = st ? null : aiPlanEdit(a, r, e);
+  const err = plan && plan.err;
+  const box=document.createElement("div");
+  box.className="ai-sugg"+(st ? " is-"+st : "")+(err ? " is-stale" : "");
+  const head=document.createElement("div"); head.className="ai-sugg-head";
+  const lbl=document.createElement("span"); lbl.className="ai-sugg-lbl";
+  lbl.textContent=(n>1 ? `Edit ${i+1} · ` : "")+aiScopeLabel(a, e, plan);
+  head.appendChild(lbl);
+  if(st){
+    const s=document.createElement("span"); s.className="ai-sugg-state";
+    s.textContent = st==="accepted" ? "✓ Accepted" : st==="rejected" ? "Rejected" : "Superseded";
+    if(st==="superseded") s.title="A newer AI answer replaced this suggestion";
+    head.appendChild(s);
+  }
+  box.appendChild(head);
+  // the diff (Markdown source)
+  if(st==="accepted" && e.kind==="quote"){ const d=document.createElement("div"); d.className="ai-diff"; d.textContent=e.text; box.appendChild(d); }
+  else if(st==="accepted" && (e.kind==="section" || e.kind==="document")){ /* the label says it all */ }
+  else if(e.kind==="document" || e.kind==="section"){
+    if(plan && plan.ranges) box.appendChild(aiHunksEl(SRC.slice(plan.ranges[0][0], plan.ranges[0][1]), plan.ranges[0][2], 6));
+    else { const d=document.createElement("div"); d.className="ai-diff"; d.textContent=e.text; box.appendChild(d); }
+  } else {
+    const old = e.kind==="quote" ? (plan && plan.ranges ? SRC.slice(plan.ranges[0][0], plan.ranges[0][1]) : (a.quote||"")) : e.find;
+    box.appendChild(aiDiffEl(old, e.text));
+  }
+  if(err){
+    const m=document.createElement("div"); m.className="ai-sugg-msg"; m.textContent="⚠ "+aiMissedMsg(err);
+    box.appendChild(m);
+  }
+  if(st==="accepted" || st==="rejected") return box;
+  const num=ANN.indexOf(a)+1, row=document.createElement("div"); row.className="ai-sugg-acts";
+  const btn=(cls, text, aria, fn)=>{
+    const b=document.createElement("button"); b.type="button"; b.className="mini "+cls; b.textContent=text;
+    b.setAttribute("aria-label", aria);
+    b.addEventListener("click",ev=>{ ev.stopPropagation(); fn(); });
+    row.appendChild(b);
+  };
+  const copy=()=>btn("ai-scopy", "Copy", "Copy suggested text", ()=>copyText(e.text).then(ok=>toast(ok?"Suggested text copied":"Couldn't copy, try again")));
+  if(st==="superseded"){ copy(); box.appendChild(row); return box; }
+  if(err){
+    copy();
+    btn("ai-reject", "Dismiss", `Dismiss suggested edit for note ${num}`, ()=>aiReject([{a,r,e}]));
+  } else {
+    const multi=aiIsMulti(e, plan), big = e.kind==="section" || e.kind==="document";
+    if(big) btn("save ai-review", "Review…", `Review suggested changes for note ${num}`, ()=>aiOpenReview(a,r,e));
+    else btn("save ai-accept", "Accept", `Accept suggested edit for note ${num}`, ()=>aiAccept([{a,r,e}]));
+    btn("ai-reject", "Reject", `Reject suggested edit for note ${num}`, ()=>aiReject([{a,r,e}]));
+    if(multi && !big) btn("ai-review", "Review…", `Review suggested changes for note ${num}`, ()=>aiOpenReview(a,r,e));
+    copy();
+  }
+  box.appendChild(row);
+  return box;
 }
 
 /* ---------- suggestions shown inline in the document ---------- */
@@ -6788,41 +7446,139 @@ function aiSetShowSugg(on){
   aiSyncInline(true);
 }
 function aiMarks(id){ return [...doc.querySelectorAll("mark.hl")].filter(m=>m.dataset.id===id); }
-function aiSyncInline(force){
-  const pend=aiPendingList();
-  const items = aiShowSugg ? pend.filter(x=>aiMarks(x.a.id).length) : [];
-  const sig=items.map(x=>x.a.id+"\u0001"+x.r.id+"\u0001"+x.r.suggest+"\u0001"+(ANN.indexOf(x.a)+1)).join("\u0002");
-  const present=doc.querySelectorAll(".ai-sugg-new").length;
-  if(force || sig!==aiInlineSig || present!==items.length){
-    aiInlineSig=sig;
-    const had=present>0;
-    doc.querySelectorAll(".ai-sugg-new").forEach(n=>n.remove());
-    doc.querySelectorAll("mark.hl.ai-sugg-old").forEach(m=>m.classList.remove("ai-sugg-old"));
-    items.forEach(({a,r})=>{
-      const marks=aiMarks(a.id);
+// source ranges of the top-level blocks of #doc (marked's lexer, one token per rendered block);
+// null when the two don't line up (raw HTML, CRLF…)
+function aiTopBlocks(){
+  if(!window.marked || !marked.lexer || /\r/.test(SRC)) return null;
+  let toks; try{ toks=marked.lexer(SRC); }catch(e){ return null; }
+  const els=[...doc.children].filter(el=>!el.classList.contains("ai-inl"));
+  const out=[]; let pos=0, k=0;
+  for(const t of toks){
+    const s=pos; pos+=String(t.raw||"").length;
+    if(t.type==="space" || t.type==="def") continue;
+    out.push({ s, e:pos, el:els[k++] });
+  }
+  if(k!==els.length || pos>SRC.length || out.some(x=>!x.el)) return null;
+  return out;
+}
+// a single text block that can be previewed inline: one line, not in code, inside one table cell
+function aiSingleBlock(s, en, old, t){
+  if(/\n/.test(old) || /\n/.test(t)) return false;
+  if(aiFences(SRC).some(f=>s<f[1] && en>f[0])) return false;
+  const ls=SRC.lastIndexOf("\n", s-1)+1;
+  if(/^\s*\|/.test(SRC.slice(ls, ls+40)) && (/\|/.test(old) || /\|/.test(t))) return false;
+  return true;
+}
+// the rendered block (p, li, td…) holding a source range, located by its rendered text
+function aiBlockAt(s, old, tops){
+  let root=doc;
+  if(tops){ const b=tops.find(x=>s>=x.s && s<x.e); if(b) root=b.el; }
+  const plain=aiPlainText(old); if(!plain) return null;
+  const nodes=anchorNodes(root), T=nodes.map(n=>n.nodeValue).join("");
+  let idx=T.indexOf(plain);
+  if(idx<0) return null;
+  if(root===doc){   // several matches in the whole document → the one nearest the source position
+    const want=s/Math.max(1,SRC.length)*T.length; let j=idx;
+    while((j=T.indexOf(plain, j+1))!==-1) if(Math.abs(j-want)<Math.abs(idx-want)) idx=j;
+  }
+  const end=idx+plain.length; let acc=0, node=null;
+  for(const n of nodes){ if(acc+n.nodeValue.length>=end){ node=n; break; } acc+=n.nodeValue.length; }
+  const blk=node && node.parentElement && node.parentElement.closest("p,li,td,th,h1,h2,h3,h4,h5,h6,dd,dt,blockquote");
+  return blk && doc.contains(blk) && !inNoAnchor(blk) ? blk : null;
+}
+function aiInlineActs(x, num){
+  const {a,r,e}=x;
+  const box=document.createElement("span"); box.className="ai-sn-acts";
+  box.innerHTML='<button type="button" class="ai-sn-ok">✓</button><button type="button" class="ai-sn-no">✕</button>';
+  const okB=box.querySelector(".ai-sn-ok"), noB=box.querySelector(".ai-sn-no");
+  okB.title="Accept"; okB.setAttribute("aria-label",`Accept suggested edit for note ${num}`);
+  noB.title="Reject"; noB.setAttribute("aria-label",`Reject suggested edit for note ${num}`);
+  okB.addEventListener("click",ev=>{ ev.preventDefault(); ev.stopPropagation(); aiAccept([{a,r,e}]); });
+  noB.addEventListener("click",ev=>{ ev.preventDefault(); ev.stopPropagation(); aiReject([{a,r,e}]); });
+  return box;
+}
+function aiPlaceInline(x, tops){
+  const {a, e, plan}=x, num=ANN.indexOf(a)+1;
+  const [s, en, t]=plan.ranges[0], old=SRC.slice(s, en);
+  const marks=aiMarks(a.id), qs=aiLocate(a), q=a.quote||"";
+  const onQuote = qs!=null && s===qs && en===qs+q.length;
+  if(plan.ranges.length===1 && !aiIsMulti(e, plan) && aiSingleBlock(s, en, old, t)){
+    const ins=document.createElement("ins");
+    ins.className="no-anchor ai-inl ai-sugg-new"; ins.dataset.id=a.id;
+    const txt=document.createElement("span"); txt.className="ai-sn-txt";
+    if((e.kind==="quote" || onQuote) && marks.length){
+      // the quoted words are struck through in place, the new text follows them
       marks.forEach(m=>m.classList.add("ai-sugg-old"));
-      const num=ANN.indexOf(a)+1;
-      const ins=document.createElement("ins");
-      ins.className="no-anchor ai-sugg-new"; ins.dataset.id=a.id;
-      ins.innerHTML='<span class="ai-sn-txt"></span><span class="ai-sn-acts"><button type="button" class="ai-sn-ok">✓</button><button type="button" class="ai-sn-no">✕</button></span>';
-      ins.querySelector(".ai-sn-txt").textContent=aiPlainText(r.suggest) || r.suggest;
-      const okB=ins.querySelector(".ai-sn-ok"), noB=ins.querySelector(".ai-sn-no");
-      okB.title="Accept"; okB.setAttribute("aria-label",`Accept suggested edit for note ${num}`);
-      noB.title="Reject"; noB.setAttribute("aria-label",`Reject suggested edit for note ${num}`);
-      okB.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); aiAccept([{a,r}]); });
-      noB.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); aiReject([{a,r}]); });
+      txt.textContent=aiPlainText(t) || t;
+      ins.append(txt, aiInlineActs(x, num));
       const last=marks[marks.length-1];
       last.parentNode.insertBefore(ins, last.nextSibling);
+      return true;
+    }
+    // a wider / other passage: a small word diff after the quote (or at the end of its block)
+    ins.classList.add("ai-sugg-diff");
+    txt.classList.add("ai-diff");
+    aiDiffInto(txt, aiPlainText(old) || old, aiPlainText(t) || t, 3);
+    ins.append(txt, aiInlineActs(x, num));
+    if(qs!=null && qs>=s && qs+q.length<=en && marks.length){
+      const last=marks[marks.length-1];
+      last.parentNode.insertBefore(ins, last.nextSibling);
+      return true;
+    }
+    const blk=aiBlockAt(s, old, tops);
+    if(blk){ blk.appendChild(ins); return true; }
+  }
+  // multi-block (or not placeable inline): purple bar on the blocks + "Suggested change · Review"
+  const anc=document.createElement("div");
+  anc.className="no-anchor ai-inl ai-mb-anchor"; anc.dataset.id=a.id;
+  const chip=document.createElement("button"); chip.type="button"; chip.className="ai-mb-chip";
+  const many=e.kind==="replaceAll";
+  chip.textContent = e.kind==="document" ? `Note ${num} · Suggested rewrite · Review` : many ? `Note ${num} · Suggested change · ${plan.ranges.length} places` : `Note ${num} · Suggested change · Review`;
+  chip.title = many ? "Show the note" : "Review the suggested changes";
+  chip.addEventListener("click",ev=>{ ev.preventDefault(); ev.stopPropagation(); if(many) focusCard(a.id, true); else aiOpenReview(a, x.r, e); });
+  anc.appendChild(chip);
+  if(e.kind==="document"){ anc.classList.add("is-top"); doc.insertBefore(anc, doc.firstChild); return true; }
+  let blocks=[];
+  if(tops) blocks=tops.filter(b=>plan.ranges.some(g=>aiOverlap(b.s, b.e, g[0], g[1]) || (g[0]===g[1] && g[0]>=b.s && g[0]<b.e))).map(b=>b.el);
+  if(!blocks.length && marks.length){   // fall back to the note's own block
+    let b=marks[0]; while(b.parentElement && b.parentElement!==doc) b=b.parentElement;
+    if(b.parentElement===doc) blocks=[b];
+  }
+  if(!blocks.length) return false;
+  blocks.forEach(b=>b.classList.add("ai-mb-blk"));
+  doc.insertBefore(anc, blocks[0]);
+  return true;
+}
+function aiSyncInline(force){
+  const pend=aiPendingList();
+  const items=[];
+  if(aiShowSugg) pend.forEach(x=>{ const plan=aiPlanEdit(x.a, x.r, x.e); if(!plan.err) items.push({...x, plan}); });
+  const sig=items.map(x=>[x.a.id, x.r.id, x.r.edits.indexOf(x.e), x.e.text, x.e.find||"", x.e.section||"", ANN.indexOf(x.a)+1, x.plan.ranges[0][0]].join("\u0001")).join("\u0002")+"\u0003"+SRC.length;
+  const present=doc.querySelectorAll(".ai-inl").length;
+  if(force || sig!==aiInlineSig || (items.length && !present) || (!items.length && present)){
+    aiInlineSig=sig;
+    const had=present>0;
+    doc.querySelectorAll(".ai-inl").forEach(n=>n.remove());
+    doc.querySelectorAll("mark.hl.ai-sugg-old").forEach(m=>m.classList.remove("ai-sugg-old"));
+    doc.querySelectorAll(".ai-mb-blk").forEach(b=>b.classList.remove("ai-mb-blk"));
+    let tops=null;
+    if(items.length) tops=aiTopBlocks();
+    // one preview per place: the newest edit wins when two target the same passage
+    const seen=new Set();
+    items.slice().reverse().forEach(x=>{
+      const key=x.plan.ranges[0][0]+":"+x.plan.ranges[0][1];
+      if(seen.has(key)) return; seen.add(key);
+      try{ aiPlaceInline(x, tops); }catch(err){ console.error(err); }
     });
     if(had || items.length){ try{ layoutCards(); }catch(e){} }
   }
-  aiUpdateBar(items, pend);
+  aiUpdateBar(pend);
 }
-function aiUpdateBar(items, pend){
+function aiUpdateBar(pend){
   const bar=$("#aiSuggBar");
   if(bar){
-    bar.hidden = !(aiShowSugg && items.length) || isHomeMode;
-    bar.querySelector(".ai-sb-n").textContent = `${items.length} suggestion${items.length===1?"":"s"}`;
+    bar.hidden = !(aiShowSugg && pend.length) || isHomeMode;
+    bar.querySelector(".ai-sb-n").textContent = `${pend.length} suggestion${pend.length===1?"":"s"}`;
   }
   const tg=w5Bar && w5Bar.querySelector('[data-aw="sugg"]');
   if(tg){
@@ -6851,7 +7607,7 @@ function aiOnRendered(){ aiInlineSig=null; aiSyncInline(true); }
   const bar=$("#aiSuggBar");
   bar.addEventListener("click",e=>{
     const b=e.target.closest("[data-sb]"); if(!b) return;
-    const list=aiPendingList().filter(x=>aiMarks(x.a.id).length);
+    const list=aiPendingList();
     if(b.dataset.sb==="accept") aiAccept(list);
     else if(b.dataset.sb==="reject") aiReject(list);
     else aiSetShowSugg(false);
