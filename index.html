@@ -1960,6 +1960,17 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
   .try-tip.flash{ animation:none; }
 }
 </style>
+
+<style>
+/* ==[AI CSS]== A — AI answers, suggestions, export options */
+/* ==[/AI CSS]== */
+/* ==[LINKS CSS]== B — in-document links */
+/* ==[/LINKS CSS]== */
+/* ==[LAYOUT CSS]== C — header, panes, outline, documents panel */
+/* ==[/LAYOUT CSS]== */
+/* ==[TABLES CSS]== D — table column/row sizing */
+/* ==[/TABLES CSS]== */
+</style>
 </head>
 <body>
 
@@ -2138,6 +2149,15 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
 
 <div id="dropzone"><div class="dz-box">Drop a .md file — or a .mdeverything.json backup — to open it</div></div>
 <div id="toast"></div>
+
+<!-- ==[AI HTML]== A — AI answers, suggestions, export options -->
+<!-- ==[/AI HTML]== -->
+<!-- ==[LINKS HTML]== B — in-document links -->
+<!-- ==[/LINKS HTML]== -->
+<!-- ==[LAYOUT HTML]== C — header, panes, outline, documents panel -->
+<!-- ==[/LAYOUT HTML]== -->
+<!-- ==[TABLES HTML]== D — table column/row sizing -->
+<!-- ==[/TABLES HTML]== -->
 
 <script>
 "use strict";
@@ -5687,10 +5707,27 @@ $("#bHeroDemo").addEventListener("click", () => {
 });
 /* ==[/HOME]== */
 
+/* ==[AI]== A — AI answers, suggestions, export options */
+/* ==[/AI]== */
+
+/* ==[LINKS]== B — in-document links */
+/* ==[/LINKS]== */
+
+/* ==[LAYOUT]== C — header, panes, outline, documents panel */
+/* ==[/LAYOUT]== */
+
+/* ==[TABLES]== D — table column/row sizing */
+/* ==[/TABLES]== */
+
 // called at the end of every full renderDoc(); feature errors must not break rendering
+// Each workstream defines its hook (aiOnRendered / linksOnRendered / layoutOnRendered / tablesOnRendered).
 function onDocRendered(){
   try{ buildOutline(); }catch(e){ console.error(e); }
   try{ refreshGutter(); }catch(e){ console.error(e); }
+  try{ if(typeof tablesOnRendered === "function") tablesOnRendered(); }catch(e){ console.error(e); }
+  try{ if(typeof linksOnRendered === "function") linksOnRendered(); }catch(e){ console.error(e); }
+  try{ if(typeof aiOnRendered === "function") aiOnRendered(); }catch(e){ console.error(e); }
+  try{ if(typeof layoutOnRendered === "function") layoutOnRendered(); }catch(e){ console.error(e); }
 }
 
 (async function(){
