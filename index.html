@@ -2441,6 +2441,45 @@ body.tbl-dragging.tbl-row.tbl-limit, body.tbl-dragging.tbl-row.tbl-limit *{ curs
 body.editing .tbl-layer{ display:none!important; }
 @media print{ .tbl-layer{ display:none!important; } }
 /* ==[/TABLES CSS]== */
+
+/* ==[HOW3]== "How it works" in 3 steps with mini mock-ups of the real UI (tokens only) */
+#home .how3{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr 1.25fr; gap:14px; align-items:stretch; }
+#home .h3-step{ position:relative; display:flex; flex-direction:column; padding:14px 16px 18px; border:1px solid var(--line);
+  border-radius:16px; background:var(--surface); box-shadow:var(--shadow-sm); min-width:0; }
+#home .h3-step.h3-key{ border-color:color-mix(in srgb, var(--ins, #7c3aed) 35%, var(--line)); }
+#home .h3-num{ position:absolute; top:10px; left:10px; z-index:1; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:var(--accent); color:var(--accent-contrast); font-size:12px; font-weight:800; }
+#home .h3-step > b{ font-size:16px; color:var(--ink); margin-top:12px; }
+#home .h3-step > p{ margin:4px 0 0; font-size:13.5px; line-height:1.5; color:var(--ink-soft); }
+#home .h3-step del, #home .h3-mock del{ color:var(--del, var(--danger)); text-decoration:line-through; }
+#home .h3-step ins, #home .h3-mock ins{ color:var(--ins, #7c3aed); background:var(--ins-bg, color-mix(in srgb, #7c3aed 12%, transparent)); text-decoration:none; border-radius:3px; padding:0 2px; font-weight:600; }
+#home .h3-mock{ display:flex; flex-direction:column; gap:8px; padding:30px 12px 12px; border-radius:12px; background:var(--surface-2);
+  font-size:12px; line-height:1.45; color:var(--ink); min-height:150px; overflow:hidden; }
+#home .mk-doc p{ margin:0; padding:10px 12px; border-radius:8px; background:var(--paper); border:1px solid var(--line); font-family:var(--font-doc); font-size:12.5px; }
+#home .mk-hl{ background:var(--hl, #fde68a); color:inherit; border-radius:3px; padding:0 2px; box-shadow:inset 0 -2px 0 color-mix(in srgb, var(--hl-border, #f59e0b) 70%, transparent); }
+#home .mk-badge{ display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; margin-left:3px; border-radius:50%; flex:none;
+  background:var(--accent); color:var(--accent-contrast); font:700 9px/1 var(--font-ui); vertical-align:super; }
+#home .mk-card{ display:flex; gap:7px; align-items:flex-start; padding:8px 10px; border-radius:9px; border:1px solid var(--accent); background:var(--surface); }
+#home .mk-card .mk-badge{ margin:1px 0 0; vertical-align:baseline; }
+#home .mk-export{ margin:0; padding:10px 12px; border-radius:8px; background:var(--paper); border:1px solid var(--line); white-space:pre-wrap;
+  font:11.5px/1.5 var(--font-mono); color:var(--ink-soft); }
+#home .mk-k{ color:var(--accent); font-weight:600; }
+#home .mk-q{ color:var(--ink); }
+#home .mk-ai{ display:flex; gap:6px; flex-wrap:wrap; }
+#home .mk-ai span{ padding:3px 8px; border-radius:999px; background:var(--surface); border:1px solid var(--line); font-size:11px; font-weight:600; color:var(--ink-soft); }
+#home .mk-reply{ margin-left:14px; padding:8px 10px; border-left:3px solid var(--accent); border-radius:0 9px 9px 0; background:var(--surface); }
+#home .mk-tag{ display:inline-block; padding:1px 5px; margin-right:3px; border-radius:4px; background:var(--accent-soft); color:var(--accent-soft-fg); font:700 9.5px/1.4 var(--font-ui); }
+#home .mk-diff{ margin-top:6px; padding:6px 8px; border-radius:7px; background:var(--surface-2); font-size:12.5px; }
+#home .mk-btns{ display:flex; gap:6px; margin-top:7px; }
+#home .mk-btn{ padding:3px 10px; border-radius:6px; border:1px solid var(--line-strong); font-size:11px; font-weight:600; color:var(--ink-soft); }
+#home .mk-btn.on{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); }
+#home .h3-loop{ display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:6px; margin:14px 0 0; padding:10px 14px;
+  border:1px dashed var(--line-strong); border-radius:12px; font-size:13.5px; color:var(--ink-soft); text-align:center; }
+#home .h3-loop b{ color:var(--ink); }
+#home .h3-loop-ico{ color:var(--accent); font-size:17px; font-weight:700; }
+@media (max-width:1000px){ #home .how3{ grid-template-columns:1fr 1fr; } #home .h3-key{ grid-column:1 / -1; } }
+@media (max-width:560px){ #home .how3{ grid-template-columns:1fr; } #home .h3-key{ grid-column:auto; } #home .h3-mock{ min-height:0; } }
+/* ==[/HOW3]== */
 </style>
 </head>
 <body>
@@ -2514,105 +2553,46 @@ body.editing .tbl-layer{ display:none!important; }
     </button>
   </div>
 
-  <h3 class="home-h" id="howTitle">How it works <span class="home-h-sub">one loop, as many rounds as you need</span></h3>
-  <ol class="howto how-loop" aria-label="How mdeverything works: a 7-step loop">
-    <li class="how-step">
-      <span class="how-num" aria-hidden="true">1</span>
-      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
-        <rect class="mv-card" x="38" y="5" width="44" height="54" rx="5"/><path class="mv-stroke" d="M70 5v11h12"/>
-        <rect class="mv-line" x="45" y="23" width="30" height="3" rx="1.5"/><rect class="mv-line" x="45" y="30" width="24" height="3" rx="1.5"/><rect class="mv-line" x="45" y="37" width="28" height="3" rx="1.5"/>
-        <rect class="mv-accent" x="44" y="45" width="22" height="9" rx="4.5"/><text class="mv-tag" x="55" y="51.6" text-anchor="middle">.md</text>
-      </svg>
-      <b>Open or paste your .md</b>
-      <p>Drop a file, open it, or paste the text.</p>
-      <span class="how-arr" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="arr-shaft" d="M3 12h16"/><path d="M13 6l6 6-6 6"/></svg></span>
+  <h3 class="home-h" id="howTitle">How it works</h3>
+  <ol class="how3" aria-labelledby="howTitle">
+    <li class="h3-step">
+      <div class="h3-mock" aria-hidden="true">
+        <div class="mk-doc">
+          <p>Free for teams of up to 5 people. <mark class="mk-hl">Billing starts on day one<span class="mk-badge">1</span></mark> for everyone else.</p>
+        </div>
+        <div class="mk-card"><span class="mk-badge">1</span><span>Is that right? I thought there's a 14-day trial.</span></div>
+      </div>
+      <span class="h3-num" aria-hidden="true">1</span>
+      <b>Point at the words</b>
+      <p>Open or paste any Markdown file. Select a passage and write what should change.</p>
     </li>
-    <li class="how-step">
-      <span class="how-num" aria-hidden="true">2</span>
-      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
-        <rect class="mv-line" x="8" y="12" width="66" height="4" rx="2"/>
-        <rect class="mv-hl" x="6" y="21" width="52" height="11" rx="3"/><rect class="mv-ink" x="10" y="24.5" width="44" height="4" rx="2"/>
-        <rect class="mv-line" x="8" y="38" width="60" height="4" rx="2"/><rect class="mv-line" x="8" y="47" width="44" height="4" rx="2"/>
-        <rect class="mv-card" x="78" y="14" width="34" height="24" rx="7"/><path class="mv-stroke" d="M89 26h12M95 20v12"/>
-      </svg>
-      <b>Comment on exact passages</b>
-      <p>Select the words, press Enter, write your note.</p>
-      <span class="how-arr" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="arr-shaft" d="M3 12h16"/><path d="M13 6l6 6-6 6"/></svg></span>
+    <li class="h3-step">
+      <div class="h3-mock" aria-hidden="true">
+        <pre class="mk-export"><span class="mk-k">[1] {#n3f9a}</span> Location: section “Pricing”
+Quoted passage:
+<span class="mk-q">"Billing starts on day one"</span>
+Note: Is that right? I thought…</pre>
+        <div class="mk-ai"><span>ChatGPT</span><span>Claude</span><span>Gemini</span></div>
+      </div>
+      <span class="h3-num" aria-hidden="true">2</span>
+      <b>Send it to your AI</b>
+      <p>Export copies the whole document with every comment pinned to its passage. Paste it into ChatGPT, Claude or Gemini.</p>
     </li>
-    <li class="how-step">
-      <span class="how-num" aria-hidden="true">3</span>
-      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
-        <rect class="mv-card" x="8" y="8" width="36" height="48" rx="5"/>
-        <rect class="mv-line" x="14" y="16" width="24" height="3" rx="1.5"/><rect class="mv-hl" x="13" y="23" width="26" height="8" rx="2"/>
-        <rect class="mv-line" x="14" y="36" width="20" height="3" rx="1.5"/><rect class="mv-line" x="14" y="43" width="23" height="3" rx="1.5"/>
-        <path class="mv-stroke" d="M50 32h12M57 27l5 5-5 5"/>
-        <rect class="mv-soft" x="69" y="9" width="14" height="18" rx="3"/><rect class="mv-card" x="74" y="13" width="14" height="18" rx="3"/>
-        <path class="mv-stroke" d="M104 10v13M99 18l5 5 5-5M97 29h14"/>
-        <rect class="mv-accent" x="69" y="40" width="43" height="13" rx="6.5"/><text class="mv-tag" x="90.5" y="48.6" text-anchor="middle">for AI</text>
-      </svg>
-      <b>Export for AI</b>
-      <p>Copy it, or download it as a .md file.</p>
-      <span class="how-arr" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="arr-shaft" d="M3 12h16"/><path d="M13 6l6 6-6 6"/></svg></span>
-    </li>
-    <li class="how-step">
-      <span class="how-num" aria-hidden="true">4</span>
-      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
-        <rect class="mv-card" x="8" y="6" width="60" height="24" rx="8"/>
-        <rect class="mv-line" x="15" y="13" width="42" height="3" rx="1.5"/><rect class="mv-line" x="15" y="20" width="30" height="3" rx="1.5"/>
-        <rect class="mv-accent" x="42" y="33" width="70" height="26" rx="8"/>
-        <text class="mv-tag" x="53" y="48.6" text-anchor="middle">AI</text>
-        <rect class="mv-onacc" x="62" y="40" width="42" height="3" rx="1.5"/><rect class="mv-onacc" x="62" y="48" width="30" height="3" rx="1.5"/>
-      </svg>
-      <b>Your AI answers</b>
-      <p>In ChatGPT, Claude or Gemini — whichever you use.</p>
-      <span class="how-arr" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="arr-shaft" d="M3 12h16"/><path d="M13 6l6 6-6 6"/></svg></span>
-    </li>
-    <li class="how-step">
-      <span class="how-num" aria-hidden="true">5</span>
-      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
-        <path class="mv-stroke" d="M6 38h11M13 34l4 4-4 4"/>
-        <rect class="mv-card" x="24" y="5" width="88" height="54" rx="7"/>
-        <circle class="mv-ink" cx="34" cy="15" r="4"/><rect class="mv-ink" x="42" y="13" width="44" height="4" rx="2"/>
-        <rect class="mv-line" x="34" y="23" width="62" height="3" rx="1.5"/>
-        <rect class="mv-bar" x="34" y="31" width="2" height="22" rx="1"/>
-        <circle class="mv-accent" cx="45" cy="38" r="5"/>
-        <rect class="mv-line" x="54" y="36" width="44" height="3" rx="1.5"/><rect class="mv-line" x="54" y="44" width="32" height="3" rx="1.5"/>
-      </svg>
-      <b>Paste the answer back</b>
-      <p>Each answer lands under its own comment.</p>
-      <span class="how-arr" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="arr-shaft" d="M3 12h16"/><path d="M13 6l6 6-6 6"/></svg></span>
-    </li>
-    <li class="how-step">
-      <span class="how-num" aria-hidden="true">6</span>
-      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
-        <rect class="mv-line" x="8" y="14" width="14" height="4" rx="2"/>
-        <text class="mv-old" x="26" y="19.5">old</text><path class="mv-strike" d="M25 16.2h19"/>
-        <rect class="mv-ins-bg" x="48" y="8" width="27" height="15" rx="3"/><text class="mv-new" x="51" y="19.5">new</text>
-        <rect class="mv-line" x="80" y="14" width="32" height="4" rx="2"/>
-        <rect class="mv-accent" x="28" y="34" width="30" height="20" rx="6"/><path class="mv-onstroke" d="M37 44l4 4 8-8"/>
-        <rect class="mv-card" x="63" y="34" width="30" height="20" rx="6"/><path class="mv-xstroke" d="M73.5 39.5l9 9M82.5 39.5l-9 9"/>
-      </svg>
-      <b>Review old → new</b>
-      <p>Accept or reject each suggested edit.</p>
-      <span class="how-arr" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="arr-shaft" d="M3 12h16"/><path d="M13 6l6 6-6 6"/></svg></span>
-    </li>
-    <li class="how-step">
-      <span class="how-num" aria-hidden="true">7</span>
-      <svg class="how-vis" viewBox="0 0 120 64" aria-hidden="true">
-        <rect class="mv-card" x="8" y="6" width="66" height="52" rx="6"/>
-        <g class="mv-faded"><circle class="mv-bar" cx="17" cy="16" r="3.5"/><rect class="mv-line" x="24" y="14.5" width="40" height="3" rx="1.5"/>
-        <circle class="mv-bar" cx="17" cy="27" r="3.5"/><rect class="mv-line" x="24" y="25.5" width="32" height="3" rx="1.5"/></g>
-        <circle class="mv-accent" cx="17" cy="38" r="3.5"/><rect class="mv-ink" x="24" y="36.5" width="42" height="3" rx="1.5"/>
-        <circle class="mv-accent" cx="17" cy="49" r="3.5"/><rect class="mv-ink" x="24" y="47.5" width="30" height="3" rx="1.5"/>
-        <path class="mv-stroke" d="M83.7 25.5A13 13 0 1 0 106.3 25.5M106.3 30.8V25.5l5 2.3"/>
-        <text class="mv-num" x="95" y="35.5" text-anchor="middle">2</text>
-      </svg>
-      <b>Next round</b>
-      <p>Only new and follow-up comments are sent again.</p>
-      <span class="how-arr how-arr-loop" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="arr-shaft" d="M3 12h16"/><path d="M13 6l6 6-6 6"/></svg></span>
-      <span class="how-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v4.5h-4.5"/></svg><span><b>Back to step 2</b> <span class="how-back-sub">Repeat until the document reads right.</span></span></span>
+    <li class="h3-step h3-key">
+      <div class="h3-mock" aria-hidden="true">
+        <div class="mk-card"><span class="mk-badge">1</span><span>Is that right? I thought there's a 14-day trial.</span></div>
+        <div class="mk-reply">
+          <span class="mk-tag">AI</span> Yes — paid plans start with a 14-day trial.
+          <div class="mk-diff">Billing starts <del>on day one</del> <ins>after a 14-day free trial</ins></div>
+          <div class="mk-btns"><span class="mk-btn on">Accept</span><span class="mk-btn">Reject</span></div>
+        </div>
+      </div>
+      <span class="h3-num" aria-hidden="true">3</span>
+      <b>Review answers in place</b>
+      <p>Paste the reply back. Each answer lands under its own comment, with suggested edits shown as <del>old</del> → <ins>new</ins>. Accept or reject each one.</p>
     </li>
   </ol>
+  <p class="h3-loop"><span class="h3-loop-ico" aria-hidden="true">↻</span> <b>Not done yet?</b> Reply or add comments and export again — only new and follow-up comments get answered.</p>
   <p class="how-foot"><span>Works with ChatGPT, Claude, Gemini — no account, nothing uploaded</span><button class="btn linklike" id="bHowDemo" type="button">Explore the demo below <span aria-hidden="true">↓</span></button></p>
 
   <div class="why" role="list" aria-label="Why mdeverything">
@@ -3224,6 +3204,9 @@ function renderCards(){
   const refocusEdit=w5EditFocused(railInner);   // a reply being edited in place keeps its focus too
   railInner.innerHTML="";
   ANN.forEach((a,i)=>{
+    // a brand-new note still being written in the inline composer has no panel card yet:
+    // the card appears once the note is saved (avoids showing the same draft twice)
+    if(!a.note && POP.mode==="composer" && POP.isNew && POP.id===a.id) return;
     const c=document.createElement("div");
     const isExample = isSampleMode && String(a.id).startsWith("demo");
     c.className="card"+(a.id===activeId?" on":"")+(isExample?" example":"");
@@ -3717,6 +3700,10 @@ function openComposer(id,{isNew=false}={}){
   if(!doc.querySelector(`mark.hl[data-id="${id}"]`)) return;
   clearTimeout(POP.armT);
   POP.mode="composer"; POP.id=id; POP.isNew=!!isNew; POP.anchor=null;
+  if(isNew && !a.note){   // the draft lives only in this composer until saved (no duplicate panel card)
+    const dc=[...railInner.children].find(x=>x.dataset.id===id);
+    if(dc){ dc.remove(); try{ doLayout(); }catch(e){} }
+  }
   hlPop.dataset.mode="composer"; 
   hlPop.setAttribute("aria-label", isNew?"New note":"Edit note");
   hlPop.innerHTML=
@@ -3755,6 +3742,10 @@ function finishComposer(how){
   const keep = how==="save" || (how==="commit" && text);
   if(keep && (text || !isNew)){
     a.note=text; renderCards(); save();
+    if(isNew){   // the panel card appears now → a short highlight shows where it landed
+      const c=[...railInner.children].find(x=>x.dataset.id===id);
+      if(c && typeof animateNewCard==="function") animateNewCard(c);
+    }
     if(isNew || how==="commit"){ closePop(); pulseMark(id); } else openCard(id);
     return;
   }
@@ -4287,6 +4278,8 @@ Turn on **Let AI reply back into mdeverything** in the Export menu and your assi
 | Markdown editor | Formatting toolbar, shortcuts and a live preview | \`✎ Edit\`, then \`Ctrl + Enter\` to apply |
 | Reading themes | Paper, Sepia (cream paper with a bookish serif) and Night | Theme switch in the top bar |
 | Autosave | Your document and comments are still here when you come back | Automatic |
+| AI answers in place | Paste the AI's reply back: each answer lands under its comment, edits shown as old → new | **Paste AI answer** in the Export menu |
+| Follow-up rounds | Export again and only new and follow-up comments get answered | Automatic |
 
 ### 3.1 What your AI receives
 
@@ -6367,7 +6360,7 @@ $("#bHeroDemo").addEventListener("click", () => {
 var AI_FMT_KEY="marginalia:exportfmt:v1", AI_SUGG_KEY="marginalia:aisugg:v1";
 function aiLSGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function aiLSSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-var aiFmt = aiLSGet(AI_FMT_KEY)==="1";
+var aiFmt = aiLSGet(AI_FMT_KEY)!=="0";   // on by default: answers can be pasted back under each comment
 var aiShowSugg = aiLSGet(AI_SUGG_KEY)!=="0";     // inline suggestions are on unless the user hid them
 var aiInlineSig = null;
 var aiOldOpen = new Set();                         // earlier AI answers the user expanded (reply ids)
