@@ -2009,6 +2009,7 @@ body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8
 .ai-diff{ line-height:1.55; white-space:pre-wrap; overflow-wrap:anywhere; color:var(--ink); }
 .ai-diff del.ai-del{ color:var(--del); text-decoration:line-through; text-decoration-thickness:1px; }
 .ai-diff ins.ai-ins{ color:var(--ins); background:var(--ins-bg); text-decoration:none; border-radius:3px; font-weight:550; }
+.ai-diff del.ai-del + ins.ai-ins, .ai-diff ins.ai-ins + del.ai-del{ margin-left:.3em; }
 .ai-sugg-acts{ display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
 .ai-sugg-acts .mini{ padding:4px 10px; font-size:12px; border:1px solid var(--line-strong); }
 .ai-sugg-acts .mini.save{ border-color:var(--accent); }
@@ -5307,7 +5308,7 @@ function libHash(str){
 function libContentFp(src, ann, view){
   const vk = tblViewKey(view);             // table sizes (tables workstream); "" when none → old fingerprints unchanged
   const list = (ann || []).map(a => [String(a.id), a.quote, a.note || "", a.prefix || "", a.suffix || "",
-    (a.replies || []).map(r => [r.text, r.ts])]);
+    (a.replies || []).map(r => r.suggestState ? [r.text, r.ts, r.suggestState] : [r.text, r.ts])]);
   list.sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0);
   const notes = JSON.stringify(list);
   return `${src.length}.${libHash(src)}.${notes.length}.${libHash(notes)}` + (vk ? `.${vk.length}.${libHash(vk)}` : "");
