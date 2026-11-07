@@ -2007,6 +2007,67 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
 /* ==[LAYOUT CSS]== C — header, panes, outline, documents panel */
 /* ==[/LAYOUT CSS]== */
 /* ==[TABLES CSS]== D — table column/row sizing */
+/* Sized tables: fixed layout from <col> widths; cells may wrap anywhere so a
+   column can shrink below its longest word (rows grow — nothing is clipped). */
+#doc .table-scroll table.tbl-sized{ table-layout:fixed; min-width:0; max-width:none; }
+#doc .table-scroll:has(> table.tbl-sized){ width:fit-content; max-width:100%; }   /* outline hugs a narrowed table */
+#doc .table-scroll table.tbl-sized th,
+#doc .table-scroll table.tbl-sized td{ min-width:0; overflow-wrap:anywhere; }
+#doc .table-scroll table.tbl-sized td code,
+#doc .table-scroll table.tbl-sized th code{ white-space:normal; overflow-wrap:anywhere; }
+#doc .table-scroll table.tbl-sized img{ max-width:100%; }
+#doc .table-scroll table.tbl-compact th,
+#doc .table-scroll table.tbl-compact td{ padding:4px 8px; }
+#doc .table-scroll table.tbl-comfortable th,
+#doc .table-scroll table.tbl-comfortable td{ padding:13px 16px; }
+#doc .table-scroll:focus{ outline:none; }
+#doc .table-scroll:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+/* Overlay layer (outside #doc): resize handles + options button for the active table */
+.tbl-layer{ position:absolute; top:0; left:0; width:0; height:0; z-index:25; --tbl-hit:8px; }
+.tbl-layer[hidden]{ display:none; }
+@media (pointer:coarse){ .tbl-layer{ --tbl-hit:16px; } }
+.tbl-h{ position:absolute; touch-action:none; outline:none; }
+.tbl-h.col{ width:var(--tbl-hit); margin-left:calc(var(--tbl-hit) / -2); cursor:col-resize; }
+.tbl-h.row{ height:var(--tbl-hit); margin-top:calc(var(--tbl-hit) / -2); cursor:row-resize; }
+.tbl-h::after{ content:""; position:absolute; background:var(--accent); opacity:0; transition:opacity .12s; border-radius:2px; }
+.tbl-h.col::after{ left:50%; width:2px; margin-left:-1px; top:0; bottom:0; }
+.tbl-h.row::after{ top:50%; height:2px; margin-top:-1px; left:0; right:0; }
+/* a small grip in the header row makes the column handles discoverable */
+.tbl-h.col::before{ content:""; position:absolute; left:50%; width:4px; margin-left:-2px; height:16px;
+  top:calc(var(--tbl-head, 32px) / 2 - 8px); border-radius:3px; background:var(--line-strong); transition:background .12s; }
+.tbl-h:hover::after,.tbl-h:focus-visible::after,.tbl-h.drag::after{ opacity:1; }
+.tbl-h.col:hover::before,.tbl-h.col:focus-visible::before,.tbl-h.col.drag::before{ background:var(--accent); }
+.tbl-h:focus-visible{ background:var(--accent-soft); border-radius:3px; }
+.tbl-h.limit::after{ background:var(--danger); opacity:1; }
+.tbl-h.row.limit{ cursor:s-resize; }
+.tbl-h.off{ visibility:hidden; }
+body.tbl-dragging, body.tbl-dragging *{ user-select:none!important; -webkit-user-select:none!important; }
+body.tbl-dragging.tbl-col, body.tbl-dragging.tbl-col *{ cursor:col-resize!important; }
+body.tbl-dragging.tbl-row, body.tbl-dragging.tbl-row *{ cursor:row-resize!important; }
+body.tbl-dragging.tbl-row.tbl-limit, body.tbl-dragging.tbl-row.tbl-limit *{ cursor:s-resize!important; }
+
+.tbl-more{ position:absolute; width:28px; height:22px; padding:0; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:7px; background:var(--surface); color:var(--ink-soft);
+  font:600 15px/1 var(--font-ui); letter-spacing:1px; cursor:pointer; box-shadow:var(--shadow-sm);
+  opacity:.92; transition:opacity .12s, color .12s, border-color .12s; }
+.tbl-more:hover,.tbl-more[aria-expanded="true"]{ opacity:1; color:var(--ink); border-color:var(--line-strong); }
+.tbl-more:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.tbl-menu{ position:absolute; min-width:180px; padding:4px; display:flex; flex-direction:column; gap:1px;
+  background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow-md);
+  font:13px/1.3 var(--font-ui); color:var(--ink); }
+.tbl-menu[hidden]{ display:none; }
+.tbl-menu button{ display:flex; align-items:center; gap:8px; text-align:left; border:none; background:none;
+  color:inherit; font:inherit; padding:7px 10px; border-radius:7px; cursor:pointer; }
+.tbl-menu button:hover,.tbl-menu button:focus-visible{ background:var(--surface-2); outline:none; }
+.tbl-menu .tbl-check{ width:14px; flex:none; color:var(--accent); font-weight:700; }
+.tbl-menu .tbl-sep{ height:1px; margin:4px 6px; background:var(--line); }
+.tbl-menu .tbl-label{ padding:5px 10px 2px; font-size:11px; font-weight:600; letter-spacing:.04em;
+  text-transform:uppercase; color:var(--ink-faint); }
+@media (prefers-reduced-motion:reduce){ .tbl-h::after,.tbl-h::before,.tbl-more{ transition:none; } }
+@media (max-width:768px){ .tbl-layer{ display:none!important; } }
+body.editing .tbl-layer{ display:none!important; }
+@media print{ .tbl-layer{ display:none!important; } }
 /* ==[/TABLES CSS]== */
 </style>
 </head>
@@ -2197,6 +2258,7 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
 <!-- ==[LAYOUT HTML]== C — header, panes, outline, documents panel -->
 <!-- ==[/LAYOUT HTML]== -->
 <!-- ==[TABLES HTML]== D — table column/row sizing -->
+<div id="tblLayer" class="tbl-layer" hidden></div>
 <!-- ==[/TABLES HTML]== -->
 
 <script>
@@ -2282,7 +2344,7 @@ function hasRealNotes(){ return ANN.length && !(isHomeMode && isSampleMode); }
 function loadSample({home=false}={}){
   saveFlush();                       // a pending autosave belongs to the document being left
   SRC=SAMPLE;
-  ANN=sampleAnnotations();
+  ANN=sampleAnnotations(); VIEW={tables:{}};
   activeId=null;
   setWorkspaceMode({home, sample:true});
   renderDoc();
@@ -3413,7 +3475,7 @@ function buildBundle(incDoc){
    Uses the host's window.storage when present (e.g. inside a Claude artifact),
    otherwise the browser's localStorage — so documents and comments survive reloads. */
 // current document as stored per library doc (marginalia:doc:<id>)
-function snapshot(){ return JSON.stringify({src:SRC,ann:ANN,currentFileName}); }
+function snapshot(){ return JSON.stringify({src:SRC,ann:ANN,currentFileName,view:VIEW}); }
 async function storeGet(key){
   if(window.storage){ const r=await window.storage.get(key,false); return (r&&r.value)||null; }
   try{ return localStorage.getItem(key); }catch(e){ return null; }
@@ -3516,7 +3578,7 @@ function savePrepare(){
     LIB.docs.push(meta); LIB.activeId=meta.id; libFp="";
     if(currentFileName!==meta.name){ currentFileName=meta.name; updateWorkspaceChrome(); }
   }
-  const fp=libContentFp(SRC, ANN);
+  const fp=libContentFp(SRC, ANN, VIEW);
   if(fp===libFp) return null;        // a re-render without real changes keeps updatedAt
   libFp=fp;                          // optimistic; reset if the write fails so the next change retries
   return { meta, fp, now, promoted, payload:snapshot(), notes:ANN.length, chars:SRC.length };
@@ -3587,7 +3649,7 @@ document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("mousedown",
 async function loadNewDoc(src, name){
   if(libFull()){ libFullToast(); return false; }
   libLeaveCurrent();
-  SRC=src; ANN=[]; activeId=null; LIB.activeId=null; libFp="";
+  SRC=src; ANN=[]; VIEW={tables:{}}; activeId=null; LIB.activeId=null; libFp="";
   setWorkspaceMode({home:false, sample:false, fileName:name || "Markdown document"});
   renderDoc();                       // save() files it as a new library document (unique name)
   window.scrollTo(0,0);
@@ -4930,12 +4992,13 @@ function libHash(str){
   for(let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193); }
   return (h >>> 0).toString(36);
 }
-function libContentFp(src, ann){
+function libContentFp(src, ann, view){
+  const vk = tblViewKey(view);             // table sizes (tables workstream); "" when none → old fingerprints unchanged
   const list = (ann || []).map(a => [String(a.id), a.quote, a.note || "", a.prefix || "", a.suffix || "",
     (a.replies || []).map(r => [r.text, r.ts])]);
   list.sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0);
   const notes = JSON.stringify(list);
-  return `${src.length}.${libHash(src)}.${notes.length}.${libHash(notes)}`;
+  return `${src.length}.${libHash(src)}.${notes.length}.${libHash(notes)}` + (vk ? `.${vk.length}.${libHash(vk)}` : "");
 }
 function libTime(v, fallback){
   const t = typeof v === "number" ? v : Date.parse(v);
@@ -5025,10 +5088,10 @@ function libCleanAnn(list){
   return (Array.isArray(list) ? list : []).filter(a => a && a.id && typeof a.quote === "string").map(normAnn);
 }
 function libApplyDoc(meta, d){
-  SRC = d.src; ANN = libCleanAnn(d.ann); activeId = null;
+  SRC = d.src; ANN = libCleanAnn(d.ann); VIEW = tblNormView(d.view); activeId = null;
   LIB.activeId = meta.id;
   isHomeMode = false; isSampleMode = false; currentFileName = meta.name;
-  libFp = libContentFp(SRC, ANN);
+  libFp = libContentFp(SRC, ANN, VIEW);
 }
 async function libLoad(){
   const idx = libParseIndex(await storeGet(LIB_KEY));
@@ -6060,6 +6123,504 @@ document.addEventListener("keydown", e=>{
 /* ==[/LAYOUT]== */
 
 /* ==[TABLES]== D — table column/row sizing */
+/* Per-document view state, saved in the document snapshot (`view`).
+   VIEW.tables["<index of the table in #doc>"] = { cols, rows, w:[px|null…], h:[px|null…], density }.
+   Anchoring safety: nothing here touches text nodes or puts elements inside table rows/cells.
+   Sizes live on a <colgroup> (first child of the table, built via DOM) and on tr inline height
+   (a min-height in table layout — content always wins, so text never clips). The handles and the
+   options button sit in an overlay layer outside #doc. */
+let VIEW = { tables:{} };
+const TBL_MIN_W = 60, TBL_STEP = 16;
+const tblNarrowMQ = window.matchMedia("(max-width:768px)");
+const tblLayer = $("#tblLayer");
+let TBL = null;            // active table: { wrap, table, idx, cols, rows, more, menu, colH:[], rowH:[] }
+let tblDrag = null;        // pointer drag in progress
+let tblRAF = 0, tblRAFLayout = false, tblHoverRAF = 0, tblLastTarget = null, tblRO = null;
+
+function tblNum(x){ return (typeof x === "number" && isFinite(x) && x > 0) ? Math.round(x) : null; }
+function tblNormView(v){
+  const out = { tables:{} };
+  const t = v && v.tables;
+  if(!t || typeof t !== "object") return out;
+  for(const k of Object.keys(t)){
+    const e = t[k];
+    if(!/^\d+$/.test(k) || !e || typeof e !== "object") continue;
+    const n = {};
+    if(Number.isInteger(e.cols)) n.cols = e.cols;
+    if(Number.isInteger(e.rows)) n.rows = e.rows;
+    if(Array.isArray(e.w) && e.w.some(tblNum)) n.w = e.w.map(tblNum);
+    if(Array.isArray(e.h) && e.h.some(tblNum)) n.h = e.h.map(tblNum);
+    if(e.density === "compact" || e.density === "comfortable") n.density = e.density;
+    if(n.w || n.h || n.density) out.tables[k] = n;
+  }
+  return out;
+}
+// for libContentFp: "" when nothing is customised (keeps old fingerprints stable)
+function tblViewKey(view){
+  return view && view.tables && Object.keys(view.tables).length ? JSON.stringify(view.tables) : "";
+}
+
+function tblTables(){ return [...doc.querySelectorAll(".table-scroll > table")]; }
+// column count from the first row; tables with spanning cells are left alone (-1)
+function tblCols(t){
+  const r = t.rows[0]; if(!r) return 0;
+  for(const c of r.cells) if(c.colSpan > 1) return -1;
+  return r.cells.length;
+}
+function tblEnabled(){ return !document.body.classList.contains("editing") && !tblNarrowMQ.matches; }
+// drop empty parts of an entry; true when the entry was removed
+function tblTidy(idx){
+  const e = VIEW.tables[idx]; if(!e) return true;
+  if(e.w && !e.w.some(Boolean)) delete e.w;
+  if(e.h && !e.h.some(Boolean)) delete e.h;
+  if(!e.w && !e.h && !e.density){ delete VIEW.tables[idx]; return true; }
+  return false;
+}
+function tblEntry(idx, t){
+  let e = VIEW.tables[idx];
+  if(!e) e = VIEW.tables[idx] = { cols:tblCols(t), rows:t.rows.length };
+  return e;
+}
+
+/* ---------- applying sizes (writes, then one batch of reads, then writes) ---------- */
+function tblColgroup(t){ const c = t.firstElementChild; return c && c.classList.contains("tbl-cg") ? c : null; }
+function tblUnsize(t){
+  const cg = tblColgroup(t); if(cg) cg.remove();
+  t.classList.remove("tbl-sized"); t.style.width = "";
+}
+function tblSize(t, px){
+  let cg = tblColgroup(t);
+  if(!cg){ cg = document.createElement("colgroup"); cg.className = "tbl-cg"; t.insertBefore(cg, t.firstChild); }
+  while(cg.children.length > px.length) cg.lastElementChild.remove();
+  while(cg.children.length < px.length) cg.appendChild(document.createElement("col"));
+  let sum = 0;
+  px.forEach((w, i) => { cg.children[i].style.width = w + "px"; sum += w; });
+  t.style.width = sum + "px";
+  t.classList.add("tbl-sized");
+}
+function tblMeasureCols(t){
+  const r = t.rows[0];
+  return r ? [...r.cells].map(c => Math.max(TBL_MIN_W, Math.round(c.getBoundingClientRect().width))) : [];
+}
+// pairs: [[table, entry|undefined], …]. Auto (null) columns get their natural width, measured with
+// the table unsized, so a partly reset table keeps the other columns where the user put them.
+function tblSync(pairs){
+  const jobs = [];
+  for(const [t, e] of pairs){
+    t.classList.toggle("tbl-compact", !!e && e.density === "compact");
+    t.classList.toggle("tbl-comfortable", !!e && e.density === "comfortable");
+    [...t.rows].forEach((tr, r) => { const h = e && e.h && e.h[r]; tr.style.height = h ? h + "px" : ""; });
+    const w = e && e.w && e.w.some(Boolean) ? e.w : null;
+    if(!w){ tblUnsize(t); continue; }
+    if(w.some(x => !x)) tblUnsize(t);
+    jobs.push([t, w]);
+  }
+  const nat = jobs.map(([t, w]) => w.some(x => !x) ? tblMeasureCols(t) : null);   // reads
+  jobs.forEach(([t, w], k) => tblSize(t, w.map((x, i) => x || (nat[k] && nat[k][i]) || TBL_MIN_W)));
+}
+
+/* ---------- after every full render ---------- */
+function tablesOnRendered(){
+  tblDeactivate();                         // the old table elements are gone
+  const tables = tblTables();
+  let changed = false;
+  for(const k of Object.keys(VIEW.tables)) if(+k >= tables.length){ delete VIEW.tables[k]; changed = true; }
+  const pairs = [];
+  tables.forEach((t, i) => {
+    const wrap = t.parentElement;
+    if(!wrap.hasAttribute("tabindex")){     // keyboard access to the scroll region + its handles
+      wrap.tabIndex = 0; wrap.setAttribute("role", "region"); wrap.setAttribute("aria-label", `Table ${i + 1}`);
+    }
+    const e = VIEW.tables[i]; if(!e) return;
+    const cols = tblCols(t), rows = t.rows.length;
+    if(cols <= 0){ delete VIEW.tables[i]; changed = true; return; }
+    if(e.cols !== cols){ if(e.w){ delete e.w; changed = true; } e.cols = cols; }
+    if(e.rows !== rows){ if(e.h){ delete e.h; changed = true; } e.rows = rows; }
+    if(e.w && e.w.length !== cols){ delete e.w; changed = true; }
+    if(e.h && e.h.length !== rows){ delete e.h; changed = true; }
+    if(tblTidy(i)){ changed = true; return; }
+    pairs.push([t, e]);
+  });
+  if(pairs.length){ tblSync(pairs); layoutCards(); }
+  if(changed) save();
+}
+
+/* ---------- overlay ---------- */
+function tblEl(tag, cls, attrs){
+  const el = document.createElement(tag);
+  if(cls) el.className = cls;
+  if(attrs) for(const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+}
+function tblActivate(wrap){
+  if(TBL && TBL.wrap === wrap) return;
+  if(!tblEnabled() || tblDrag) return;
+  const table = wrap.querySelector(":scope > table");
+  if(!table) return;
+  const idx = tblTables().indexOf(table), cols = tblCols(table), rows = table.rows.length;
+  if(idx < 0 || cols <= 0) return;
+  tblDeactivate();
+  tblLayer.textContent = "";
+  const more = tblEl("button", "tbl-more", { type:"button", "aria-label":`Table ${idx + 1} options`, "aria-haspopup":"menu", "aria-expanded":"false", title:"Table options" });
+  more.textContent = "⋯";
+  const menu = tblEl("div", "tbl-menu", { role:"menu", "aria-label":"Table options" });
+  menu.hidden = true;
+  const colH = [], rowH = [];
+  for(let i = 0; i < cols; i++){
+    const h = tblEl("div", "tbl-h col", { role:"separator", "aria-orientation":"vertical", tabindex:"0",
+      "aria-label":`Column ${i + 1} width`, "aria-valuemin":String(TBL_MIN_W) });
+    h.dataset.i = i; colH.push(h);
+  }
+  for(let r = 0; r < rows; r++){
+    const h = tblEl("div", "tbl-h row", { role:"separator", "aria-orientation":"horizontal", tabindex:"0",
+      "aria-label":`Row ${r + 1} height` });
+    h.dataset.i = r; rowH.push(h);
+  }
+  tblLayer.append(...colH, ...rowH, more, menu);
+  TBL = { wrap, table, idx, cols, rows, more, menu, colH, rowH };
+  tblLayer.hidden = false;
+  if(window.ResizeObserver){
+    tblRO = new ResizeObserver(() => tblSchedule(false));
+    tblRO.observe(table); tblRO.observe(wrap);
+  }
+  tblPlace();
+}
+function tblDeactivate(){
+  if(tblDrag) tblEndDrag();
+  if(tblRO){ tblRO.disconnect(); tblRO = null; }
+  if(!TBL) return;
+  const hadFocus = tblLayer.contains(document.activeElement);
+  TBL = null;
+  tblLayer.hidden = true; tblLayer.textContent = "";
+  if(hadFocus) try{ document.activeElement && document.activeElement.blur(); }catch(e){}
+}
+function tblSchedule(layout){
+  if(layout) tblRAFLayout = true;
+  if(tblRAF) return;
+  tblRAF = requestAnimationFrame(() => {
+    tblRAF = 0;
+    const lay = tblRAFLayout; tblRAFLayout = false;
+    if(TBL){
+      if(!TBL.table.isConnected || !tblEnabled()) tblDeactivate();
+      else tblPlace();
+    }
+    if(lay) doLayout();
+  });
+}
+// one batch of reads, then writes
+function tblPlace(){
+  const T = TBL; if(!T) return;
+  const o = tblLayer.getBoundingClientRect();
+  const wr = T.wrap.getBoundingClientRect(), tr = T.table.getBoundingClientRect();
+  const first = T.table.rows[0];
+  const cellR = first ? [...first.cells].map(c => c.getBoundingClientRect()) : [];
+  const rowR = [...T.table.rows].map(r => r.getBoundingClientRect());
+  const vl = Math.max(wr.left, tr.left), vr = Math.min(wr.right, tr.right);
+  const head = rowR[0] ? rowR[0].height : 32;
+  const vals = cellR.map(r => Math.round(r.width));
+  // writes
+  T.colH.forEach((h, i) => {
+    const r = cellR[i];
+    const x = r ? r.right : -1e4;
+    const off = !r || x < vl - 2 || x > vr + 2;
+    h.classList.toggle("off", off);
+    h.style.left = (x - o.left) + "px";
+    h.style.top = (tr.top - o.top) + "px";
+    h.style.height = tr.height + "px";
+    h.style.setProperty("--tbl-head", head + "px");
+    if(r) h.setAttribute("aria-valuenow", String(vals[i]));
+  });
+  T.rowH.forEach((h, i) => {
+    const r = rowR[i];
+    h.classList.toggle("off", !r || vr - vl < 4);
+    if(!r) return;
+    h.style.left = (vl - o.left) + "px";
+    h.style.width = Math.max(0, vr - vl) + "px";
+    h.style.top = (r.bottom - o.top) + "px";
+    h.setAttribute("aria-valuenow", String(Math.round(r.height)));
+  });
+  const mx = vr - o.left - 34, my = tr.top - o.top + 5;
+  T.more.style.left = mx + "px"; T.more.style.top = my + "px";
+  T.menu.style.right = "auto";
+  T.menu.style.left = Math.max(0, mx + 28 - 180) + "px";
+  T.menu.style.top = (my + 26) + "px";
+}
+
+/* ---------- hover / focus decide the active table ---------- */
+function tblHoverCheck(){
+  tblHoverRAF = 0;
+  if(tblDrag || (TBL && !TBL.menu.hidden)) return;
+  const t = tblLastTarget;
+  if(!t || !t.closest){ return; }
+  if(tblLayer.contains(t)) return;
+  const wrap = t.closest(".table-scroll");
+  if(wrap && doc.contains(wrap)){ tblActivate(wrap); return; }
+  if(TBL && !TBL.wrap.contains(document.activeElement) && !tblLayer.contains(document.activeElement)) tblDeactivate();
+}
+document.addEventListener("pointermove", e => {
+  tblLastTarget = e.target;
+  if(!tblHoverRAF) tblHoverRAF = requestAnimationFrame(tblHoverCheck);
+}, { passive:true });
+document.addEventListener("pointerdown", e => {     // touch devices: activate on tap
+  tblLastTarget = e.target;
+  if(TBL && !TBL.menu.hidden && !TBL.menu.contains(e.target) && e.target !== TBL.more) tblCloseMenu(false);
+  tblHoverCheck();
+}, true);
+document.addEventListener("focusin", e => {
+  const t = e.target;
+  if(tblLayer.contains(t)) return;
+  const wrap = t.closest && t.closest(".table-scroll");
+  if(wrap && doc.contains(wrap)) tblActivate(wrap);
+  else if(TBL && !(tblLastTarget && (TBL.wrap.contains(tblLastTarget) || tblLayer.contains(tblLastTarget)))) tblDeactivate();
+});
+document.addEventListener("scroll", () => { if(TBL) tblSchedule(false); }, { capture:true, passive:true });
+window.addEventListener("resize", () => { if(TBL) tblSchedule(false); });
+tblNarrowMQ.addEventListener("change", () => { if(!tblEnabled()) tblDeactivate(); });
+new MutationObserver(() => { if(TBL && !tblEnabled()) tblDeactivate(); })
+  .observe(document.body, { attributes:true, attributeFilter:["class"] });
+
+/* ---------- keyboard: Tab goes wrapper → overlay → rest of the table ---------- */
+function tblFocusables(){
+  if(!TBL) return [];
+  const list = [TBL.more, ...TBL.colH, ...TBL.rowH].filter(el => !el.classList.contains("off"));
+  return list;
+}
+function tblFocusAfterWrap(wrap){
+  const sel = 'a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])';
+  const next = [...document.querySelectorAll(sel)].find(el => !tblLayer.contains(el) && el !== wrap && el.tabIndex >= 0 &&
+    (wrap.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) && el.getClientRects().length);
+  if(next) next.focus(); else document.activeElement.blur();
+}
+doc.addEventListener("keydown", e => {
+  if(e.key !== "Tab" || e.shiftKey || !TBL || e.target !== TBL.wrap) return;
+  const f = tblFocusables(); if(!f.length) return;
+  e.preventDefault(); f[0].focus();
+});
+tblLayer.addEventListener("keydown", e => {
+  if(!TBL) return;
+  if(e.key === "Tab" && !TBL.menu.contains(e.target)){
+    const f = tblFocusables(), i = f.indexOf(e.target);
+    if(e.shiftKey && i === 0){ e.preventDefault(); TBL.wrap.focus(); }
+    else if(!e.shiftKey && i === f.length - 1){ e.preventDefault(); const w = TBL.wrap; tblFocusAfterWrap(w); }
+    return;
+  }
+  const h = e.target.closest(".tbl-h");
+  if(!h) return;
+  const i = +h.dataset.i;
+  if(h.classList.contains("col")){
+    if(e.key === "ArrowLeft" || e.key === "ArrowRight"){
+      e.preventDefault();
+      const px = tblColStart(), w = Math.max(TBL_MIN_W, px[i] + (e.key === "ArrowRight" ? TBL_STEP : -TBL_STEP));
+      tblSetCol(i, w, px); tblCommit();
+    } else if(e.key === "Home"){ e.preventDefault(); tblResetCol(i); }
+  } else {
+    if(e.key === "ArrowUp" || e.key === "ArrowDown"){
+      e.preventDefault();
+      const tr = TBL.table.rows[i], nat = tblRowNatural(tr), cur = tr.getBoundingClientRect().height;
+      const want = cur + (e.key === "ArrowDown" ? TBL_STEP : -TBL_STEP);
+      const lim = tblSetRow(i, want, nat);
+      tblFlashLimit(h, lim); tblCommit();
+    } else if(e.key === "Home"){ e.preventDefault(); tblResetRow(i); }
+  }
+});
+function tblFlashLimit(h, on){
+  h.classList.toggle("limit", on);
+  clearTimeout(h._limT);
+  if(on) h._limT = setTimeout(() => h.classList.remove("limit"), 700);
+}
+
+/* ---------- column sizing ---------- */
+// current pixel widths of every column; freezes the table (fixed layout) on first use
+function tblColStart(){
+  const T = TBL, e = tblEntry(T.idx, T.table);
+  const cg = tblColgroup(T.table);
+  if(cg && T.table.classList.contains("tbl-sized")){
+    const px = [...cg.children].map(c => parseFloat(c.style.width) || TBL_MIN_W);
+    if(px.length === T.cols) return px;
+  }
+  const px = tblMeasureCols(T.table);                 // read
+  e.w = px.slice(); e.cols = T.cols; e.rows = T.rows;
+  tblSize(T.table, px);                               // write
+  return px;
+}
+function tblSetCol(i, w, px){
+  const T = TBL, e = tblEntry(T.idx, T.table);
+  px[i] = w;
+  e.w = px.slice();                                   // a resize freezes every column
+  e.cols = T.cols; e.rows = e.rows || T.rows;
+  const cg = tblColgroup(T.table);
+  cg.children[i].style.width = w + "px";
+  T.table.style.width = px.reduce((a, b) => a + b, 0) + "px";
+}
+function tblResetCol(i){
+  const T = TBL, e = VIEW.tables[T.idx];
+  if(!e || !e.w) return;
+  e.w[i] = null;
+  tblTidy(T.idx);
+  tblSync([[T.table, VIEW.tables[T.idx]]]);
+  tblCommit();
+}
+
+/* ---------- row sizing (hard floor at the row's content height) ---------- */
+function tblRowNatural(tr){
+  const prev = tr.style.height;
+  tr.style.height = "";
+  const h = tr.getBoundingClientRect().height;
+  tr.style.height = prev;
+  return h;
+}
+// returns true when clamped at the floor
+function tblSetRow(r, want, nat){
+  const T = TBL, e = tblEntry(T.idx, T.table);
+  const lim = want <= nat + 0.5;
+  const h = lim ? null : Math.round(want);
+  if(!e.h || e.h.length !== T.rows) e.h = new Array(T.rows).fill(null);
+  e.h[r] = h; e.rows = T.rows; e.cols = e.cols || T.cols;
+  T.table.rows[r].style.height = h ? h + "px" : "";
+  return lim;
+}
+function tblResetRow(r){
+  const T = TBL, e = VIEW.tables[T.idx];
+  if(!e || !e.h) return;
+  e.h[r] = null; T.table.rows[r].style.height = "";
+  tblCommit();
+}
+// after a finished change: tidy, persist, re-place the overlay and the comment cards
+function tblCommit(){
+  if(!TBL) return;
+  tblTidy(TBL.idx);
+  save();
+  tblSchedule(true);
+}
+
+/* ---------- pointer drags ---------- */
+tblLayer.addEventListener("pointerdown", e => {
+  const h = e.target.closest && e.target.closest(".tbl-h");
+  if(!h || !TBL || e.button !== 0) return;
+  e.preventDefault();
+  e.stopPropagation();
+  try{ h.focus({ preventScroll:true }); }catch(err){}
+  try{ h.setPointerCapture(e.pointerId); }catch(err){}
+  const i = +h.dataset.i, col = h.classList.contains("col");
+  tblDrag = { h, i, col, id:e.pointerId, x0:e.clientX, y0:e.clientY, moved:false, px:null, w0:0, h0:0, nat:0, want:null };
+  if(!col){
+    const tr = TBL.table.rows[i];
+    tblDrag.nat = tblRowNatural(tr);
+    tblDrag.h0 = tr.getBoundingClientRect().height;
+  }
+  h.classList.add("drag");
+  document.body.classList.add("tbl-dragging", col ? "tbl-col" : "tbl-row");
+});
+tblLayer.addEventListener("pointermove", e => {
+  const d = tblDrag; if(!d || e.pointerId !== d.id) return;
+  const dx = e.clientX - d.x0, dy = e.clientY - d.y0;
+  if(!d.moved){
+    if(Math.abs(d.col ? dx : dy) < 1) return;
+    d.moved = true;
+    if(d.col){ d.px = tblColStart(); d.w0 = d.px[d.i]; }   // freeze lazily (a double-click alone must not)
+  }
+  d.want = d.col ? dx : dy;
+  if(!d.raf) d.raf = requestAnimationFrame(tblDragFrame);
+});
+function tblDragFrame(){
+  const d = tblDrag; if(!d) return;
+  d.raf = 0;
+  if(!TBL) return;
+  if(d.col){
+    tblSetCol(d.i, Math.max(TBL_MIN_W, Math.round(d.w0 + d.want)), d.px);
+  } else {
+    const lim = tblSetRow(d.i, d.h0 + d.want, d.nat);
+    d.h.classList.toggle("limit", lim);
+    document.body.classList.toggle("tbl-limit", lim);
+  }
+  tblPlace();
+  doLayout();
+}
+function tblEndDrag(){
+  const d = tblDrag; if(!d) return;
+  if(d.raf){ cancelAnimationFrame(d.raf); tblDragFrame(); }
+  tblDrag = null;
+  try{ d.h.releasePointerCapture(d.id); }catch(err){}
+  d.h.classList.remove("drag", "limit");
+  document.body.classList.remove("tbl-dragging", "tbl-col", "tbl-row", "tbl-limit");
+  if(d.moved) tblCommit();
+}
+tblLayer.addEventListener("pointerup", e => { if(tblDrag && e.pointerId === tblDrag.id) tblEndDrag(); });
+tblLayer.addEventListener("pointercancel", e => { if(tblDrag && e.pointerId === tblDrag.id) tblEndDrag(); });
+tblLayer.addEventListener("lostpointercapture", e => { if(tblDrag && e.pointerId === tblDrag.id) tblEndDrag(); });
+tblLayer.addEventListener("dblclick", e => {
+  const h = e.target.closest && e.target.closest(".tbl-h");
+  if(!h || !TBL) return;
+  e.preventDefault();
+  if(h.classList.contains("col")) tblResetCol(+h.dataset.i); else tblResetRow(+h.dataset.i);
+});
+
+/* ---------- options menu ---------- */
+function tblMenuItems(){
+  const e = VIEW.tables[TBL.idx] || {};
+  const sized = !!(e.w || e.h);
+  const m = TBL.menu;
+  m.textContent = "";
+  const item = (label, act, checked) => {
+    const b = tblEl("button", "", { type:"button", role: checked === undefined ? "menuitem" : "menuitemradio" });
+    if(checked !== undefined) b.setAttribute("aria-checked", checked ? "true" : "false");
+    const c = tblEl("span", "tbl-check", { "aria-hidden":"true" }); c.textContent = checked ? "✓" : "";
+    b.append(c, document.createTextNode(label));
+    b.dataset.act = act;
+    return b;
+  };
+  const reset = item("Reset sizes", "reset");
+  if(!sized) reset.setAttribute("aria-disabled", "true");
+  const lab = tblEl("div", "tbl-label", { role:"presentation" }); lab.textContent = "Density";
+  m.append(reset, tblEl("div", "tbl-sep", { role:"separator" }), lab,
+    item("Compact", "compact", e.density === "compact"),
+    item("Default", "default", !e.density),
+    item("Comfortable", "comfortable", e.density === "comfortable"));
+}
+function tblOpenMenu(){
+  if(!TBL) return;
+  tblMenuItems();
+  TBL.menu.hidden = false;
+  TBL.more.setAttribute("aria-expanded", "true");
+  const first = TBL.menu.querySelector("button"); if(first) first.focus();
+}
+function tblCloseMenu(refocus){
+  if(!TBL || TBL.menu.hidden) return;
+  TBL.menu.hidden = true;
+  TBL.more.setAttribute("aria-expanded", "false");
+  if(refocus) TBL.more.focus();
+}
+tblLayer.addEventListener("click", e => {
+  if(!TBL) return;
+  if(e.target.closest(".tbl-more")){ if(TBL.menu.hidden) tblOpenMenu(); else tblCloseMenu(true); return; }
+  const b = e.target.closest(".tbl-menu button"); if(!b) return;
+  const act = b.dataset.act, T = TBL;
+  if(act === "reset"){
+    const e2 = VIEW.tables[T.idx];
+    if(e2){ delete e2.w; delete e2.h; }
+    tblTidy(T.idx);
+    tblSync([[T.table, VIEW.tables[T.idx]]]);
+    toast("Table sizes reset");
+  } else {
+    const e2 = tblEntry(T.idx, T.table);
+    if(act === "default") delete e2.density; else e2.density = act;
+    tblTidy(T.idx);
+    tblSync([[T.table, VIEW.tables[T.idx]]]);
+  }
+  tblCloseMenu(true);
+  tblCommit();
+});
+tblLayer.addEventListener("keydown", e => {
+  if(!TBL || !TBL.menu.contains(e.target)) return;
+  const items = [...TBL.menu.querySelectorAll("button")], i = items.indexOf(e.target);
+  if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); tblCloseMenu(true); }
+  else if(e.key === "ArrowDown" || e.key === "ArrowUp"){
+    e.preventDefault();
+    items[(i + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus();
+  } else if(e.key === "Home"){ e.preventDefault(); items[0].focus(); }
+  else if(e.key === "End"){ e.preventDefault(); items[items.length - 1].focus(); }
+  else if(e.key === "Tab"){ e.preventDefault(); tblCloseMenu(true); }
+});
 /* ==[/TABLES]== */
 
 // called at the end of every full renderDoc(); feature errors must not break rendering
