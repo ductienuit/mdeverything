@@ -1965,6 +1965,44 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
 /* ==[AI CSS]== A — AI answers, suggestions, export options */
 /* ==[/AI CSS]== */
 /* ==[LINKS CSS]== B — in-document links */
+#doc a.link-broken{ color:var(--danger); text-decoration:underline dotted; text-decoration-thickness:1.5px; text-underline-offset:3px; cursor:help; }
+#doc a:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:3px; }
+#linkPop{ position:fixed; z-index:74; top:0; left:0; display:none; box-sizing:border-box; width:max-content; max-width:min(360px, calc(100vw - 16px));
+  padding:10px 12px 9px; border:1px solid var(--line-strong); border-radius:10px; background:var(--surface); color:var(--ink);
+  box-shadow:var(--shadow-md); font:13px/1.45 var(--font-ui); text-align:left; opacity:0; transform:translateY(3px); transition:opacity .14s ease, transform .14s ease; }
+#linkPop.show{ opacity:1; transform:none; }
+#linkPop .lp-kind{ display:block; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:2px; }
+#linkPop .lp-title{ display:block; font-weight:650; font-size:13.5px; color:var(--ink); overflow-wrap:anywhere; }
+#linkPop .lp-snip{ margin:4px 0 0; color:var(--ink-soft); overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
+#linkPop .lp-hint{ display:block; margin-top:7px; padding-top:6px; border-top:1px solid var(--line); font-size:11.5px; color:var(--ink-faint); }
+#linkPop.is-broken .lp-title{ color:var(--danger); }
+#linkPop .lp-row{ display:flex; align-items:center; gap:10px; margin-top:6px; }
+#linkPop .lp-url{ flex:1; min-width:0; font-size:11.5px; color:var(--ink-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#linkPop .lp-copy{ flex:none; font:inherit; font-size:12px; font-weight:600; padding:4px 10px; border-radius:999px; cursor:pointer;
+  border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink); }
+#linkPop .lp-copy:hover{ background:var(--accent-soft); color:var(--accent-soft-fg); border-color:transparent; }
+#linkPop .lp-copy:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+#linkBack{ position:fixed; z-index:79; left:50%; bottom:76px; transform:translate(-50%, 12px); opacity:0;
+  display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:999px; cursor:pointer;
+  border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); box-shadow:var(--shadow-md);
+  font:600 13px/1.2 var(--font-ui); transition:opacity .18s ease, transform .18s ease; }
+#linkBack[hidden]{ display:none; }
+#linkBack.show{ opacity:1; transform:translate(-50%, 0); }
+#linkBack:hover{ background:var(--accent-soft); color:var(--accent-soft-fg); }
+#linkBack:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+#linkBack kbd{ font:500 11px/1 var(--font-ui); color:var(--ink-faint); padding:2px 5px; border:1px solid var(--line); border-radius:4px; }
+#doc .link-flash{ border-radius:4px; animation:linkFlash 1.2s ease-out; }
+@keyframes linkFlash{
+  0%,35%{ background:var(--accent-soft); box-shadow:0 0 0 6px var(--accent-soft); }
+  100%{ background:transparent; box-shadow:0 0 0 6px transparent; }
+}
+@media (max-width:640px), (hover:none){ #linkBack kbd{ display:none; } }
+@media (prefers-reduced-motion:reduce){
+  #linkPop, #linkBack{ transition:none; transform:none; }
+  #linkBack.show{ transform:translate(-50%, 0); }
+  #linkBack{ transform:translate(-50%, 0); }
+  #doc .link-flash{ animation:none; background:var(--accent-soft); box-shadow:0 0 0 6px var(--accent-soft); }
+}
 /* ==[/LINKS CSS]== */
 /* ==[LAYOUT CSS]== C — header, panes, outline, documents panel */
 /* ==[/LAYOUT CSS]== */
@@ -2153,6 +2191,8 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
 <!-- ==[AI HTML]== A — AI answers, suggestions, export options -->
 <!-- ==[/AI HTML]== -->
 <!-- ==[LINKS HTML]== B — in-document links -->
+<div id="linkPop" role="tooltip" aria-hidden="true"></div>
+<button id="linkBack" type="button" hidden aria-label="Back to where you were (Alt+Left)">↩ Back <kbd aria-hidden="true">Alt+←</kbd></button>
 <!-- ==[/LINKS HTML]== -->
 <!-- ==[LAYOUT HTML]== C — header, panes, outline, documents panel -->
 <!-- ==[/LAYOUT HTML]== -->
@@ -3662,6 +3702,8 @@ flowchart LR
     D --> E[Export]
     E --> F[Your AI]
 \`\`\`
+
+Curious what the export looks like? Hover or click [What your AI receives](#31-what-your-ai-receives) to peek at it.
 
 ## 3. Features at a glance
 
@@ -5711,6 +5753,307 @@ $("#bHeroDemo").addEventListener("click", () => {
 /* ==[/AI]== */
 
 /* ==[LINKS]== B — in-document links */
+// Internal "#frag" links resolve against the rendered document (ids, GitHub-style slugs,
+// diacritic-free slugs, outline ids, heading text); hover/focus previews the target; click jumps
+// with a flash and a "↩ Back" pill. External links open in a new tab; links to other files are
+// blocked with a toast. Nothing is ever inserted into #doc (only classes / attributes on <a>).
+const lkPop = $("#linkPop"), lkBack = $("#linkBack");
+const lkHoverMQ = window.matchMedia("(hover:hover) and (pointer:fine)");
+let lkTargets = new Map();           // normalized fragment → element
+let lkShowT = 0, lkHideT = 0, lkCur = null, lkBackT = 0, lkStack = [], lkFlashT = 0, lkFlashEl = null;
+
+function lkNorm(s){ return String(s||"").normalize("NFC").trim().toLowerCase(); }
+function lkStrip(s){ return String(s||"").normalize("NFD").replace(/\p{M}/gu,"").replace(/đ/g,"d").replace(/Đ/g,"D").normalize("NFC"); }
+// GitHub: lowercase, drop punctuation except - and _, spaces → "-", keep Unicode letters / numbers
+function lkGhSlug(text){
+  return String(text||"").normalize("NFC").trim().toLowerCase()
+    .replace(/[^\p{L}\p{M}\p{N}\s_-]/gu,"").replace(/\s/g,"-");
+}
+function lkDecode(f){ try{ return decodeURIComponent(f); }catch(e){ return f; } }
+function lkKind(a){
+  const raw = (a.getAttribute("href")||"").trim();
+  if(!raw) return { kind:"none" };
+  if(raw[0] === "#") return { kind:"int", frag:lkDecode(raw.slice(1)) };
+  if(/^(https?:)?\/\//i.test(raw) || /^mailto:/i.test(raw)) return { kind:"ext", href:a.href || raw };
+  if(/^[a-z][a-z0-9+.-]*:/i.test(raw)) return { kind:"other" };   // tel:, data:, … — leave to the browser
+  return { kind:"file", path:raw };
+}
+function lkHeads(){ return [...doc.querySelectorAll("h1,h2,h3,h4,h5,h6")].filter(h=>!h.closest(".no-anchor")); }
+
+function lkBuildTargets(){
+  const m = new Map();
+  const put = (k, el)=>{ k = lkNorm(k); if(k && !m.has(k)) m.set(k, el); };
+  // 1. existing ids / names
+  doc.querySelectorAll("[id],[name]").forEach(el=>{
+    if(el.closest(".no-anchor")) return;
+    if(el.id) put(el.id, el);
+    const n = el.getAttribute("name"); if(n) put(n, el);
+  });
+  const heads = lkHeads();
+  // 2. GitHub-style slugs (duplicates → -1, -2 …)
+  const seen = new Map(), slugs = [];
+  heads.forEach(h=>{
+    const base = lkGhSlug(olHeadingText(h));
+    let s = base;
+    if(seen.has(base)){ let n = seen.get(base); do{ s = base + "-" + n; n++; }while(seen.has(s)); seen.set(base, n); }
+    else seen.set(base, 1);
+    seen.set(s, seen.get(s) || 1);
+    slugs.push([s, h]); put(s, h);
+  });
+  // 3. same slugs without diacritics
+  slugs.forEach(([s,h])=>put(lkStrip(s), h));
+  // 4. outline-style ids (h-<olSlug>) and bare olSlug
+  heads.forEach(h=>{ const o = olSlug(olHeadingText(h)); put("h-"+o, h); put(o, h); });
+  // 5. heading text equality
+  heads.forEach(h=>put(olHeadingText(h), h));
+  lkTargets = m;
+}
+function lkResolve(frag){
+  const k = lkNorm(frag);
+  if(!k) return null;
+  const hit = lkTargets.get(k) || lkTargets.get(lkStrip(k)) || lkTargets.get(k.replace(/-/g," "))
+    || lkTargets.get(olSlug(k)) || lkTargets.get("h-"+olSlug(k));
+  return hit && doc.contains(hit) ? hit : null;
+}
+
+function linksOnRendered(){
+  lkHide(true);
+  lkBuildTargets();
+  doc.querySelectorAll("a[href]").forEach(a=>{
+    if(a.closest(".no-anchor")) return;
+    const k = lkKind(a);
+    a.classList.remove("link-broken");
+    a.removeAttribute("data-link");
+    if(k.kind === "int"){
+      a.dataset.link = "int";
+      if(!lkResolve(k.frag)) a.classList.add("link-broken");
+    } else if(k.kind === "ext"){
+      a.dataset.link = "ext";
+      if(!/^mailto:/i.test(k.href)){ a.target = "_blank"; a.rel = "noopener noreferrer"; }
+    } else if(k.kind === "file"){
+      a.dataset.link = "file";
+    }
+  });
+}
+
+/* ---- preview popover ---- */
+function lkBlockKind(el){
+  const t = el.tagName;
+  if(/^H[1-6]$/.test(t)) return "Section";
+  const b = el.closest("p,li,td,th,blockquote,pre,table,figure,dd,dt") || el;
+  return ({P:"Paragraph", LI:"List item", TD:"Table cell", TH:"Table cell", BLOCKQUOTE:"Quote", PRE:"Code block",
+    TABLE:"Table", FIGURE:"Figure", DD:"Definition", DT:"Term"})[b.tagName] || "Paragraph";
+}
+function lkTextOf(node){
+  const c = node.cloneNode ? node.cloneNode(true) : node;
+  c.querySelectorAll && c.querySelectorAll(".no-anchor, script, style").forEach(n=>n.remove());
+  return (c.textContent||"").replace(/\s+/g," ").trim();
+}
+function lkSectionText(el){
+  if(/^H[1-6]$/.test(el.tagName)){
+    const lvl = +el.tagName[1];
+    const next = lkHeads().find(h=>+h.tagName[1] <= lvl && (el.compareDocumentPosition(h) & Node.DOCUMENT_POSITION_FOLLOWING));
+    const r = document.createRange();
+    r.setStartAfter(el);
+    if(next) r.setEndBefore(next); else r.setEnd(doc, doc.childNodes.length);
+    return lkTextOf(r.cloneContents());
+  }
+  const b = el.closest("p,li,td,th,blockquote,pre,dd,dt") || el;
+  return lkTextOf(b);
+}
+function lkClip(s, n){ return s.length > n ? s.slice(0, n).replace(/\s+\S*$/,"") + "…" : s; }
+function lkFill(a){
+  const k = lkKind(a);
+  lkPop.className = ""; lkPop.innerHTML = "";
+  const add = (tag, cls, text)=>{ const e = document.createElement(tag); e.className = cls; e.textContent = text; lkPop.appendChild(e); return e; };
+  if(k.kind === "int"){
+    const t = lkResolve(k.frag);
+    if(!t){
+      lkPop.classList.add("is-broken");
+      add("span","lp-kind","Broken link");
+      add("span","lp-title","Section not found");
+      add("span","lp-hint","#"+k.frag+" doesn't match any heading in this document");
+      return true;
+    }
+    const isHead = /^H[1-6]$/.test(t.tagName);
+    const kind = lkBlockKind(t);
+    add("span","lp-kind", kind);
+    if(isHead) add("span","lp-title", olHeadingText(t) || "Untitled section");
+    const snip = lkClip(lkSectionText(t), 300);
+    if(snip) add("p","lp-snip", snip);
+    else if(!isHead) add("span","lp-title", kind);
+    add("span","lp-hint","Click to jump · ↩ Back afterwards");
+    return true;
+  }
+  if(k.kind === "ext"){
+    let host = k.href, isMail = /^mailto:/i.test(k.href);
+    try{ const u = new URL(k.href); host = isMail ? u.pathname : u.hostname.replace(/^www\./,""); }catch(e){}
+    add("span","lp-kind", isMail ? "Email" : "External link");
+    add("span","lp-title", host);
+    const row = document.createElement("div"); row.className = "lp-row";
+    const url = document.createElement("span"); url.className = "lp-url"; url.textContent = k.href;
+    const btn = document.createElement("button"); btn.type = "button"; btn.className = "lp-copy"; btn.textContent = "Copy link";
+    btn.addEventListener("click", e=>{ e.stopPropagation(); lkCopy(isMail ? k.href.replace(/^mailto:/i,"") : k.href); });
+    row.append(url, btn); lkPop.appendChild(row);
+    add("span","lp-hint", isMail ? "Opens your email app" : "Opens in a new tab");
+    return true;
+  }
+  if(k.kind === "file"){
+    add("span","lp-kind","Other file");
+    add("span","lp-title", k.path);
+    add("span","lp-hint","Links to other files can't be opened here");
+    return true;
+  }
+  return false;
+}
+function lkCopy(text){
+  const done = ()=>toast("Link copied");
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(done, ()=>lkCopyFallback(text, done));
+  } else lkCopyFallback(text, done);
+}
+function lkCopyFallback(text, done){
+  const ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly","");
+  ta.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
+  document.body.appendChild(ta); ta.select();
+  let ok = false; try{ ok = document.execCommand("copy"); }catch(e){}
+  ta.remove(); ok ? done() : toast("Couldn't copy the link");
+}
+function lkPlace(a){
+  const rects = a.getClientRects(); const r = rects.length ? rects[0] : a.getBoundingClientRect();
+  const vw = document.documentElement.clientWidth, vh = window.innerHeight, gap = 8;
+  const w = lkPop.offsetWidth, h = lkPop.offsetHeight;
+  const hdr = document.querySelector("header"), topMin = (hdr ? Math.max(0, hdr.getBoundingClientRect().bottom) : 0) + gap;
+  let top = r.bottom + gap;
+  if(top + h > vh - gap && r.top - gap - h >= topMin) top = r.top - gap - h;
+  top = Math.max(topMin, Math.min(top, vh - h - gap));
+  const left = Math.max(gap, Math.min(r.left, vw - w - gap));
+  lkPop.style.left = Math.round(left) + "px"; lkPop.style.top = Math.round(top) + "px";
+}
+function lkShow(a){
+  lkShowT = 0;
+  if(!a.isConnected || !lkFill(a)) return;
+  if(lkCur && lkCur !== a) lkCur.removeAttribute("aria-describedby");
+  lkCur = a;
+  lkPop.style.display = "block"; lkPop.setAttribute("aria-hidden","false");
+  lkPlace(a);
+  a.setAttribute("aria-describedby","linkPop");
+  requestAnimationFrame(()=>lkPop.classList.add("show"));
+}
+function lkHide(now){
+  clearTimeout(lkShowT); clearTimeout(lkHideT); lkShowT = 0;
+  const go = ()=>{
+    lkPop.classList.remove("show"); lkPop.style.display = "none"; lkPop.setAttribute("aria-hidden","true");
+    if(lkCur){ lkCur.removeAttribute("aria-describedby"); lkCur = null; }
+  };
+  if(now) go(); else lkHideT = setTimeout(go, 180);
+}
+function lkLinkFrom(t){
+  const a = t && t.closest ? t.closest("a[href]") : null;
+  return a && a instanceof HTMLAnchorElement && doc.contains(a) && !a.closest(".no-anchor") ? a : null;
+}
+doc.addEventListener("mouseover", e=>{
+  if(!lkHoverMQ.matches) return;
+  const a = lkLinkFrom(e.target); if(!a || e.target.closest(".no-anchor")) return;
+  clearTimeout(lkHideT);
+  if(a === lkCur) return;
+  clearTimeout(lkShowT); lkShowT = setTimeout(()=>lkShow(a), 250);
+});
+doc.addEventListener("mouseout", e=>{
+  const a = lkLinkFrom(e.target); if(!a) return;
+  const to = e.relatedTarget;
+  if(to && (a.contains(to) || lkPop.contains(to))) return;
+  clearTimeout(lkShowT);
+  if(lkCur) lkHide(false);
+});
+lkPop.addEventListener("mouseenter", ()=>clearTimeout(lkHideT));
+lkPop.addEventListener("mouseleave", e=>{ if(!(e.relatedTarget && lkCur && lkCur.contains(e.relatedTarget))) lkHide(false); });
+doc.addEventListener("focusin", e=>{
+  const a = lkLinkFrom(e.target); if(!a) return;
+  let kb = true; try{ kb = a.matches(":focus-visible"); }catch(err){}
+  if(!kb) return;
+  clearTimeout(lkHideT); clearTimeout(lkShowT); lkShowT = setTimeout(()=>lkShow(a), 250);
+});
+doc.addEventListener("focusout", e=>{
+  const a = lkLinkFrom(e.target); if(!a) return;
+  if(e.relatedTarget && lkPop.contains(e.relatedTarget)) return;
+  clearTimeout(lkShowT); if(lkCur === a) lkHide(false);
+});
+lkPop.addEventListener("focusout", e=>{ if(!(e.relatedTarget && (lkPop.contains(e.relatedTarget) || e.relatedTarget === lkCur))) lkHide(false); });
+window.addEventListener("scroll", ()=>{ if(lkCur || lkShowT) lkHide(true); }, {passive:true, capture:true});
+window.addEventListener("resize", ()=>{ if(lkCur) lkHide(true); });
+
+/* ---- jump · flash · back ---- */
+function lkFlash(el){
+  if(lkFlashEl) lkFlashEl.classList.remove("link-flash");
+  clearTimeout(lkFlashT);
+  void el.offsetWidth;
+  el.classList.add("link-flash"); lkFlashEl = el;
+  lkFlashT = setTimeout(()=>{ el.classList.remove("link-flash"); if(lkFlashEl === el) lkFlashEl = null; }, 1300);
+}
+function lkJump(t){
+  lkStack.push(window.scrollY);
+  if(lkStack.length > 20) lkStack.shift();
+  // an inline / empty anchor (<a name>, <span id>) is too small to see: flash its block instead
+  const blk = /^(H[1-6]|P|LI|TD|TH|BLOCKQUOTE|PRE|TABLE|FIGURE|DD|DT|DIV|SECTION)$/.test(t.tagName) ? t
+    : (t.closest("p,li,td,th,blockquote,pre,dd,dt,h1,h2,h3,h4,h5,h6") || t);
+  if(t.id && document.getElementById(t.id) === t && blk === t) olGo(t.id);
+  else blk.scrollIntoView({ behavior: olReducedMQ.matches ? "auto" : "smooth", block:"start" });
+  lkFlash(blk);
+  lkShowBack();
+}
+function lkShowBack(){
+  clearTimeout(lkBackT);
+  lkBack.hidden = false;
+  requestAnimationFrame(()=>lkBack.classList.add("show"));
+  lkBackT = setTimeout(lkHideBack, 8000);
+}
+function lkHideBack(){
+  clearTimeout(lkBackT);
+  lkBack.classList.remove("show");
+  lkStack = [];
+  lkBackT = setTimeout(()=>{ if(!lkBack.classList.contains("show")) lkBack.hidden = true; }, 220);
+}
+function lkGoBack(){
+  if(!lkStack.length){ lkHideBack(); return; }
+  const y = lkStack.pop();
+  window.scrollTo({ top:y, behavior: olReducedMQ.matches ? "auto" : "smooth" });
+  if(lkStack.length) lkShowBack(); else lkHideBack();
+}
+lkBack.addEventListener("mousedown", e=>e.preventDefault());
+lkBack.addEventListener("click", lkGoBack);
+
+// capture on document: decides before the comment handler on #doc (which is also capture)
+document.addEventListener("click", e=>{
+  const a = lkLinkFrom(e.target); if(!a) return;
+  // app UI inside a link (e.g. a comment badge): never navigate, let the comment handler run
+  if(e.target.closest(".no-anchor")){ e.preventDefault(); return; }
+  const sel = window.getSelection();
+  if(sel && !sel.isCollapsed && sel.toString().trim()){ e.preventDefault(); return; }   // selecting text → no navigation, let the selection flow run
+  const k = lkKind(a);
+  if(k.kind === "none" || k.kind === "other") return;
+  e.stopPropagation();          // don't open the comment card for a link inside a highlight
+  lkHide(true);
+  if(k.kind === "ext"){
+    if(e.ctrlKey || e.metaKey || e.shiftKey) return;   // browser's own new-tab / new-window handling
+    e.preventDefault();
+    if(/^mailto:/i.test(k.href)){ window.location.href = k.href; return; }
+    const w = window.open(k.href, "_blank", "noopener,noreferrer");
+    if(w) try{ w.opener = null; }catch(err){}
+    return;
+  }
+  e.preventDefault();
+  if(k.kind === "file"){ toast("Links to other files can't be opened here"); return; }
+  const t = lkResolve(k.frag);
+  if(!t){ toast("Section not found" + (k.frag ? ": #" + k.frag : "")); return; }
+  lkJump(t);
+}, true);
+document.addEventListener("keydown", e=>{
+  if(e.key === "Escape" && lkCur){ lkHide(true); return; }
+  if(e.altKey && e.key === "ArrowLeft" && !lkBack.hidden && lkBack.classList.contains("show")){
+    e.preventDefault(); e.stopPropagation(); lkGoBack();
+  }
+}, true);
 /* ==[/LINKS]== */
 
 /* ==[LAYOUT]== C — header, panes, outline, documents panel */
