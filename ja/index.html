@@ -2072,20 +2072,10 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
 body[data-theme="beige"]{ --ins:#6b3486; --ins-bg:rgba(107,52,134,.09); --del:#786f5f; }
 body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8e919a; }
 
-/* export menu: separators + checkbox item */
+/* export menu: separators */
 .menu .ai-menu-sep{ height:1px; margin:4px 6px; background:var(--line); }
-.menu>button.ai-menu-check{ position:relative; padding-left:34px; }
-.ai-check{ position:absolute; left:11px; top:11px; width:15px; height:15px; box-sizing:border-box; border-radius:4px;
-  border:1.5px solid var(--line-strong); background:var(--surface); }
-.ai-menu-check[aria-checked="true"] .ai-check{ background:var(--accent); border-color:var(--accent); }
-.ai-menu-check[aria-checked="true"] .ai-check::after{ content:""; position:absolute; left:4px; top:1px; width:4px; height:8px;
-  border:solid var(--accent-contrast); border-width:0 2px 2px 0; transform:rotate(45deg); }
 .menu>button:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
 #menuCopy{ min-width:270px; max-height:calc(100vh - 72px); overflow:auto; }
-.menu .ai-menu-h{ padding:9px 11px 3px; font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
-  color:var(--ink-faint); user-select:none; }
-.menu .ai-menu-h:first-child{ padding-top:4px; }
-.menu .ai-menu-h:not(:first-child){ margin-top:3px; border-top:1px solid var(--line); padding-top:10px; }
 
 /* AI replies (panel card + inline card) */
 .card .c-reply.ai-reply,#hlPop .pc-reply.ai-reply{ border-left-color:var(--accent); padding-right:74px; }
@@ -2556,6 +2546,157 @@ header .lang-menu > a[aria-checked="true"] .mi-check{visibility:visible}
 html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-step > b{ word-break:keep-all; overflow-wrap:anywhere; }
 /* menu sub-lines may wrap so longer translations never make a menu scroll sideways */
 .menu .sub{ white-space:normal; overflow-wrap:anywhere; }
+
+/* ==[EXP2 CSS]== Export options dialog + success card + "Paste AI result" chip */
+.exp-ov{align-items:center}
+.exp-panel{width:min(620px,100%);display:flex;flex-direction:column;max-height:calc(100vh - 80px);max-height:calc(100dvh - 80px)}
+.exp-ov.open .exp-panel{animation:exp-in .22s cubic-bezier(.2,.8,.2,1)}
+.exp-body{overflow:auto;display:flex;flex-direction:column;gap:20px;min-height:0}
+.exp-sec{border:0;margin:0;padding:0;min-width:0}
+.exp-h{display:block;padding:0;margin:0 0 9px;font:600 12px/1.3 var(--font-ui);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft)}
+.exp-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.exp-card{position:relative;display:flex;flex-direction:column;gap:3px;padding:12px 30px 12px 12px;border:1.5px solid var(--line-strong);
+  border-radius:11px;background:var(--surface);cursor:pointer;transition:border-color .12s,background-color .12s;min-width:0}
+.exp-card input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.exp-card .ico{width:20px;height:20px;color:var(--ink-soft);margin-bottom:5px}
+.exp-card-t{font:600 13.5px/1.3 var(--font-ui);color:var(--ink);overflow-wrap:anywhere}
+.exp-card-s{font-size:12px;line-height:1.35;color:var(--ink-faint);overflow-wrap:anywhere}
+.exp-card::after{content:"";position:absolute;top:11px;right:11px;width:14px;height:14px;box-sizing:border-box;border-radius:50%;
+  border:1.5px solid var(--line-strong);background:var(--surface)}
+.exp-card:hover{border-color:var(--ink-faint)}
+.exp-card:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.exp-card:has(input:checked)::after{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px var(--accent-soft)}
+.exp-card:has(input:checked) .ico,.exp-card:has(input:checked) .exp-card-t{color:var(--accent-soft-fg)}
+.exp-card:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.exp-check{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;margin:0 -10px;border-radius:8px;cursor:pointer;font-size:13.5px;line-height:1.4;color:var(--ink)}
+.exp-check:hover{background:var(--surface-2)}
+.exp-check input{width:16px;height:16px;margin:2px 0 0;flex:none;accent-color:var(--accent)}
+.exp-check-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.exp-check small{font-size:12px;color:var(--ink-faint)}
+.exp-check.is-off{opacity:.6;cursor:default}
+.exp-check.is-off:hover{background:none}
+#expExtra{display:block;width:100%;box-sizing:border-box;min-height:78px;resize:vertical;font:13.5px/1.5 var(--font-ui);color:var(--ink);
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:9px;padding:10px 12px}
+#expExtra::placeholder{color:var(--ink-faint)}
+#expExtra:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.exp-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.exp-chip-sug{display:inline-flex;align-items:center;gap:5px;max-width:100%;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-soft);
+  border-radius:999px;padding:5px 11px 5px 8px;font:500 12.5px/1.25 var(--font-ui);cursor:pointer;text-align:left}
+.exp-chip-sug .ico{width:13px;height:13px}
+.exp-chip-sug .k{display:none}
+.exp-chip-sug:hover{border-color:var(--ink-faint);color:var(--ink)}
+.exp-chip-sug[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-soft-fg)}
+.exp-chip-sug[aria-pressed="true"] .p{display:none}
+.exp-chip-sug[aria-pressed="true"] .k{display:inline}
+.exp-chip-sug:focus-visible,.exp-recent-item:focus-visible,.exp-ai-chip:focus-visible,.exp-hide:focus-visible,.exp-prev summary:focus-visible,.exp-prev-text:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.exp-recent{margin-top:14px}
+.exp-recent[hidden]{display:none}
+.exp-mini-h{display:block;margin:0 0 6px;font:600 11.5px/1.3 var(--font-ui);color:var(--ink-faint)}
+.exp-recent-list{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.exp-recent-item{max-width:100%;text-align:left;border:1px dashed var(--line-strong);background:none;border-radius:8px;padding:6px 10px;
+  font:12.5px/1.35 var(--font-ui);color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.exp-recent-item:hover{background:var(--surface-2);color:var(--ink)}
+.exp-prev{border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.exp-prev summary{list-style:none;display:flex;align-items:center;gap:6px;padding:10px 12px;cursor:pointer;border-radius:10px;
+  font:500 13px/1.3 var(--font-ui);color:var(--ink-soft)}
+.exp-prev summary::-webkit-details-marker{display:none}
+.exp-prev summary:hover{color:var(--ink)}
+.exp-prev-chev{width:14px;height:14px;transition:transform .15s}
+.exp-prev[open] .exp-prev-chev{transform:rotate(90deg)}
+.exp-prev-meta{color:var(--ink-faint);font-weight:400}
+.exp-prev-text{margin:0;max-height:260px;overflow:auto;padding:10px 12px 12px;border-top:1px solid var(--line);border-radius:0 0 10px 10px;
+  font:12px/1.55 var(--font-mono);color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
+.exp-prev-text.is-err{color:var(--danger);font-family:var(--font-ui);font-size:13px}
+.exp-foot .btn{display:inline-flex;align-items:center;gap:7px}
+
+.exp-done{position:fixed;right:20px;bottom:20px;z-index:58;width:min(384px,calc(100vw - 32px));box-sizing:border-box;
+  background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);border-radius:16px;box-shadow:var(--shadow-lg);
+  overflow:hidden;font-family:var(--font-ui)}
+.exp-done[hidden]{display:none}
+.exp-done.anim{animation:exp-in .28s cubic-bezier(.2,.8,.2,1)}
+.exp-done-head{display:flex;gap:12px;align-items:flex-start;padding:14px 10px 12px 16px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,var(--accent-soft),color-mix(in srgb,var(--accent-soft) 30%,var(--surface)))}
+.exp-done-ico{flex:none;width:32px;height:32px;color:var(--success)}
+.exp-done-ico svg{display:block;width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.exp-done-ico .w{display:none}
+.exp-done.anim .exp-done-ico .c{stroke-dasharray:60;stroke-dashoffset:60;animation:exp-draw .45s ease-out forwards}
+.exp-done.anim .exp-done-ico .k{stroke-dasharray:14;stroke-dashoffset:14;animation:exp-draw .3s .35s ease-out forwards}
+.exp-done-ht{flex:1;min-width:0}
+.exp-done-title{margin:3px 0 2px;font:600 15px/1.3 var(--font-ui);color:var(--ink);overflow-wrap:anywhere}
+.exp-done-meta{margin:0;font-size:12.5px;line-height:1.4;color:var(--ink-soft);overflow-wrap:anywhere}
+.exp-done-meta:empty{display:none}
+.exp-done-x{flex:none;margin-top:-2px}
+.exp-done-body{padding:14px 16px 10px;display:flex;flex-direction:column;gap:14px}
+.exp-steps{list-style:none;margin:0;padding:0;display:flex}
+.exp-steps li{flex:1 1 0;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 2px;
+  text-align:center;font-size:12px;line-height:1.3;color:var(--ink-faint);overflow-wrap:anywhere}
+.exp-steps li[hidden]{display:none}
+.exp-steps li+li::before{content:"";position:absolute;top:13px;left:calc(-50% + 20px);right:calc(50% + 20px);height:2px;border-radius:2px;background:var(--line-strong)}
+.exp-dot{width:28px;height:28px;box-sizing:border-box;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--line-strong);
+  background:var(--surface);color:var(--ink-faint)}
+.exp-dot .ico{width:14px;height:14px}
+.exp-steps li.on{color:var(--ink);font-weight:600}
+.exp-steps li.on .exp-dot{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);box-shadow:0 0 0 4px var(--accent-soft)}
+.exp-ai-list{display:flex;flex-wrap:wrap;gap:6px}
+.exp-ai-chip{display:inline-flex;align-items:center;gap:3px;padding:5px 9px 5px 11px;border:1px solid var(--line-strong);border-radius:999px;
+  background:var(--surface);color:var(--ink);font:500 12.5px/1.2 var(--font-ui);text-decoration:none;white-space:nowrap;cursor:pointer}
+.exp-ai-chip .ico{width:12px;height:12px;color:var(--ink-faint)}
+.exp-ai-chip:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-soft-fg)}
+.exp-ai-chip:hover .ico{color:inherit}
+.exp-ai-more{border-style:dashed;color:var(--ink-soft);padding-right:11px}
+.exp-ai-note{margin:7px 0 0;font-size:11.5px;color:var(--ink-faint)}
+.exp-done-act{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+.exp-cta{width:100%;min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;font-size:14px;font-weight:600}
+.exp-cta[hidden]{display:none}
+.exp-cta .ico{width:17px;height:17px}
+.exp-done-note{margin:0;font-size:12px;line-height:1.4;color:var(--ink-soft);text-align:center}
+.exp-done-note[hidden]{display:none}
+.exp-hide{align-self:center;border:0;background:none;padding:4px 6px;border-radius:6px;cursor:pointer;
+  font:12px/1.3 var(--font-ui);color:var(--ink-faint);text-decoration:underline;text-underline-offset:2px}
+.exp-hide:hover{color:var(--ink-soft)}
+.exp-done.quiet .exp-steps,.exp-done.quiet .exp-ai,.exp-done.quiet .exp-hide{display:none}
+.exp-done.quiet.no-cta .exp-done-body{display:none}
+.exp-done.quiet.no-cta .exp-done-head{border-bottom:0}
+.exp-done.fail .exp-done-head{background:linear-gradient(180deg,color-mix(in srgb,var(--hl-line) 22%,var(--surface)),color-mix(in srgb,var(--hl-line) 7%,var(--surface)))}
+.exp-done.fail .exp-done-ico{color:var(--hl-line)}
+.exp-done.fail .exp-done-ico svg:first-child{display:none}
+.exp-done.fail .exp-done-ico .w{display:block}
+.exp-done.fail .exp-steps,.exp-done.fail .exp-ai,.exp-done.fail .exp-hide{display:none}
+.exp-chip{position:fixed;right:20px;bottom:20px;z-index:58;display:flex;align-items:center;border-radius:999px;
+  background:var(--accent);color:var(--accent-contrast);box-shadow:var(--shadow-lg);animation:exp-in .22s ease-out}
+.exp-chip[hidden]{display:none}
+.exp-chip-go{display:inline-flex;align-items:center;gap:7px;border:0;background:none;color:inherit;cursor:pointer;
+  padding:11px 6px 11px 16px;border-radius:999px 0 0 999px;font:600 13.5px/1 var(--font-ui)}
+.exp-chip-x{border:0;background:none;color:inherit;opacity:.85;width:36px;height:38px;font-size:18px;line-height:1;cursor:pointer;border-radius:0 999px 999px 0}
+.exp-chip-go:hover,.exp-chip-x:hover{background:color-mix(in srgb,var(--accent-contrast) 14%,transparent)}
+.exp-chip-go:focus-visible,.exp-chip-x:focus-visible{outline:2px solid var(--accent-contrast);outline-offset:-4px}
+@keyframes exp-in{from{opacity:0;transform:translateY(12px) scale(.985)}}
+@keyframes exp-draw{to{stroke-dashoffset:0}}
+@media (max-width:640px){
+  .exp-ov.open{align-items:flex-end;padding:0}
+  .exp-panel{width:100%;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;border-bottom:0}
+  .exp-panel .panel-head{padding:14px 16px}
+  .exp-body{padding:16px}
+  .exp-cards{grid-template-columns:1fr;gap:6px}
+  .exp-card{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;row-gap:1px;align-items:center;padding:10px 34px 10px 12px}
+  .exp-card .ico{grid-row:span 2;margin:0}
+  .exp-card::after{top:50%;margin-top:-7px}
+  .exp-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom));grid-template-columns:1fr 1fr}
+  .exp-foot .btn{flex:1 1 0;justify-content:center}
+  .exp-done{left:0;right:0;bottom:0;width:auto;max-height:85vh;max-height:85dvh;border-radius:16px 16px 0 0;border-bottom:0;flex-direction:column}
+  .exp-done:not([hidden]){display:flex}
+  .exp-done-body{overflow:auto;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .exp-ai-list{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 2px}
+  .exp-ai-list::-webkit-scrollbar{display:none}
+  .exp-done-act{position:sticky;bottom:0;background:var(--surface);padding-top:2px}
+  .exp-chip{right:12px;bottom:calc(14px + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){
+  .exp-ov.open .exp-panel,.exp-done.anim,.exp-chip{animation:none}
+  .exp-done.anim .exp-done-ico .c,.exp-done.anim .exp-done-ico .k{animation:none;stroke-dashoffset:0}
+  .exp-prev-chev,.exp-card{transition:none}
+}
+/* ==[/EXP2 CSS]== */
 </style>
 </head>
 <body>
@@ -2601,18 +2742,14 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
     <span class="pop copy-wrap">
       <button class="btn primary" id="bCopy">AI用に書き出す</button>
       <button class="btn primary split" id="bCopyOpts" title="書き出しオプション" aria-label="書き出しオプション" aria-haspopup="menu" aria-expanded="false" aria-controls="menuCopy">▾</button>
-      <div class="menu" id="menuCopy" role="menu" aria-label="書き出し" hidden>
-        <div class="ai-menu-h" role="presentation">クリップボードにコピー</div>
-        <button type="button" role="menuitem" data-mode="full">全コンテキスト<span class="sub">文書 + コメント + AIへの指示</span></button>
-        <button type="button" role="menuitem" data-mode="notes">コメントのみ<span class="sub">コメントと引用箇所（文書全体は含まない）</span></button>
-        <button type="button" role="menuitem" data-mode="raw">文書のみ<span class="sub">Markdownテキストのみ（コメントなし）</span></button>
-        <div class="ai-menu-h" role="presentation">ファイルをダウンロード</div>
-        <button type="button" role="menuitem" data-ai="dl-full">全コンテキスト（.md）<span class="sub">→ document-for-ai.md</span></button>
-        <button type="button" role="menuitem" data-ai="dl-notes">コメントのみ（.md）<span class="sub">→ document-comments.md</span></button>
-        <button type="button" role="menuitem" data-ai="dl-doc">文書のみ（.md）<span class="sub">→ document.md</span></button>
-        <div class="ai-menu-h" role="presentation">AIの回答</div>
-        <button type="button" role="menuitemcheckbox" aria-checked="false" data-ai="fmt" class="ai-menu-check"><span class="ai-check" aria-hidden="true"></span>AIの回答をmdeverythingに戻す<span class="sub">回答形式の指示を追加し、返答をここに貼り付けられるようにします</span></button>
-        <button type="button" role="menuitem" data-ai="paste">AIの回答を貼り付け…<span class="sub">AIの回答と修正案をコメントに追加します</span></button>
+      <div class="menu hdr-menu exp-menu" id="menuCopy" role="menu" aria-label="書き出し" hidden>
+        <button type="button" role="menuitem" data-mode="full"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg><span class="mi-txt">全コンテキストをコピー<span class="sub">文書＋コメント＋指示</span></span></button>
+        <button type="button" role="menuitem" data-mode="notes"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg><span class="mi-txt">コメントのみコピー<span class="sub">コメントと引用箇所だけ</span></span></button>
+        <button type="button" role="menuitem" data-mode="raw"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></svg><span class="mi-txt">文書のみコピー<span class="sub">本文だけ</span></span></button>
+        <div class="ai-menu-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-ai="opts" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg><span class="mi-txt">書き出しオプション…<span class="sub">ひと言指示・追加の指示・ダウンロード</span></span></button>
+        <div class="ai-menu-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-ai="paste" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg><span class="mi-txt">AIの結果を貼り付け…<span class="sub">AIが返した内容を貼り戻す</span></span></button>
       </div>
     </span>
   </div>
@@ -2756,6 +2893,78 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
 <div id="dropzone"><div class="dz-box">.mdファイル（または .mdeverything.json バックアップ）をドロップして開く</div></div>
 <div id="toast"></div>
 
+<!-- ==[EXP2 HTML]== Export options dialog + export success card -->
+<div class="overlay exp-ov" id="ovExport">
+  <div class="panel exp-panel" role="dialog" aria-modal="true" aria-labelledby="expTitle">
+    <div class="panel-head"><h3 id="expTitle">AI用に書き出す</h3>
+      <button class="x" type="button" data-close aria-label="閉じる" title="閉じる（Esc）">×</button></div>
+    <div class="panel-body exp-body">
+      <fieldset class="exp-sec">
+        <legend class="exp-h">送る内容</legend>
+        <div class="exp-cards">
+          <label class="exp-card"><input type="radio" name="expMode" value="full"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg><span class="exp-card-t">全コンテキスト</span><span class="exp-card-s">文書＋コメント</span></label>
+          <label class="exp-card"><input type="radio" name="expMode" value="notes"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg><span class="exp-card-t">コメントのみ</span><span class="exp-card-s">コメント＋引用箇所</span></label>
+          <label class="exp-card"><input type="radio" name="expMode" value="raw"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></svg><span class="exp-card-t">文書のみ</span><span class="exp-card-s">本文だけ</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="exp-sec">
+        <legend class="exp-h">AIへのひと言</legend>
+        <label class="exp-check"><input type="checkbox" id="expMark"><span class="exp-check-t"><span>修正箇所を示す（削除は取り消し線、追加は紫）</span></span></label>
+        <label class="exp-check"><input type="checkbox" id="expAnswer" aria-describedby="expAnswerSub"><span class="exp-check-t"><span>コメントごとに回答</span><small id="expAnswerSub">回答を各コメントの下に貼り戻せます</small></span></label>
+      </fieldset>
+      <div class="exp-sec">
+        <label class="exp-h" for="expExtra">追加の指示</label>
+        <textarea id="expExtra" rows="3" spellcheck="true" placeholder="例：文体はそのまま、見出しは変えない…"></textarea>
+        <div class="exp-chips" id="expChips" role="group" aria-label="候補"></div>
+        <div class="exp-recent" id="expRecentWrap" hidden>
+          <span class="exp-mini-h" id="expRecentH">最近使った指示</span>
+          <div class="exp-recent-list" id="expRecent" role="group" aria-labelledby="expRecentH"></div>
+        </div>
+      </div>
+      <details class="exp-prev" id="expPrevBox">
+        <summary><svg class="ico exp-prev-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span>コピーする内容をプレビュー</span><span class="exp-prev-meta" id="expPrevMeta"></span></summary>
+        <pre class="exp-prev-text" id="expPrevText" tabindex="0"></pre>
+      </details>
+    </div>
+    <div class="panel-foot exp-foot">
+      <button class="btn" type="button" id="expDl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>.md をダウンロード</button>
+      <button class="btn primary" type="button" id="expCopy"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg>コピー</button>
+    </div>
+  </div>
+</div>
+<section class="exp-done" id="expDone" aria-labelledby="expDoneTitle" hidden>
+  <div class="exp-done-head">
+    <span class="exp-done-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle class="c" cx="12" cy="12" r="9.5"/><path class="k" d="M7.8 12.4l2.9 2.9 5.5-5.6"/></svg><svg class="w" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/></svg></span>
+    <div class="exp-done-ht">
+      <h2 id="expDoneTitle" class="exp-done-title" role="status"></h2>
+      <p class="exp-done-meta" id="expDoneMeta"></p>
+    </div>
+    <button class="x exp-done-x" type="button" id="expDoneX" aria-label="閉じる" title="閉じる">×</button>
+  </div>
+  <div class="exp-done-body">
+    <ol class="exp-steps" id="expSteps" aria-label="次の手順">
+      <li class="on" data-step="1"><span class="exp-dot"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/></svg></span><span class="exp-step-t" id="expStep1">AI に貼り付け</span></li>
+      <li data-step="2"><span class="exp-dot"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg></span><span class="exp-step-t">結果をコピー</span></li>
+      <li data-step="3"><span class="exp-dot"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10M8 10l4 4 4-4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></span><span class="exp-step-t">ここに貼り戻す</span></li>
+    </ol>
+    <div class="exp-ai" id="expAi">
+      <span class="exp-mini-h" id="expAiH">AI を開く</span>
+      <div class="exp-ai-list" id="expAiList" role="group" aria-labelledby="expAiH"></div>
+      <p class="exp-ai-note">Markdown を読める AI ならどれでも使えます</p>
+    </div>
+    <div class="exp-done-act">
+      <button class="btn primary exp-cta" type="button" id="expCta"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg><span id="expCtaT"></span></button>
+      <p class="exp-done-note" id="expDoneNote" hidden></p>
+      <button class="exp-hide" type="button" id="expHide">今後この手順を表示しない</button>
+    </div>
+  </div>
+</section>
+<div class="exp-chip" id="expChip" hidden>
+  <button type="button" class="exp-chip-go" id="expChipGo"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg>AIの結果を貼り付け</button>
+  <button type="button" class="exp-chip-x" id="expChipX" aria-label="閉じる" title="閉じる">×</button>
+</div>
+<!-- ==[/EXP2 HTML]== -->
+
 <!-- ==[AI HTML]== A — AI answers, suggestions, export options -->
 <div class="overlay" id="ovAiPaste">
   <div class="panel ai-paste" role="dialog" aria-modal="true" aria-labelledby="aiPasteTitle" aria-describedby="aiPasteHint">
@@ -2808,7 +3017,7 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
 <div id="tblLayer" class="tbl-layer" hidden></div>
 <!-- ==[/TABLES HTML]== -->
 
-<script type="application/json" id="i18n">{"lang":"ja","code":"ja","nativeName":"日本語","base":"../","locales":[{"code":"en","htmlLang":"en","dir":"ltr","nativeName":"English","href":"../"},{"code":"vi","htmlLang":"vi","dir":"ltr","nativeName":"Tiếng Việt","href":"../vi/"},{"code":"ja","htmlLang":"ja","dir":"ltr","nativeName":"日本語","href":"../ja/"},{"code":"pt-BR","htmlLang":"pt-BR","dir":"ltr","nativeName":"Português (Brasil)","href":"../pt-br/"},{"code":"es","htmlLang":"es","dir":"ltr","nativeName":"Español","href":"../es/"}],"dict":{"lang.button":"言語","lang.buttonAria":"言語: 日本語","lang.links":"言語","lang.suggest":"このページは日本語でもご覧いただけます","lang.suggestGo":"切り替える","lang.suggestDismiss":"閉じる","hdr.outline":"アウトライン","hdr.comments":"コメント","hdr.outlineToggle":"アウトラインの表示 / 非表示","hdr.editMd":"Markdownを編集","hdr.importTitle":"開く、貼り付け、復元","hdr.import":"インポート","hdr.theme":"テーマ","hdr.railToggle":"コメントパネルの表示 / 非表示","menu.openTitle":"Markdownファイルを開く","menu.open":"ファイルを開く…","menu.openSub":"パソコン上の .md、.markdown、.txt","menu.pasteTitle":"Markdownを貼り付け","menu.paste":"Markdownを貼り付け…","menu.pasteSub":"クリップボードのテキストから始める","menu.restoreTitle":"バックアップファイルから文書とコメントを復元","menu.restore":"バックアップから復元（.json）…","menu.restoreSub":"文書とそのコメントを元に戻す","theme.light":"ペーパー","theme.beige":"セピア","theme.dark":"ナイト","theme.aria":"テーマ: {name}","theme.ariaPaper":"テーマ: ペーパー","export.noDoc":"コピーできるMarkdown文書がまだありません","export.copiedRaw":"文書のみコピーしました（Markdown、コメントなし）","export.copyFailed":"コピーできませんでした。もう一度お試しください","export.needComment":"書き出す前にコメントを1件以上追加してください","export.copiedFull":"全コンテキスト（文書 + {n, plural, other {# 件のコメント}}）をコピーしました — AIアシスタントに貼り付けてください","export.copiedNotes":"コメントのみ（{n, plural, other {# 件}}）をコピーしました — AIアシスタントに貼り付けてください","export.button":"AI用に書き出す","export.options":"書き出しオプション","export.menu":"書き出し","export.copyHead":"クリップボードにコピー","export.full":"全コンテキスト","export.fullSub":"文書 + コメント + AIへの指示","export.notes":"コメントのみ","export.notesSub":"コメントと引用箇所（文書全体は含まない）","export.raw":"文書のみ","export.rawSub":"Markdownテキストのみ（コメントなし）","export.downloadHead":"ファイルをダウンロード","export.dlFull":"全コンテキスト（.md）","export.dlNotes":"コメントのみ（.md）","export.fileFull":"-AI用","export.fileNotes":"-コメント","export.dlDoc":"文書のみ（.md）","export.aiHead":"AIの回答","export.aiFmt":"AIの回答をmdeverythingに戻す","export.aiFmtSub":"回答形式の指示を追加し、返答をここに貼り付けられるようにします","export.paste":"AIの回答を貼り付け…","export.pasteSub":"AIの回答と修正案をコメントに追加します","home.hideTitle":"紹介を隠してデモだけを表示","home.hide":"紹介を隠す","home.kicker":"AIのためのMarkdownレビューデスク","home.title_html":"直したい言葉を、ピンポイントで。\u003cbr>\u003cspan class=\"hero-em\">AIに何を直すか伝えよう。\u003c/span>","home.sub":"どんなMarkdownファイルにもコメントを付け、各コメントを該当箇所に結び付けたまま書き出し。ChatGPT、Claude、Geminiが正しい場所で答えてくれます。","home.open":"Markdownファイルを開く","home.paste":"Markdownを貼り付け","home.demo":"下のデモを見る","home.dropAria":"Markdownファイルを開く — またはここにドロップ","home.dropTitle":".mdファイルをここにドロップ","home.dropBrowse":"またはクリックしてファイルを選択","home.dropHint":".md · .markdown · .txt — または .mdeverything.json バックアップ","how.title":"使い方","how.mockDoc_html":"5人までのチームは無料。それ以外は\u003cmark class=\"mk-hl\">初日から課金されます\u003cspan class=\"mk-badge\">1\u003c/span>\u003c/mark>。","how.mockNote":"本当ですか？14日間の無料トライアルがあると思っていました。","how.s1Title":"言葉を指し示す","how.s1Text":"Markdownファイルを開くか貼り付けます。箇所を選択して、変えてほしい点を書きます。","how.mockExport_html":"\u003cspan class=\"mk-k\">[1] {#n3f9a}\u003c/span> 場所: セクション「料金」\n引用箇所:\n\u003cspan class=\"mk-q\">\"初日から課金されます\"\u003c/span>\nメモ: 本当ですか？14日間の…","how.s2Title":"AIに送る","how.s2Text":"書き出すと、各コメントを該当箇所に結び付けたまま文書全体がコピーされます。ChatGPT、Claude、Geminiに貼り付けましょう。","how.mockReply":"はい — 有料プランは14日間の無料トライアルから始まります。","how.mockDiff_html":"\u003cdel>初日から\u003c/del>\u003cins>14日間の無料トライアル後に\u003c/ins>課金されます","how.s3Title":"回答をその場で確認","how.s3Text_html":"返答を貼り付けると、各回答がそれぞれのコメントの下に入り、修正案は \u003cdel>修正前\u003c/del> → \u003cins>修正後\u003c/ins> の形で表示されます。1件ずつ承認または却下できます。","how.loopTitle":"まだ終わらない？","how.loopText":"返信やコメントを追加して再度書き出せば、新しいコメントと追加の質問にだけ回答が返ってきます。","how.foot":"ChatGPT、Claude、Geminiに対応 — アカウント不要、アップロードなし","why.aria":"mdeverythingを選ぶ理由","why.c1Title":"AIに正確なコンテキストを","why.c1Text":"各コメントに引用・セクション・前後の文章が付くので、回答が正しい文に届きます。","why.c2Title":"プライベート — ブラウザ内で動作","why.c2Text":"アップロードなし、アカウントなし、トラッキングなし。作業内容はこの端末に残ります。","why.c3Title":"どの言語でも使える","why.c3Text":"コメントは言葉そのものに結び付きます — English、Tiếng Việt、日本語でも同じです。","assure.free":"無料","assure.noSignup":"登録不要","assure.autosave":"作業中に自動保存","assure.docs":"最大10件の文書を保存","tip.text_html":"\u003cb>試してみましょう：\u003c/b>下の文を選択して \u003ckbd>Enter\u003c/kbd> を押すとコメントを残せます。","tip.dismiss":"ヒントを閉じる","floater.add":"メモを追加","dropzone.text":".mdファイル（または .mdeverything.json バックアップ）をドロップして開く","source.newTitle":"Markdownから新しい文書を作成","source.create":"文書を作成","source.title":"Markdownを貼り付け","source.render":"文書を表示","source.hint_html":"Markdownを貼り付けて\u003cb>文書を表示\u003c/b>を押してください。ホーム画面ではデモのサンプルが置き換わります。ワークスペースでは既存のメモはできる限り保持され、一致する箇所に結び付け直されます。","source.openFile":"Markdownを開く…","confirm.defaultTitle":"現在の文書を置き換えますか？","confirm.defaultMessage":"この操作は元に戻せません。","confirm.exportFirst":"控えを残したい場合は、先にメモを書き出してください。","confirm.continue":"続行","confirm.replaceMessage":"新しい文書を読み込むと、現在の注釈は削除されます。","confirm.replaceOk":"文書を置き換え","common.cancel":"キャンセル","common.save":"保存","common.undo":"元に戻す","common.cancelEsc":"キャンセル（Esc）","common.close":"閉じる","common.closeEsc":"閉じる（Esc）","common.edit":"編集","common.delete":"削除","common.open":"開く","doc.sampleName":"サンプル文書","doc.untitled":"Markdown文書","doc.labelTitle":"{name} — 文書","doc.editedName":"編集した文書","doc.sampleCopy":"サンプルのコピー","doc.pastedName":"貼り付けたMarkdown","doc.untitledShort":"無題","doc.recoveredName":"復旧した文書","doc.importedName":"インポートした文書","sample.confirmTitle":"サンプルを開きますか？","sample.confirmMessage":"現在 {n, plural, other {# 件のメモ}}があります。サンプルを読み込むとこれらの注釈は削除されます。","sample.confirmOk":"サンプルを開く","sample.confirmKeep":"現在の文書を残す","sample.loaded":"サンプルを読み込みました（{n, plural, other {例のコメント # 件}}）","sample.liveDemo":"ライブデモ · ハイライトにカーソルを合わせるかクリック","render.failed":"Markdownを表示できませんでした。","code.label":"コード","code.copy":"コピー","code.copied":"コピーしました","code.error":"エラー","mermaid.rendering":"図を描画中…","mermaid.error":"図を解析できませんでした — ソースを表示しています。","diag.add":"コメント","diag.addAria":"「{label}」にコメント","diag.wrapAria":"図 {n}。矢印キーで図形を選び、Enter でコメントします。","diag.cardQuote":"図 {n} · 「{label}」","diag.cardWhole":"図 {n}","diag.location":"図 {n}（{type}）· {shape}「{label}」","diag.locationWhole":"図 {n}（{type}）","diag.bundleMermaid":"Mermaid: {code}","diag.shapeNode":"ノード","diag.shapeEdge":"矢印のラベル","diag.shapeGroup":"グループ","diag.shapeParticipant":"参加者","diag.shapeMessage":"メッセージ","diag.shapeNote":"ノート","outline.untitled":"無題のセクション","outline.title":"このページの内容","outline.close":"アウトラインを閉じる","outline.collapse":"アウトラインを折りたたむ","outline.empty_html":"この文書にはまだ見出しがありません。\u003ccode>#\u003c/code>、\u003ccode>##\u003c/code>、\u003ccode>###\u003c/code> の見出しを追加するとアウトラインが表示されます。","outline.expand":"アウトラインを展開","outline.aria":"文書のアウトライン","gutter.comment":"このブロックにコメント","rail.countLabel":"{n, plural, other {件のメモ}}","rail.show":"コメントパネルを表示","rail.hide":"コメントパネルを隠す","rail.collapse":"コメントパネルを折りたたむ","rail.showCount":"コメントパネルを表示（{n, plural, other {# 件}}）","rail.notesWord":"件のメモ","rail.empty_html":"文書内の\u003cb>好きな箇所を選択\u003c/b>して、メモや質問を追加しましょう。メモはその箇所のすぐ横に表示され、コピーするときも一緒に付いていきます。","rail.reviewerNotes":"レビューメモ","rail.exampleNotes":"メモの例","rail.demoHint":"デモのコメントで、注釈とハイライト箇所のつながりを確認できます。","card.notFound":"この箇所は文書内に見つかりません","card.exampleChip":"メモの例","card.replies":"{n, plural, other {返信 # 件}}","card.editNote":"メモを編集","card.deleteNote":"メモを削除","card.replyPlaceholder":"返信…","card.replyToNote":"メモ {n} に返信","card.reply":"返信","card.addNotePlaceholder":"クリックしてメモを追加…","card.ariaNote":"メモ {n}: {quote}","card.ariaEmpty":"「{quote}」の空のメモ {n} — 選択して入力","card.deleteNoteN":"メモ {n} を削除","card.editNoteN":"メモ {n} を編集","pop.notesOnPassage":"{n, plural, other {この箇所のメモ # 件}}","pop.noNoteClick":"メモはまだありません — クリックして追加","pop.preview":"メモのプレビュー","pop.newNote":"新しいメモ","pop.notePlaceholder":"メモや質問を入力…","pop.noteText":"メモの本文","pop.hint":"Enter で保存 · Shift+Enter で改行","pop.noteN":"メモ {n}","pop.notesHere":"{n, plural, other {ここにメモ # 件}}","pop.showNote":"メモ {n} を表示","pop.noNote":"メモはまだありません","reply.deleted":"返信を削除しました","reply.edit":"返信を編集","reply.delete":"返信を削除","reply.editHintTitle":"Enter で保存 · Shift+Enter で改行 · Esc でキャンセル","reply.editHint":"Enter で保存 · Esc でキャンセル","reply.edited":"編集済み","reply.editedAt":"{date} に編集","filter.none.all":"コメントはありません。","filter.none.replies":"返信のあるコメントはありません。","filter.none.unanchored":"位置を失ったコメントはありません。","filter.none.ai":"AIの回答があるコメントはありません。","filter.none.noai":"AIの回答がないコメントはありません。","filter.none.sugg":"未処理の修正案があるコメントはありません。","filter.noneQ.all":"「{q}」に一致するコメントはありません。","filter.noneQ.replies":"「{q}」に一致する、返信のあるコメントはありません。","filter.noneQ.unanchored":"「{q}」に一致する、位置を失ったコメントはありません。","filter.noneQ.ai":"「{q}」に一致する、AIの回答があるコメントはありません。","filter.noneQ.noai":"「{q}」に一致する、AIの回答がないコメントはありません。","filter.noneQ.sugg":"「{q}」に一致する、未処理の修正案があるコメントはありません。","filter.label":"コメントを絞り込む","filter.all":"すべて","filter.replies":"返信あり","filter.unanchored":"位置なし","filter.unanchoredTitle":"該当箇所が文書から消えたメモ","filter.ai":"AIの回答あり","filter.noai":"AIの回答なし","filter.sugg":"未処理の修正案","filter.suggTitle":"まだ承認も却下もしていないAIの修正案","filter.clear":"絞り込みを解除","search.placeholder":"コメントを検索","help.titleShort":"キーボードショートカット（?）","help.title":"キーボードショートカット","help.nextPrev":"次 / 前のコメント","help.search":"コメントを検索","help.addNote":"選択したテキストにメモを追加","help.close":"カード、メニュー、ダイアログを閉じる","help.show":"このショートカット一覧を表示","nav.noComments":"コメントはまだありません","nav.noMatch":"絞り込みに一致するコメントはありません","nav.noHighlight":"この文書にハイライト付きのコメントはありません","toast.noteGone":"このメモはもう存在しません","toast.noteDeleted":"メモを削除しました","toast.noteRestoredOrphan":"メモを復元しました — 該当箇所はもう文書にありません","toast.storageFull":"ブラウザのストレージがいっぱいです — 最新の変更は保存されていません","toast.manageStorage":"ストレージを管理","toast.storageUnavailable":"ここではブラウザのストレージを使えません — 再読み込みすると変更は失われます","toast.savedAs":"変更は「{name}」として保存されます","toast.opened":"{name} を開きました","toast.docLoaded":"文書を読み込みました","toast.cantRead":"「{name}」を読み込めませんでした","toast.pasteFirst":"先にMarkdownを貼り付けてください","toast.rendered":"Markdownを表示しました","time.justNow":"たった今","time.yesterday":"昨日","editor.undo":"元に戻す","editor.redo":"やり直す","editor.bold":"太字","editor.italic":"斜体","editor.strike":"取り消し線","editor.h1":"見出し1","editor.h2":"見出し2","editor.h3":"見出し3","editor.ul":"箇条書き","editor.ol":"番号付きリスト","editor.task":"タスクリスト","editor.quote":"引用","editor.code":"インラインコード","editor.codeblock":"コードブロック","editor.link":"リンク","editor.table":"表を挿入","editor.hr":"区切り線","editor.region":"Markdownエディター","editor.formatting":"書式","editor.discardTitle":"変更を破棄して文書に戻る","editor.discard":"破棄","editor.applyTitle":"変更を適用（{key}）","editor.done":"完了","editor.view":"エディターの表示","editor.write":"編集","editor.preview":"プレビュー","editor.source":"Markdownソース","editor.placeholder":"Markdownを入力…","editor.livePreview":"ライブプレビュー","editor.hint_html":"\u003ckbd>{key}\u003c/kbd> で適用 · \u003ckbd>Esc\u003c/kbd> の後 \u003ckbd>Tab\u003c/kbd> でエディターを離れる","editor.finishTitle":"編集を終えて変更を適用（{key}）","editor.editTitle":"ライブプレビューでMarkdownソースを編集","editor.editing":"編集中","editor.edit":"編集","editor.draftRestored":"未保存の下書きを復元しました","editor.noChanges":"適用する変更はありません","editor.applied":"変更を適用しました","editor.lost":"{n, plural, other {# 件のコメントが位置を失いました}}","editor.reanchored":"{n, plural, other {# 件のコメントを結び付け直しました}}","editor.discardConfirmTitle":"編集を破棄しますか？","editor.discardConfirmMessage":"Markdownソースへの変更は失われます。","editor.discardConfirmNote":"文書とコメントは編集を始める前の状態のまま残ります。","editor.discardConfirmOk":"編集を破棄","editor.keepEditing":"編集を続ける","editor.discarded":"編集を破棄しました","editor.count":"{w, plural, other {# 語}} · {c, plural, other {# 文字}}","editor.unsaved":"未保存の変更","editor.clean":"変更なし","editor.nothingToPreview":"プレビューする内容はまだありません。","editor.ph.linkText":"リンクテキスト","editor.ph.bold":"太字のテキスト","editor.ph.italic":"斜体のテキスト","editor.ph.strike":"取り消し線","editor.ph.code":"コード","editor.ph.column":"列 {n}","editor.ph.cell":"セル","editor.finishFirst":"先に編集を終えてください: 完了（{key}）で適用、破棄で元に戻します","editor.finishBeforeOpen":"別のファイルを開く前に編集を終えてください","editor.finishFirstShort":"先に編集を終えてください","lib.documents":"文書","lib.full":"保存できる文書は最大 {max} 件です — 追加するには1件削除してください","lib.manage":"管理","lib.recovered":"文書一覧になかった {n, plural, other {# 件の文書}}を復旧しました","lib.cantOpen":"「{name}」を開けませんでした — 保存データが見つかりません","lib.deletedOne":"「{name}」を削除しました","lib.deletedMany":"{n} 件の文書を削除しました","lib.restoredOne":"「{name}」を復元しました","lib.restoredMany":"{n} 件の文書を復元しました","lib.notRestored":" — {n, plural, other {# 件の文書}}は復元されませんでした（上限 {max} 件）","lib.nothingToBackup":"バックアップする内容はまだありません","lib.downloaded":"{file} をダウンロードしました","lib.importFailed":"「{name}」をインポートできませんでした — {why}","lib.importNotJson":"有効なJSONではありません","lib.importNotBackup":"mdeverythingのバックアップではありません","lib.importEmpty":"文書が含まれていません","lib.dupSkipped":" — 重複する {n, plural, other {# 件}}をスキップしました（すでに文書一覧にあります）","lib.imported":"{docs, plural, other {# 件の文書}} · {notes, plural, other {# 件のコメント}}をインポートしました","lib.importFull":" — ストレージがいっぱいのため、残りはスキップしました","lib.importCapped":" — {n, plural, other {# 件の文書}}をスキップしました（上限 {max} 件）","lib.dupOne":"「{name}」はすでに文書一覧にあります — 新しくインポートするものはありません","lib.dupAll":"{n} 件すべての文書がすでに文書一覧にあります — 新しくインポートするものはありません","lib.backupNag":"{days} 日以上バックアップがありません — ブラウザはサイトのデータを消去することがあります。文書の控えをファイルで残しておきましょう。","lib.downloadBackup":"バックアップをダウンロード","lib.changedElsewhere":"「{name}」が別のタブで変更されました","lib.loadLatest":"最新版を読み込む","lib.deletedElsewhere":"「{name}」は別のタブで削除されました — ここでは開いたままで、次に変更すると再び保存されます","lib.cantLoadLatest":"最新版を読み込めませんでした","lib.loadedLatest":"最新の「{name}」を読み込みました","lib.quotaWarn":"ストレージがほぼいっぱいです — 残り約 {free} です。バックアップをダウンロードし、不要な文書を削除してください。","lib.lsWarn":"このサイトの小さな文書用ストレージがほぼいっぱいです（同じドメインの他のページと共有しています）。不要な文書を削除してください。","lib.backupFirst":"先にバックアップをダウンロード","lib.backupFirstMany":"先に {n} 件の文書のバックアップをダウンロード","lib.backupDone":"バックアップをダウンロードしました ✓","lib.noOld":"{days} 日より古い文書はありません","lib.andMore":"…ほか {n} 件","lib.oldTitle":"{n, plural, other {古い文書 # 件}}を削除しますか？","lib.oldMessage":"過去 {days} 日間変更されていない文書:","lib.oldNote":"ブラウザのストレージが空きます。直後なら元に戻せます。","lib.oldOk":"{n} 件を削除","lib.oldKeep":"残す","lib.wipeTitle":"すべてのデータを削除しますか？","lib.wipeMessage":"このブラウザから {docs, plural, other {# 件の文書}}、{notes, plural, other {# 件のコメント}}と保存された設定が完全に削除されます。","lib.wipeNote":"この操作は元に戻せません。","lib.wipeOk":"すべて削除","lib.wiped":"このブラウザからすべてのデータを削除しました","lib.new":"新規","lib.newOpen":"ファイルを開く…","lib.newOpenSub":".md、.markdown、.txt","lib.newPaste":"Markdownを貼り付け…","lib.newPasteSub":"テキストから新しい文書を作成","lib.newSample":"サンプル文書","lib.newSampleSub":"ガイド付きデモ（保存されません）","lib.close":"文書一覧を閉じる","lib.search":"文書を検索","lib.searchAria":"文書を名前で検索","lib.listAria":"保存された文書","lib.backup":"バックアップ","lib.backupAll":"バックアップをダウンロード（.json）","lib.restore":"バックアップから復元…","lib.backupNote":"バックアップは文書とコメントを1つのファイルにまとめます。別のブラウザへの移行や控えの保管に使えます。","lib.removeOld":"{days} 日より古い文書を削除","lib.wipe":"すべてのデータを削除","lib.showingSample":"サンプル文書を表示中","lib.sampleNotice":"サンプル文書を表示しています。変更しない限り保存されません — 変更すると「{name}」としてここに保存されます。","lib.emptyTitle":"保存された文書はまだありません","lib.emptyText":"Markdownファイルを開くか貼り付けると、コメントと一緒に自動でここに保存されます。","lib.noMatch":"「{q}」に一致する文書はありません。","lib.rowComments":"{n, plural, other {コメント # 件}}","lib.renameAria":"{name} の名前を変更","lib.openTitle":"{name} を開く","lib.current":"表示中","lib.rename":"名前を変更","lib.backupOne":"バックアップをダウンロード","lib.backupOneAria":"{name} のバックアップをダウンロード","lib.deleteAria":"{name} を削除","lib.hostStorage":"ストレージはこのページを表示しているアプリが管理しているため、ここでは使用量を測定できません。","lib.noStorage":"ここではブラウザのストレージを使えません — 再読み込みすると文書は失われます。","lib.storage":"ストレージ","lib.used_html":"\u003cb>約 {size}\u003c/b> 使用中","lib.meterTitle":"小さな文書: localStorage に約 {ls} · 大きな文書: IndexedDB に約 {idb}","lib.meterFree":" · このサイトにはブラウザの空き容量が約 {free} あります","lib.meterAria":"ブラウザのストレージ使用量","ai.fmtOn":"AIの回答: オン — 書き出し時に、貼り戻せる形式で答えるようAIに依頼します","ai.fmtOff":"AIの回答: オフ — 通常の形式で書き出します","ai.noDocDownload":"ダウンロードできるMarkdown文書がまだありません","ai.noNoteId":"この文書に ID {id} のメモはありません","ai.noNoteNum":"この文書にメモ [{n}] はありません","ai.emptyAnswer":"空の回答","ai.suggestedEdits":"{n, plural, other {修正案 # 件}}","ai.addAnswers":"回答を追加","ai.noNotes":"この文書にはまだメモがないため、回答を追加する先がありません。","ai.srAdd":"追加予定: ","ai.srDup":"スキップ（重複）: ","ai.srSkip":"スキップ: ","ai.prevNote":"メモ {n} · {snippet}","ai.byNumber":"番号で照合","ai.byId":"IDで照合","ai.includes":"{n, plural, other {修正案 # 件を含む}}","ai.round":"メモ {n} にはすでにAIの回答があります — これは {round} 回目になります","ai.roundSuperseded":"（未処理の修正案は「置き換え済み」になります）","ai.dupSkipped":"同じ回答がすでに追加されています — スキップしました","ai.skippedWhy":"{why} — スキップしました","ai.general":"全般","ai.generalNote":"保存されません — 必要ならコピーしてください","ai.generalCopied":"全般コメントをコピーしました","ai.noneFound_html":"回答が見つかりません。各回答は \u003ccode>{example}\u003c/code> のような見出しで始まる必要があります — 書き出す前に、書き出しメニューの「{option}」をオンにしてください。","ai.addN":"{n, plural, other {回答 # 件を追加}}","ai.added":"{n, plural, other {AIの回答 # 件を追加しました}}","ai.removed":"{n, plural, other {AIの回答 # 件を削除しました}}","ai.line":"{n} 行目","ai.moreChanges":"{n, plural, other {…ほか # 件の変更 — 確認から表示}}","ai.noChanges":"変更なし","ai.scope.quote":"引用箇所","ai.scope.everywhere":"{n, plural, other {全体 · # か所}}","ai.scope.section":"セクション: {name}","ai.scope.document":"{n, plural, other {文書全体 · # 件の変更}}","ai.scope.sentence":"文 · 段落","ai.scope.elsewhereLine":"その他 · 約 {n} 行目","ai.scope.elsewhere":"その他","ai.scope.deletion":" · 削除","ai.scope.addition":" · 追加","ai.miss.overlap":"承認済みの変更と重なっています","ai.miss.conflict":"同じ回答内の別の修正と重なっています","ai.miss.same":"すでに文書に反映されています","ai.miss.format":"Markdown上で一字一句一致しません（書式をまたいでいます）","ai.miss.changed":"AIの回答後に本文が変更されました","ai.byHand":"{why} — 手動で適用してください","ai.suggCopied":"修正案のテキストをコピーしました","ai.cantApplyN":"{n} 件の修正を適用できませんでした — 各メモを確認してください","ai.finishFirst":"先に編集を終えてください: 完了で適用、破棄で元に戻します","ai.applied":"{n, plural, other {修正案 # 件を適用しました}}","ai.notApplied":" · {n} 件は適用できませんでした","ai.lostHighlight":" · {n, plural, other {# 件のメモがハイライトを失いました}}","ai.undone":"{n, plural, other {修正を元に戻しました}}","ai.rejected":"{n, plural, other {修正案 # 件を却下しました}}","ai.noReview":"確認する変更はありません","ai.revHint":"メモ {num} · {scope} · {n, plural, other {# 件の変更}}。変更を1件ずつ承認または却下してから適用してください。","ai.revChange":"変更 {n} · 約 {line} 行目","ai.accept":"承認","ai.reject":"却下","ai.acceptN":"変更 {n} を承認","ai.rejectN":"変更 {n} を却下","ai.apply":"適用","ai.applyNofM":"{m, plural, other {# 件中 {k} 件の変更を適用}}","ai.rejectEdit":"この修正を却下","ai.docChanged":"文書が変更されました — もう一度確認を開いてください","ai.tag":"AI","ai.tagRound":"AI · {n} 回目","ai.tagTitle":"AIアシスタントから貼り付けた回答","ai.copyAnswer":"回答をコピー","ai.copyAnswerAria":"AIの回答をコピー","ai.answerCopied":"回答をコピーしました","ai.earlier":"以前のAIの回答 · {n} 回目","ai.editN":"修正 {n} · ","ai.st.accepted":"✓ 承認済み","ai.st.rejected":"却下済み","ai.st.superseded":"置き換え済み","ai.supersededTitle":"新しいAIの回答でこの修正案は置き換えられました","ai.copySugg":"修正案のテキストをコピー","ai.dismiss":"閉じる","ai.dismissAria":"メモ {n} の修正案を閉じる","ai.review":"確認…","ai.reviewAria":"メモ {n} の変更案を確認","ai.acceptAria":"メモ {n} の修正案を承認","ai.rejectAria":"メモ {n} の修正案を却下","ai.chipRewrite":"メモ {n} · 書き換え案 · 確認","ai.chipPlaces":"メモ {n} · 変更案 · {k} か所","ai.chipChange":"メモ {n} · 変更案 · 確認","ai.chipShowNote":"メモを表示","ai.chipReview":"変更案を確認","ai.suggCount":"{n, plural, other {修正案 # 件}}","ai.pasteAnswer":"AIの回答を貼り付け…","ai.showSuggTitle":"文書内に修正案を表示","ai.showSugg":"修正案を表示","ai.pasteTitle":"AIの回答を貼り付け","ai.pasteHint_html":"アシスタントの返答を貼り付けてください。各回答は \u003ccode>{#id}\u003c/code>（または番号）でメモと照合され、AIの返信として追加されます。","ai.pasteAria":"AIの回答","ai.pastePlaceholder":"```mdeverything\n## [1] {#n3f9a}\n回答…\n```","ai.suggBar":"修正案","ai.acceptAll":"すべて承認","ai.rejectAll":"すべて却下","ai.hideSuggAria":"文書内の修正案を隠す","ai.hideSugg":"修正案を隠す","ai.reviewTitle":"変更を確認","bundle.section":"セクション「{name}」","bundle.line":"約 {n} 行目","bundle.notFound":"（現在の文書には見つかりません）","bundle.location":"場所:","bundle.quoted":"引用箇所:","bundle.context":"文脈:","bundle.note":"メモ / 質問:","bundle.noNote":"（メモなし）","bundle.replies":"返信（{n}）:","bundle.aiRound":"（AI、{n} 回目）","bundle.editsSummary":"（修正案 {n, plural, other {# 件}}: {list}）","bundle.state.accepted":"承認 {n}","bundle.state.rejected":"却下 {n}","bundle.state.superseded":"置き換え {n}","bundle.state.pending":"未処理 {n}","link.kind.section":"セクション","link.kind.p":"段落","link.kind.li":"リスト項目","link.kind.td":"表のセル","link.kind.quote":"引用","link.kind.pre":"コードブロック","link.kind.table":"表","link.kind.figure":"図","link.kind.dd":"定義","link.kind.dt":"用語","link.broken":"リンク切れ","link.notFound":"セクションが見つかりません","link.noMatch":"{frag} はこの文書のどの見出しにも一致しません","link.jumpHint":"クリックで移動 · 後で ↩ 戻る","link.email":"メール","link.external":"外部リンク","link.copy":"リンクをコピー","link.opensMail":"メールアプリが開きます","link.opensTab":"新しいタブで開きます","link.otherFile":"別のファイル","link.fileBlocked":"別のファイルへのリンクはここでは開けません","link.copied":"リンクをコピーしました","link.copyFailed":"リンクをコピーできませんでした","link.backAria":"元の位置に戻る（Alt+Left）","link.back":"戻る","table.region":"表 {n}","table.optionsN":"表 {n} のオプション","table.options":"表のオプション","table.colWidth":"列 {n} の幅","table.rowHeight":"行 {n} の高さ","table.reset":"サイズをリセット","table.density":"表示密度","table.compact":"狭い","table.default":"標準","table.comfortable":"広い","table.resetDone":"表のサイズをリセットしました","pane.resizeOutline":"アウトラインのサイズを変更","pane.resizeRail":"コメントパネルのサイズを変更","pane.resizeTitle":"ドラッグでサイズ変更 · ダブルクリックでリセット"}}</script>
+<script type="application/json" id="i18n">{"lang":"ja","code":"ja","nativeName":"日本語","base":"../","locales":[{"code":"en","htmlLang":"en","dir":"ltr","nativeName":"English","href":"../"},{"code":"vi","htmlLang":"vi","dir":"ltr","nativeName":"Tiếng Việt","href":"../vi/"},{"code":"ja","htmlLang":"ja","dir":"ltr","nativeName":"日本語","href":"../ja/"},{"code":"pt-BR","htmlLang":"pt-BR","dir":"ltr","nativeName":"Português (Brasil)","href":"../pt-br/"},{"code":"es","htmlLang":"es","dir":"ltr","nativeName":"Español","href":"../es/"}],"dict":{"lang.button":"言語","lang.buttonAria":"言語: 日本語","lang.links":"言語","lang.suggest":"このページは日本語でもご覧いただけます","lang.suggestGo":"切り替える","lang.suggestDismiss":"閉じる","hdr.outline":"アウトライン","hdr.comments":"コメント","hdr.outlineToggle":"アウトラインの表示 / 非表示","hdr.editMd":"Markdownを編集","hdr.importTitle":"開く、貼り付け、復元","hdr.import":"インポート","hdr.theme":"テーマ","hdr.railToggle":"コメントパネルの表示 / 非表示","menu.openTitle":"Markdownファイルを開く","menu.open":"ファイルを開く…","menu.openSub":"パソコン上の .md、.markdown、.txt","menu.pasteTitle":"Markdownを貼り付け","menu.paste":"Markdownを貼り付け…","menu.pasteSub":"クリップボードのテキストから始める","menu.restoreTitle":"バックアップファイルから文書とコメントを復元","menu.restore":"バックアップから復元（.json）…","menu.restoreSub":"文書とそのコメントを元に戻す","theme.light":"ペーパー","theme.beige":"セピア","theme.dark":"ナイト","theme.aria":"テーマ: {name}","theme.ariaPaper":"テーマ: ペーパー","export.noDoc":"コピーできるMarkdown文書がまだありません","export.copyFailed":"コピーできませんでした。もう一度お試しください","export.needComment":"書き出す前にコメントを1件以上追加してください","export.button":"AI用に書き出す","export.options":"書き出しオプション","export.menu":"書き出し","export.full":"全コンテキスト","export.notes":"コメントのみ","export.raw":"文書のみ","export.fileFull":"-AI用","export.fileNotes":"-コメント","export.aiFmt":"AIの回答をmdeverythingに戻す","exp2.mFull":"全コンテキストをコピー","exp2.mFullSub":"文書＋コメント＋指示","exp2.mNotes":"コメントのみコピー","exp2.mNotesSub":"コメントと引用箇所だけ","exp2.mDoc":"文書のみコピー","exp2.mDocSub":"本文だけ","exp2.mOptions":"書き出しオプション…","exp2.mOptionsSub":"ひと言指示・追加の指示・ダウンロード","exp2.mPaste":"AIの結果を貼り付け…","exp2.mPasteSub":"AIが返した内容を貼り戻す","exp2.title":"AI用に書き出す","exp2.what":"送る内容","exp2.fullSub":"文書＋コメント","exp2.notesSub":"コメント＋引用箇所","exp2.docSub":"本文だけ","exp2.quick":"AIへのひと言","exp2.optMark":"修正箇所を示す（削除は取り消し線、追加は紫）","exp2.optAnswer":"コメントごとに回答","exp2.optAnswerSub":"回答を各コメントの下に貼り戻せます","exp2.optAnswerNa":"文書のみを送るときは使いません","exp2.extra":"追加の指示","exp2.extraPh":"例：文体はそのまま、見出しは変えない…","exp2.suggestions":"候補","exp2.chipTone":"文体はそのまま","exp2.chipOnly":"コメントのある箇所だけ修正","exp2.chipHeadings":"見出しは変えない","exp2.chipShorter":"もっと短く","exp2.chipExplain":"修正ごとに理由を簡潔に","exp2.chipKeep":"表とコードはそのまま","exp2.chipLang":"日本語で回答","exp2.recent":"最近使った指示","exp2.useRecent":"使う：{text}","exp2.preview":"コピーする内容をプレビュー","exp2.download":".md をダウンロード","exp2.copy":"コピー","exp2.markPrompt":"修正後の文書全体を Markdown で返してください。修正箇所がわかるように、削除した文字は ~~二重チルダ~~ で囲んで取り消し線にし、追加した文字は \u003cins>…\u003c/ins> で囲んでください（紫で表示されます）。前回の印がある場合は、~~取り消し線~~ の部分を完全に削除し、前回の \u003cins> の文字は通常の文字として残してください（\u003cins> タグは外す）。","exp2.okFull":"全コンテキストをコピーしました","exp2.okNotes":"コメントのみコピーしました","exp2.okDoc":"文書のみコピーしました","exp2.okDl":"{file} をダウンロードしました","exp2.failTitle":"クリップボードにコピーできませんでした","exp2.failSub":"ブラウザーにブロックされました。代わりにファイルをダウンロードして AI に添付してください。","exp2.metaComments":"{n, plural, other {コメント #件}}","exp2.metaWords":"{n, plural, other {#語}}","exp2.metaWith":"含む：{list}","exp2.incMark":"修正箇所の表示","exp2.incAnswer":"コメントごとの回答","exp2.incExtra":"追加の指示","exp2.stepsAria":"次の手順","exp2.step1":"AI に貼り付け","exp2.step1Dl":"ファイルを AI に添付","exp2.step2":"結果をコピー","exp2.step3":"ここに貼り戻す","exp2.openAi":"AI を開く","exp2.more":"+ その他","exp2.newTab":"{name}（新しいタブで開く）","exp2.anyAi":"Markdown を読める AI ならどれでも使えます","exp2.cta":"AIの結果を貼り付け","exp2.ctaDl":"代わりにファイルをダウンロード","exp2.noteMark":"削除は取り消し線、追加は紫で表示","exp2.noteAnswer":"回答は各コメントの下に表示されます","exp2.hideSteps":"今後この手順を表示しない","exp2.dismiss":"閉じる","home.hideTitle":"紹介を隠してデモだけを表示","home.hide":"紹介を隠す","home.kicker":"AIのためのMarkdownレビューデスク","home.title_html":"直したい言葉を、ピンポイントで。\u003cbr>\u003cspan class=\"hero-em\">AIに何を直すか伝えよう。\u003c/span>","home.sub":"どんなMarkdownファイルにもコメントを付け、各コメントを該当箇所に結び付けたまま書き出し。ChatGPT、Claude、Geminiが正しい場所で答えてくれます。","home.open":"Markdownファイルを開く","home.paste":"Markdownを貼り付け","home.demo":"下のデモを見る","home.dropAria":"Markdownファイルを開く — またはここにドロップ","home.dropTitle":".mdファイルをここにドロップ","home.dropBrowse":"またはクリックしてファイルを選択","home.dropHint":".md · .markdown · .txt — または .mdeverything.json バックアップ","how.title":"使い方","how.mockDoc_html":"5人までのチームは無料。それ以外は\u003cmark class=\"mk-hl\">初日から課金されます\u003cspan class=\"mk-badge\">1\u003c/span>\u003c/mark>。","how.mockNote":"本当ですか？14日間の無料トライアルがあると思っていました。","how.s1Title":"言葉を指し示す","how.s1Text":"Markdownファイルを開くか貼り付けます。箇所を選択して、変えてほしい点を書きます。","how.mockExport_html":"\u003cspan class=\"mk-k\">[1] {#n3f9a}\u003c/span> 場所: セクション「料金」\n引用箇所:\n\u003cspan class=\"mk-q\">\"初日から課金されます\"\u003c/span>\nメモ: 本当ですか？14日間の…","how.s2Title":"AIに送る","how.s2Text":"書き出すと、各コメントを該当箇所に結び付けたまま文書全体がコピーされます。ChatGPT、Claude、Geminiに貼り付けましょう。","how.mockReply":"はい — 有料プランは14日間の無料トライアルから始まります。","how.mockDiff_html":"\u003cdel>初日から\u003c/del>\u003cins>14日間の無料トライアル後に\u003c/ins>課金されます","how.s3Title":"回答をその場で確認","how.s3Text_html":"返答を貼り付けると、各回答がそれぞれのコメントの下に入り、修正案は \u003cdel>修正前\u003c/del> → \u003cins>修正後\u003c/ins> の形で表示されます。1件ずつ承認または却下できます。","how.loopTitle":"まだ終わらない？","how.loopText":"返信やコメントを追加して再度書き出せば、新しいコメントと追加の質問にだけ回答が返ってきます。","how.foot":"ChatGPT、Claude、Geminiに対応 — アカウント不要、アップロードなし","why.aria":"mdeverythingを選ぶ理由","why.c1Title":"AIに正確なコンテキストを","why.c1Text":"各コメントに引用・セクション・前後の文章が付くので、回答が正しい文に届きます。","why.c2Title":"プライベート — ブラウザ内で動作","why.c2Text":"アップロードなし、アカウントなし、トラッキングなし。作業内容はこの端末に残ります。","why.c3Title":"どの言語でも使える","why.c3Text":"コメントは言葉そのものに結び付きます — English、Tiếng Việt、日本語でも同じです。","assure.free":"無料","assure.noSignup":"登録不要","assure.autosave":"作業中に自動保存","assure.docs":"最大10件の文書を保存","tip.text_html":"\u003cb>試してみましょう：\u003c/b>下の文を選択して \u003ckbd>Enter\u003c/kbd> を押すとコメントを残せます。","tip.dismiss":"ヒントを閉じる","floater.add":"メモを追加","dropzone.text":".mdファイル（または .mdeverything.json バックアップ）をドロップして開く","source.newTitle":"Markdownから新しい文書を作成","source.create":"文書を作成","source.title":"Markdownを貼り付け","source.render":"文書を表示","source.hint_html":"Markdownを貼り付けて\u003cb>文書を表示\u003c/b>を押してください。ホーム画面ではデモのサンプルが置き換わります。ワークスペースでは既存のメモはできる限り保持され、一致する箇所に結び付け直されます。","source.openFile":"Markdownを開く…","confirm.defaultTitle":"現在の文書を置き換えますか？","confirm.defaultMessage":"この操作は元に戻せません。","confirm.exportFirst":"控えを残したい場合は、先にメモを書き出してください。","confirm.continue":"続行","confirm.replaceMessage":"新しい文書を読み込むと、現在の注釈は削除されます。","confirm.replaceOk":"文書を置き換え","common.cancel":"キャンセル","common.save":"保存","common.undo":"元に戻す","common.cancelEsc":"キャンセル（Esc）","common.close":"閉じる","common.closeEsc":"閉じる（Esc）","common.edit":"編集","common.delete":"削除","common.open":"開く","doc.sampleName":"サンプル文書","doc.untitled":"Markdown文書","doc.labelTitle":"{name} — 文書","doc.editedName":"編集した文書","doc.sampleCopy":"サンプルのコピー","doc.pastedName":"貼り付けたMarkdown","doc.untitledShort":"無題","doc.recoveredName":"復旧した文書","doc.importedName":"インポートした文書","sample.confirmTitle":"サンプルを開きますか？","sample.confirmMessage":"現在 {n, plural, other {# 件のメモ}}があります。サンプルを読み込むとこれらの注釈は削除されます。","sample.confirmOk":"サンプルを開く","sample.confirmKeep":"現在の文書を残す","sample.loaded":"サンプルを読み込みました（{n, plural, other {例のコメント # 件}}）","sample.liveDemo":"ライブデモ · ハイライトにカーソルを合わせるかクリック","render.failed":"Markdownを表示できませんでした。","code.label":"コード","code.copy":"コピー","code.copied":"コピーしました","code.error":"エラー","mermaid.rendering":"図を描画中…","mermaid.error":"図を解析できませんでした — ソースを表示しています。","diag.add":"コメント","diag.addAria":"「{label}」にコメント","diag.wrapAria":"図 {n}。矢印キーで図形を選び、Enter でコメントします。","diag.cardQuote":"図 {n} · 「{label}」","diag.cardWhole":"図 {n}","diag.location":"図 {n}（{type}）· {shape}「{label}」","diag.locationWhole":"図 {n}（{type}）","diag.bundleMermaid":"Mermaid: {code}","diag.shapeNode":"ノード","diag.shapeEdge":"矢印のラベル","diag.shapeGroup":"グループ","diag.shapeParticipant":"参加者","diag.shapeMessage":"メッセージ","diag.shapeNote":"ノート","outline.untitled":"無題のセクション","outline.title":"このページの内容","outline.close":"アウトラインを閉じる","outline.collapse":"アウトラインを折りたたむ","outline.empty_html":"この文書にはまだ見出しがありません。\u003ccode>#\u003c/code>、\u003ccode>##\u003c/code>、\u003ccode>###\u003c/code> の見出しを追加するとアウトラインが表示されます。","outline.expand":"アウトラインを展開","outline.aria":"文書のアウトライン","gutter.comment":"このブロックにコメント","rail.countLabel":"{n, plural, other {件のメモ}}","rail.show":"コメントパネルを表示","rail.hide":"コメントパネルを隠す","rail.collapse":"コメントパネルを折りたたむ","rail.showCount":"コメントパネルを表示（{n, plural, other {# 件}}）","rail.notesWord":"件のメモ","rail.empty_html":"文書内の\u003cb>好きな箇所を選択\u003c/b>して、メモや質問を追加しましょう。メモはその箇所のすぐ横に表示され、コピーするときも一緒に付いていきます。","rail.reviewerNotes":"レビューメモ","rail.exampleNotes":"メモの例","rail.demoHint":"デモのコメントで、注釈とハイライト箇所のつながりを確認できます。","card.notFound":"この箇所は文書内に見つかりません","card.exampleChip":"メモの例","card.replies":"{n, plural, other {返信 # 件}}","card.editNote":"メモを編集","card.deleteNote":"メモを削除","card.replyPlaceholder":"返信…","card.replyToNote":"メモ {n} に返信","card.reply":"返信","card.addNotePlaceholder":"クリックしてメモを追加…","card.ariaNote":"メモ {n}: {quote}","card.ariaEmpty":"「{quote}」の空のメモ {n} — 選択して入力","card.deleteNoteN":"メモ {n} を削除","card.editNoteN":"メモ {n} を編集","pop.notesOnPassage":"{n, plural, other {この箇所のメモ # 件}}","pop.noNoteClick":"メモはまだありません — クリックして追加","pop.preview":"メモのプレビュー","pop.newNote":"新しいメモ","pop.notePlaceholder":"メモや質問を入力…","pop.noteText":"メモの本文","pop.hint":"Enter で保存 · Shift+Enter で改行","pop.noteN":"メモ {n}","pop.notesHere":"{n, plural, other {ここにメモ # 件}}","pop.showNote":"メモ {n} を表示","pop.noNote":"メモはまだありません","reply.deleted":"返信を削除しました","reply.edit":"返信を編集","reply.delete":"返信を削除","reply.editHintTitle":"Enter で保存 · Shift+Enter で改行 · Esc でキャンセル","reply.editHint":"Enter で保存 · Esc でキャンセル","reply.edited":"編集済み","reply.editedAt":"{date} に編集","filter.none.all":"コメントはありません。","filter.none.replies":"返信のあるコメントはありません。","filter.none.unanchored":"位置を失ったコメントはありません。","filter.none.ai":"AIの回答があるコメントはありません。","filter.none.noai":"AIの回答がないコメントはありません。","filter.none.sugg":"未処理の修正案があるコメントはありません。","filter.noneQ.all":"「{q}」に一致するコメントはありません。","filter.noneQ.replies":"「{q}」に一致する、返信のあるコメントはありません。","filter.noneQ.unanchored":"「{q}」に一致する、位置を失ったコメントはありません。","filter.noneQ.ai":"「{q}」に一致する、AIの回答があるコメントはありません。","filter.noneQ.noai":"「{q}」に一致する、AIの回答がないコメントはありません。","filter.noneQ.sugg":"「{q}」に一致する、未処理の修正案があるコメントはありません。","filter.label":"コメントを絞り込む","filter.all":"すべて","filter.replies":"返信あり","filter.unanchored":"位置なし","filter.unanchoredTitle":"該当箇所が文書から消えたメモ","filter.ai":"AIの回答あり","filter.noai":"AIの回答なし","filter.sugg":"未処理の修正案","filter.suggTitle":"まだ承認も却下もしていないAIの修正案","filter.clear":"絞り込みを解除","search.placeholder":"コメントを検索","help.titleShort":"キーボードショートカット（?）","help.title":"キーボードショートカット","help.nextPrev":"次 / 前のコメント","help.search":"コメントを検索","help.addNote":"選択したテキストにメモを追加","help.close":"カード、メニュー、ダイアログを閉じる","help.show":"このショートカット一覧を表示","nav.noComments":"コメントはまだありません","nav.noMatch":"絞り込みに一致するコメントはありません","nav.noHighlight":"この文書にハイライト付きのコメントはありません","toast.noteGone":"このメモはもう存在しません","toast.noteDeleted":"メモを削除しました","toast.noteRestoredOrphan":"メモを復元しました — 該当箇所はもう文書にありません","toast.storageFull":"ブラウザのストレージがいっぱいです — 最新の変更は保存されていません","toast.manageStorage":"ストレージを管理","toast.storageUnavailable":"ここではブラウザのストレージを使えません — 再読み込みすると変更は失われます","toast.savedAs":"変更は「{name}」として保存されます","toast.opened":"{name} を開きました","toast.docLoaded":"文書を読み込みました","toast.cantRead":"「{name}」を読み込めませんでした","toast.pasteFirst":"先にMarkdownを貼り付けてください","toast.rendered":"Markdownを表示しました","time.justNow":"たった今","time.yesterday":"昨日","editor.undo":"元に戻す","editor.redo":"やり直す","editor.bold":"太字","editor.italic":"斜体","editor.strike":"取り消し線","editor.h1":"見出し1","editor.h2":"見出し2","editor.h3":"見出し3","editor.ul":"箇条書き","editor.ol":"番号付きリスト","editor.task":"タスクリスト","editor.quote":"引用","editor.code":"インラインコード","editor.codeblock":"コードブロック","editor.link":"リンク","editor.table":"表を挿入","editor.hr":"区切り線","editor.region":"Markdownエディター","editor.formatting":"書式","editor.discardTitle":"変更を破棄して文書に戻る","editor.discard":"破棄","editor.applyTitle":"変更を適用（{key}）","editor.done":"完了","editor.view":"エディターの表示","editor.write":"編集","editor.preview":"プレビュー","editor.source":"Markdownソース","editor.placeholder":"Markdownを入力…","editor.livePreview":"ライブプレビュー","editor.hint_html":"\u003ckbd>{key}\u003c/kbd> で適用 · \u003ckbd>Esc\u003c/kbd> の後 \u003ckbd>Tab\u003c/kbd> でエディターを離れる","editor.finishTitle":"編集を終えて変更を適用（{key}）","editor.editTitle":"ライブプレビューでMarkdownソースを編集","editor.editing":"編集中","editor.edit":"編集","editor.draftRestored":"未保存の下書きを復元しました","editor.noChanges":"適用する変更はありません","editor.applied":"変更を適用しました","editor.lost":"{n, plural, other {# 件のコメントが位置を失いました}}","editor.reanchored":"{n, plural, other {# 件のコメントを結び付け直しました}}","editor.discardConfirmTitle":"編集を破棄しますか？","editor.discardConfirmMessage":"Markdownソースへの変更は失われます。","editor.discardConfirmNote":"文書とコメントは編集を始める前の状態のまま残ります。","editor.discardConfirmOk":"編集を破棄","editor.keepEditing":"編集を続ける","editor.discarded":"編集を破棄しました","editor.count":"{w, plural, other {# 語}} · {c, plural, other {# 文字}}","editor.unsaved":"未保存の変更","editor.clean":"変更なし","editor.nothingToPreview":"プレビューする内容はまだありません。","editor.ph.linkText":"リンクテキスト","editor.ph.bold":"太字のテキスト","editor.ph.italic":"斜体のテキスト","editor.ph.strike":"取り消し線","editor.ph.code":"コード","editor.ph.column":"列 {n}","editor.ph.cell":"セル","editor.finishFirst":"先に編集を終えてください: 完了（{key}）で適用、破棄で元に戻します","editor.finishBeforeOpen":"別のファイルを開く前に編集を終えてください","editor.finishFirstShort":"先に編集を終えてください","lib.documents":"文書","lib.full":"保存できる文書は最大 {max} 件です — 追加するには1件削除してください","lib.manage":"管理","lib.recovered":"文書一覧になかった {n, plural, other {# 件の文書}}を復旧しました","lib.cantOpen":"「{name}」を開けませんでした — 保存データが見つかりません","lib.deletedOne":"「{name}」を削除しました","lib.deletedMany":"{n} 件の文書を削除しました","lib.restoredOne":"「{name}」を復元しました","lib.restoredMany":"{n} 件の文書を復元しました","lib.notRestored":" — {n, plural, other {# 件の文書}}は復元されませんでした（上限 {max} 件）","lib.nothingToBackup":"バックアップする内容はまだありません","lib.downloaded":"{file} をダウンロードしました","lib.importFailed":"「{name}」をインポートできませんでした — {why}","lib.importNotJson":"有効なJSONではありません","lib.importNotBackup":"mdeverythingのバックアップではありません","lib.importEmpty":"文書が含まれていません","lib.dupSkipped":" — 重複する {n, plural, other {# 件}}をスキップしました（すでに文書一覧にあります）","lib.imported":"{docs, plural, other {# 件の文書}} · {notes, plural, other {# 件のコメント}}をインポートしました","lib.importFull":" — ストレージがいっぱいのため、残りはスキップしました","lib.importCapped":" — {n, plural, other {# 件の文書}}をスキップしました（上限 {max} 件）","lib.dupOne":"「{name}」はすでに文書一覧にあります — 新しくインポートするものはありません","lib.dupAll":"{n} 件すべての文書がすでに文書一覧にあります — 新しくインポートするものはありません","lib.backupNag":"{days} 日以上バックアップがありません — ブラウザはサイトのデータを消去することがあります。文書の控えをファイルで残しておきましょう。","lib.downloadBackup":"バックアップをダウンロード","lib.changedElsewhere":"「{name}」が別のタブで変更されました","lib.loadLatest":"最新版を読み込む","lib.deletedElsewhere":"「{name}」は別のタブで削除されました — ここでは開いたままで、次に変更すると再び保存されます","lib.cantLoadLatest":"最新版を読み込めませんでした","lib.loadedLatest":"最新の「{name}」を読み込みました","lib.quotaWarn":"ストレージがほぼいっぱいです — 残り約 {free} です。バックアップをダウンロードし、不要な文書を削除してください。","lib.lsWarn":"このサイトの小さな文書用ストレージがほぼいっぱいです（同じドメインの他のページと共有しています）。不要な文書を削除してください。","lib.backupFirst":"先にバックアップをダウンロード","lib.backupFirstMany":"先に {n} 件の文書のバックアップをダウンロード","lib.backupDone":"バックアップをダウンロードしました ✓","lib.noOld":"{days} 日より古い文書はありません","lib.andMore":"…ほか {n} 件","lib.oldTitle":"{n, plural, other {古い文書 # 件}}を削除しますか？","lib.oldMessage":"過去 {days} 日間変更されていない文書:","lib.oldNote":"ブラウザのストレージが空きます。直後なら元に戻せます。","lib.oldOk":"{n} 件を削除","lib.oldKeep":"残す","lib.wipeTitle":"すべてのデータを削除しますか？","lib.wipeMessage":"このブラウザから {docs, plural, other {# 件の文書}}、{notes, plural, other {# 件のコメント}}と保存された設定が完全に削除されます。","lib.wipeNote":"この操作は元に戻せません。","lib.wipeOk":"すべて削除","lib.wiped":"このブラウザからすべてのデータを削除しました","lib.new":"新規","lib.newOpen":"ファイルを開く…","lib.newOpenSub":".md、.markdown、.txt","lib.newPaste":"Markdownを貼り付け…","lib.newPasteSub":"テキストから新しい文書を作成","lib.newSample":"サンプル文書","lib.newSampleSub":"ガイド付きデモ（保存されません）","lib.close":"文書一覧を閉じる","lib.search":"文書を検索","lib.searchAria":"文書を名前で検索","lib.listAria":"保存された文書","lib.backup":"バックアップ","lib.backupAll":"バックアップをダウンロード（.json）","lib.restore":"バックアップから復元…","lib.backupNote":"バックアップは文書とコメントを1つのファイルにまとめます。別のブラウザへの移行や控えの保管に使えます。","lib.removeOld":"{days} 日より古い文書を削除","lib.wipe":"すべてのデータを削除","lib.showingSample":"サンプル文書を表示中","lib.sampleNotice":"サンプル文書を表示しています。変更しない限り保存されません — 変更すると「{name}」としてここに保存されます。","lib.emptyTitle":"保存された文書はまだありません","lib.emptyText":"Markdownファイルを開くか貼り付けると、コメントと一緒に自動でここに保存されます。","lib.noMatch":"「{q}」に一致する文書はありません。","lib.rowComments":"{n, plural, other {コメント # 件}}","lib.renameAria":"{name} の名前を変更","lib.openTitle":"{name} を開く","lib.current":"表示中","lib.rename":"名前を変更","lib.backupOne":"バックアップをダウンロード","lib.backupOneAria":"{name} のバックアップをダウンロード","lib.deleteAria":"{name} を削除","lib.hostStorage":"ストレージはこのページを表示しているアプリが管理しているため、ここでは使用量を測定できません。","lib.noStorage":"ここではブラウザのストレージを使えません — 再読み込みすると文書は失われます。","lib.storage":"ストレージ","lib.used_html":"\u003cb>約 {size}\u003c/b> 使用中","lib.meterTitle":"小さな文書: localStorage に約 {ls} · 大きな文書: IndexedDB に約 {idb}","lib.meterFree":" · このサイトにはブラウザの空き容量が約 {free} あります","lib.meterAria":"ブラウザのストレージ使用量","ai.fmtOn":"AIの回答: オン — 書き出し時に、貼り戻せる形式で答えるようAIに依頼します","ai.fmtOff":"AIの回答: オフ — 通常の形式で書き出します","ai.noDocDownload":"ダウンロードできるMarkdown文書がまだありません","ai.noNoteId":"この文書に ID {id} のメモはありません","ai.noNoteNum":"この文書にメモ [{n}] はありません","ai.emptyAnswer":"空の回答","ai.suggestedEdits":"{n, plural, other {修正案 # 件}}","ai.addAnswers":"回答を追加","ai.noNotes":"この文書にはまだメモがないため、回答を追加する先がありません。","ai.srAdd":"追加予定: ","ai.srDup":"スキップ（重複）: ","ai.srSkip":"スキップ: ","ai.prevNote":"メモ {n} · {snippet}","ai.byNumber":"番号で照合","ai.byId":"IDで照合","ai.includes":"{n, plural, other {修正案 # 件を含む}}","ai.round":"メモ {n} にはすでにAIの回答があります — これは {round} 回目になります","ai.roundSuperseded":"（未処理の修正案は「置き換え済み」になります）","ai.dupSkipped":"同じ回答がすでに追加されています — スキップしました","ai.skippedWhy":"{why} — スキップしました","ai.general":"全般","ai.generalNote":"保存されません — 必要ならコピーしてください","ai.generalCopied":"全般コメントをコピーしました","ai.noneFound_html":"回答が見つかりません。各回答は \u003ccode>{example}\u003c/code> のような見出しで始まる必要があります — 書き出す前に、書き出しメニューの「{option}」をオンにしてください。","ai.addN":"{n, plural, other {回答 # 件を追加}}","ai.added":"{n, plural, other {AIの回答 # 件を追加しました}}","ai.removed":"{n, plural, other {AIの回答 # 件を削除しました}}","ai.line":"{n} 行目","ai.moreChanges":"{n, plural, other {…ほか # 件の変更 — 確認から表示}}","ai.noChanges":"変更なし","ai.scope.quote":"引用箇所","ai.scope.everywhere":"{n, plural, other {全体 · # か所}}","ai.scope.section":"セクション: {name}","ai.scope.document":"{n, plural, other {文書全体 · # 件の変更}}","ai.scope.sentence":"文 · 段落","ai.scope.elsewhereLine":"その他 · 約 {n} 行目","ai.scope.elsewhere":"その他","ai.scope.deletion":" · 削除","ai.scope.addition":" · 追加","ai.miss.overlap":"承認済みの変更と重なっています","ai.miss.conflict":"同じ回答内の別の修正と重なっています","ai.miss.same":"すでに文書に反映されています","ai.miss.format":"Markdown上で一字一句一致しません（書式をまたいでいます）","ai.miss.changed":"AIの回答後に本文が変更されました","ai.byHand":"{why} — 手動で適用してください","ai.suggCopied":"修正案のテキストをコピーしました","ai.cantApplyN":"{n} 件の修正を適用できませんでした — 各メモを確認してください","ai.finishFirst":"先に編集を終えてください: 完了で適用、破棄で元に戻します","ai.applied":"{n, plural, other {修正案 # 件を適用しました}}","ai.notApplied":" · {n} 件は適用できませんでした","ai.lostHighlight":" · {n, plural, other {# 件のメモがハイライトを失いました}}","ai.undone":"{n, plural, other {修正を元に戻しました}}","ai.rejected":"{n, plural, other {修正案 # 件を却下しました}}","ai.noReview":"確認する変更はありません","ai.revHint":"メモ {num} · {scope} · {n, plural, other {# 件の変更}}。変更を1件ずつ承認または却下してから適用してください。","ai.revChange":"変更 {n} · 約 {line} 行目","ai.accept":"承認","ai.reject":"却下","ai.acceptN":"変更 {n} を承認","ai.rejectN":"変更 {n} を却下","ai.apply":"適用","ai.applyNofM":"{m, plural, other {# 件中 {k} 件の変更を適用}}","ai.rejectEdit":"この修正を却下","ai.docChanged":"文書が変更されました — もう一度確認を開いてください","ai.tag":"AI","ai.tagRound":"AI · {n} 回目","ai.tagTitle":"AIアシスタントから貼り付けた回答","ai.copyAnswer":"回答をコピー","ai.copyAnswerAria":"AIの回答をコピー","ai.answerCopied":"回答をコピーしました","ai.earlier":"以前のAIの回答 · {n} 回目","ai.editN":"修正 {n} · ","ai.st.accepted":"✓ 承認済み","ai.st.rejected":"却下済み","ai.st.superseded":"置き換え済み","ai.supersededTitle":"新しいAIの回答でこの修正案は置き換えられました","ai.copySugg":"修正案のテキストをコピー","ai.dismiss":"閉じる","ai.dismissAria":"メモ {n} の修正案を閉じる","ai.review":"確認…","ai.reviewAria":"メモ {n} の変更案を確認","ai.acceptAria":"メモ {n} の修正案を承認","ai.rejectAria":"メモ {n} の修正案を却下","ai.chipRewrite":"メモ {n} · 書き換え案 · 確認","ai.chipPlaces":"メモ {n} · 変更案 · {k} か所","ai.chipChange":"メモ {n} · 変更案 · 確認","ai.chipShowNote":"メモを表示","ai.chipReview":"変更案を確認","ai.suggCount":"{n, plural, other {修正案 # 件}}","ai.pasteAnswer":"AIの回答を貼り付け…","ai.showSuggTitle":"文書内に修正案を表示","ai.showSugg":"修正案を表示","ai.pasteTitle":"AIの回答を貼り付け","ai.pasteHint_html":"アシスタントの返答を貼り付けてください。各回答は \u003ccode>{#id}\u003c/code>（または番号）でメモと照合され、AIの返信として追加されます。","ai.pasteAria":"AIの回答","ai.pastePlaceholder":"```mdeverything\n## [1] {#n3f9a}\n回答…\n```","ai.suggBar":"修正案","ai.acceptAll":"すべて承認","ai.rejectAll":"すべて却下","ai.hideSuggAria":"文書内の修正案を隠す","ai.hideSugg":"修正案を隠す","ai.reviewTitle":"変更を確認","bundle.section":"セクション「{name}」","bundle.line":"約 {n} 行目","bundle.notFound":"（現在の文書には見つかりません）","bundle.location":"場所:","bundle.quoted":"引用箇所:","bundle.context":"文脈:","bundle.note":"メモ / 質問:","bundle.noNote":"（メモなし）","bundle.replies":"返信（{n}）:","bundle.aiRound":"（AI、{n} 回目）","bundle.editsSummary":"（修正案 {n, plural, other {# 件}}: {list}）","bundle.state.accepted":"承認 {n}","bundle.state.rejected":"却下 {n}","bundle.state.superseded":"置き換え {n}","bundle.state.pending":"未処理 {n}","link.kind.section":"セクション","link.kind.p":"段落","link.kind.li":"リスト項目","link.kind.td":"表のセル","link.kind.quote":"引用","link.kind.pre":"コードブロック","link.kind.table":"表","link.kind.figure":"図","link.kind.dd":"定義","link.kind.dt":"用語","link.broken":"リンク切れ","link.notFound":"セクションが見つかりません","link.noMatch":"{frag} はこの文書のどの見出しにも一致しません","link.jumpHint":"クリックで移動 · 後で ↩ 戻る","link.email":"メール","link.external":"外部リンク","link.copy":"リンクをコピー","link.opensMail":"メールアプリが開きます","link.opensTab":"新しいタブで開きます","link.otherFile":"別のファイル","link.fileBlocked":"別のファイルへのリンクはここでは開けません","link.copied":"リンクをコピーしました","link.copyFailed":"リンクをコピーできませんでした","link.backAria":"元の位置に戻る（Alt+Left）","link.back":"戻る","table.region":"表 {n}","table.optionsN":"表 {n} のオプション","table.options":"表のオプション","table.colWidth":"列 {n} の幅","table.rowHeight":"行 {n} の高さ","table.reset":"サイズをリセット","table.density":"表示密度","table.compact":"狭い","table.default":"標準","table.comfortable":"広い","table.resetDone":"表のサイズをリセットしました","pane.resizeOutline":"アウトラインのサイズを変更","pane.resizeRail":"コメントパネルのサイズを変更","pane.resizeTitle":"ドラッグでサイズ変更 · ダブルクリックでリセット"}}</script>
 <script type="application/json" id="i18n-sample">{"md":"# mdeverything へようこそ ✨\n\n**Markdownを読み、コメントし、編集して、そのままAIに渡せます。** mdeverything は、どんな `.md` ファイルにも使える静かで軽快なレビューデスクです。大事な言葉をピンポイントで指し示し、してほしいことを書けば、アシスタントが推測せずに動けるパッケージとして書き出せます。\n\n> 👋 **このページは実際に動く文書です。** ハイライトされた語句にカーソルを合わせるとコメントの例が表示され、クリックするとスレッドが開きます。下の好きな文を選択して **Enter** を押せば、自分のコメントも追加できます。ここでの操作がブラウザの外に出ることはありません。\n\n## 1. なぜ mdeverything なのか？\n\nAIによるレビューは、たいてい同じように始まります。数段落をコピーしてチャットボットに貼り付け、「これを改善して」と入力すると、違うセクションの書き直しが返ってくる。モデルは文書全体を見ておらず、どの文のことなのかも分かりません。\n\nmdeverything はこの受け渡しを解決します。\n\n- **正確** — すべてのコメントが引用箇所、そのセクション、前後の文章に結び付くので、同じ言い回しが繰り返されても取り違えることはありません。\n- **完全** — 文書全体を、すべてのコメントと返信と一緒に一度でコピーできます。\n- **速い** — 登録もアップロードもプラグインも不要。ファイルを開けば数秒でレビューを始められます。\n- **落ち着く** — アウトライン、3つのテーマ、長い仕様書のための文字組みを備えた、集中できる閲覧画面。\n\n## 2. 使い方\n\n1. Markdownファイルを**開く**か、ページにドロップするか、テキストを貼り付けます。\n2. 大事な言葉に**コメント**します。箇所を選択するか、余白のボタンで段落全体を対象にできます。\n3. 誤字を見つけたら、内蔵エディターでソースを**修正**します。コメントは自動で位置を合わせ直します。\n4. **AI用に書き出し**て、ChatGPT、Claude、Gemini やコーディングアシスタントに貼り付けます。\n\n```mermaid\nflowchart LR\n    A[.md を開く] --> B[読む]\n    B --> C[コメント]\n    C --> D[編集]\n    D --> E[書き出し]\n    E --> F[あなたのAI]\n```\n\n書き出しの中身が気になりますか？ [AIが受け取る内容](#31-aiが受け取る内容) にカーソルを合わせるかクリックすると、のぞいてみられます。\n\n### 2.1 質問し、回答を受け取り、承認する\n\n書き出しメニューで **AIの回答をmdeverythingに戻す** をオンにすると、アシスタントはこのページが理解できる形式で回答します。その返答を **AIの回答を貼り付け…** で貼り付けると、各回答がそれぞれのコメントの下に入り、それぞれの修正案は差分として表示され、承認または却下できます。承認するとMarkdownが書き換わり、元に戻すのもワンクリックです。\n\n## 3. 機能一覧\n\n| 機能 | できること | 操作 |\n| --- | --- | --- |\n| インラインコメント | 選択した言葉に直接コメントし、返信でスレッドにできる | テキストを選択して `Enter` |\n| 余白コメント | 段落・見出し・表のセルにワンクリックでコメント | ブロックにカーソルを合わせ、左の余白を使う |\n| アウトライン | 読んでいる位置に追従する目次 | 上部バーの `☰` |\n| Markdownエディター | 書式ツールバー、ショートカット、ライブプレビュー | `✎ 編集` を押し、`Ctrl + Enter` で適用 |\n| 閲覧テーマ | ペーパー、セピア（本のようなセリフ体とクリーム色の紙）、ナイト | 上部バーのテーマ切り替え |\n| 自動保存 | 戻ってきても文書とコメントはそのまま | 自動 |\n| AIの回答をその場に | AIの返答を貼り戻すと、各回答がコメントの下に入り、修正は 修正前 → 修正後 で表示 | 書き出しメニューの **AIの回答を貼り付け** |\n| 追加の往復 | 再度書き出すと、新しいコメントと追加の質問にだけ回答が返る | 自動 |\n\n### 3.1 AIが受け取る内容\n\n書き出しは、まず明確な指示、次に文書、そしてコメントごとに1つのブロックという構成です。\n\n```text\n[1] 場所: セクション「料金」 · 約 42 行目\n引用箇所:\n\"\"\"\n5人までのチームは無料\n\"\"\"\n文脈: …料金プランはシンプルです。〈5人までのチームは無料〉、それ以降は1席あたり8ドル…\nメモ / 質問:\n\"\"\"\n上限は今も5人で正しいですか？FAQセクションと照らし合わせてください。\n\"\"\"\n返信（1）:\n- 下の表の1席あたりの価格も確認してください。\n```\n\nアシスタントは**どこを**見て**何を**すればよいかを正確に把握できるので、尋ねた質問に、尋ねた場所で答えてくれます。\n\n## 4. 実際の文書のために\n\n- 📐 **製品仕様** — 横に広い表やフロー図を含むPRD、BRD、ユーザー要件。\n- 💻 **技術文書** — ワンクリックでコピーできるコードブロック付きのREADME、APIガイド、運用手順書。\n- 🧪 **調査・分析** — すべての主張を見直す必要がある長いメモ。\n- ✍️ **下書き** — 公開前のブログ記事、提案書、リリースノート。\n\nコメントは行番号ではなく言葉そのものに結び付くので、English、Tiếng Việt、日本語など、どの言語でも使えます。\n\nすでに対応済み:\n\n- [x] 横に広い表は単語を崩さず横スクロール\n- [x] Mermaid図をページ内でそのまま表示\n- [x] コードブロックに言語ラベルとコピーボタン\n- [ ] 次はあなたの文書です\n\n## 5. 設計からプライベート\n\n> **アカウントなし。アップロードなし。トラッキングなし。** mdeverything はすべてブラウザ内で動作し、作業内容はこの端末にローカル保存されます。タブを閉じても、明日戻ってくれば続きから再開できます。\n\n## 6. 今すぐ試す\n\n1. このページの好きな文を選択し、**Enter** を押してコメントを残します。\n2. ハイライトをクリックし、**返信** を書いてスレッドを始めます。\n3. 上部バーの **AI用に書き出す** を押し、結果をお気に入りのアシスタントに貼り付けます。\n\n自分のファイルで試しますか？ 上部バーの **インポート** を使うか、`.md` ファイルをこのページのどこにでもドロップしてください。🚀","notes":[{"quote":"数段落をコピーしてチャットボットに貼り付け","note":"例 — 質問する。この悩みは冒頭のつかみとして一番強いでしょうか？それとも「AIが違うセクションを直してしまう」を先に出すべきですか？別の書き出しを2つ提案してください。","replies":["「違うセクションを直してしまう」の方向がいいと思います。そのほうが具体的です。"]},{"quote":"同じ言い回しが繰り返されても取り違えることはありません","note":"例 — 主張を確かめる。前後の文脈によって同じ語句を2つ区別できることを示す例を、1行で加えてください。"},{"quote":"コメントは自動で位置を合わせ直します","note":"例 — 修正を依頼する。「位置を合わせ直す」は初めての読者には分かりにくいかもしれません。この手順を平易な言葉で書き直してください。"},{"quote":"段落・見出し・表のセルにワンクリックでコメント","note":"例 — 表のセルにコメントする。意味を変えずに、この説明を10文字程度まで短くしてください。","replies":["たとえば「ブロック単位でワンクリックコメント」はどうでしょう。"]},{"quote":"次はあなたの文書です","note":"例 — ToDoを行動の呼びかけに変える。インポートボタンへ誘導する、短く親しみやすい一文を提案してください。"},{"quote":"作業内容はこの端末にローカル保存されます","note":"例 — 事実を確認する。自動保存の仕組み（ブラウザのストレージ、端末ごと）と合っているか確認し、プライベートウィンドウではどうなるかも書いてください。","replies":["サイトのデータを消去すると消えることにも触れたほうがよさそうです。","賛成です。ただし短い一文に収めましょう。"]},{"quote":"それぞれの修正案は差分として表示され、承認または却下できます","note":"例 — 修正案付きのAIの回答。「差分」という言葉を知らない読者にも分かりやすい表現にしてください。","replies":[{"by":"ai","round":1,"text":"専門用語を避けた、より平易な表現です。承認すると文が書き換わり、却下すると元の文が残ります。","edits":[{"kind":"quote","text":"それぞれの修正案は変更前と変更後の文が並んで表示され、ワンクリックで承認または却下できます"}]}]},{"kind":"diagram","diagram":0,"quote":"あなたのAI","label":"あなたのAI","shape":"node","mermaidLine":"E --> F[あなたのAI]","note":"例 — 図にコメントする。図形や矢印のラベルにマウスを重ねるとコメントできます。書き出しにはこの Mermaid の行が入ります。どの AI でも使えると分かる名前にしてください。"}]}</script>
 <script>
 "use strict";
@@ -4120,13 +4329,24 @@ function sourceLine(quote){
   if(idx<0) return null;
   return SRC.slice(0,idx).split("\n").length;
 }
-function buildBundle(incDoc){
+// the reviewer's own requests, at the top of the instructions: extra instructions first, then the
+// "mark the edits" sentence (in the UI language, so it reads right in the preview). "" when none.
+function expRequests(o){
+  const parts=[], ex=String((o && o.extra) || "").trim();
+  if(ex) parts.push(ex);
+  if(o && o.mark) parts.push(t("exp2.markPrompt"));
+  return parts.length ? "===== REVIEWER'S INSTRUCTIONS =====\n\n"+parts.join("\n\n") : "";
+}
+// o = { answer, mark, extra } (defaults to the saved Export options)
+function buildBundle(incDoc, o){
+  o = o || expOpts();
   const clean=s=>(s||"").replace(/\s+/g," ").trim();
-  const fmt=aiExportFmtOn(), sids=fmt ? aiNoteIds() : null;   // AI answer format: stable {#id} per note
+  const fmt=!!o.answer, sids=fmt ? aiNoteIds() : null;   // "Answer each comment": stable {#id} per note
   const L=[];
   L.push(HEAD.en,"");
   // translated pages: the instructions stay English (parser keywords too); only the labels below are localized
   if(LANG!=="en") L.push("The reviewer's UI language is "+(I18N.nativeName||LANG)+".","");
+  const req=expRequests(o); if(req) L.push(req,"");
   if(incDoc){ L.push("===== DOCUMENT (markdown) =====","",SRC.trim(),""); }
   L.push(`===== NOTES (${ANN.length}) =====`,"");
   ANN.forEach((a,i)=>{
@@ -4135,8 +4355,7 @@ function buildBundle(incDoc){
     if(a.kind==="diagram") loc.push(dgLocation(a));   // diagram 2 (flowchart) · node “…”
     const ln=a.kind==="diagram" ? dgSourceLine(a) : sourceLine(a.quote); if(ln) loc.push(t("bundle.line",{n:ln}));
     if(a.resolved===false) loc.push(t("bundle.notFound"));
-    // with AI replies on: [NEW] / [FOLLOW-UP] / [ANSWERED] tells the AI which notes to answer this round
-    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${fmt?" ["+aiNoteStatus(a)+"]":""}${loc.length?" "+t("bundle.location")+" "+loc.join(" · "):""}`);
+    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${loc.length?" "+t("bundle.location")+" "+loc.join(" · "):""}`);
     L.push(t("bundle.quoted"),`"""`,clean(a.quote),`"""`);
     if(a.kind==="diagram"){ if(a.mermaidLine) L.push(t("diag.bundleMermaid",{code:a.mermaidLine})); }   // the shape's Mermaid source line
     else L.push(`${t("bundle.context")} …${clean(a.prefix)} 〈${clean(a.quote)}〉 ${clean(a.suffix)}…`);
@@ -4151,7 +4370,7 @@ function buildBundle(incDoc){
     }
     L.push("");
   });
-  if(fmt) L.push(aiHowToAnswer(incDoc),"");
+  if(fmt) L.push(aiHowToAnswer(incDoc, !!o.mark),"");
   return L.join("\n").trim()+"\n";
 }
 
@@ -4303,24 +4522,41 @@ async function restore(){
 async function copyText(t){
   try{ await navigator.clipboard.writeText(t); return true; }
   catch(e){
+    const prev=document.activeElement;   // the hidden textarea takes focus; give it back afterwards
     try{ const ta=document.createElement("textarea"); ta.value=t;
       ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta);
-      ta.select(); document.execCommand("copy"); ta.remove(); return true; }
+      ta.select(); const ok=document.execCommand("copy"); ta.remove();
+      if(prev && prev!==document.body && prev.isConnected) try{ prev.focus({preventScroll:true}); }catch(_){}
+      return ok!==false; }
     catch(_){ return false; }
   }
 }
-function doExport(mode="full"){
+// what an export of `mode` (full · notes · raw) copies: { text } or { err } (a toast message)
+function expText(mode, o){
+  o = o || expOpts();
   if(mode==="raw"){
-    if(!SRC.trim()){ toast(t("export.noDoc")); return; }
-    copyText(SRC.trim()+"\n").then(ok=>toast(ok ? t("export.copiedRaw") : t("export.copyFailed")));
+    if(!SRC.trim()) return { err:t("export.noDoc") };
+    const req=expRequests(o);   // Document only + saved requests → the requests, then the document
+    return { text: req ? req+"\n\n===== DOCUMENT (markdown) =====\n\n"+SRC.trim()+"\n" : SRC.trim()+"\n" };
+  }
+  if(!ANN.length) return { err:t("export.needComment") };
+  return { text: buildBundle(mode!=="notes", o) };
+}
+function expFileName(mode){
+  return aiBaseName() + (mode==="full" ? t("export.fileFull") : mode==="notes" ? t("export.fileNotes") : "") + ".md";
+}
+// copy (or download) an export with the saved quick instructions + extra instructions,
+// then show the success card with the next steps
+function doExport(mode="full", how="copy"){
+  const o=expOpts(), r=expText(mode, o);
+  if(r.err){ toast(r.err); return; }
+  if(how==="download"){
+    const file=expFileName(mode);
+    aiDownload(file, r.text); expRemember(o);
+    expShowDone({ mode, o, text:r.text, file });
     return;
   }
-  if(!ANN.length){ toast(t("export.needComment")); return; }
-  const incDoc = mode !== "notes", n=ANN.length;
-  copyText(buildBundle(incDoc)).then(ok=>
-    toast(ok ? (incDoc ? t("export.copiedFull",{n})
-                       : t("export.copiedNotes",{n}))
-             : t("export.copyFailed")));
+  copyText(r.text).then(ok=>{ if(ok) expRemember(o); expShowDone({ mode, o, text:r.text, fail:!ok }); });
 }
 
 /* ============ overlays ============ */
@@ -4383,16 +4619,269 @@ $("#bRender").addEventListener("click",()=>{
 /* ============ export ============ */
 function syncCopyMenu(){ $("#bCopyOpts").setAttribute("aria-expanded", $("#menuCopy").hidden ? "false" : "true"); }
 $("#bCopy").addEventListener("click",()=>doExport("full"));
-$("#bCopyOpts").addEventListener("click",e=>{e.stopPropagation(); const mn=$("#menuCopy"); mn.hidden=!mn.hidden; syncCopyMenu(); if(!mn.hidden) aiSyncMenuNames();});
-$("#menuCopy").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b){ e.stopPropagation(); return; }   // headings keep it open
-  if(b.dataset.ai==="fmt"){ e.stopPropagation(); aiToggleExportFmt(); return; }   // toggle keeps the menu open
+$("#bCopyOpts").addEventListener("click",e=>{e.stopPropagation(); const mn=$("#menuCopy"); mn.hidden=!mn.hidden; syncCopyMenu();});
+$("#menuCopy").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b){ e.stopPropagation(); return; }   // separators keep it open
   const mn=$("#menuCopy"), hadFocus=mn.contains(document.activeElement);
-  if(b.dataset.ai==="paste"){ aiMenuAction("paste"); return; }   // the dialog closes the menu and remembers ▾ for focus
+  if(hadFocus) $("#bCopyOpts").focus();          // focus leaves the menu before it hides (dialogs return it here)
   mn.hidden=true; syncCopyMenu();
-  if(hadFocus) $("#bCopyOpts").focus();
-  if(b.dataset.ai){ aiMenuAction(b.dataset.ai); return; }
+  if(b.dataset.ai==="paste"){ expOpenPaste(); return; }
+  if(b.dataset.ai==="opts"){ expOpenDialog($("#bCopyOpts")); return; }
   doExport(b.dataset.mode || "full"); });
 document.addEventListener("click",e=>{ if(!e.target.closest(".pop")){ $("#menuCopy").hidden=true; syncCopyMenu(); } });
+
+/* ==[EXP2]== Export options (saved), Export options dialog, success card + "Paste AI result" chip */
+var EXP_KEY="mdeverything:export:v2";
+var EXP=(function expLoad(){
+  let d={};
+  try{ d=JSON.parse(localStorage.getItem(EXP_KEY)||"{}")||{}; }catch(e){}
+  return {
+    mode: ["full","notes","raw"].includes(d.mode) ? d.mode : "full",   // the dialog's choice (the main button is always full)
+    mark: d.mark===true, answer: d.answer===true,                       // quick instructions, both off by default
+    extra: typeof d.extra==="string" ? d.extra : "",
+    recent: Array.isArray(d.recent) ? d.recent.filter(x=>typeof x==="string" && x.trim()).slice(0,3) : [],
+    quiet: d.quiet===true                                                // "Don't show these steps again"
+  };
+})();
+function expSave(){ try{ localStorage.setItem(EXP_KEY, JSON.stringify(EXP)); }catch(e){} }
+function expOpts(){ return { mark:EXP.mark, answer:EXP.answer, extra:EXP.extra }; }
+function expRemember(o){
+  const x=String(o.extra||"").trim(); if(!x) return;
+  EXP.recent=[x, ...EXP.recent.filter(r=>r.trim()!==x)].slice(0,3); expSave();
+}
+function expOpenPaste(){
+  if(typeof window.openPasteAiResult==="function") window.openPasteAiResult();
+  else aiOpenPaste("");
+}
+function expWords(s){
+  try{
+    if(typeof Intl!=="undefined" && Intl.Segmenter){
+      let n=0; for(const x of new Intl.Segmenter(LANG,{granularity:"word"}).segment(s)) if(x.isWordLike) n++;
+      return n;
+    }
+  }catch(e){}
+  return (String(s).match(/\S+/g)||[]).length;
+}
+function expList(items){
+  try{ return new Intl.ListFormat(LANG,{type:"conjunction"}).format(items); }catch(e){ return items.join(", "); }
+}
+
+/* ---------- Export options dialog ---------- */
+var expReturn=null, expPrevT=0;
+const EXP_CHIPS=[t("exp2.chipTone"), t("exp2.chipOnly"), t("exp2.chipHeadings"), t("exp2.chipShorter"),
+  t("exp2.chipExplain"), t("exp2.chipKeep"), t("exp2.chipLang")];
+function expLines(s){ return String(s||"").split("\n"); }
+function expHasLine(s, line){ return expLines(s).some(l=>l.trim()===line); }
+function expToggleLine(line){
+  let s=EXP.extra;
+  if(expHasLine(s, line)) s=expLines(s).filter(l=>l.trim()!==line).join("\n").replace(/^\n+|\n+$/g,"");
+  else s=(s.replace(/\s+$/,"") ? s.replace(/\s+$/,"")+"\n" : "")+line;
+  EXP.extra=s; expSave();
+  $("#expExtra").value=s; expSyncChips(); expQueuePreview();
+}
+function expSyncChips(){
+  $("#expChips").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", expHasLine(EXP.extra, b.dataset.line) ? "true" : "false"));
+}
+function expRenderRecent(){
+  const wrap=$("#expRecentWrap"), box=$("#expRecent");
+  box.textContent="";
+  EXP.recent.forEach(r=>{
+    const b=document.createElement("button"); b.type="button"; b.className="exp-recent-item";
+    b.textContent=r.replace(/\s+/g," "); b.title=r; b.setAttribute("aria-label", t("exp2.useRecent",{text:r}));
+    b.addEventListener("click",()=>{ EXP.extra=r; expSave(); $("#expExtra").value=r; expSyncChips(); expQueuePreview(); });
+    box.appendChild(b);
+  });
+  wrap.hidden=!EXP.recent.length;
+}
+function expRenderPreview(){
+  clearTimeout(expPrevT);
+  const r=expText(EXP.mode), pre=$("#expPrevText");
+  pre.classList.toggle("is-err", !!r.err);
+  pre.textContent = r.err || r.text;
+  $("#expPrevMeta").textContent = r.err ? "" : " · "+t("exp2.metaWords",{n:expWords(r.text)});
+  $("#expCopy").disabled = $("#expDl").disabled = !!r.err;
+}
+function expQueuePreview(){ clearTimeout(expPrevT); expPrevT=setTimeout(expRenderPreview, 120); }
+function expSyncDialog(){
+  const ov=$("#ovExport");
+  ov.querySelectorAll('input[name="expMode"]').forEach(r=>{ r.checked = r.value===EXP.mode; });
+  $("#expMark").checked=EXP.mark;
+  const ans=$("#expAnswer"), raw=EXP.mode==="raw";
+  ans.checked=EXP.answer && !raw; ans.disabled=raw;
+  ans.closest(".exp-check").classList.toggle("is-off", raw);
+  $("#expAnswerSub").textContent = raw ? t("exp2.optAnswerNa") : t("exp2.optAnswerSub");
+  $("#expExtra").value=EXP.extra;
+  expSyncChips(); expRenderRecent(); expRenderPreview();
+}
+function expOpenDialog(ret){
+  if(mdeIsOpen()){ toast(t("editor.finishFirstShort")); return; }
+  const ae=document.activeElement;
+  expReturn = ret || (ae && ae!==document.body ? ae : null);
+  closeOverlays();
+  expSyncDialog();
+  openOverlay($("#ovExport"));
+  setTimeout(()=>{ const c=$('#ovExport input[name="expMode"]:checked'); focusWithoutScrolling(c || $("#expCopy")); },0);
+}
+(function expWireDialog(){
+  const ov=$("#ovExport");
+  const chips=$("#expChips");
+  EXP_CHIPS.forEach(line=>{
+    const b=document.createElement("button"); b.type="button"; b.className="exp-chip-sug";
+    b.dataset.line=line; b.setAttribute("aria-pressed","false");
+    b.innerHTML='<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="p" d="M12 6v12M6 12h12"/><path class="k" d="M6 12.5l4 4 8-9"/></svg>';
+    b.appendChild(document.createTextNode(line));
+    b.addEventListener("click",()=>expToggleLine(line));
+    chips.appendChild(b);
+  });
+  ov.querySelectorAll('input[name="expMode"]').forEach(r=>r.addEventListener("change",()=>{ if(r.checked){ EXP.mode=r.value; expSave(); expSyncDialog(); } }));
+  $("#expMark").addEventListener("change",e=>{ EXP.mark=e.target.checked; expSave(); expRenderPreview(); });
+  $("#expAnswer").addEventListener("change",e=>{ EXP.answer=e.target.checked; expSave(); expRenderPreview(); });
+  $("#expExtra").addEventListener("input",e=>{ EXP.extra=e.target.value; expSave(); expSyncChips(); expQueuePreview(); });
+  $("#expPrevBox").addEventListener("toggle",()=>{ if($("#expPrevBox").open) expRenderPreview(); });
+  const run=how=>{ expRenderPreview(); if($("#expCopy").disabled) return; closeOverlays(); doExport(EXP.mode, how); };
+  $("#expCopy").addEventListener("click",()=>run("copy"));
+  $("#expDl").addEventListener("click",()=>run("download"));
+  $("#expExtra").addEventListener("keydown",e=>{ if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ e.preventDefault(); run("copy"); } });
+  // Tab stays inside; closing (×, Esc, outside click, Copy) returns focus to the opener
+  ov.addEventListener("keydown",e=>{
+    if(e.key!=="Tab") return;
+    const f=[...ov.querySelectorAll('button:not([disabled]), textarea, input:not([disabled]), summary, [href], [tabindex]:not([tabindex="-1"])')]
+      .filter(x=>x.getClientRects().length && !(x.type==="radio" && !x.checked));
+    if(!f.length) return;
+    const i=f.indexOf(document.activeElement);
+    if(e.shiftKey && i<=0){ e.preventDefault(); f[f.length-1].focus(); }
+    else if(!e.shiftKey && (i===f.length-1 || i<0)){ e.preventDefault(); f[0].focus(); }
+  });
+  new MutationObserver(()=>{
+    if(ov.classList.contains("open")) return;
+    clearTimeout(expPrevT);
+    const r=expReturn; expReturn=null;
+    const ae=document.activeElement;
+    if(ae && ae!==document.body && !ov.contains(ae)) return;   // something else already took focus
+    if(r && r.isConnected && r.getClientRects().length) focusWithoutScrolling(r);
+  }).observe(ov,{attributes:true, attributeFilter:["class"]});
+})();
+
+/* ---------- success card + chip ---------- */
+const EXP_AIS=[["ChatGPT","https://chatgpt.com"],["Claude","https://claude.ai"],["Gemini","https://gemini.google.com"],
+  ["Copilot","https://copilot.microsoft.com"],["Grok","https://grok.com"],["DeepSeek","https://chat.deepseek.com"],
+  ["Perplexity","https://www.perplexity.ai"]];
+const EXP_AIS_MORE=[["Mistral Le Chat","https://chat.mistral.ai"],["Qwen","https://chat.qwen.ai"],["Kimi","https://www.kimi.com"]];
+var expT=0, expLast=null, expHold=false;
+function expAiLink([name,href]){
+  const a=document.createElement("a");
+  a.className="exp-ai-chip"; a.href=href; a.target="_blank"; a.rel="noopener noreferrer";
+  a.setAttribute("aria-label", t("exp2.newTab",{name}));
+  a.textContent=name;
+  a.insertAdjacentHTML("beforeend",'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16L16 8M9 8h7v7"/></svg>');
+  return a;
+}
+function expRenderAis(){
+  const box=$("#expAiList"); box.textContent="";
+  EXP_AIS.forEach(x=>box.appendChild(expAiLink(x)));
+  const more=document.createElement("button"); more.type="button"; more.className="exp-ai-chip exp-ai-more";
+  more.textContent=t("exp2.more"); more.setAttribute("aria-expanded","false");
+  more.addEventListener("click",()=>{
+    const first=expAiLink(EXP_AIS_MORE[0]);
+    more.replaceWith(first, ...EXP_AIS_MORE.slice(1).map(expAiLink));
+    first.focus();
+  });
+  box.appendChild(more);
+}
+function expArm(ms){
+  clearTimeout(expT);
+  if(expHold) return;
+  expT=setTimeout(expCollapse, ms || 10000);
+}
+function expShowDone(r){
+  expLast=r;
+  const card=$("#expDone"), raw=r.mode==="raw", quiet=EXP.quiet && !r.fail;
+  $("#expChip").hidden=true;
+  $("#expDoneTitle").textContent = r.fail ? t("exp2.failTitle")
+    : r.file ? t("exp2.okDl",{file:r.file})
+    : t(raw ? "exp2.okDoc" : r.mode==="notes" ? "exp2.okNotes" : "exp2.okFull");
+  let meta="";
+  if(r.fail) meta=t("exp2.failSub");
+  else{
+    const parts=[], inc=[];
+    if(!raw) parts.push(t("exp2.metaComments",{n:ANN.length}));
+    parts.push(t("exp2.metaWords",{n:expWords(r.text)}));
+    if(r.o.mark) inc.push(t("exp2.incMark"));
+    if(r.o.answer && !raw) inc.push(t("exp2.incAnswer"));
+    if(String(r.o.extra||"").trim()) inc.push(t("exp2.incExtra"));
+    if(inc.length) parts.push(t("exp2.metaWith",{list:expList(inc)}));
+    meta=parts.join(" · ");
+  }
+  $("#expDoneMeta").textContent=meta;
+  card.classList.toggle("fail", !!r.fail);
+  card.classList.toggle("quiet", quiet);
+  card.classList.toggle("no-cta", raw && !r.fail);
+  $("#expStep1").textContent = t(r.file ? "exp2.step1Dl" : "exp2.step1");
+  $('#expSteps [data-step="3"]').hidden = raw;
+  if(!quiet && !r.fail) expRenderAis();
+  $("#expCtaT").textContent = r.fail ? t("exp2.ctaDl") : t("exp2.cta");
+  $("#expCta").hidden = raw && !r.fail;
+  const notes=[];
+  if(!r.fail && !raw){
+    if(r.o.mark) notes.push(t("exp2.noteMark"));
+    if(r.o.answer) notes.push(t("exp2.noteAnswer"));
+  }
+  $("#expDoneNote").textContent=notes.join(" · "); $("#expDoneNote").hidden=!notes.length;
+  card.classList.remove("anim"); void card.offsetWidth; card.classList.add("anim");
+  card.hidden=false;
+  expHold=card.matches(":hover");
+  expArm(quiet && raw ? 5000 : 10000);
+}
+// the card folds into the corner chip (kept until the AI result is pasted back or ×)
+function expCollapse(){
+  clearTimeout(expT);
+  const card=$("#expDone"); if(card.hidden) return;
+  const hadFocus=card.contains(document.activeElement);
+  card.hidden=true; expHold=false;
+  const chip = expLast && !expLast.fail && expLast.mode!=="raw";
+  $("#expChip").hidden=!chip;
+  if(hadFocus){
+    if(chip) $("#expChipGo").focus();
+    else { const b=$("#bCopy"); if(b && b.getClientRects().length) focusWithoutScrolling(b); }
+  }
+}
+function expDismissAll(){ clearTimeout(expT); $("#expDone").hidden=true; $("#expChip").hidden=true; expHold=false; }
+(function expWireDone(){
+  const card=$("#expDone");
+  $("#expDoneX").addEventListener("click",expCollapse);
+  $("#expCta").addEventListener("click",()=>{
+    const r=expLast; if(!r) return;
+    if(r.fail){   // copy was blocked → download the same text instead
+      const file=expFileName(r.mode);
+      aiDownload(file, r.text); expRemember(r.o);
+      expShowDone({ mode:r.mode, o:r.o, text:r.text, file });
+      $("#expCta").focus();
+      return;
+    }
+    expCollapse(); $("#expChipGo").focus(); expOpenPaste();
+  });
+  $("#expHide").addEventListener("click",()=>{
+    EXP.quiet=true; expSave();
+    card.classList.add("quiet");
+    ($("#expCta").hidden ? $("#expDoneX") : $("#expCta")).focus();
+  });
+  $("#expChipGo").addEventListener("click",expOpenPaste);
+  $("#expChipX").addEventListener("click",()=>{
+    $("#expChip").hidden=true;
+    const b=$("#bCopy"); if(b && b.getClientRects().length) focusWithoutScrolling(b);
+  });
+  // hovering or focusing the card pauses the countdown (WCAG 2.2.1)
+  const hold=v=>{ expHold=v; if(v) clearTimeout(expT); else if(!card.hidden) expArm(6000); };
+  card.addEventListener("mouseenter",()=>hold(true));
+  card.addEventListener("mouseleave",()=>{ if(!card.contains(document.activeElement)) hold(false); });
+  card.addEventListener("focusin",()=>hold(true));
+  card.addEventListener("focusout",e=>{ if(!card.contains(e.relatedTarget) && !card.matches(":hover")) hold(false); });
+  card.addEventListener("keydown",e=>{ if(e.key==="Escape"){ e.stopPropagation(); expCollapse(); } });
+  // dispatched after an AI result was pasted back
+  const pasted=()=>expDismissAll();
+  window.addEventListener("mde:ai-pasted",pasted);
+  document.addEventListener("mde:ai-pasted",pasted);
+})();
+/* ==[/EXP2]== */
 
 /* ============ drag & drop .md ============ */
 let dragDepth=0; const dz=$("#dropzone");
@@ -6825,22 +7314,21 @@ $("#bHeroDemo").addEventListener("click", () => {
 
 /* ==[AI]== A — AI answers, suggestions, export options */
 /* Round trip with an AI assistant:
-   1. With "Let AI reply back into mdeverything" on, exports tag every note [NEW] / [FOLLOW-UP] / [ANSWERED]
+   1. With "Answer each comment" ticked (Export options), exports give every note a stable {#id}
       and ask the AI to answer in one ```mdeverything block: "## [n] {#id}" per note plus optional edit
       parts (### Suggested edit · ### Replace + ### With · ### Replace all + ### With ·
       ### Section: <heading> + ### With · ### Whole document).
-   2. "Paste AI answer…" parses that reply and adds replies {by:"ai", round, nh, edits:[…]}
-      (nh = hash of the note text it answered, so an edited note becomes [FOLLOW-UP]).
+   2. "Paste AI result…" parses that reply and adds replies {by:"ai", round, nh, edits:[…]}
+      (nh = hash of the note text it answered).
    3. Each edit shows as a Markdown word diff with Accept / Reject / Copy (Review… for multi-block
       edits, sections and whole-document rewrites) and, optionally, inline in the document.
       Accept rewrites SRC; Undo restores SRC + notes. Accepted ranges are remembered (e.rs) so a
       later edit that overlaps a change the AI didn't know about is blocked.
    Everything inserted into #doc is .no-anchor and never splits text nodes, so anchoring is unaffected.
    `var` for state read from earlier sections (renderCards → w5ApplyFilter → aiHasAnswer). */
-var AI_FMT_KEY="marginalia:exportfmt:v1", AI_SUGG_KEY="marginalia:aisugg:v1";
+var AI_SUGG_KEY="marginalia:aisugg:v1";
 function aiLSGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function aiLSSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-var aiFmt = aiLSGet(AI_FMT_KEY)!=="0";   // on by default: answers can be pasted back under each comment
 var aiShowSugg = aiLSGet(AI_SUGG_KEY)!=="0";     // inline suggestions are on unless the user hid them
 var aiInlineSig = null;
 var aiOldOpen = new Set();                         // earlier AI answers the user expanded (reply ids)
@@ -6920,36 +7408,20 @@ function aiPlainText(md){
   d.innerHTML=mdToHtml(String(md||""));
   return anchorText(d).replace(/^\s+|\s+$/g,"");
 }
-// round state of a note for the export: NEW (no AI answer yet), FOLLOW-UP (the user replied or
-// edited the note after the latest AI answer), ANSWERED (nothing new since)
-function aiNoteStatus(a){
-  const reps=a.replies||[], last=aiLatest(a);
-  if(!last) return "NEW";
-  const user=reps.filter(r=>r.by!=="ai").reduce((m,r)=>Math.max(m, Number(r.ts)||0, Number(r.editedAt)||0), 0);
-  if(user>last.ts) return "FOLLOW-UP";
-  if(last.nh && last.nh!==aiHash36(String(a.note||""))) return "FOLLOW-UP";
-  return "ANSWERED";
-}
-
 /* ---------- export options ---------- */
-function aiExportFmtOn(){ return aiFmt; }
-function aiSyncFmtItem(){
-  const b=document.querySelector('#menuCopy [data-ai="fmt"]');
-  if(b) b.setAttribute("aria-checked", aiFmt ? "true" : "false");
-}
-function aiToggleExportFmt(){
-  aiFmt=!aiFmt; aiLSSet(AI_FMT_KEY, aiFmt ? "1" : "0"); aiSyncFmtItem();
-  toast(aiFmt ? t("ai.fmtOn") : t("ai.fmtOff"));
-}
-function aiHowToAnswer(incDoc){
+// "Answer each comment" (Export options dialog, saved in EXP — see ==[EXP2]==)
+function aiExportFmtOn(){ return !!EXP.answer; }
+// withDoc: "Mark the edits" is ticked too, so the revised document follows the answer block
+function aiHowToAnswer(incDoc, withDoc){
   const sids=aiNoteIds(), first=ANN[0];
   const ex = first ? `[1] {#${sids.get(first.id)}}` : "[1] {#n3f9a}";
   return [
     "===== HOW TO ANSWER =====",
     "",
-    "Reply with ONE fenced code block whose language is `mdeverything`. Open it with ````mdeverything (four backticks) so ``` blocks inside stay intact. Write nothing outside it.",
+    "Reply with ONE fenced code block whose language is `mdeverything`. Open it with ````mdeverything (four backticks) so ``` blocks inside stay intact. " +
+      (withDoc ? "After that block, return the revised document as the reviewer's instructions ask." : "Write nothing outside it."),
     "",
-    "Answer only the notes tagged [NEW] or [FOLLOW-UP]. Notes tagged [ANSWERED] are context only — skip them.",
+    "Answer every note. Replies under a note (including earlier AI answers) are context for it.",
     "",
     "For each note you answer:",
     "",
@@ -7005,28 +7477,7 @@ function aiDownload(name, text){
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url), 5000);
 }
-const AI_DL_NAMES={ "dl-full":t("export.fileFull")+".md", "dl-notes":t("export.fileNotes")+".md", "dl-doc":".md" };   // suffixes are localized (export.fileFull / fileNotes)
-function aiSyncMenuNames(){
-  const base=aiBaseName();
-  document.querySelectorAll("#menuCopy [data-ai^='dl-']").forEach(b=>{
-    const s=b.querySelector(".sub"), suf=AI_DL_NAMES[b.dataset.ai];
-    if(s && suf) s.textContent="→ "+base+suf;
-  });
-}
-function aiMenuAction(act){
-  if(act==="dl-bundle") act="dl-full";            // older names
-  if(act==="dl-md") act="dl-doc";
-  if(act==="dl-full" || act==="dl-notes"){
-    if(!ANN.length){ toast(t("export.needComment")); return; }
-    const name=aiBaseName()+AI_DL_NAMES[act];
-    aiDownload(name, buildBundle(act==="dl-full")); toast(t("lib.downloaded",{file:name}));
-  } else if(act==="dl-doc"){
-    if(!SRC.trim()){ toast(t("ai.noDocDownload")); return; }
-    const name=aiBaseName()+".md";
-    aiDownload(name, SRC.replace(/\s+$/,"")+"\n"); toast(t("lib.downloaded",{file:name}));
-  } else if(act==="paste") aiOpenPaste("");
-}
-// Export menu keyboard: ↑ / ↓ (headings are skipped), Home / End, Esc returns to the ▾ button
+// Export menu keyboard: ↑ / ↓ (separators are skipped), Home / End, Esc returns to the ▾ button
 function aiMenuItems(){ return [...$("#menuCopy").querySelectorAll('[role^="menuitem"]')]; }
 (function aiWireCopyMenu(){
   const mn=$("#menuCopy"), btn=$("#bCopyOpts");
@@ -7035,7 +7486,7 @@ function aiMenuItems(){ return [...$("#menuCopy").querySelectorAll('[role^="menu
   btn.addEventListener("keydown",e=>{
     if(e.key!=="ArrowDown" && e.key!=="ArrowUp") return;
     e.preventDefault();
-    if(mn.hidden){ mn.hidden=false; syncCopyMenu(); aiSyncMenuNames(); }
+    if(mn.hidden){ mn.hidden=false; syncCopyMenu(); }
     focusAt(e.key==="ArrowUp" ? -1 : 0);
   });
   // opened from the keyboard (Enter / Space → click with detail 0): move focus into the menu
@@ -8075,7 +8526,6 @@ function aiUpdateBar(pend){
 function aiOnRendered(){ aiInlineSig=null; aiSyncInline(true); }
 
 (function aiInit(){
-  aiSyncFmtItem();
   // comments panel: "Paste AI answer" + "Show suggestions" (sits in the W5 search / filter bar)
   if(w5Bar){
     const row=document.createElement("div"); row.className="ai-w5row";

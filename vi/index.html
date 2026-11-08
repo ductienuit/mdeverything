@@ -2072,20 +2072,10 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
 body[data-theme="beige"]{ --ins:#6b3486; --ins-bg:rgba(107,52,134,.09); --del:#786f5f; }
 body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8e919a; }
 
-/* export menu: separators + checkbox item */
+/* export menu: separators */
 .menu .ai-menu-sep{ height:1px; margin:4px 6px; background:var(--line); }
-.menu>button.ai-menu-check{ position:relative; padding-left:34px; }
-.ai-check{ position:absolute; left:11px; top:11px; width:15px; height:15px; box-sizing:border-box; border-radius:4px;
-  border:1.5px solid var(--line-strong); background:var(--surface); }
-.ai-menu-check[aria-checked="true"] .ai-check{ background:var(--accent); border-color:var(--accent); }
-.ai-menu-check[aria-checked="true"] .ai-check::after{ content:""; position:absolute; left:4px; top:1px; width:4px; height:8px;
-  border:solid var(--accent-contrast); border-width:0 2px 2px 0; transform:rotate(45deg); }
 .menu>button:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
 #menuCopy{ min-width:270px; max-height:calc(100vh - 72px); overflow:auto; }
-.menu .ai-menu-h{ padding:9px 11px 3px; font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
-  color:var(--ink-faint); user-select:none; }
-.menu .ai-menu-h:first-child{ padding-top:4px; }
-.menu .ai-menu-h:not(:first-child){ margin-top:3px; border-top:1px solid var(--line); padding-top:10px; }
 
 /* AI replies (panel card + inline card) */
 .card .c-reply.ai-reply,#hlPop .pc-reply.ai-reply{ border-left-color:var(--accent); padding-right:74px; }
@@ -2556,6 +2546,157 @@ header .lang-menu > a[aria-checked="true"] .mi-check{visibility:visible}
 html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-step > b{ word-break:keep-all; overflow-wrap:anywhere; }
 /* menu sub-lines may wrap so longer translations never make a menu scroll sideways */
 .menu .sub{ white-space:normal; overflow-wrap:anywhere; }
+
+/* ==[EXP2 CSS]== Export options dialog + success card + "Paste AI result" chip */
+.exp-ov{align-items:center}
+.exp-panel{width:min(620px,100%);display:flex;flex-direction:column;max-height:calc(100vh - 80px);max-height:calc(100dvh - 80px)}
+.exp-ov.open .exp-panel{animation:exp-in .22s cubic-bezier(.2,.8,.2,1)}
+.exp-body{overflow:auto;display:flex;flex-direction:column;gap:20px;min-height:0}
+.exp-sec{border:0;margin:0;padding:0;min-width:0}
+.exp-h{display:block;padding:0;margin:0 0 9px;font:600 12px/1.3 var(--font-ui);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft)}
+.exp-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.exp-card{position:relative;display:flex;flex-direction:column;gap:3px;padding:12px 30px 12px 12px;border:1.5px solid var(--line-strong);
+  border-radius:11px;background:var(--surface);cursor:pointer;transition:border-color .12s,background-color .12s;min-width:0}
+.exp-card input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.exp-card .ico{width:20px;height:20px;color:var(--ink-soft);margin-bottom:5px}
+.exp-card-t{font:600 13.5px/1.3 var(--font-ui);color:var(--ink);overflow-wrap:anywhere}
+.exp-card-s{font-size:12px;line-height:1.35;color:var(--ink-faint);overflow-wrap:anywhere}
+.exp-card::after{content:"";position:absolute;top:11px;right:11px;width:14px;height:14px;box-sizing:border-box;border-radius:50%;
+  border:1.5px solid var(--line-strong);background:var(--surface)}
+.exp-card:hover{border-color:var(--ink-faint)}
+.exp-card:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.exp-card:has(input:checked)::after{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px var(--accent-soft)}
+.exp-card:has(input:checked) .ico,.exp-card:has(input:checked) .exp-card-t{color:var(--accent-soft-fg)}
+.exp-card:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.exp-check{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;margin:0 -10px;border-radius:8px;cursor:pointer;font-size:13.5px;line-height:1.4;color:var(--ink)}
+.exp-check:hover{background:var(--surface-2)}
+.exp-check input{width:16px;height:16px;margin:2px 0 0;flex:none;accent-color:var(--accent)}
+.exp-check-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.exp-check small{font-size:12px;color:var(--ink-faint)}
+.exp-check.is-off{opacity:.6;cursor:default}
+.exp-check.is-off:hover{background:none}
+#expExtra{display:block;width:100%;box-sizing:border-box;min-height:78px;resize:vertical;font:13.5px/1.5 var(--font-ui);color:var(--ink);
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:9px;padding:10px 12px}
+#expExtra::placeholder{color:var(--ink-faint)}
+#expExtra:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.exp-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.exp-chip-sug{display:inline-flex;align-items:center;gap:5px;max-width:100%;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-soft);
+  border-radius:999px;padding:5px 11px 5px 8px;font:500 12.5px/1.25 var(--font-ui);cursor:pointer;text-align:left}
+.exp-chip-sug .ico{width:13px;height:13px}
+.exp-chip-sug .k{display:none}
+.exp-chip-sug:hover{border-color:var(--ink-faint);color:var(--ink)}
+.exp-chip-sug[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-soft-fg)}
+.exp-chip-sug[aria-pressed="true"] .p{display:none}
+.exp-chip-sug[aria-pressed="true"] .k{display:inline}
+.exp-chip-sug:focus-visible,.exp-recent-item:focus-visible,.exp-ai-chip:focus-visible,.exp-hide:focus-visible,.exp-prev summary:focus-visible,.exp-prev-text:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.exp-recent{margin-top:14px}
+.exp-recent[hidden]{display:none}
+.exp-mini-h{display:block;margin:0 0 6px;font:600 11.5px/1.3 var(--font-ui);color:var(--ink-faint)}
+.exp-recent-list{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.exp-recent-item{max-width:100%;text-align:left;border:1px dashed var(--line-strong);background:none;border-radius:8px;padding:6px 10px;
+  font:12.5px/1.35 var(--font-ui);color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.exp-recent-item:hover{background:var(--surface-2);color:var(--ink)}
+.exp-prev{border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.exp-prev summary{list-style:none;display:flex;align-items:center;gap:6px;padding:10px 12px;cursor:pointer;border-radius:10px;
+  font:500 13px/1.3 var(--font-ui);color:var(--ink-soft)}
+.exp-prev summary::-webkit-details-marker{display:none}
+.exp-prev summary:hover{color:var(--ink)}
+.exp-prev-chev{width:14px;height:14px;transition:transform .15s}
+.exp-prev[open] .exp-prev-chev{transform:rotate(90deg)}
+.exp-prev-meta{color:var(--ink-faint);font-weight:400}
+.exp-prev-text{margin:0;max-height:260px;overflow:auto;padding:10px 12px 12px;border-top:1px solid var(--line);border-radius:0 0 10px 10px;
+  font:12px/1.55 var(--font-mono);color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
+.exp-prev-text.is-err{color:var(--danger);font-family:var(--font-ui);font-size:13px}
+.exp-foot .btn{display:inline-flex;align-items:center;gap:7px}
+
+.exp-done{position:fixed;right:20px;bottom:20px;z-index:58;width:min(384px,calc(100vw - 32px));box-sizing:border-box;
+  background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);border-radius:16px;box-shadow:var(--shadow-lg);
+  overflow:hidden;font-family:var(--font-ui)}
+.exp-done[hidden]{display:none}
+.exp-done.anim{animation:exp-in .28s cubic-bezier(.2,.8,.2,1)}
+.exp-done-head{display:flex;gap:12px;align-items:flex-start;padding:14px 10px 12px 16px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,var(--accent-soft),color-mix(in srgb,var(--accent-soft) 30%,var(--surface)))}
+.exp-done-ico{flex:none;width:32px;height:32px;color:var(--success)}
+.exp-done-ico svg{display:block;width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.exp-done-ico .w{display:none}
+.exp-done.anim .exp-done-ico .c{stroke-dasharray:60;stroke-dashoffset:60;animation:exp-draw .45s ease-out forwards}
+.exp-done.anim .exp-done-ico .k{stroke-dasharray:14;stroke-dashoffset:14;animation:exp-draw .3s .35s ease-out forwards}
+.exp-done-ht{flex:1;min-width:0}
+.exp-done-title{margin:3px 0 2px;font:600 15px/1.3 var(--font-ui);color:var(--ink);overflow-wrap:anywhere}
+.exp-done-meta{margin:0;font-size:12.5px;line-height:1.4;color:var(--ink-soft);overflow-wrap:anywhere}
+.exp-done-meta:empty{display:none}
+.exp-done-x{flex:none;margin-top:-2px}
+.exp-done-body{padding:14px 16px 10px;display:flex;flex-direction:column;gap:14px}
+.exp-steps{list-style:none;margin:0;padding:0;display:flex}
+.exp-steps li{flex:1 1 0;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 2px;
+  text-align:center;font-size:12px;line-height:1.3;color:var(--ink-faint);overflow-wrap:anywhere}
+.exp-steps li[hidden]{display:none}
+.exp-steps li+li::before{content:"";position:absolute;top:13px;left:calc(-50% + 20px);right:calc(50% + 20px);height:2px;border-radius:2px;background:var(--line-strong)}
+.exp-dot{width:28px;height:28px;box-sizing:border-box;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--line-strong);
+  background:var(--surface);color:var(--ink-faint)}
+.exp-dot .ico{width:14px;height:14px}
+.exp-steps li.on{color:var(--ink);font-weight:600}
+.exp-steps li.on .exp-dot{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);box-shadow:0 0 0 4px var(--accent-soft)}
+.exp-ai-list{display:flex;flex-wrap:wrap;gap:6px}
+.exp-ai-chip{display:inline-flex;align-items:center;gap:3px;padding:5px 9px 5px 11px;border:1px solid var(--line-strong);border-radius:999px;
+  background:var(--surface);color:var(--ink);font:500 12.5px/1.2 var(--font-ui);text-decoration:none;white-space:nowrap;cursor:pointer}
+.exp-ai-chip .ico{width:12px;height:12px;color:var(--ink-faint)}
+.exp-ai-chip:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-soft-fg)}
+.exp-ai-chip:hover .ico{color:inherit}
+.exp-ai-more{border-style:dashed;color:var(--ink-soft);padding-right:11px}
+.exp-ai-note{margin:7px 0 0;font-size:11.5px;color:var(--ink-faint)}
+.exp-done-act{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+.exp-cta{width:100%;min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;font-size:14px;font-weight:600}
+.exp-cta[hidden]{display:none}
+.exp-cta .ico{width:17px;height:17px}
+.exp-done-note{margin:0;font-size:12px;line-height:1.4;color:var(--ink-soft);text-align:center}
+.exp-done-note[hidden]{display:none}
+.exp-hide{align-self:center;border:0;background:none;padding:4px 6px;border-radius:6px;cursor:pointer;
+  font:12px/1.3 var(--font-ui);color:var(--ink-faint);text-decoration:underline;text-underline-offset:2px}
+.exp-hide:hover{color:var(--ink-soft)}
+.exp-done.quiet .exp-steps,.exp-done.quiet .exp-ai,.exp-done.quiet .exp-hide{display:none}
+.exp-done.quiet.no-cta .exp-done-body{display:none}
+.exp-done.quiet.no-cta .exp-done-head{border-bottom:0}
+.exp-done.fail .exp-done-head{background:linear-gradient(180deg,color-mix(in srgb,var(--hl-line) 22%,var(--surface)),color-mix(in srgb,var(--hl-line) 7%,var(--surface)))}
+.exp-done.fail .exp-done-ico{color:var(--hl-line)}
+.exp-done.fail .exp-done-ico svg:first-child{display:none}
+.exp-done.fail .exp-done-ico .w{display:block}
+.exp-done.fail .exp-steps,.exp-done.fail .exp-ai,.exp-done.fail .exp-hide{display:none}
+.exp-chip{position:fixed;right:20px;bottom:20px;z-index:58;display:flex;align-items:center;border-radius:999px;
+  background:var(--accent);color:var(--accent-contrast);box-shadow:var(--shadow-lg);animation:exp-in .22s ease-out}
+.exp-chip[hidden]{display:none}
+.exp-chip-go{display:inline-flex;align-items:center;gap:7px;border:0;background:none;color:inherit;cursor:pointer;
+  padding:11px 6px 11px 16px;border-radius:999px 0 0 999px;font:600 13.5px/1 var(--font-ui)}
+.exp-chip-x{border:0;background:none;color:inherit;opacity:.85;width:36px;height:38px;font-size:18px;line-height:1;cursor:pointer;border-radius:0 999px 999px 0}
+.exp-chip-go:hover,.exp-chip-x:hover{background:color-mix(in srgb,var(--accent-contrast) 14%,transparent)}
+.exp-chip-go:focus-visible,.exp-chip-x:focus-visible{outline:2px solid var(--accent-contrast);outline-offset:-4px}
+@keyframes exp-in{from{opacity:0;transform:translateY(12px) scale(.985)}}
+@keyframes exp-draw{to{stroke-dashoffset:0}}
+@media (max-width:640px){
+  .exp-ov.open{align-items:flex-end;padding:0}
+  .exp-panel{width:100%;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;border-bottom:0}
+  .exp-panel .panel-head{padding:14px 16px}
+  .exp-body{padding:16px}
+  .exp-cards{grid-template-columns:1fr;gap:6px}
+  .exp-card{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;row-gap:1px;align-items:center;padding:10px 34px 10px 12px}
+  .exp-card .ico{grid-row:span 2;margin:0}
+  .exp-card::after{top:50%;margin-top:-7px}
+  .exp-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom));grid-template-columns:1fr 1fr}
+  .exp-foot .btn{flex:1 1 0;justify-content:center}
+  .exp-done{left:0;right:0;bottom:0;width:auto;max-height:85vh;max-height:85dvh;border-radius:16px 16px 0 0;border-bottom:0;flex-direction:column}
+  .exp-done:not([hidden]){display:flex}
+  .exp-done-body{overflow:auto;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .exp-ai-list{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 2px}
+  .exp-ai-list::-webkit-scrollbar{display:none}
+  .exp-done-act{position:sticky;bottom:0;background:var(--surface);padding-top:2px}
+  .exp-chip{right:12px;bottom:calc(14px + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){
+  .exp-ov.open .exp-panel,.exp-done.anim,.exp-chip{animation:none}
+  .exp-done.anim .exp-done-ico .c,.exp-done.anim .exp-done-ico .k{animation:none;stroke-dashoffset:0}
+  .exp-prev-chev,.exp-card{transition:none}
+}
+/* ==[/EXP2 CSS]== */
 </style>
 </head>
 <body>
@@ -2601,18 +2742,14 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
     <span class="pop copy-wrap">
       <button class="btn primary" id="bCopy">Xuất cho AI</button>
       <button class="btn primary split" id="bCopyOpts" title="Tùy chọn xuất" aria-label="Tùy chọn xuất" aria-haspopup="menu" aria-expanded="false" aria-controls="menuCopy">▾</button>
-      <div class="menu" id="menuCopy" role="menu" aria-label="Xuất" hidden>
-        <div class="ai-menu-h" role="presentation">Sao chép vào clipboard</div>
-        <button type="button" role="menuitem" data-mode="full">Toàn bộ ngữ cảnh<span class="sub">Tài liệu + bình luận + hướng dẫn cho AI</span></button>
-        <button type="button" role="menuitem" data-mode="notes">Chỉ bình luận<span class="sub">Bình luận kèm đoạn trích dẫn (không có toàn bộ tài liệu)</span></button>
-        <button type="button" role="menuitem" data-mode="raw">Chỉ tài liệu<span class="sub">Chỉ văn bản Markdown (không kèm bình luận)</span></button>
-        <div class="ai-menu-h" role="presentation">Tải file về</div>
-        <button type="button" role="menuitem" data-ai="dl-full">Toàn bộ ngữ cảnh (.md)<span class="sub">→ document-for-ai.md</span></button>
-        <button type="button" role="menuitem" data-ai="dl-notes">Chỉ bình luận (.md)<span class="sub">→ document-comments.md</span></button>
-        <button type="button" role="menuitem" data-ai="dl-doc">Chỉ tài liệu (.md)<span class="sub">→ document.md</span></button>
-        <div class="ai-menu-h" role="presentation">Phản hồi của AI</div>
-        <button type="button" role="menuitemcheckbox" aria-checked="false" data-ai="fmt" class="ai-menu-check"><span class="ai-check" aria-hidden="true"></span>Cho AI trả lời ngược vào mdeverything<span class="sub">Thêm hướng dẫn trả lời để bạn dán câu trả lời vào đây</span></button>
-        <button type="button" role="menuitem" data-ai="paste">Dán câu trả lời của AI…<span class="sub">Thêm câu trả lời và đề xuất sửa của AI vào bình luận</span></button>
+      <div class="menu hdr-menu exp-menu" id="menuCopy" role="menu" aria-label="Xuất" hidden>
+        <button type="button" role="menuitem" data-mode="full"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg><span class="mi-txt">Sao chép toàn bộ ngữ cảnh<span class="sub">Tài liệu + bình luận + yêu cầu</span></span></button>
+        <button type="button" role="menuitem" data-mode="notes"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg><span class="mi-txt">Sao chép chỉ bình luận<span class="sub">Chỉ bình luận và đoạn được trích</span></span></button>
+        <button type="button" role="menuitem" data-mode="raw"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></svg><span class="mi-txt">Sao chép chỉ tài liệu<span class="sub">Chỉ văn bản</span></span></button>
+        <div class="ai-menu-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-ai="opts" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg><span class="mi-txt">Tùy chọn xuất…<span class="sub">Dặn nhanh, yêu cầu thêm, tải file</span></span></button>
+        <div class="ai-menu-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-ai="paste" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg><span class="mi-txt">Dán kết quả của AI…<span class="sub">Dán lại thứ AI trả về</span></span></button>
       </div>
     </span>
   </div>
@@ -2756,6 +2893,78 @@ Ghi chú: Đúng không nhỉ? Mình tưởng…</pre>
 <div id="dropzone"><div class="dz-box">Thả file .md — hoặc bản sao lưu .mdeverything.json — để mở</div></div>
 <div id="toast"></div>
 
+<!-- ==[EXP2 HTML]== Export options dialog + export success card -->
+<div class="overlay exp-ov" id="ovExport">
+  <div class="panel exp-panel" role="dialog" aria-modal="true" aria-labelledby="expTitle">
+    <div class="panel-head"><h3 id="expTitle">Xuất cho AI</h3>
+      <button class="x" type="button" data-close aria-label="Đóng" title="Đóng (Esc)">×</button></div>
+    <div class="panel-body exp-body">
+      <fieldset class="exp-sec">
+        <legend class="exp-h">Gửi gì</legend>
+        <div class="exp-cards">
+          <label class="exp-card"><input type="radio" name="expMode" value="full"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg><span class="exp-card-t">Toàn bộ ngữ cảnh</span><span class="exp-card-s">Tài liệu + bình luận</span></label>
+          <label class="exp-card"><input type="radio" name="expMode" value="notes"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg><span class="exp-card-t">Chỉ bình luận</span><span class="exp-card-s">Bình luận + đoạn được trích</span></label>
+          <label class="exp-card"><input type="radio" name="expMode" value="raw"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></svg><span class="exp-card-t">Chỉ tài liệu</span><span class="exp-card-s">Chỉ văn bản</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="exp-sec">
+        <legend class="exp-h">Dặn nhanh cho AI</legend>
+        <label class="exp-check"><input type="checkbox" id="expMark"><span class="exp-check-t"><span>Đánh dấu chỗ sửa (gạch ngang chữ bỏ, tô tím chữ mới)</span></span></label>
+        <label class="exp-check"><input type="checkbox" id="expAnswer" aria-describedby="expAnswerSub"><span class="exp-check-t"><span>Trả lời từng comment</span><small id="expAnswerSub">Để dán câu trả lời ngược vào dưới từng bình luận</small></span></label>
+      </fieldset>
+      <div class="exp-sec">
+        <label class="exp-h" for="expExtra">Yêu cầu thêm</label>
+        <textarea id="expExtra" rows="3" spellcheck="true" placeholder="Ví dụ: giữ giọng văn, không đổi các heading…"></textarea>
+        <div class="exp-chips" id="expChips" role="group" aria-label="Gợi ý"></div>
+        <div class="exp-recent" id="expRecentWrap" hidden>
+          <span class="exp-mini-h" id="expRecentH">Đã dùng gần đây</span>
+          <div class="exp-recent-list" id="expRecent" role="group" aria-labelledby="expRecentH"></div>
+        </div>
+      </div>
+      <details class="exp-prev" id="expPrevBox">
+        <summary><svg class="ico exp-prev-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span>Xem trước nội dung sẽ copy</span><span class="exp-prev-meta" id="expPrevMeta"></span></summary>
+        <pre class="exp-prev-text" id="expPrevText" tabindex="0"></pre>
+      </details>
+    </div>
+    <div class="panel-foot exp-foot">
+      <button class="btn" type="button" id="expDl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>Tải file .md</button>
+      <button class="btn primary" type="button" id="expCopy"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg>Copy</button>
+    </div>
+  </div>
+</div>
+<section class="exp-done" id="expDone" aria-labelledby="expDoneTitle" hidden>
+  <div class="exp-done-head">
+    <span class="exp-done-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle class="c" cx="12" cy="12" r="9.5"/><path class="k" d="M7.8 12.4l2.9 2.9 5.5-5.6"/></svg><svg class="w" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/></svg></span>
+    <div class="exp-done-ht">
+      <h2 id="expDoneTitle" class="exp-done-title" role="status"></h2>
+      <p class="exp-done-meta" id="expDoneMeta"></p>
+    </div>
+    <button class="x exp-done-x" type="button" id="expDoneX" aria-label="Đóng" title="Đóng">×</button>
+  </div>
+  <div class="exp-done-body">
+    <ol class="exp-steps" id="expSteps" aria-label="Các bước tiếp theo">
+      <li class="on" data-step="1"><span class="exp-dot"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/></svg></span><span class="exp-step-t" id="expStep1">Dán vào AI</span></li>
+      <li data-step="2"><span class="exp-dot"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg></span><span class="exp-step-t">Copy kết quả</span></li>
+      <li data-step="3"><span class="exp-dot"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10M8 10l4 4 4-4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></span><span class="exp-step-t">Dán lại đây</span></li>
+    </ol>
+    <div class="exp-ai" id="expAi">
+      <span class="exp-mini-h" id="expAiH">Mở AI bạn dùng</span>
+      <div class="exp-ai-list" id="expAiList" role="group" aria-labelledby="expAiH"></div>
+      <p class="exp-ai-note">mdeverything dùng được với mọi AI đọc Markdown</p>
+    </div>
+    <div class="exp-done-act">
+      <button class="btn primary exp-cta" type="button" id="expCta"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg><span id="expCtaT"></span></button>
+      <p class="exp-done-note" id="expDoneNote" hidden></p>
+      <button class="exp-hide" type="button" id="expHide">Không hiện hướng dẫn nữa</button>
+    </div>
+  </div>
+</section>
+<div class="exp-chip" id="expChip" hidden>
+  <button type="button" class="exp-chip-go" id="expChipGo"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg>Dán kết quả của AI</button>
+  <button type="button" class="exp-chip-x" id="expChipX" aria-label="Đóng" title="Đóng">×</button>
+</div>
+<!-- ==[/EXP2 HTML]== -->
+
 <!-- ==[AI HTML]== A — AI answers, suggestions, export options -->
 <div class="overlay" id="ovAiPaste">
   <div class="panel ai-paste" role="dialog" aria-modal="true" aria-labelledby="aiPasteTitle" aria-describedby="aiPasteHint">
@@ -2808,7 +3017,7 @@ Ghi chú: Đúng không nhỉ? Mình tưởng…</pre>
 <div id="tblLayer" class="tbl-layer" hidden></div>
 <!-- ==[/TABLES HTML]== -->
 
-<script type="application/json" id="i18n">{"lang":"vi","code":"vi","nativeName":"Tiếng Việt","base":"../","locales":[{"code":"en","htmlLang":"en","dir":"ltr","nativeName":"English","href":"../"},{"code":"vi","htmlLang":"vi","dir":"ltr","nativeName":"Tiếng Việt","href":"../vi/"},{"code":"ja","htmlLang":"ja","dir":"ltr","nativeName":"日本語","href":"../ja/"},{"code":"pt-BR","htmlLang":"pt-BR","dir":"ltr","nativeName":"Português (Brasil)","href":"../pt-br/"},{"code":"es","htmlLang":"es","dir":"ltr","nativeName":"Español","href":"../es/"}],"dict":{"lang.button":"Ngôn ngữ","lang.buttonAria":"Ngôn ngữ: Tiếng Việt","lang.links":"Ngôn ngữ","lang.suggest":"Trang này có bản Tiếng Việt","lang.suggestGo":"Chuyển","lang.suggestDismiss":"Đóng","hdr.outline":"Mục lục","hdr.comments":"Bình luận","hdr.outlineToggle":"Hiện / ẩn mục lục","hdr.editMd":"Sửa Markdown","hdr.importTitle":"Mở, dán hoặc khôi phục","hdr.import":"Nhập","hdr.theme":"Giao diện","hdr.railToggle":"Hiện / ẩn bảng bình luận","menu.openTitle":"Mở một file Markdown","menu.open":"Mở file…","menu.openSub":".md, .markdown hoặc .txt từ máy của bạn","menu.pasteTitle":"Dán Markdown","menu.paste":"Dán Markdown…","menu.pasteSub":"Bắt đầu từ văn bản trong clipboard","menu.restoreTitle":"Khôi phục tài liệu và bình luận từ file sao lưu","menu.restore":"Khôi phục từ bản sao lưu (.json)…","menu.restoreSub":"Lấy lại tài liệu cùng bình luận của chúng","theme.light":"Giấy","theme.beige":"Sepia","theme.dark":"Đêm","theme.aria":"Giao diện: {name}","theme.ariaPaper":"Giao diện: Giấy","export.noDoc":"Chưa có tài liệu Markdown nào để sao chép","export.copiedRaw":"Đã sao chép riêng tài liệu (Markdown, không kèm bình luận)","export.copyFailed":"Không sao chép được, hãy thử lại","export.needComment":"Hãy thêm ít nhất một bình luận trước khi xuất","export.copiedFull":"Đã sao chép toàn bộ ngữ cảnh (tài liệu + {n, plural, other {# bình luận}}) — dán vào trợ lý AI của bạn","export.copiedNotes":"Đã sao chép riêng bình luận ({n, plural, other {# bình luận}}) — dán vào trợ lý AI của bạn","export.button":"Xuất cho AI","export.options":"Tùy chọn xuất","export.menu":"Xuất","export.copyHead":"Sao chép vào clipboard","export.full":"Toàn bộ ngữ cảnh","export.fullSub":"Tài liệu + bình luận + hướng dẫn cho AI","export.notes":"Chỉ bình luận","export.notesSub":"Bình luận kèm đoạn trích dẫn (không có toàn bộ tài liệu)","export.raw":"Chỉ tài liệu","export.rawSub":"Chỉ văn bản Markdown (không kèm bình luận)","export.downloadHead":"Tải file về","export.dlFull":"Toàn bộ ngữ cảnh (.md)","export.dlNotes":"Chỉ bình luận (.md)","export.fileFull":"-cho-AI","export.fileNotes":"-binh-luan","export.dlDoc":"Chỉ tài liệu (.md)","export.aiHead":"Phản hồi của AI","export.aiFmt":"Cho AI trả lời ngược vào mdeverything","export.aiFmtSub":"Thêm hướng dẫn trả lời để bạn dán câu trả lời vào đây","export.paste":"Dán câu trả lời của AI…","export.pasteSub":"Thêm câu trả lời và đề xuất sửa của AI vào bình luận","home.hideTitle":"Ẩn phần giới thiệu, giữ lại bản demo","home.hide":"Ẩn giới thiệu","home.kicker":"Bàn review Markdown dành cho AI","home.title_html":"Chỉ đúng từng chữ.\u003cbr>\u003cspan class=\"hero-em\">Nói AI cần sửa gì.\u003c/span>","home.sub":"Bình luận trên bất kỳ file Markdown nào, rồi xuất ra với mọi bình luận được gắn đúng đoạn văn — để ChatGPT, Claude hay Gemini trả lời đúng chỗ.","home.open":"Mở một file Markdown","home.paste":"Dán Markdown","home.demo":"Xem bản demo bên dưới","home.dropAria":"Mở một file Markdown — hoặc thả file vào đây","home.dropTitle":"Thả file .md của bạn vào đây","home.dropBrowse":"hoặc bấm để chọn file trên máy","home.dropHint":".md · .markdown · .txt — hoặc bản sao lưu .mdeverything.json","how.title":"Cách hoạt động","how.mockDoc_html":"Miễn phí cho nhóm tối đa 5 người. \u003cmark class=\"mk-hl\">Tính phí ngay từ ngày đầu\u003cspan class=\"mk-badge\">1\u003c/span>\u003c/mark> với mọi trường hợp khác.","how.mockNote":"Đúng không nhỉ? Mình tưởng có 14 ngày dùng thử.","how.s1Title":"Chỉ vào đúng chữ","how.s1Text":"Mở hoặc dán bất kỳ file Markdown nào. Chọn một đoạn và ghi điều cần thay đổi.","how.mockExport_html":"\u003cspan class=\"mk-k\">[1] {#n3f9a}\u003c/span> Vị trí: mục “Bảng giá”\nĐoạn trích dẫn:\n\u003cspan class=\"mk-q\">\"Tính phí ngay từ ngày đầu\"\u003c/span>\nGhi chú: Đúng không nhỉ? Mình tưởng…","how.s2Title":"Gửi cho AI của bạn","how.s2Text":"Xuất sẽ sao chép toàn bộ tài liệu với mọi bình luận được gắn đúng đoạn văn. Dán vào ChatGPT, Claude hoặc Gemini.","how.mockReply":"Đúng vậy — các gói trả phí bắt đầu với 14 ngày dùng thử.","how.mockDiff_html":"Tính phí \u003cdel>ngay từ ngày đầu\u003c/del> \u003cins>sau 14 ngày dùng thử miễn phí\u003c/ins>","how.s3Title":"Xem câu trả lời tại chỗ","how.s3Text_html":"Dán câu trả lời trở lại. Mỗi câu trả lời nằm ngay dưới bình luận của nó, đề xuất sửa hiển thị dạng \u003cdel>cũ\u003c/del> → \u003cins>mới\u003c/ins>. Chấp nhận hoặc từ chối từng cái.","how.loopTitle":"Chưa xong?","how.loopText":"Phản hồi hoặc thêm bình luận rồi xuất lại — AI chỉ trả lời các bình luận mới và tiếp nối.","how.foot":"Dùng với ChatGPT, Claude, Gemini — không cần tài khoản, không tải gì lên","why.aria":"Vì sao chọn mdeverything","why.c1Title":"Ngữ cảnh chính xác cho AI","why.c1Text":"Mỗi bình luận mang theo trích dẫn, mục và đoạn văn xung quanh, để câu trả lời rơi đúng câu.","why.c2Title":"Riêng tư — chạy trong trình duyệt","why.c2Text":"Không tải lên, không tài khoản, không theo dõi. Dữ liệu của bạn ở lại trên thiết bị này.","why.c3Title":"Dùng được với mọi ngôn ngữ","why.c3Text":"Bình luận bám vào đúng từng chữ — English, Tiếng Việt, 日本語 đều như nhau.","assure.free":"Miễn phí","assure.noSignup":"Không cần đăng ký","assure.autosave":"Tự động lưu khi bạn làm việc","assure.docs":"Lưu tối đa 10 tài liệu","tip.text_html":"\u003cb>Thử ngay:\u003c/b> chọn một câu bất kỳ bên dưới và nhấn \u003ckbd>Enter\u003c/kbd> để bình luận.","tip.dismiss":"Ẩn mẹo","floater.add":"Thêm ghi chú","dropzone.text":"Thả file .md — hoặc bản sao lưu .mdeverything.json — để mở","source.newTitle":"Tài liệu mới từ Markdown","source.create":"Tạo tài liệu","source.title":"Dán Markdown","source.render":"Hiển thị tài liệu","source.hint_html":"Dán Markdown và nhấn \u003cb>Hiển thị tài liệu\u003c/b>. Từ trang chủ, thao tác này thay thế tài liệu mẫu. Ở chế độ làm việc, ghi chú hiện có được giữ lại khi có thể và gắn lại vào các đoạn khớp.","source.openFile":"Mở Markdown…","confirm.defaultTitle":"Thay tài liệu hiện tại?","confirm.defaultMessage":"Không thể hoàn tác thao tác này.","confirm.exportFirst":"Hãy xuất ghi chú trước nếu bạn muốn giữ một bản.","confirm.continue":"Tiếp tục","confirm.replaceMessage":"Mở tài liệu mới sẽ xóa các chú thích hiện tại.","confirm.replaceOk":"Thay tài liệu","common.cancel":"Hủy","common.save":"Lưu","common.undo":"Hoàn tác","common.cancelEsc":"Hủy (Esc)","common.close":"Đóng","common.closeEsc":"Đóng (Esc)","common.edit":"Sửa","common.delete":"Xóa","common.open":"Mở","doc.sampleName":"Tài liệu mẫu","doc.untitled":"Tài liệu Markdown","doc.labelTitle":"{name} — Tài liệu","doc.editedName":"Tài liệu đã sửa","doc.sampleCopy":"Bản sao tài liệu mẫu","doc.pastedName":"Markdown đã dán","doc.untitledShort":"Chưa đặt tên","doc.recoveredName":"Tài liệu khôi phục","doc.importedName":"Tài liệu đã nhập","sample.confirmTitle":"Mở tài liệu mẫu?","sample.confirmMessage":"Bạn đang có {n, plural, other {# ghi chú}}. Mở tài liệu mẫu sẽ xóa các chú thích này.","sample.confirmOk":"Mở tài liệu mẫu","sample.confirmKeep":"Giữ tài liệu hiện tại","sample.loaded":"Đã mở tài liệu mẫu với {n, plural, other {# bình luận ví dụ}}","sample.liveDemo":"Demo trực tiếp · di chuột hoặc bấm vào phần tô sáng","render.failed":"Không thể hiển thị markdown.","code.label":"code","code.copy":"Sao chép","code.copied":"Đã chép","code.error":"Lỗi","mermaid.rendering":"Đang vẽ sơ đồ…","mermaid.error":"Không đọc được sơ đồ — đang hiện mã nguồn.","diag.add":"Bình luận","diag.addAria":"Bình luận về “{label}”","diag.wrapAria":"Sơ đồ {n}. Dùng phím mũi tên để chọn một ô, rồi nhấn Enter để bình luận.","diag.cardQuote":"Sơ đồ {n} · ô “{label}”","diag.cardWhole":"Sơ đồ {n}","diag.location":"sơ đồ {n} ({type}) · {shape} “{label}”","diag.locationWhole":"sơ đồ {n} ({type})","diag.bundleMermaid":"Mermaid: {code}","diag.shapeNode":"ô","diag.shapeEdge":"nhãn mũi tên","diag.shapeGroup":"nhóm","diag.shapeParticipant":"đối tượng","diag.shapeMessage":"thông điệp","diag.shapeNote":"ghi chú","outline.untitled":"Mục chưa đặt tên","outline.title":"Trên trang này","outline.close":"Đóng mục lục","outline.collapse":"Thu gọn mục lục","outline.empty_html":"Tài liệu này chưa có tiêu đề nào. Thêm tiêu đề \u003ccode>#\u003c/code>, \u003ccode>##\u003c/code> hoặc \u003ccode>###\u003c/code> để có mục lục.","outline.expand":"Mở rộng mục lục","outline.aria":"Mục lục tài liệu","gutter.comment":"Bình luận khối này","rail.countLabel":"{n, plural, other {ghi chú}}","rail.show":"Hiện bảng bình luận","rail.hide":"Ẩn bảng bình luận","rail.collapse":"Thu gọn bảng bình luận","rail.showCount":"Hiện bảng bình luận ({n, plural, other {# bình luận}})","rail.notesWord":"ghi chú","rail.empty_html":"\u003cb>Chọn một đoạn bất kỳ\u003c/b> trong tài liệu để thêm ghi chú hoặc câu hỏi. Ghi chú nằm ngay cạnh đoạn văn và đi cùng nó khi bạn sao chép.","rail.reviewerNotes":"Ghi chú review","rail.exampleNotes":"Ghi chú ví dụ","rail.demoHint":"Các bình luận demo cho thấy chú thích gắn với đoạn tô sáng như thế nào.","card.notFound":"Không tìm thấy đoạn này trong tài liệu","card.exampleChip":"Ghi chú ví dụ","card.replies":"{n, plural, other {# phản hồi}}","card.editNote":"Sửa ghi chú","card.deleteNote":"Xóa ghi chú","card.replyPlaceholder":"Phản hồi…","card.replyToNote":"Phản hồi ghi chú {n}","card.reply":"Phản hồi","card.addNotePlaceholder":"Bấm để thêm ghi chú…","card.ariaNote":"Ghi chú {n}: {quote}","card.ariaEmpty":"Ghi chú trống {n} cho “{quote}” — kích hoạt để viết","card.deleteNoteN":"Xóa ghi chú {n}","card.editNoteN":"Sửa ghi chú {n}","pop.notesOnPassage":"{n, plural, other {# ghi chú cho đoạn này}}","pop.noNoteClick":"Chưa có ghi chú — bấm để thêm","pop.preview":"Xem trước ghi chú","pop.newNote":"Ghi chú mới","pop.notePlaceholder":"Thêm ghi chú hoặc câu hỏi…","pop.noteText":"Nội dung ghi chú","pop.hint":"Enter để lưu · Shift+Enter xuống dòng","pop.noteN":"Ghi chú {n}","pop.notesHere":"{n, plural, other {# ghi chú ở đây}}","pop.showNote":"Hiện ghi chú {n}","pop.noNote":"Chưa có ghi chú","reply.deleted":"Đã xóa phản hồi","reply.edit":"Sửa phản hồi","reply.delete":"Xóa phản hồi","reply.editHintTitle":"Enter để lưu · Shift+Enter xuống dòng · Esc để hủy","reply.editHint":"Enter để lưu · Esc để hủy","reply.edited":"đã sửa","reply.editedAt":"Đã sửa {date}","filter.none.all":"Không có bình luận nào.","filter.none.replies":"Không có bình luận nào có phản hồi.","filter.none.unanchored":"Không có bình luận nào bị mất vị trí.","filter.none.ai":"Không có bình luận nào có câu trả lời của AI.","filter.none.noai":"Không có bình luận nào chưa có câu trả lời của AI.","filter.none.sugg":"Không có bình luận nào có đề xuất đang chờ.","filter.noneQ.all":"Không có bình luận nào khớp “{q}”.","filter.noneQ.replies":"Không có bình luận có phản hồi nào khớp “{q}”.","filter.noneQ.unanchored":"Không có bình luận mất vị trí nào khớp “{q}”.","filter.noneQ.ai":"Không có bình luận có câu trả lời AI nào khớp “{q}”.","filter.noneQ.noai":"Không có bình luận chưa có câu trả lời AI nào khớp “{q}”.","filter.noneQ.sugg":"Không có bình luận có đề xuất đang chờ nào khớp “{q}”.","filter.label":"Lọc bình luận","filter.all":"Tất cả","filter.replies":"Có phản hồi","filter.unanchored":"Mất vị trí","filter.unanchoredTitle":"Ghi chú có đoạn văn không còn trong tài liệu","filter.ai":"Có trả lời AI","filter.noai":"Chưa có trả lời AI","filter.sugg":"Đề xuất đang chờ","filter.suggTitle":"Đề xuất sửa của AI chưa được chấp nhận hay từ chối","filter.clear":"Xóa bộ lọc","search.placeholder":"Tìm bình luận","help.titleShort":"Phím tắt (?)","help.title":"Phím tắt","help.nextPrev":"Bình luận tiếp theo / trước đó","help.search":"Tìm bình luận","help.addNote":"Thêm ghi chú cho đoạn đang chọn","help.close":"Đóng thẻ, menu hoặc hộp thoại","help.show":"Hiện danh sách phím tắt này","nav.noComments":"Chưa có bình luận nào","nav.noMatch":"Không có bình luận nào khớp bộ lọc","nav.noHighlight":"Không có bình luận nào được tô sáng trong tài liệu này","toast.noteGone":"Ghi chú đó không còn nữa","toast.noteDeleted":"Đã xóa ghi chú","toast.noteRestoredOrphan":"Đã khôi phục ghi chú — đoạn văn của nó không còn trong tài liệu","toast.storageFull":"Bộ nhớ trình duyệt đã đầy — các thay đổi mới nhất chưa được lưu","toast.manageStorage":"Quản lý bộ nhớ","toast.storageUnavailable":"Bộ nhớ trình duyệt không khả dụng ở đây — thay đổi sẽ mất khi tải lại trang","toast.savedAs":"Thay đổi của bạn được lưu thành “{name}”","toast.opened":"Đã mở {name}","toast.docLoaded":"Đã mở tài liệu","toast.cantRead":"Không đọc được “{name}”","toast.pasteFirst":"Hãy dán Markdown trước","toast.rendered":"Đã hiển thị Markdown","time.justNow":"vừa xong","time.yesterday":"hôm qua","editor.undo":"Hoàn tác","editor.redo":"Làm lại","editor.bold":"In đậm","editor.italic":"In nghiêng","editor.strike":"Gạch ngang","editor.h1":"Tiêu đề 1","editor.h2":"Tiêu đề 2","editor.h3":"Tiêu đề 3","editor.ul":"Danh sách dấu chấm","editor.ol":"Danh sách đánh số","editor.task":"Danh sách việc cần làm","editor.quote":"Trích dẫn","editor.code":"Code trong dòng","editor.codeblock":"Khối code","editor.link":"Liên kết","editor.table":"Chèn bảng","editor.hr":"Đường kẻ ngang","editor.region":"Trình soạn Markdown","editor.formatting":"Định dạng","editor.discardTitle":"Bỏ thay đổi và quay lại tài liệu","editor.discard":"Bỏ","editor.applyTitle":"Áp dụng thay đổi ({key})","editor.done":"Xong","editor.view":"Chế độ xem","editor.write":"Viết","editor.preview":"Xem trước","editor.source":"Mã nguồn Markdown","editor.placeholder":"Viết Markdown…","editor.livePreview":"Xem trước trực tiếp","editor.hint_html":"\u003ckbd>{key}\u003c/kbd> áp dụng · \u003ckbd>Esc\u003c/kbd> rồi \u003ckbd>Tab\u003c/kbd> để rời trình soạn","editor.finishTitle":"Kết thúc sửa và áp dụng thay đổi ({key})","editor.editTitle":"Sửa mã nguồn Markdown với xem trước trực tiếp","editor.editing":"Đang sửa","editor.edit":"Sửa","editor.draftRestored":"Đã khôi phục bản nháp chưa lưu","editor.noChanges":"Không có thay đổi để áp dụng","editor.applied":"Đã áp dụng thay đổi","editor.lost":"{n, plural, other {# bình luận bị mất vị trí}}","editor.reanchored":"{n, plural, other {# bình luận đã được gắn lại}}","editor.discardConfirmTitle":"Bỏ các chỉnh sửa?","editor.discardConfirmMessage":"Các thay đổi trong mã nguồn Markdown sẽ bị mất.","editor.discardConfirmNote":"Tài liệu và bình luận vẫn giữ nguyên như trước khi bạn bắt đầu sửa.","editor.discardConfirmOk":"Bỏ chỉnh sửa","editor.keepEditing":"Tiếp tục sửa","editor.discarded":"Đã bỏ chỉnh sửa","editor.count":"{w, plural, other {# từ}} · {c, plural, other {# ký tự}}","editor.unsaved":"Chưa lưu thay đổi","editor.clean":"Không có thay đổi","editor.nothingToPreview":"Chưa có gì để xem trước.","editor.ph.linkText":"chữ liên kết","editor.ph.bold":"chữ đậm","editor.ph.italic":"chữ nghiêng","editor.ph.strike":"chữ gạch ngang","editor.ph.code":"code","editor.ph.column":"Cột {n}","editor.ph.cell":"Ô","editor.finishFirst":"Hãy sửa xong trước: Xong ({key}) để áp dụng, Bỏ để hoàn lại","editor.finishBeforeOpen":"Hãy sửa xong trước khi mở file khác","editor.finishFirstShort":"Hãy sửa xong trước","lib.documents":"Tài liệu","lib.full":"Bạn có thể lưu tối đa {max} tài liệu — hãy xóa bớt một cái để thêm mới","lib.manage":"Quản lý","lib.recovered":"Đã khôi phục {n, plural, other {# tài liệu chưa có}} trong danh sách Tài liệu","lib.cantOpen":"Không mở được “{name}” — dữ liệu đã lưu bị thiếu","lib.deletedOne":"Đã xóa “{name}”","lib.deletedMany":"Đã xóa {n} tài liệu","lib.restoredOne":"Đã khôi phục “{name}”","lib.restoredMany":"Đã khôi phục {n} tài liệu","lib.notRestored":" — {n, plural, other {# tài liệu}} chưa được khôi phục (giới hạn {max})","lib.nothingToBackup":"Chưa có gì để sao lưu","lib.downloaded":"Đã tải về {file}","lib.importFailed":"Không nhập được “{name}” — {why}","lib.importNotJson":"file không phải JSON hợp lệ","lib.importNotBackup":"file không phải bản sao lưu mdeverything","lib.importEmpty":"file không chứa tài liệu nào","lib.dupSkipped":" — bỏ qua {n, plural, other {# bản trùng}} (đã có trong Tài liệu)","lib.imported":"Đã nhập {docs, plural, other {# tài liệu}} · {notes, plural, other {# bình luận}}","lib.importFull":" — bộ nhớ đã đầy, phần còn lại bị bỏ qua","lib.importCapped":" — bỏ qua {n, plural, other {# tài liệu}} (giới hạn {max})","lib.dupOne":"“{name}” đã có trong Tài liệu — không có gì mới để nhập","lib.dupAll":"Cả {n} tài liệu đều đã có trong Tài liệu — không có gì mới để nhập","lib.backupNag":"Đã hơn {days} ngày chưa sao lưu — trình duyệt có thể xóa dữ liệu trang. Hãy giữ một bản tài liệu dưới dạng file.","lib.downloadBackup":"Tải bản sao lưu","lib.changedElsewhere":"“{name}” vừa được sửa ở tab khác","lib.loadLatest":"Tải bản mới nhất","lib.deletedElsewhere":"“{name}” đã bị xóa ở tab khác — nó vẫn mở ở đây, và lần thay đổi tiếp theo sẽ lưu lại","lib.cantLoadLatest":"Không tải được bản mới nhất","lib.loadedLatest":"Đã tải bản mới nhất của “{name}”","lib.quotaWarn":"Bộ nhớ sắp đầy — chỉ còn khoảng {free}. Hãy tải bản sao lưu và xóa các tài liệu không cần nữa.","lib.lsWarn":"Bộ nhớ cho tài liệu nhỏ của trang này sắp đầy (dùng chung với các trang khác trên tên miền này). Hãy xóa các tài liệu không cần nữa.","lib.backupFirst":"Tải bản sao lưu trước","lib.backupFirstMany":"Tải bản sao lưu {n} tài liệu trước","lib.backupDone":"Đã tải bản sao lưu ✓","lib.noOld":"Không có tài liệu nào cũ hơn {days} ngày","lib.andMore":"…và {n} tài liệu khác","lib.oldTitle":"Xóa {n, plural, other {# tài liệu cũ}}?","lib.oldMessage":"Không thay đổi trong {days} ngày qua:","lib.oldNote":"Việc này giải phóng bộ nhớ trình duyệt. Bạn có thể hoàn tác ngay sau đó.","lib.oldOk":"Xóa {n}","lib.oldKeep":"Giữ lại","lib.wipeTitle":"Xóa toàn bộ dữ liệu?","lib.wipeMessage":"Thao tác này xóa vĩnh viễn {docs, plural, other {# tài liệu}}, {notes, plural, other {# bình luận}} và các tùy chọn đã lưu khỏi trình duyệt này.","lib.wipeNote":"Không thể hoàn tác.","lib.wipeOk":"Xóa tất cả","lib.wiped":"Đã xóa toàn bộ dữ liệu khỏi trình duyệt này","lib.new":"Mới","lib.newOpen":"Mở file…","lib.newOpenSub":".md, .markdown hoặc .txt","lib.newPaste":"Dán Markdown…","lib.newPasteSub":"Tạo tài liệu mới từ văn bản","lib.newSample":"Tài liệu mẫu","lib.newSampleSub":"Bản demo có hướng dẫn (không lưu)","lib.close":"Đóng danh sách tài liệu","lib.search":"Tìm tài liệu","lib.searchAria":"Tìm tài liệu theo tên","lib.listAria":"Tài liệu đã lưu","lib.backup":"Sao lưu","lib.backupAll":"Tải bản sao lưu (.json)","lib.restore":"Khôi phục từ bản sao lưu…","lib.backupNote":"Bản sao lưu giữ tài liệu và bình luận của bạn trong một file — dùng để chuyển sang trình duyệt khác hoặc cất giữ an toàn.","lib.removeOld":"Xóa tài liệu cũ hơn {days} ngày","lib.wipe":"Xóa toàn bộ dữ liệu","lib.showingSample":"Đang xem tài liệu mẫu","lib.sampleNotice":"Bạn đang xem tài liệu mẫu. Nó chỉ được lưu khi bạn thay đổi — lúc đó sẽ được giữ ở đây với tên “{name}”.","lib.emptyTitle":"Chưa có tài liệu nào được lưu","lib.emptyText":"Mở hoặc dán một file Markdown — nó sẽ tự được lưu ở đây cùng bình luận.","lib.noMatch":"Không có tài liệu nào khớp “{q}”.","lib.rowComments":"{n, plural, other {# bình luận}}","lib.renameAria":"Đổi tên {name}","lib.openTitle":"Mở {name}","lib.current":"Đang mở","lib.rename":"Đổi tên","lib.backupOne":"Tải bản sao lưu","lib.backupOneAria":"Tải bản sao lưu của {name}","lib.deleteAria":"Xóa {name}","lib.hostStorage":"Bộ nhớ do ứng dụng chứa trang này quản lý, nên không đo được dung lượng ở đây.","lib.noStorage":"Bộ nhớ trình duyệt không khả dụng ở đây — tài liệu sẽ mất khi tải lại trang.","lib.storage":"Bộ nhớ","lib.used_html":"Đã dùng \u003cb>~{size}\u003c/b>","lib.meterTitle":"Tài liệu nhỏ: ~{ls} trong localStorage · tài liệu lớn: ~{idb} trong IndexedDB","lib.meterFree":" · trình duyệt còn trống ~{free} cho trang này","lib.meterAria":"Bộ nhớ trình duyệt đã dùng","ai.fmtOn":"Đã bật phản hồi AI — khi xuất sẽ yêu cầu AI trả lời theo định dạng bạn dán lại được","ai.fmtOff":"Đã tắt phản hồi AI — khi xuất dùng định dạng thường","ai.noDocDownload":"Chưa có tài liệu Markdown nào để tải về","ai.noNoteId":"Không có ghi chú nào với id {id} trong tài liệu này","ai.noNoteNum":"Không có ghi chú [{n}] trong tài liệu này","ai.emptyAnswer":"Câu trả lời trống","ai.suggestedEdits":"{n, plural, other {Đề xuất # chỗ sửa.}}","ai.addAnswers":"Thêm câu trả lời","ai.noNotes":"Tài liệu này chưa có ghi chú nào, nên không có chỗ để gắn câu trả lời.","ai.srAdd":"Sẽ được thêm: ","ai.srDup":"Bỏ qua, bị trùng: ","ai.srSkip":"Bỏ qua: ","ai.prevNote":"Ghi chú {n} · {snippet}","ai.byNumber":"Khớp theo số","ai.byId":"Khớp theo id","ai.includes":"{n, plural, other {có # đề xuất sửa}}","ai.round":"Ghi chú {n} đã có câu trả lời của AI — đây sẽ là vòng {round}","ai.roundSuperseded":" (các chỗ sửa đang chờ của nó sẽ bị đánh dấu là đã thay thế)","ai.dupSkipped":"Câu trả lời giống hệt đã được thêm — bỏ qua","ai.skippedWhy":"{why} — bỏ qua","ai.general":"Chung","ai.generalNote":"Không được lưu — hãy sao chép nếu bạn cần","ai.generalCopied":"Đã sao chép nhận xét chung","ai.noneFound_html":"Không tìm thấy câu trả lời nào. Mỗi câu trả lời phải bắt đầu bằng một tiêu đề như \u003ccode>{example}\u003c/code> — hãy bật “{option}” trong menu Xuất trước khi xuất.","ai.addN":"{n, plural, other {Thêm # câu trả lời}}","ai.added":"{n, plural, other {Đã thêm # câu trả lời của AI}}","ai.removed":"{n, plural, other {Đã gỡ # câu trả lời của AI}}","ai.line":"Dòng {n}","ai.moreChanges":"{n, plural, other {… và # thay đổi nữa — dùng Xem lại}}","ai.noChanges":"Không có thay đổi","ai.scope.quote":"Đoạn trích dẫn","ai.scope.everywhere":"{n, plural, other {Mọi nơi · # chỗ}}","ai.scope.section":"Mục: {name}","ai.scope.document":"{n, plural, other {Cả tài liệu · # thay đổi}}","ai.scope.sentence":"Câu · đoạn văn","ai.scope.elsewhereLine":"Chỗ khác · dòng ~{n}","ai.scope.elsewhere":"Chỗ khác","ai.scope.deletion":" · xóa","ai.scope.addition":" · thêm","ai.miss.overlap":"Chồng lên một thay đổi đã chấp nhận","ai.miss.conflict":"Chồng lên một chỗ sửa khác trong đợt này","ai.miss.same":"Đã có trong tài liệu","ai.miss.format":"Không khớp từng chữ với Markdown (đoạn văn vắt qua định dạng)","ai.miss.changed":"Văn bản đã thay đổi từ khi AI trả lời","ai.byHand":"{why} — hãy sửa thủ công","ai.suggCopied":"Đã sao chép văn bản đề xuất","ai.cantApplyN":"Không áp dụng được {n} chỗ sửa — xem ghi chú của chúng","ai.finishFirst":"Hãy sửa xong trước: Xong để áp dụng, Bỏ để hoàn lại","ai.applied":"{n, plural, other {Đã áp dụng # đề xuất sửa}}","ai.notApplied":" · {n} chỗ không áp dụng được","ai.lostHighlight":" · {n, plural, other {# ghi chú mất phần tô sáng}}","ai.undone":"{n, plural, other {Đã hoàn tác chỗ sửa}}","ai.rejected":"{n, plural, other {Đã từ chối # đề xuất}}","ai.noReview":"Không có thay đổi nào để xem lại","ai.revHint":"Ghi chú {num} · {scope} · {n, plural, other {# thay đổi}}. Chấp nhận hoặc từ chối từng thay đổi, rồi áp dụng.","ai.revChange":"Thay đổi {n} · dòng ~{line}","ai.accept":"Chấp nhận","ai.reject":"Từ chối","ai.acceptN":"Chấp nhận thay đổi {n}","ai.rejectN":"Từ chối thay đổi {n}","ai.apply":"Áp dụng","ai.applyNofM":"{m, plural, other {Áp dụng {k}/# thay đổi}}","ai.rejectEdit":"Từ chối chỗ sửa này","ai.docChanged":"Tài liệu đã thay đổi — hãy mở lại Xem lại","ai.tag":"AI","ai.tagRound":"AI · vòng {n}","ai.tagTitle":"Câu trả lời được dán từ trợ lý AI của bạn","ai.copyAnswer":"Sao chép câu trả lời","ai.copyAnswerAria":"Sao chép câu trả lời của AI","ai.answerCopied":"Đã sao chép câu trả lời","ai.earlier":"Câu trả lời AI trước đó · vòng {n}","ai.editN":"Chỗ sửa {n} · ","ai.st.accepted":"✓ Đã chấp nhận","ai.st.rejected":"Đã từ chối","ai.st.superseded":"Đã thay thế","ai.supersededTitle":"Một câu trả lời AI mới hơn đã thay thế đề xuất này","ai.copySugg":"Sao chép văn bản đề xuất","ai.dismiss":"Bỏ qua","ai.dismissAria":"Bỏ qua đề xuất sửa cho ghi chú {n}","ai.review":"Xem lại…","ai.reviewAria":"Xem lại các thay đổi đề xuất cho ghi chú {n}","ai.acceptAria":"Chấp nhận đề xuất sửa cho ghi chú {n}","ai.rejectAria":"Từ chối đề xuất sửa cho ghi chú {n}","ai.chipRewrite":"Ghi chú {n} · Đề xuất viết lại · Xem lại","ai.chipPlaces":"Ghi chú {n} · Đề xuất thay đổi · {k} chỗ","ai.chipChange":"Ghi chú {n} · Đề xuất thay đổi · Xem lại","ai.chipShowNote":"Hiện ghi chú","ai.chipReview":"Xem lại các thay đổi đề xuất","ai.suggCount":"{n, plural, other {# đề xuất}}","ai.pasteAnswer":"Dán câu trả lời của AI…","ai.showSuggTitle":"Hiện đề xuất sửa trong tài liệu","ai.showSugg":"Hiện đề xuất","ai.pasteTitle":"Dán câu trả lời của AI","ai.pasteHint_html":"Dán câu trả lời của trợ lý. Mỗi câu trả lời được khớp với ghi chú của nó theo \u003ccode>{#id}\u003c/code> (hoặc theo số) và thêm vào dưới dạng phản hồi của AI.","ai.pasteAria":"Câu trả lời của AI","ai.pastePlaceholder":"```mdeverything\n## [1] {#n3f9a}\nCâu trả lời của bạn…\n```","ai.suggBar":"Đề xuất sửa","ai.acceptAll":"Chấp nhận tất cả","ai.rejectAll":"Từ chối tất cả","ai.hideSuggAria":"Ẩn đề xuất trong tài liệu","ai.hideSugg":"Ẩn đề xuất","ai.reviewTitle":"Xem lại thay đổi","bundle.section":"mục “{name}”","bundle.line":"dòng ~{n}","bundle.notFound":"(không tìm thấy trong tài liệu hiện tại)","bundle.location":"Vị trí:","bundle.quoted":"Đoạn trích dẫn:","bundle.context":"Ngữ cảnh:","bundle.note":"Ghi chú / câu hỏi:","bundle.noNote":"(không có ghi chú)","bundle.replies":"Phản hồi ({n}):","bundle.aiRound":"(AI, vòng {n})","bundle.editsSummary":"({n, plural, other {đề xuất sửa}}: {list})","bundle.state.accepted":"{n} đã chấp nhận","bundle.state.rejected":"{n} đã từ chối","bundle.state.superseded":"{n} đã thay thế","bundle.state.pending":"{n} đang chờ","link.kind.section":"Mục","link.kind.p":"Đoạn văn","link.kind.li":"Mục danh sách","link.kind.td":"Ô bảng","link.kind.quote":"Trích dẫn","link.kind.pre":"Khối code","link.kind.table":"Bảng","link.kind.figure":"Hình","link.kind.dd":"Định nghĩa","link.kind.dt":"Thuật ngữ","link.broken":"Liên kết hỏng","link.notFound":"Không tìm thấy mục","link.noMatch":"{frag} không khớp tiêu đề nào trong tài liệu này","link.jumpHint":"Bấm để nhảy tới · ↩ Quay lại sau đó","link.email":"Email","link.external":"Liên kết ngoài","link.copy":"Sao chép liên kết","link.opensMail":"Mở ứng dụng email của bạn","link.opensTab":"Mở trong tab mới","link.otherFile":"File khác","link.fileBlocked":"Không thể mở liên kết tới file khác ở đây","link.copied":"Đã sao chép liên kết","link.copyFailed":"Không sao chép được liên kết","link.backAria":"Quay lại chỗ bạn đang đọc (Alt+Left)","link.back":"Quay lại","table.region":"Bảng {n}","table.optionsN":"Tùy chọn bảng {n}","table.options":"Tùy chọn bảng","table.colWidth":"Độ rộng cột {n}","table.rowHeight":"Chiều cao hàng {n}","table.reset":"Đặt lại kích thước","table.density":"Mật độ","table.compact":"Gọn","table.default":"Mặc định","table.comfortable":"Thoáng","table.resetDone":"Đã đặt lại kích thước bảng","pane.resizeOutline":"Đổi kích thước mục lục","pane.resizeRail":"Đổi kích thước bảng bình luận","pane.resizeTitle":"Kéo để đổi kích thước · bấm đúp để đặt lại"}}</script>
+<script type="application/json" id="i18n">{"lang":"vi","code":"vi","nativeName":"Tiếng Việt","base":"../","locales":[{"code":"en","htmlLang":"en","dir":"ltr","nativeName":"English","href":"../"},{"code":"vi","htmlLang":"vi","dir":"ltr","nativeName":"Tiếng Việt","href":"../vi/"},{"code":"ja","htmlLang":"ja","dir":"ltr","nativeName":"日本語","href":"../ja/"},{"code":"pt-BR","htmlLang":"pt-BR","dir":"ltr","nativeName":"Português (Brasil)","href":"../pt-br/"},{"code":"es","htmlLang":"es","dir":"ltr","nativeName":"Español","href":"../es/"}],"dict":{"lang.button":"Ngôn ngữ","lang.buttonAria":"Ngôn ngữ: Tiếng Việt","lang.links":"Ngôn ngữ","lang.suggest":"Trang này có bản Tiếng Việt","lang.suggestGo":"Chuyển","lang.suggestDismiss":"Đóng","hdr.outline":"Mục lục","hdr.comments":"Bình luận","hdr.outlineToggle":"Hiện / ẩn mục lục","hdr.editMd":"Sửa Markdown","hdr.importTitle":"Mở, dán hoặc khôi phục","hdr.import":"Nhập","hdr.theme":"Giao diện","hdr.railToggle":"Hiện / ẩn bảng bình luận","menu.openTitle":"Mở một file Markdown","menu.open":"Mở file…","menu.openSub":".md, .markdown hoặc .txt từ máy của bạn","menu.pasteTitle":"Dán Markdown","menu.paste":"Dán Markdown…","menu.pasteSub":"Bắt đầu từ văn bản trong clipboard","menu.restoreTitle":"Khôi phục tài liệu và bình luận từ file sao lưu","menu.restore":"Khôi phục từ bản sao lưu (.json)…","menu.restoreSub":"Lấy lại tài liệu cùng bình luận của chúng","theme.light":"Giấy","theme.beige":"Sepia","theme.dark":"Đêm","theme.aria":"Giao diện: {name}","theme.ariaPaper":"Giao diện: Giấy","export.noDoc":"Chưa có tài liệu Markdown nào để sao chép","export.copyFailed":"Không sao chép được, hãy thử lại","export.needComment":"Hãy thêm ít nhất một bình luận trước khi xuất","export.button":"Xuất cho AI","export.options":"Tùy chọn xuất","export.menu":"Xuất","export.full":"Toàn bộ ngữ cảnh","export.notes":"Chỉ bình luận","export.raw":"Chỉ tài liệu","export.fileFull":"-cho-AI","export.fileNotes":"-binh-luan","export.aiFmt":"Cho AI trả lời ngược vào mdeverything","exp2.mFull":"Sao chép toàn bộ ngữ cảnh","exp2.mFullSub":"Tài liệu + bình luận + yêu cầu","exp2.mNotes":"Sao chép chỉ bình luận","exp2.mNotesSub":"Chỉ bình luận và đoạn được trích","exp2.mDoc":"Sao chép chỉ tài liệu","exp2.mDocSub":"Chỉ văn bản","exp2.mOptions":"Tùy chọn xuất…","exp2.mOptionsSub":"Dặn nhanh, yêu cầu thêm, tải file","exp2.mPaste":"Dán kết quả của AI…","exp2.mPasteSub":"Dán lại thứ AI trả về","exp2.title":"Xuất cho AI","exp2.what":"Gửi gì","exp2.fullSub":"Tài liệu + bình luận","exp2.notesSub":"Bình luận + đoạn được trích","exp2.docSub":"Chỉ văn bản","exp2.quick":"Dặn nhanh cho AI","exp2.optMark":"Đánh dấu chỗ sửa (gạch ngang chữ bỏ, tô tím chữ mới)","exp2.optAnswer":"Trả lời từng comment","exp2.optAnswerSub":"Để dán câu trả lời ngược vào dưới từng bình luận","exp2.optAnswerNa":"Không dùng khi chỉ gửi tài liệu","exp2.extra":"Yêu cầu thêm","exp2.extraPh":"Ví dụ: giữ giọng văn, không đổi các heading…","exp2.suggestions":"Gợi ý","exp2.chipTone":"Giữ giọng văn","exp2.chipOnly":"Chỉ sửa chỗ có comment","exp2.chipHeadings":"Không đổi các heading","exp2.chipShorter":"Ngắn gọn hơn","exp2.chipExplain":"Giải thích ngắn lý do mỗi chỗ sửa","exp2.chipKeep":"Giữ nguyên bảng và code","exp2.chipLang":"Trả lời bằng tiếng Việt","exp2.recent":"Đã dùng gần đây","exp2.useRecent":"Dùng: {text}","exp2.preview":"Xem trước nội dung sẽ copy","exp2.download":"Tải file .md","exp2.copy":"Copy","exp2.markPrompt":"Trả lại toàn bộ tài liệu đã sửa (Markdown) và đánh dấu chỗ sửa: chữ bị bỏ thì gạch ngang bằng ~~hai dấu ngã~~, chữ mới thì tô tím bằng \u003cins>…\u003c/ins>. Nếu tài liệu đã có đánh dấu của lần trước thì xoá hẳn phần ~~gạch ngang~~, còn chữ \u003cins> của lần trước để lại như chữ thường (bỏ thẻ \u003cins>).","exp2.okFull":"Đã copy toàn bộ ngữ cảnh","exp2.okNotes":"Đã copy chỉ bình luận","exp2.okDoc":"Đã copy chỉ tài liệu","exp2.okDl":"Đã tải file {file}","exp2.failTitle":"Không copy được vào clipboard","exp2.failSub":"Trình duyệt đã chặn. Hãy tải file về và đính kèm vào AI.","exp2.metaComments":"{n, plural, other {# bình luận}}","exp2.metaWords":"{n, plural, other {# từ}}","exp2.metaWith":"kèm: {list}","exp2.incMark":"đánh dấu chỗ sửa","exp2.incAnswer":"trả lời từng comment","exp2.incExtra":"yêu cầu thêm","exp2.stepsAria":"Các bước tiếp theo","exp2.step1":"Dán vào AI","exp2.step1Dl":"Đính kèm file vào AI","exp2.step2":"Copy kết quả","exp2.step3":"Dán lại đây","exp2.openAi":"Mở AI bạn dùng","exp2.more":"+ khác","exp2.newTab":"{name} (mở ở tab mới)","exp2.anyAi":"mdeverything dùng được với mọi AI đọc Markdown","exp2.cta":"Dán kết quả của AI","exp2.ctaDl":"Tải file thay thế","exp2.noteMark":"Chỗ cũ gạch ngang, chỗ mới tô tím","exp2.noteAnswer":"Câu trả lời sẽ hiện dưới từng comment","exp2.hideSteps":"Không hiện hướng dẫn nữa","exp2.dismiss":"Đóng","home.hideTitle":"Ẩn phần giới thiệu, giữ lại bản demo","home.hide":"Ẩn giới thiệu","home.kicker":"Bàn review Markdown dành cho AI","home.title_html":"Chỉ đúng từng chữ.\u003cbr>\u003cspan class=\"hero-em\">Nói AI cần sửa gì.\u003c/span>","home.sub":"Bình luận trên bất kỳ file Markdown nào, rồi xuất ra với mọi bình luận được gắn đúng đoạn văn — để ChatGPT, Claude hay Gemini trả lời đúng chỗ.","home.open":"Mở một file Markdown","home.paste":"Dán Markdown","home.demo":"Xem bản demo bên dưới","home.dropAria":"Mở một file Markdown — hoặc thả file vào đây","home.dropTitle":"Thả file .md của bạn vào đây","home.dropBrowse":"hoặc bấm để chọn file trên máy","home.dropHint":".md · .markdown · .txt — hoặc bản sao lưu .mdeverything.json","how.title":"Cách hoạt động","how.mockDoc_html":"Miễn phí cho nhóm tối đa 5 người. \u003cmark class=\"mk-hl\">Tính phí ngay từ ngày đầu\u003cspan class=\"mk-badge\">1\u003c/span>\u003c/mark> với mọi trường hợp khác.","how.mockNote":"Đúng không nhỉ? Mình tưởng có 14 ngày dùng thử.","how.s1Title":"Chỉ vào đúng chữ","how.s1Text":"Mở hoặc dán bất kỳ file Markdown nào. Chọn một đoạn và ghi điều cần thay đổi.","how.mockExport_html":"\u003cspan class=\"mk-k\">[1] {#n3f9a}\u003c/span> Vị trí: mục “Bảng giá”\nĐoạn trích dẫn:\n\u003cspan class=\"mk-q\">\"Tính phí ngay từ ngày đầu\"\u003c/span>\nGhi chú: Đúng không nhỉ? Mình tưởng…","how.s2Title":"Gửi cho AI của bạn","how.s2Text":"Xuất sẽ sao chép toàn bộ tài liệu với mọi bình luận được gắn đúng đoạn văn. Dán vào ChatGPT, Claude hoặc Gemini.","how.mockReply":"Đúng vậy — các gói trả phí bắt đầu với 14 ngày dùng thử.","how.mockDiff_html":"Tính phí \u003cdel>ngay từ ngày đầu\u003c/del> \u003cins>sau 14 ngày dùng thử miễn phí\u003c/ins>","how.s3Title":"Xem câu trả lời tại chỗ","how.s3Text_html":"Dán câu trả lời trở lại. Mỗi câu trả lời nằm ngay dưới bình luận của nó, đề xuất sửa hiển thị dạng \u003cdel>cũ\u003c/del> → \u003cins>mới\u003c/ins>. Chấp nhận hoặc từ chối từng cái.","how.loopTitle":"Chưa xong?","how.loopText":"Phản hồi hoặc thêm bình luận rồi xuất lại — AI chỉ trả lời các bình luận mới và tiếp nối.","how.foot":"Dùng với ChatGPT, Claude, Gemini — không cần tài khoản, không tải gì lên","why.aria":"Vì sao chọn mdeverything","why.c1Title":"Ngữ cảnh chính xác cho AI","why.c1Text":"Mỗi bình luận mang theo trích dẫn, mục và đoạn văn xung quanh, để câu trả lời rơi đúng câu.","why.c2Title":"Riêng tư — chạy trong trình duyệt","why.c2Text":"Không tải lên, không tài khoản, không theo dõi. Dữ liệu của bạn ở lại trên thiết bị này.","why.c3Title":"Dùng được với mọi ngôn ngữ","why.c3Text":"Bình luận bám vào đúng từng chữ — English, Tiếng Việt, 日本語 đều như nhau.","assure.free":"Miễn phí","assure.noSignup":"Không cần đăng ký","assure.autosave":"Tự động lưu khi bạn làm việc","assure.docs":"Lưu tối đa 10 tài liệu","tip.text_html":"\u003cb>Thử ngay:\u003c/b> chọn một câu bất kỳ bên dưới và nhấn \u003ckbd>Enter\u003c/kbd> để bình luận.","tip.dismiss":"Ẩn mẹo","floater.add":"Thêm ghi chú","dropzone.text":"Thả file .md — hoặc bản sao lưu .mdeverything.json — để mở","source.newTitle":"Tài liệu mới từ Markdown","source.create":"Tạo tài liệu","source.title":"Dán Markdown","source.render":"Hiển thị tài liệu","source.hint_html":"Dán Markdown và nhấn \u003cb>Hiển thị tài liệu\u003c/b>. Từ trang chủ, thao tác này thay thế tài liệu mẫu. Ở chế độ làm việc, ghi chú hiện có được giữ lại khi có thể và gắn lại vào các đoạn khớp.","source.openFile":"Mở Markdown…","confirm.defaultTitle":"Thay tài liệu hiện tại?","confirm.defaultMessage":"Không thể hoàn tác thao tác này.","confirm.exportFirst":"Hãy xuất ghi chú trước nếu bạn muốn giữ một bản.","confirm.continue":"Tiếp tục","confirm.replaceMessage":"Mở tài liệu mới sẽ xóa các chú thích hiện tại.","confirm.replaceOk":"Thay tài liệu","common.cancel":"Hủy","common.save":"Lưu","common.undo":"Hoàn tác","common.cancelEsc":"Hủy (Esc)","common.close":"Đóng","common.closeEsc":"Đóng (Esc)","common.edit":"Sửa","common.delete":"Xóa","common.open":"Mở","doc.sampleName":"Tài liệu mẫu","doc.untitled":"Tài liệu Markdown","doc.labelTitle":"{name} — Tài liệu","doc.editedName":"Tài liệu đã sửa","doc.sampleCopy":"Bản sao tài liệu mẫu","doc.pastedName":"Markdown đã dán","doc.untitledShort":"Chưa đặt tên","doc.recoveredName":"Tài liệu khôi phục","doc.importedName":"Tài liệu đã nhập","sample.confirmTitle":"Mở tài liệu mẫu?","sample.confirmMessage":"Bạn đang có {n, plural, other {# ghi chú}}. Mở tài liệu mẫu sẽ xóa các chú thích này.","sample.confirmOk":"Mở tài liệu mẫu","sample.confirmKeep":"Giữ tài liệu hiện tại","sample.loaded":"Đã mở tài liệu mẫu với {n, plural, other {# bình luận ví dụ}}","sample.liveDemo":"Demo trực tiếp · di chuột hoặc bấm vào phần tô sáng","render.failed":"Không thể hiển thị markdown.","code.label":"code","code.copy":"Sao chép","code.copied":"Đã chép","code.error":"Lỗi","mermaid.rendering":"Đang vẽ sơ đồ…","mermaid.error":"Không đọc được sơ đồ — đang hiện mã nguồn.","diag.add":"Bình luận","diag.addAria":"Bình luận về “{label}”","diag.wrapAria":"Sơ đồ {n}. Dùng phím mũi tên để chọn một ô, rồi nhấn Enter để bình luận.","diag.cardQuote":"Sơ đồ {n} · ô “{label}”","diag.cardWhole":"Sơ đồ {n}","diag.location":"sơ đồ {n} ({type}) · {shape} “{label}”","diag.locationWhole":"sơ đồ {n} ({type})","diag.bundleMermaid":"Mermaid: {code}","diag.shapeNode":"ô","diag.shapeEdge":"nhãn mũi tên","diag.shapeGroup":"nhóm","diag.shapeParticipant":"đối tượng","diag.shapeMessage":"thông điệp","diag.shapeNote":"ghi chú","outline.untitled":"Mục chưa đặt tên","outline.title":"Trên trang này","outline.close":"Đóng mục lục","outline.collapse":"Thu gọn mục lục","outline.empty_html":"Tài liệu này chưa có tiêu đề nào. Thêm tiêu đề \u003ccode>#\u003c/code>, \u003ccode>##\u003c/code> hoặc \u003ccode>###\u003c/code> để có mục lục.","outline.expand":"Mở rộng mục lục","outline.aria":"Mục lục tài liệu","gutter.comment":"Bình luận khối này","rail.countLabel":"{n, plural, other {ghi chú}}","rail.show":"Hiện bảng bình luận","rail.hide":"Ẩn bảng bình luận","rail.collapse":"Thu gọn bảng bình luận","rail.showCount":"Hiện bảng bình luận ({n, plural, other {# bình luận}})","rail.notesWord":"ghi chú","rail.empty_html":"\u003cb>Chọn một đoạn bất kỳ\u003c/b> trong tài liệu để thêm ghi chú hoặc câu hỏi. Ghi chú nằm ngay cạnh đoạn văn và đi cùng nó khi bạn sao chép.","rail.reviewerNotes":"Ghi chú review","rail.exampleNotes":"Ghi chú ví dụ","rail.demoHint":"Các bình luận demo cho thấy chú thích gắn với đoạn tô sáng như thế nào.","card.notFound":"Không tìm thấy đoạn này trong tài liệu","card.exampleChip":"Ghi chú ví dụ","card.replies":"{n, plural, other {# phản hồi}}","card.editNote":"Sửa ghi chú","card.deleteNote":"Xóa ghi chú","card.replyPlaceholder":"Phản hồi…","card.replyToNote":"Phản hồi ghi chú {n}","card.reply":"Phản hồi","card.addNotePlaceholder":"Bấm để thêm ghi chú…","card.ariaNote":"Ghi chú {n}: {quote}","card.ariaEmpty":"Ghi chú trống {n} cho “{quote}” — kích hoạt để viết","card.deleteNoteN":"Xóa ghi chú {n}","card.editNoteN":"Sửa ghi chú {n}","pop.notesOnPassage":"{n, plural, other {# ghi chú cho đoạn này}}","pop.noNoteClick":"Chưa có ghi chú — bấm để thêm","pop.preview":"Xem trước ghi chú","pop.newNote":"Ghi chú mới","pop.notePlaceholder":"Thêm ghi chú hoặc câu hỏi…","pop.noteText":"Nội dung ghi chú","pop.hint":"Enter để lưu · Shift+Enter xuống dòng","pop.noteN":"Ghi chú {n}","pop.notesHere":"{n, plural, other {# ghi chú ở đây}}","pop.showNote":"Hiện ghi chú {n}","pop.noNote":"Chưa có ghi chú","reply.deleted":"Đã xóa phản hồi","reply.edit":"Sửa phản hồi","reply.delete":"Xóa phản hồi","reply.editHintTitle":"Enter để lưu · Shift+Enter xuống dòng · Esc để hủy","reply.editHint":"Enter để lưu · Esc để hủy","reply.edited":"đã sửa","reply.editedAt":"Đã sửa {date}","filter.none.all":"Không có bình luận nào.","filter.none.replies":"Không có bình luận nào có phản hồi.","filter.none.unanchored":"Không có bình luận nào bị mất vị trí.","filter.none.ai":"Không có bình luận nào có câu trả lời của AI.","filter.none.noai":"Không có bình luận nào chưa có câu trả lời của AI.","filter.none.sugg":"Không có bình luận nào có đề xuất đang chờ.","filter.noneQ.all":"Không có bình luận nào khớp “{q}”.","filter.noneQ.replies":"Không có bình luận có phản hồi nào khớp “{q}”.","filter.noneQ.unanchored":"Không có bình luận mất vị trí nào khớp “{q}”.","filter.noneQ.ai":"Không có bình luận có câu trả lời AI nào khớp “{q}”.","filter.noneQ.noai":"Không có bình luận chưa có câu trả lời AI nào khớp “{q}”.","filter.noneQ.sugg":"Không có bình luận có đề xuất đang chờ nào khớp “{q}”.","filter.label":"Lọc bình luận","filter.all":"Tất cả","filter.replies":"Có phản hồi","filter.unanchored":"Mất vị trí","filter.unanchoredTitle":"Ghi chú có đoạn văn không còn trong tài liệu","filter.ai":"Có trả lời AI","filter.noai":"Chưa có trả lời AI","filter.sugg":"Đề xuất đang chờ","filter.suggTitle":"Đề xuất sửa của AI chưa được chấp nhận hay từ chối","filter.clear":"Xóa bộ lọc","search.placeholder":"Tìm bình luận","help.titleShort":"Phím tắt (?)","help.title":"Phím tắt","help.nextPrev":"Bình luận tiếp theo / trước đó","help.search":"Tìm bình luận","help.addNote":"Thêm ghi chú cho đoạn đang chọn","help.close":"Đóng thẻ, menu hoặc hộp thoại","help.show":"Hiện danh sách phím tắt này","nav.noComments":"Chưa có bình luận nào","nav.noMatch":"Không có bình luận nào khớp bộ lọc","nav.noHighlight":"Không có bình luận nào được tô sáng trong tài liệu này","toast.noteGone":"Ghi chú đó không còn nữa","toast.noteDeleted":"Đã xóa ghi chú","toast.noteRestoredOrphan":"Đã khôi phục ghi chú — đoạn văn của nó không còn trong tài liệu","toast.storageFull":"Bộ nhớ trình duyệt đã đầy — các thay đổi mới nhất chưa được lưu","toast.manageStorage":"Quản lý bộ nhớ","toast.storageUnavailable":"Bộ nhớ trình duyệt không khả dụng ở đây — thay đổi sẽ mất khi tải lại trang","toast.savedAs":"Thay đổi của bạn được lưu thành “{name}”","toast.opened":"Đã mở {name}","toast.docLoaded":"Đã mở tài liệu","toast.cantRead":"Không đọc được “{name}”","toast.pasteFirst":"Hãy dán Markdown trước","toast.rendered":"Đã hiển thị Markdown","time.justNow":"vừa xong","time.yesterday":"hôm qua","editor.undo":"Hoàn tác","editor.redo":"Làm lại","editor.bold":"In đậm","editor.italic":"In nghiêng","editor.strike":"Gạch ngang","editor.h1":"Tiêu đề 1","editor.h2":"Tiêu đề 2","editor.h3":"Tiêu đề 3","editor.ul":"Danh sách dấu chấm","editor.ol":"Danh sách đánh số","editor.task":"Danh sách việc cần làm","editor.quote":"Trích dẫn","editor.code":"Code trong dòng","editor.codeblock":"Khối code","editor.link":"Liên kết","editor.table":"Chèn bảng","editor.hr":"Đường kẻ ngang","editor.region":"Trình soạn Markdown","editor.formatting":"Định dạng","editor.discardTitle":"Bỏ thay đổi và quay lại tài liệu","editor.discard":"Bỏ","editor.applyTitle":"Áp dụng thay đổi ({key})","editor.done":"Xong","editor.view":"Chế độ xem","editor.write":"Viết","editor.preview":"Xem trước","editor.source":"Mã nguồn Markdown","editor.placeholder":"Viết Markdown…","editor.livePreview":"Xem trước trực tiếp","editor.hint_html":"\u003ckbd>{key}\u003c/kbd> áp dụng · \u003ckbd>Esc\u003c/kbd> rồi \u003ckbd>Tab\u003c/kbd> để rời trình soạn","editor.finishTitle":"Kết thúc sửa và áp dụng thay đổi ({key})","editor.editTitle":"Sửa mã nguồn Markdown với xem trước trực tiếp","editor.editing":"Đang sửa","editor.edit":"Sửa","editor.draftRestored":"Đã khôi phục bản nháp chưa lưu","editor.noChanges":"Không có thay đổi để áp dụng","editor.applied":"Đã áp dụng thay đổi","editor.lost":"{n, plural, other {# bình luận bị mất vị trí}}","editor.reanchored":"{n, plural, other {# bình luận đã được gắn lại}}","editor.discardConfirmTitle":"Bỏ các chỉnh sửa?","editor.discardConfirmMessage":"Các thay đổi trong mã nguồn Markdown sẽ bị mất.","editor.discardConfirmNote":"Tài liệu và bình luận vẫn giữ nguyên như trước khi bạn bắt đầu sửa.","editor.discardConfirmOk":"Bỏ chỉnh sửa","editor.keepEditing":"Tiếp tục sửa","editor.discarded":"Đã bỏ chỉnh sửa","editor.count":"{w, plural, other {# từ}} · {c, plural, other {# ký tự}}","editor.unsaved":"Chưa lưu thay đổi","editor.clean":"Không có thay đổi","editor.nothingToPreview":"Chưa có gì để xem trước.","editor.ph.linkText":"chữ liên kết","editor.ph.bold":"chữ đậm","editor.ph.italic":"chữ nghiêng","editor.ph.strike":"chữ gạch ngang","editor.ph.code":"code","editor.ph.column":"Cột {n}","editor.ph.cell":"Ô","editor.finishFirst":"Hãy sửa xong trước: Xong ({key}) để áp dụng, Bỏ để hoàn lại","editor.finishBeforeOpen":"Hãy sửa xong trước khi mở file khác","editor.finishFirstShort":"Hãy sửa xong trước","lib.documents":"Tài liệu","lib.full":"Bạn có thể lưu tối đa {max} tài liệu — hãy xóa bớt một cái để thêm mới","lib.manage":"Quản lý","lib.recovered":"Đã khôi phục {n, plural, other {# tài liệu chưa có}} trong danh sách Tài liệu","lib.cantOpen":"Không mở được “{name}” — dữ liệu đã lưu bị thiếu","lib.deletedOne":"Đã xóa “{name}”","lib.deletedMany":"Đã xóa {n} tài liệu","lib.restoredOne":"Đã khôi phục “{name}”","lib.restoredMany":"Đã khôi phục {n} tài liệu","lib.notRestored":" — {n, plural, other {# tài liệu}} chưa được khôi phục (giới hạn {max})","lib.nothingToBackup":"Chưa có gì để sao lưu","lib.downloaded":"Đã tải về {file}","lib.importFailed":"Không nhập được “{name}” — {why}","lib.importNotJson":"file không phải JSON hợp lệ","lib.importNotBackup":"file không phải bản sao lưu mdeverything","lib.importEmpty":"file không chứa tài liệu nào","lib.dupSkipped":" — bỏ qua {n, plural, other {# bản trùng}} (đã có trong Tài liệu)","lib.imported":"Đã nhập {docs, plural, other {# tài liệu}} · {notes, plural, other {# bình luận}}","lib.importFull":" — bộ nhớ đã đầy, phần còn lại bị bỏ qua","lib.importCapped":" — bỏ qua {n, plural, other {# tài liệu}} (giới hạn {max})","lib.dupOne":"“{name}” đã có trong Tài liệu — không có gì mới để nhập","lib.dupAll":"Cả {n} tài liệu đều đã có trong Tài liệu — không có gì mới để nhập","lib.backupNag":"Đã hơn {days} ngày chưa sao lưu — trình duyệt có thể xóa dữ liệu trang. Hãy giữ một bản tài liệu dưới dạng file.","lib.downloadBackup":"Tải bản sao lưu","lib.changedElsewhere":"“{name}” vừa được sửa ở tab khác","lib.loadLatest":"Tải bản mới nhất","lib.deletedElsewhere":"“{name}” đã bị xóa ở tab khác — nó vẫn mở ở đây, và lần thay đổi tiếp theo sẽ lưu lại","lib.cantLoadLatest":"Không tải được bản mới nhất","lib.loadedLatest":"Đã tải bản mới nhất của “{name}”","lib.quotaWarn":"Bộ nhớ sắp đầy — chỉ còn khoảng {free}. Hãy tải bản sao lưu và xóa các tài liệu không cần nữa.","lib.lsWarn":"Bộ nhớ cho tài liệu nhỏ của trang này sắp đầy (dùng chung với các trang khác trên tên miền này). Hãy xóa các tài liệu không cần nữa.","lib.backupFirst":"Tải bản sao lưu trước","lib.backupFirstMany":"Tải bản sao lưu {n} tài liệu trước","lib.backupDone":"Đã tải bản sao lưu ✓","lib.noOld":"Không có tài liệu nào cũ hơn {days} ngày","lib.andMore":"…và {n} tài liệu khác","lib.oldTitle":"Xóa {n, plural, other {# tài liệu cũ}}?","lib.oldMessage":"Không thay đổi trong {days} ngày qua:","lib.oldNote":"Việc này giải phóng bộ nhớ trình duyệt. Bạn có thể hoàn tác ngay sau đó.","lib.oldOk":"Xóa {n}","lib.oldKeep":"Giữ lại","lib.wipeTitle":"Xóa toàn bộ dữ liệu?","lib.wipeMessage":"Thao tác này xóa vĩnh viễn {docs, plural, other {# tài liệu}}, {notes, plural, other {# bình luận}} và các tùy chọn đã lưu khỏi trình duyệt này.","lib.wipeNote":"Không thể hoàn tác.","lib.wipeOk":"Xóa tất cả","lib.wiped":"Đã xóa toàn bộ dữ liệu khỏi trình duyệt này","lib.new":"Mới","lib.newOpen":"Mở file…","lib.newOpenSub":".md, .markdown hoặc .txt","lib.newPaste":"Dán Markdown…","lib.newPasteSub":"Tạo tài liệu mới từ văn bản","lib.newSample":"Tài liệu mẫu","lib.newSampleSub":"Bản demo có hướng dẫn (không lưu)","lib.close":"Đóng danh sách tài liệu","lib.search":"Tìm tài liệu","lib.searchAria":"Tìm tài liệu theo tên","lib.listAria":"Tài liệu đã lưu","lib.backup":"Sao lưu","lib.backupAll":"Tải bản sao lưu (.json)","lib.restore":"Khôi phục từ bản sao lưu…","lib.backupNote":"Bản sao lưu giữ tài liệu và bình luận của bạn trong một file — dùng để chuyển sang trình duyệt khác hoặc cất giữ an toàn.","lib.removeOld":"Xóa tài liệu cũ hơn {days} ngày","lib.wipe":"Xóa toàn bộ dữ liệu","lib.showingSample":"Đang xem tài liệu mẫu","lib.sampleNotice":"Bạn đang xem tài liệu mẫu. Nó chỉ được lưu khi bạn thay đổi — lúc đó sẽ được giữ ở đây với tên “{name}”.","lib.emptyTitle":"Chưa có tài liệu nào được lưu","lib.emptyText":"Mở hoặc dán một file Markdown — nó sẽ tự được lưu ở đây cùng bình luận.","lib.noMatch":"Không có tài liệu nào khớp “{q}”.","lib.rowComments":"{n, plural, other {# bình luận}}","lib.renameAria":"Đổi tên {name}","lib.openTitle":"Mở {name}","lib.current":"Đang mở","lib.rename":"Đổi tên","lib.backupOne":"Tải bản sao lưu","lib.backupOneAria":"Tải bản sao lưu của {name}","lib.deleteAria":"Xóa {name}","lib.hostStorage":"Bộ nhớ do ứng dụng chứa trang này quản lý, nên không đo được dung lượng ở đây.","lib.noStorage":"Bộ nhớ trình duyệt không khả dụng ở đây — tài liệu sẽ mất khi tải lại trang.","lib.storage":"Bộ nhớ","lib.used_html":"Đã dùng \u003cb>~{size}\u003c/b>","lib.meterTitle":"Tài liệu nhỏ: ~{ls} trong localStorage · tài liệu lớn: ~{idb} trong IndexedDB","lib.meterFree":" · trình duyệt còn trống ~{free} cho trang này","lib.meterAria":"Bộ nhớ trình duyệt đã dùng","ai.fmtOn":"Đã bật phản hồi AI — khi xuất sẽ yêu cầu AI trả lời theo định dạng bạn dán lại được","ai.fmtOff":"Đã tắt phản hồi AI — khi xuất dùng định dạng thường","ai.noDocDownload":"Chưa có tài liệu Markdown nào để tải về","ai.noNoteId":"Không có ghi chú nào với id {id} trong tài liệu này","ai.noNoteNum":"Không có ghi chú [{n}] trong tài liệu này","ai.emptyAnswer":"Câu trả lời trống","ai.suggestedEdits":"{n, plural, other {Đề xuất # chỗ sửa.}}","ai.addAnswers":"Thêm câu trả lời","ai.noNotes":"Tài liệu này chưa có ghi chú nào, nên không có chỗ để gắn câu trả lời.","ai.srAdd":"Sẽ được thêm: ","ai.srDup":"Bỏ qua, bị trùng: ","ai.srSkip":"Bỏ qua: ","ai.prevNote":"Ghi chú {n} · {snippet}","ai.byNumber":"Khớp theo số","ai.byId":"Khớp theo id","ai.includes":"{n, plural, other {có # đề xuất sửa}}","ai.round":"Ghi chú {n} đã có câu trả lời của AI — đây sẽ là vòng {round}","ai.roundSuperseded":" (các chỗ sửa đang chờ của nó sẽ bị đánh dấu là đã thay thế)","ai.dupSkipped":"Câu trả lời giống hệt đã được thêm — bỏ qua","ai.skippedWhy":"{why} — bỏ qua","ai.general":"Chung","ai.generalNote":"Không được lưu — hãy sao chép nếu bạn cần","ai.generalCopied":"Đã sao chép nhận xét chung","ai.noneFound_html":"Không tìm thấy câu trả lời nào. Mỗi câu trả lời phải bắt đầu bằng một tiêu đề như \u003ccode>{example}\u003c/code> — hãy bật “{option}” trong menu Xuất trước khi xuất.","ai.addN":"{n, plural, other {Thêm # câu trả lời}}","ai.added":"{n, plural, other {Đã thêm # câu trả lời của AI}}","ai.removed":"{n, plural, other {Đã gỡ # câu trả lời của AI}}","ai.line":"Dòng {n}","ai.moreChanges":"{n, plural, other {… và # thay đổi nữa — dùng Xem lại}}","ai.noChanges":"Không có thay đổi","ai.scope.quote":"Đoạn trích dẫn","ai.scope.everywhere":"{n, plural, other {Mọi nơi · # chỗ}}","ai.scope.section":"Mục: {name}","ai.scope.document":"{n, plural, other {Cả tài liệu · # thay đổi}}","ai.scope.sentence":"Câu · đoạn văn","ai.scope.elsewhereLine":"Chỗ khác · dòng ~{n}","ai.scope.elsewhere":"Chỗ khác","ai.scope.deletion":" · xóa","ai.scope.addition":" · thêm","ai.miss.overlap":"Chồng lên một thay đổi đã chấp nhận","ai.miss.conflict":"Chồng lên một chỗ sửa khác trong đợt này","ai.miss.same":"Đã có trong tài liệu","ai.miss.format":"Không khớp từng chữ với Markdown (đoạn văn vắt qua định dạng)","ai.miss.changed":"Văn bản đã thay đổi từ khi AI trả lời","ai.byHand":"{why} — hãy sửa thủ công","ai.suggCopied":"Đã sao chép văn bản đề xuất","ai.cantApplyN":"Không áp dụng được {n} chỗ sửa — xem ghi chú của chúng","ai.finishFirst":"Hãy sửa xong trước: Xong để áp dụng, Bỏ để hoàn lại","ai.applied":"{n, plural, other {Đã áp dụng # đề xuất sửa}}","ai.notApplied":" · {n} chỗ không áp dụng được","ai.lostHighlight":" · {n, plural, other {# ghi chú mất phần tô sáng}}","ai.undone":"{n, plural, other {Đã hoàn tác chỗ sửa}}","ai.rejected":"{n, plural, other {Đã từ chối # đề xuất}}","ai.noReview":"Không có thay đổi nào để xem lại","ai.revHint":"Ghi chú {num} · {scope} · {n, plural, other {# thay đổi}}. Chấp nhận hoặc từ chối từng thay đổi, rồi áp dụng.","ai.revChange":"Thay đổi {n} · dòng ~{line}","ai.accept":"Chấp nhận","ai.reject":"Từ chối","ai.acceptN":"Chấp nhận thay đổi {n}","ai.rejectN":"Từ chối thay đổi {n}","ai.apply":"Áp dụng","ai.applyNofM":"{m, plural, other {Áp dụng {k}/# thay đổi}}","ai.rejectEdit":"Từ chối chỗ sửa này","ai.docChanged":"Tài liệu đã thay đổi — hãy mở lại Xem lại","ai.tag":"AI","ai.tagRound":"AI · vòng {n}","ai.tagTitle":"Câu trả lời được dán từ trợ lý AI của bạn","ai.copyAnswer":"Sao chép câu trả lời","ai.copyAnswerAria":"Sao chép câu trả lời của AI","ai.answerCopied":"Đã sao chép câu trả lời","ai.earlier":"Câu trả lời AI trước đó · vòng {n}","ai.editN":"Chỗ sửa {n} · ","ai.st.accepted":"✓ Đã chấp nhận","ai.st.rejected":"Đã từ chối","ai.st.superseded":"Đã thay thế","ai.supersededTitle":"Một câu trả lời AI mới hơn đã thay thế đề xuất này","ai.copySugg":"Sao chép văn bản đề xuất","ai.dismiss":"Bỏ qua","ai.dismissAria":"Bỏ qua đề xuất sửa cho ghi chú {n}","ai.review":"Xem lại…","ai.reviewAria":"Xem lại các thay đổi đề xuất cho ghi chú {n}","ai.acceptAria":"Chấp nhận đề xuất sửa cho ghi chú {n}","ai.rejectAria":"Từ chối đề xuất sửa cho ghi chú {n}","ai.chipRewrite":"Ghi chú {n} · Đề xuất viết lại · Xem lại","ai.chipPlaces":"Ghi chú {n} · Đề xuất thay đổi · {k} chỗ","ai.chipChange":"Ghi chú {n} · Đề xuất thay đổi · Xem lại","ai.chipShowNote":"Hiện ghi chú","ai.chipReview":"Xem lại các thay đổi đề xuất","ai.suggCount":"{n, plural, other {# đề xuất}}","ai.pasteAnswer":"Dán câu trả lời của AI…","ai.showSuggTitle":"Hiện đề xuất sửa trong tài liệu","ai.showSugg":"Hiện đề xuất","ai.pasteTitle":"Dán câu trả lời của AI","ai.pasteHint_html":"Dán câu trả lời của trợ lý. Mỗi câu trả lời được khớp với ghi chú của nó theo \u003ccode>{#id}\u003c/code> (hoặc theo số) và thêm vào dưới dạng phản hồi của AI.","ai.pasteAria":"Câu trả lời của AI","ai.pastePlaceholder":"```mdeverything\n## [1] {#n3f9a}\nCâu trả lời của bạn…\n```","ai.suggBar":"Đề xuất sửa","ai.acceptAll":"Chấp nhận tất cả","ai.rejectAll":"Từ chối tất cả","ai.hideSuggAria":"Ẩn đề xuất trong tài liệu","ai.hideSugg":"Ẩn đề xuất","ai.reviewTitle":"Xem lại thay đổi","bundle.section":"mục “{name}”","bundle.line":"dòng ~{n}","bundle.notFound":"(không tìm thấy trong tài liệu hiện tại)","bundle.location":"Vị trí:","bundle.quoted":"Đoạn trích dẫn:","bundle.context":"Ngữ cảnh:","bundle.note":"Ghi chú / câu hỏi:","bundle.noNote":"(không có ghi chú)","bundle.replies":"Phản hồi ({n}):","bundle.aiRound":"(AI, vòng {n})","bundle.editsSummary":"({n, plural, other {đề xuất sửa}}: {list})","bundle.state.accepted":"{n} đã chấp nhận","bundle.state.rejected":"{n} đã từ chối","bundle.state.superseded":"{n} đã thay thế","bundle.state.pending":"{n} đang chờ","link.kind.section":"Mục","link.kind.p":"Đoạn văn","link.kind.li":"Mục danh sách","link.kind.td":"Ô bảng","link.kind.quote":"Trích dẫn","link.kind.pre":"Khối code","link.kind.table":"Bảng","link.kind.figure":"Hình","link.kind.dd":"Định nghĩa","link.kind.dt":"Thuật ngữ","link.broken":"Liên kết hỏng","link.notFound":"Không tìm thấy mục","link.noMatch":"{frag} không khớp tiêu đề nào trong tài liệu này","link.jumpHint":"Bấm để nhảy tới · ↩ Quay lại sau đó","link.email":"Email","link.external":"Liên kết ngoài","link.copy":"Sao chép liên kết","link.opensMail":"Mở ứng dụng email của bạn","link.opensTab":"Mở trong tab mới","link.otherFile":"File khác","link.fileBlocked":"Không thể mở liên kết tới file khác ở đây","link.copied":"Đã sao chép liên kết","link.copyFailed":"Không sao chép được liên kết","link.backAria":"Quay lại chỗ bạn đang đọc (Alt+Left)","link.back":"Quay lại","table.region":"Bảng {n}","table.optionsN":"Tùy chọn bảng {n}","table.options":"Tùy chọn bảng","table.colWidth":"Độ rộng cột {n}","table.rowHeight":"Chiều cao hàng {n}","table.reset":"Đặt lại kích thước","table.density":"Mật độ","table.compact":"Gọn","table.default":"Mặc định","table.comfortable":"Thoáng","table.resetDone":"Đã đặt lại kích thước bảng","pane.resizeOutline":"Đổi kích thước mục lục","pane.resizeRail":"Đổi kích thước bảng bình luận","pane.resizeTitle":"Kéo để đổi kích thước · bấm đúp để đặt lại"}}</script>
 <script type="application/json" id="i18n-sample">{"md":"# Chào mừng đến với mdeverything ✨\n\n**Đọc, bình luận và sửa Markdown — rồi giao cho AI của bạn.** mdeverything là một bàn review yên tĩnh, nhanh gọn cho mọi file `.md`: chỉ vào đúng những chữ quan trọng, nói điều bạn muốn, rồi xuất ra một gói mà trợ lý của bạn có thể làm theo mà không phải đoán.\n\n> 👋 **Trang này là một tài liệu thật.** Di chuột lên một cụm từ được tô sáng để xem nhanh bình luận ví dụ, bấm vào để mở luồng thảo luận, hoặc chọn một câu bất kỳ bên dưới và nhấn **Enter** để thêm bình luận của riêng bạn. Mọi thứ bạn làm ở đây đều không rời khỏi trình duyệt.\n\n## 1. Vì sao chọn mdeverything?\n\nHầu hết các lần nhờ AI review đều bắt đầu giống nhau: bạn sao chép vài đoạn văn rồi dán vào chatbot, gõ \"bạn cải thiện giúp mình được không?\", và nhận lại bản viết lại của sai phần. Mô hình chưa từng thấy toàn bộ tài liệu, và nó không biết bạn đang nói tới câu nào.\n\nmdeverything giải quyết khâu bàn giao đó:\n\n- **Chính xác** — mỗi bình luận được gắn với một đoạn trích dẫn, mục chứa nó và phần văn bản xung quanh, nên những câu chữ lặp lại không bao giờ bị nhầm lẫn.\n- **Đầy đủ** — xuất toàn bộ tài liệu cùng mọi bình luận và phản hồi, chỉ trong một lần sao chép.\n- **Nhanh** — không đăng ký, không tải lên, không cần plug-in. Mở file và bắt đầu review trong vài giây.\n- **Thư thái** — giao diện đọc không xao nhãng, có mục lục, ba giao diện màu và kiểu chữ phù hợp cho những bản đặc tả dài.\n\n## 2. Cách hoạt động\n\n1. **Mở** một file Markdown, thả nó vào trang, hoặc dán văn bản.\n2. **Bình luận** vào những chữ quan trọng — chọn một đoạn, hoặc dùng nút ở lề để bình luận cả một đoạn văn.\n3. **Chỉnh sửa** mã nguồn trong trình soạn có sẵn khi bạn thấy lỗi chính tả; bình luận của bạn sẽ tự động bám lại đúng chỗ.\n4. **Xuất cho AI** và dán gói đó vào ChatGPT, Claude, Gemini hoặc trợ lý lập trình của bạn.\n\n```mermaid\nflowchart LR\n    A[Mở .md] --> B[Đọc]\n    B --> C[Bình luận]\n    C --> D[Sửa]\n    D --> E[Xuất]\n    E --> F[AI của bạn]\n```\n\nTò mò bản xuất trông như thế nào? Di chuột hoặc bấm vào [AI của bạn nhận được gì](#31-ai-của-bạn-nhận-được-gì) để xem nhanh.\n\n### 2.1 Hỏi, trả lời, chấp nhận\n\nBật **Cho AI trả lời ngược vào mdeverything** trong menu Xuất và trợ lý sẽ trả lời theo định dạng mà trang này hiểu được. Dán câu trả lời bằng **Dán câu trả lời của AI…**: mỗi câu trả lời nằm ngay dưới bình luận của nó, và mỗi đề xuất sửa hiện thành một diff để bạn chấp nhận hoặc từ chối. Khi chấp nhận, Markdown được viết lại giúp bạn, và Hoàn tác luôn chỉ cách một cú bấm.\n\n## 3. Tính năng nổi bật\n\n| Tính năng | Bạn nhận được gì | Cách dùng |\n| --- | --- | --- |\n| Bình luận trên dòng | Bình luận ngay trên những chữ đã chọn, kèm luồng phản hồi | Chọn văn bản, nhấn `Enter` |\n| Bình luận ở lề | Một cú bấm để bình luận cả đoạn văn, tiêu đề hoặc ô bảng | Di chuột lên một khối, dùng lề trái |\n| Mục lục | Mục lục đi theo vị trí bạn đang đọc | `☰` trên thanh trên cùng |\n| Trình soạn Markdown | Thanh định dạng, phím tắt và xem trước trực tiếp | `✎ Sửa`, rồi `Ctrl + Enter` để áp dụng |\n| Giao diện đọc | Giấy, Sepia (giấy màu kem với font serif như sách) và Đêm | Nút Giao diện trên thanh trên cùng |\n| Tự động lưu | Tài liệu và bình luận vẫn còn nguyên khi bạn quay lại | Tự động |\n| Câu trả lời AI tại chỗ | Dán câu trả lời của AI trở lại: mỗi câu trả lời nằm dưới bình luận của nó, chỗ sửa hiển thị dạng cũ → mới | **Dán câu trả lời của AI** trong menu Xuất |\n| Các vòng tiếp nối | Xuất lại và AI chỉ trả lời các bình luận mới và tiếp nối | Tự động |\n\n### 3.1 AI của bạn nhận được gì\n\nMỗi bản xuất bắt đầu bằng hướng dẫn rõ ràng, tiếp theo là tài liệu, rồi mỗi bình luận một khối:\n\n```text\n[1] Vị trí: mục “Bảng giá” · dòng ~42\nĐoạn trích dẫn:\n\"\"\"\nMiễn phí cho nhóm tối đa 5 người\n\"\"\"\nNgữ cảnh: …Các gói của chúng tôi bắt đầu đơn giản: 〈Miễn phí cho nhóm tối đa 5 người〉, sau đó $8 mỗi người dùng…\nGhi chú / câu hỏi:\n\"\"\"\nGiới hạn 5 người còn hợp lý không? Đối chiếu với mục Câu hỏi thường gặp.\n\"\"\"\nPhản hồi (1):\n- Kiểm tra luôn giá mỗi người dùng trong bảng bên dưới.\n```\n\nTrợ lý biết chính xác cần nhìn vào **đâu** và bạn muốn **gì** — nên nó trả lời đúng câu bạn hỏi, ở đúng chỗ bạn hỏi.\n\n## 4. Dành cho tài liệu thật\n\n- 📐 **Đặc tả sản phẩm** — PRD, BRD và yêu cầu người dùng với bảng rộng và sơ đồ luồng.\n- 💻 **Tài liệu kỹ thuật** — README, hướng dẫn API và runbook với các khối code sao chép chỉ bằng một cú bấm.\n- 🧪 **Nghiên cứu & phân tích** — những ghi chép dài mà nhận định nào cũng cần xem lại lần nữa.\n- ✍️ **Bản nháp** — bài blog, đề xuất và ghi chú phát hành trước khi công bố.\n\nNó dùng được với mọi ngôn ngữ — English, Tiếng Việt, 日本語 — vì bình luận bám vào đúng từng chữ, chứ không phải số dòng.\n\nNhững việc đã lo sẵn cho bạn:\n\n- [x] Bảng rộng cuộn ngang thay vì làm gãy chữ\n- [x] Sơ đồ Mermaid hiển thị ngay trong trang\n- [x] Khối code có nhãn ngôn ngữ và nút sao chép\n- [ ] Tiếp theo là tài liệu của chính bạn\n\n## 5. Riêng tư từ thiết kế\n\n> **Không tài khoản. Không tải lên. Không theo dõi.** mdeverything chạy hoàn toàn trong trình duyệt của bạn, và dữ liệu được lưu cục bộ trên thiết bị này. Đóng tab, mai quay lại, và tiếp tục từ chỗ bạn đã dừng.\n\n## 6. Thử ngay\n\n1. Chọn một câu bất kỳ trên trang này và nhấn **Enter** để bình luận.\n2. Bấm vào một phần tô sáng, rồi viết **Phản hồi** để bắt đầu một luồng thảo luận.\n3. Nhấn **Xuất cho AI** trên thanh trên cùng và dán kết quả vào trợ lý bạn yêu thích.\n\nSẵn sàng với file của riêng bạn? Dùng **Mở** trên thanh trên cùng, hoặc thả một file `.md` vào bất kỳ đâu trên trang này. 🚀","notes":[{"quote":"sao chép vài đoạn văn rồi dán vào chatbot","note":"Ví dụ — đặt câu hỏi. Nỗi khổ này có phải là cách mở đầu hấp dẫn nhất chưa, hay nên để “AI sửa sai phần” lên trước? Gợi ý hai câu mở đầu khác.","replies":["Mình nghiêng về hướng “sửa sai phần” — nó cụ thể hơn."]},{"quote":"những câu chữ lặp lại không bao giờ bị nhầm lẫn","note":"Ví dụ — kiểm tra một nhận định. Thêm một ví dụ ngắn cho thấy ngữ cảnh xung quanh giúp phân biệt hai cụm từ giống hệt nhau như thế nào."},{"quote":"bình luận của bạn sẽ tự động bám lại đúng chỗ","note":"Ví dụ — yêu cầu sửa. “Bám lại đúng chỗ” có thể khó hiểu với người mới đọc lần đầu; viết lại bước này bằng lời đơn giản hơn."},{"quote":"Một cú bấm để bình luận cả đoạn văn, tiêu đề hoặc ô bảng","note":"Ví dụ — bình luận một ô bảng. Rút gọn mô tả này xuống dưới 8 từ mà không mất ý.","replies":["Có thể là: “Bình luận cả khối chỉ một cú bấm.”"]},{"quote":"Tiếp theo là tài liệu của chính bạn","note":"Ví dụ — biến một việc cần làm thành lời kêu gọi hành động. Gợi ý một câu ngắn, thân thiện hướng người đọc tới nút Mở."},{"quote":"dữ liệu được lưu cục bộ trên thiết bị này","note":"Ví dụ — kiểm chứng thông tin. Xác nhận câu này đúng với cách tự động lưu hoạt động (bộ nhớ trình duyệt, theo từng thiết bị) và cho biết điều gì xảy ra trong cửa sổ ẩn danh.","replies":["Nên nói thêm là xóa dữ liệu trang cũng sẽ xóa luôn.","Đồng ý — nhưng gói gọn trong một câu ngắn thôi."]},{"quote":"mỗi đề xuất sửa hiện thành một diff để bạn chấp nhận hoặc từ chối","note":"Ví dụ — câu trả lời của AI kèm đề xuất sửa. Viết cụm này thân thiện hơn cho người đọc không biết từ “diff”.","replies":[{"by":"ai","round":1,"text":"Đây là phiên bản dễ hiểu hơn, tránh thuật ngữ. Chấp nhận để viết lại câu, hoặc Từ chối để giữ bản của bạn.","edits":[{"kind":"quote","text":"mỗi đề xuất sửa hiện rõ chữ cũ và chữ mới để bạn chấp nhận hoặc từ chối chỉ bằng một cú bấm"}]}]},{"kind":"diagram","diagram":0,"quote":"AI của bạn","label":"AI của bạn","shape":"node","mermaidLine":"E --> F[AI của bạn]","note":"Ví dụ — bình luận trên sơ đồ. Rê chuột lên ô hay nhãn mũi tên bất kỳ để bình luận; bản export kèm đúng dòng Mermaid này. Đổi tên bước này để thấy rõ là AI nào cũng dùng được."}]}</script>
 <script>
 "use strict";
@@ -4120,13 +4329,24 @@ function sourceLine(quote){
   if(idx<0) return null;
   return SRC.slice(0,idx).split("\n").length;
 }
-function buildBundle(incDoc){
+// the reviewer's own requests, at the top of the instructions: extra instructions first, then the
+// "mark the edits" sentence (in the UI language, so it reads right in the preview). "" when none.
+function expRequests(o){
+  const parts=[], ex=String((o && o.extra) || "").trim();
+  if(ex) parts.push(ex);
+  if(o && o.mark) parts.push(t("exp2.markPrompt"));
+  return parts.length ? "===== REVIEWER'S INSTRUCTIONS =====\n\n"+parts.join("\n\n") : "";
+}
+// o = { answer, mark, extra } (defaults to the saved Export options)
+function buildBundle(incDoc, o){
+  o = o || expOpts();
   const clean=s=>(s||"").replace(/\s+/g," ").trim();
-  const fmt=aiExportFmtOn(), sids=fmt ? aiNoteIds() : null;   // AI answer format: stable {#id} per note
+  const fmt=!!o.answer, sids=fmt ? aiNoteIds() : null;   // "Answer each comment": stable {#id} per note
   const L=[];
   L.push(HEAD.en,"");
   // translated pages: the instructions stay English (parser keywords too); only the labels below are localized
   if(LANG!=="en") L.push("The reviewer's UI language is "+(I18N.nativeName||LANG)+".","");
+  const req=expRequests(o); if(req) L.push(req,"");
   if(incDoc){ L.push("===== DOCUMENT (markdown) =====","",SRC.trim(),""); }
   L.push(`===== NOTES (${ANN.length}) =====`,"");
   ANN.forEach((a,i)=>{
@@ -4135,8 +4355,7 @@ function buildBundle(incDoc){
     if(a.kind==="diagram") loc.push(dgLocation(a));   // diagram 2 (flowchart) · node “…”
     const ln=a.kind==="diagram" ? dgSourceLine(a) : sourceLine(a.quote); if(ln) loc.push(t("bundle.line",{n:ln}));
     if(a.resolved===false) loc.push(t("bundle.notFound"));
-    // with AI replies on: [NEW] / [FOLLOW-UP] / [ANSWERED] tells the AI which notes to answer this round
-    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${fmt?" ["+aiNoteStatus(a)+"]":""}${loc.length?" "+t("bundle.location")+" "+loc.join(" · "):""}`);
+    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${loc.length?" "+t("bundle.location")+" "+loc.join(" · "):""}`);
     L.push(t("bundle.quoted"),`"""`,clean(a.quote),`"""`);
     if(a.kind==="diagram"){ if(a.mermaidLine) L.push(t("diag.bundleMermaid",{code:a.mermaidLine})); }   // the shape's Mermaid source line
     else L.push(`${t("bundle.context")} …${clean(a.prefix)} 〈${clean(a.quote)}〉 ${clean(a.suffix)}…`);
@@ -4151,7 +4370,7 @@ function buildBundle(incDoc){
     }
     L.push("");
   });
-  if(fmt) L.push(aiHowToAnswer(incDoc),"");
+  if(fmt) L.push(aiHowToAnswer(incDoc, !!o.mark),"");
   return L.join("\n").trim()+"\n";
 }
 
@@ -4303,24 +4522,41 @@ async function restore(){
 async function copyText(t){
   try{ await navigator.clipboard.writeText(t); return true; }
   catch(e){
+    const prev=document.activeElement;   // the hidden textarea takes focus; give it back afterwards
     try{ const ta=document.createElement("textarea"); ta.value=t;
       ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta);
-      ta.select(); document.execCommand("copy"); ta.remove(); return true; }
+      ta.select(); const ok=document.execCommand("copy"); ta.remove();
+      if(prev && prev!==document.body && prev.isConnected) try{ prev.focus({preventScroll:true}); }catch(_){}
+      return ok!==false; }
     catch(_){ return false; }
   }
 }
-function doExport(mode="full"){
+// what an export of `mode` (full · notes · raw) copies: { text } or { err } (a toast message)
+function expText(mode, o){
+  o = o || expOpts();
   if(mode==="raw"){
-    if(!SRC.trim()){ toast(t("export.noDoc")); return; }
-    copyText(SRC.trim()+"\n").then(ok=>toast(ok ? t("export.copiedRaw") : t("export.copyFailed")));
+    if(!SRC.trim()) return { err:t("export.noDoc") };
+    const req=expRequests(o);   // Document only + saved requests → the requests, then the document
+    return { text: req ? req+"\n\n===== DOCUMENT (markdown) =====\n\n"+SRC.trim()+"\n" : SRC.trim()+"\n" };
+  }
+  if(!ANN.length) return { err:t("export.needComment") };
+  return { text: buildBundle(mode!=="notes", o) };
+}
+function expFileName(mode){
+  return aiBaseName() + (mode==="full" ? t("export.fileFull") : mode==="notes" ? t("export.fileNotes") : "") + ".md";
+}
+// copy (or download) an export with the saved quick instructions + extra instructions,
+// then show the success card with the next steps
+function doExport(mode="full", how="copy"){
+  const o=expOpts(), r=expText(mode, o);
+  if(r.err){ toast(r.err); return; }
+  if(how==="download"){
+    const file=expFileName(mode);
+    aiDownload(file, r.text); expRemember(o);
+    expShowDone({ mode, o, text:r.text, file });
     return;
   }
-  if(!ANN.length){ toast(t("export.needComment")); return; }
-  const incDoc = mode !== "notes", n=ANN.length;
-  copyText(buildBundle(incDoc)).then(ok=>
-    toast(ok ? (incDoc ? t("export.copiedFull",{n})
-                       : t("export.copiedNotes",{n}))
-             : t("export.copyFailed")));
+  copyText(r.text).then(ok=>{ if(ok) expRemember(o); expShowDone({ mode, o, text:r.text, fail:!ok }); });
 }
 
 /* ============ overlays ============ */
@@ -4383,16 +4619,269 @@ $("#bRender").addEventListener("click",()=>{
 /* ============ export ============ */
 function syncCopyMenu(){ $("#bCopyOpts").setAttribute("aria-expanded", $("#menuCopy").hidden ? "false" : "true"); }
 $("#bCopy").addEventListener("click",()=>doExport("full"));
-$("#bCopyOpts").addEventListener("click",e=>{e.stopPropagation(); const mn=$("#menuCopy"); mn.hidden=!mn.hidden; syncCopyMenu(); if(!mn.hidden) aiSyncMenuNames();});
-$("#menuCopy").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b){ e.stopPropagation(); return; }   // headings keep it open
-  if(b.dataset.ai==="fmt"){ e.stopPropagation(); aiToggleExportFmt(); return; }   // toggle keeps the menu open
+$("#bCopyOpts").addEventListener("click",e=>{e.stopPropagation(); const mn=$("#menuCopy"); mn.hidden=!mn.hidden; syncCopyMenu();});
+$("#menuCopy").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b){ e.stopPropagation(); return; }   // separators keep it open
   const mn=$("#menuCopy"), hadFocus=mn.contains(document.activeElement);
-  if(b.dataset.ai==="paste"){ aiMenuAction("paste"); return; }   // the dialog closes the menu and remembers ▾ for focus
+  if(hadFocus) $("#bCopyOpts").focus();          // focus leaves the menu before it hides (dialogs return it here)
   mn.hidden=true; syncCopyMenu();
-  if(hadFocus) $("#bCopyOpts").focus();
-  if(b.dataset.ai){ aiMenuAction(b.dataset.ai); return; }
+  if(b.dataset.ai==="paste"){ expOpenPaste(); return; }
+  if(b.dataset.ai==="opts"){ expOpenDialog($("#bCopyOpts")); return; }
   doExport(b.dataset.mode || "full"); });
 document.addEventListener("click",e=>{ if(!e.target.closest(".pop")){ $("#menuCopy").hidden=true; syncCopyMenu(); } });
+
+/* ==[EXP2]== Export options (saved), Export options dialog, success card + "Paste AI result" chip */
+var EXP_KEY="mdeverything:export:v2";
+var EXP=(function expLoad(){
+  let d={};
+  try{ d=JSON.parse(localStorage.getItem(EXP_KEY)||"{}")||{}; }catch(e){}
+  return {
+    mode: ["full","notes","raw"].includes(d.mode) ? d.mode : "full",   // the dialog's choice (the main button is always full)
+    mark: d.mark===true, answer: d.answer===true,                       // quick instructions, both off by default
+    extra: typeof d.extra==="string" ? d.extra : "",
+    recent: Array.isArray(d.recent) ? d.recent.filter(x=>typeof x==="string" && x.trim()).slice(0,3) : [],
+    quiet: d.quiet===true                                                // "Don't show these steps again"
+  };
+})();
+function expSave(){ try{ localStorage.setItem(EXP_KEY, JSON.stringify(EXP)); }catch(e){} }
+function expOpts(){ return { mark:EXP.mark, answer:EXP.answer, extra:EXP.extra }; }
+function expRemember(o){
+  const x=String(o.extra||"").trim(); if(!x) return;
+  EXP.recent=[x, ...EXP.recent.filter(r=>r.trim()!==x)].slice(0,3); expSave();
+}
+function expOpenPaste(){
+  if(typeof window.openPasteAiResult==="function") window.openPasteAiResult();
+  else aiOpenPaste("");
+}
+function expWords(s){
+  try{
+    if(typeof Intl!=="undefined" && Intl.Segmenter){
+      let n=0; for(const x of new Intl.Segmenter(LANG,{granularity:"word"}).segment(s)) if(x.isWordLike) n++;
+      return n;
+    }
+  }catch(e){}
+  return (String(s).match(/\S+/g)||[]).length;
+}
+function expList(items){
+  try{ return new Intl.ListFormat(LANG,{type:"conjunction"}).format(items); }catch(e){ return items.join(", "); }
+}
+
+/* ---------- Export options dialog ---------- */
+var expReturn=null, expPrevT=0;
+const EXP_CHIPS=[t("exp2.chipTone"), t("exp2.chipOnly"), t("exp2.chipHeadings"), t("exp2.chipShorter"),
+  t("exp2.chipExplain"), t("exp2.chipKeep"), t("exp2.chipLang")];
+function expLines(s){ return String(s||"").split("\n"); }
+function expHasLine(s, line){ return expLines(s).some(l=>l.trim()===line); }
+function expToggleLine(line){
+  let s=EXP.extra;
+  if(expHasLine(s, line)) s=expLines(s).filter(l=>l.trim()!==line).join("\n").replace(/^\n+|\n+$/g,"");
+  else s=(s.replace(/\s+$/,"") ? s.replace(/\s+$/,"")+"\n" : "")+line;
+  EXP.extra=s; expSave();
+  $("#expExtra").value=s; expSyncChips(); expQueuePreview();
+}
+function expSyncChips(){
+  $("#expChips").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", expHasLine(EXP.extra, b.dataset.line) ? "true" : "false"));
+}
+function expRenderRecent(){
+  const wrap=$("#expRecentWrap"), box=$("#expRecent");
+  box.textContent="";
+  EXP.recent.forEach(r=>{
+    const b=document.createElement("button"); b.type="button"; b.className="exp-recent-item";
+    b.textContent=r.replace(/\s+/g," "); b.title=r; b.setAttribute("aria-label", t("exp2.useRecent",{text:r}));
+    b.addEventListener("click",()=>{ EXP.extra=r; expSave(); $("#expExtra").value=r; expSyncChips(); expQueuePreview(); });
+    box.appendChild(b);
+  });
+  wrap.hidden=!EXP.recent.length;
+}
+function expRenderPreview(){
+  clearTimeout(expPrevT);
+  const r=expText(EXP.mode), pre=$("#expPrevText");
+  pre.classList.toggle("is-err", !!r.err);
+  pre.textContent = r.err || r.text;
+  $("#expPrevMeta").textContent = r.err ? "" : " · "+t("exp2.metaWords",{n:expWords(r.text)});
+  $("#expCopy").disabled = $("#expDl").disabled = !!r.err;
+}
+function expQueuePreview(){ clearTimeout(expPrevT); expPrevT=setTimeout(expRenderPreview, 120); }
+function expSyncDialog(){
+  const ov=$("#ovExport");
+  ov.querySelectorAll('input[name="expMode"]').forEach(r=>{ r.checked = r.value===EXP.mode; });
+  $("#expMark").checked=EXP.mark;
+  const ans=$("#expAnswer"), raw=EXP.mode==="raw";
+  ans.checked=EXP.answer && !raw; ans.disabled=raw;
+  ans.closest(".exp-check").classList.toggle("is-off", raw);
+  $("#expAnswerSub").textContent = raw ? t("exp2.optAnswerNa") : t("exp2.optAnswerSub");
+  $("#expExtra").value=EXP.extra;
+  expSyncChips(); expRenderRecent(); expRenderPreview();
+}
+function expOpenDialog(ret){
+  if(mdeIsOpen()){ toast(t("editor.finishFirstShort")); return; }
+  const ae=document.activeElement;
+  expReturn = ret || (ae && ae!==document.body ? ae : null);
+  closeOverlays();
+  expSyncDialog();
+  openOverlay($("#ovExport"));
+  setTimeout(()=>{ const c=$('#ovExport input[name="expMode"]:checked'); focusWithoutScrolling(c || $("#expCopy")); },0);
+}
+(function expWireDialog(){
+  const ov=$("#ovExport");
+  const chips=$("#expChips");
+  EXP_CHIPS.forEach(line=>{
+    const b=document.createElement("button"); b.type="button"; b.className="exp-chip-sug";
+    b.dataset.line=line; b.setAttribute("aria-pressed","false");
+    b.innerHTML='<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="p" d="M12 6v12M6 12h12"/><path class="k" d="M6 12.5l4 4 8-9"/></svg>';
+    b.appendChild(document.createTextNode(line));
+    b.addEventListener("click",()=>expToggleLine(line));
+    chips.appendChild(b);
+  });
+  ov.querySelectorAll('input[name="expMode"]').forEach(r=>r.addEventListener("change",()=>{ if(r.checked){ EXP.mode=r.value; expSave(); expSyncDialog(); } }));
+  $("#expMark").addEventListener("change",e=>{ EXP.mark=e.target.checked; expSave(); expRenderPreview(); });
+  $("#expAnswer").addEventListener("change",e=>{ EXP.answer=e.target.checked; expSave(); expRenderPreview(); });
+  $("#expExtra").addEventListener("input",e=>{ EXP.extra=e.target.value; expSave(); expSyncChips(); expQueuePreview(); });
+  $("#expPrevBox").addEventListener("toggle",()=>{ if($("#expPrevBox").open) expRenderPreview(); });
+  const run=how=>{ expRenderPreview(); if($("#expCopy").disabled) return; closeOverlays(); doExport(EXP.mode, how); };
+  $("#expCopy").addEventListener("click",()=>run("copy"));
+  $("#expDl").addEventListener("click",()=>run("download"));
+  $("#expExtra").addEventListener("keydown",e=>{ if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ e.preventDefault(); run("copy"); } });
+  // Tab stays inside; closing (×, Esc, outside click, Copy) returns focus to the opener
+  ov.addEventListener("keydown",e=>{
+    if(e.key!=="Tab") return;
+    const f=[...ov.querySelectorAll('button:not([disabled]), textarea, input:not([disabled]), summary, [href], [tabindex]:not([tabindex="-1"])')]
+      .filter(x=>x.getClientRects().length && !(x.type==="radio" && !x.checked));
+    if(!f.length) return;
+    const i=f.indexOf(document.activeElement);
+    if(e.shiftKey && i<=0){ e.preventDefault(); f[f.length-1].focus(); }
+    else if(!e.shiftKey && (i===f.length-1 || i<0)){ e.preventDefault(); f[0].focus(); }
+  });
+  new MutationObserver(()=>{
+    if(ov.classList.contains("open")) return;
+    clearTimeout(expPrevT);
+    const r=expReturn; expReturn=null;
+    const ae=document.activeElement;
+    if(ae && ae!==document.body && !ov.contains(ae)) return;   // something else already took focus
+    if(r && r.isConnected && r.getClientRects().length) focusWithoutScrolling(r);
+  }).observe(ov,{attributes:true, attributeFilter:["class"]});
+})();
+
+/* ---------- success card + chip ---------- */
+const EXP_AIS=[["ChatGPT","https://chatgpt.com"],["Claude","https://claude.ai"],["Gemini","https://gemini.google.com"],
+  ["Copilot","https://copilot.microsoft.com"],["Grok","https://grok.com"],["DeepSeek","https://chat.deepseek.com"],
+  ["Perplexity","https://www.perplexity.ai"]];
+const EXP_AIS_MORE=[["Mistral Le Chat","https://chat.mistral.ai"],["Qwen","https://chat.qwen.ai"],["Kimi","https://www.kimi.com"]];
+var expT=0, expLast=null, expHold=false;
+function expAiLink([name,href]){
+  const a=document.createElement("a");
+  a.className="exp-ai-chip"; a.href=href; a.target="_blank"; a.rel="noopener noreferrer";
+  a.setAttribute("aria-label", t("exp2.newTab",{name}));
+  a.textContent=name;
+  a.insertAdjacentHTML("beforeend",'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16L16 8M9 8h7v7"/></svg>');
+  return a;
+}
+function expRenderAis(){
+  const box=$("#expAiList"); box.textContent="";
+  EXP_AIS.forEach(x=>box.appendChild(expAiLink(x)));
+  const more=document.createElement("button"); more.type="button"; more.className="exp-ai-chip exp-ai-more";
+  more.textContent=t("exp2.more"); more.setAttribute("aria-expanded","false");
+  more.addEventListener("click",()=>{
+    const first=expAiLink(EXP_AIS_MORE[0]);
+    more.replaceWith(first, ...EXP_AIS_MORE.slice(1).map(expAiLink));
+    first.focus();
+  });
+  box.appendChild(more);
+}
+function expArm(ms){
+  clearTimeout(expT);
+  if(expHold) return;
+  expT=setTimeout(expCollapse, ms || 10000);
+}
+function expShowDone(r){
+  expLast=r;
+  const card=$("#expDone"), raw=r.mode==="raw", quiet=EXP.quiet && !r.fail;
+  $("#expChip").hidden=true;
+  $("#expDoneTitle").textContent = r.fail ? t("exp2.failTitle")
+    : r.file ? t("exp2.okDl",{file:r.file})
+    : t(raw ? "exp2.okDoc" : r.mode==="notes" ? "exp2.okNotes" : "exp2.okFull");
+  let meta="";
+  if(r.fail) meta=t("exp2.failSub");
+  else{
+    const parts=[], inc=[];
+    if(!raw) parts.push(t("exp2.metaComments",{n:ANN.length}));
+    parts.push(t("exp2.metaWords",{n:expWords(r.text)}));
+    if(r.o.mark) inc.push(t("exp2.incMark"));
+    if(r.o.answer && !raw) inc.push(t("exp2.incAnswer"));
+    if(String(r.o.extra||"").trim()) inc.push(t("exp2.incExtra"));
+    if(inc.length) parts.push(t("exp2.metaWith",{list:expList(inc)}));
+    meta=parts.join(" · ");
+  }
+  $("#expDoneMeta").textContent=meta;
+  card.classList.toggle("fail", !!r.fail);
+  card.classList.toggle("quiet", quiet);
+  card.classList.toggle("no-cta", raw && !r.fail);
+  $("#expStep1").textContent = t(r.file ? "exp2.step1Dl" : "exp2.step1");
+  $('#expSteps [data-step="3"]').hidden = raw;
+  if(!quiet && !r.fail) expRenderAis();
+  $("#expCtaT").textContent = r.fail ? t("exp2.ctaDl") : t("exp2.cta");
+  $("#expCta").hidden = raw && !r.fail;
+  const notes=[];
+  if(!r.fail && !raw){
+    if(r.o.mark) notes.push(t("exp2.noteMark"));
+    if(r.o.answer) notes.push(t("exp2.noteAnswer"));
+  }
+  $("#expDoneNote").textContent=notes.join(" · "); $("#expDoneNote").hidden=!notes.length;
+  card.classList.remove("anim"); void card.offsetWidth; card.classList.add("anim");
+  card.hidden=false;
+  expHold=card.matches(":hover");
+  expArm(quiet && raw ? 5000 : 10000);
+}
+// the card folds into the corner chip (kept until the AI result is pasted back or ×)
+function expCollapse(){
+  clearTimeout(expT);
+  const card=$("#expDone"); if(card.hidden) return;
+  const hadFocus=card.contains(document.activeElement);
+  card.hidden=true; expHold=false;
+  const chip = expLast && !expLast.fail && expLast.mode!=="raw";
+  $("#expChip").hidden=!chip;
+  if(hadFocus){
+    if(chip) $("#expChipGo").focus();
+    else { const b=$("#bCopy"); if(b && b.getClientRects().length) focusWithoutScrolling(b); }
+  }
+}
+function expDismissAll(){ clearTimeout(expT); $("#expDone").hidden=true; $("#expChip").hidden=true; expHold=false; }
+(function expWireDone(){
+  const card=$("#expDone");
+  $("#expDoneX").addEventListener("click",expCollapse);
+  $("#expCta").addEventListener("click",()=>{
+    const r=expLast; if(!r) return;
+    if(r.fail){   // copy was blocked → download the same text instead
+      const file=expFileName(r.mode);
+      aiDownload(file, r.text); expRemember(r.o);
+      expShowDone({ mode:r.mode, o:r.o, text:r.text, file });
+      $("#expCta").focus();
+      return;
+    }
+    expCollapse(); $("#expChipGo").focus(); expOpenPaste();
+  });
+  $("#expHide").addEventListener("click",()=>{
+    EXP.quiet=true; expSave();
+    card.classList.add("quiet");
+    ($("#expCta").hidden ? $("#expDoneX") : $("#expCta")).focus();
+  });
+  $("#expChipGo").addEventListener("click",expOpenPaste);
+  $("#expChipX").addEventListener("click",()=>{
+    $("#expChip").hidden=true;
+    const b=$("#bCopy"); if(b && b.getClientRects().length) focusWithoutScrolling(b);
+  });
+  // hovering or focusing the card pauses the countdown (WCAG 2.2.1)
+  const hold=v=>{ expHold=v; if(v) clearTimeout(expT); else if(!card.hidden) expArm(6000); };
+  card.addEventListener("mouseenter",()=>hold(true));
+  card.addEventListener("mouseleave",()=>{ if(!card.contains(document.activeElement)) hold(false); });
+  card.addEventListener("focusin",()=>hold(true));
+  card.addEventListener("focusout",e=>{ if(!card.contains(e.relatedTarget) && !card.matches(":hover")) hold(false); });
+  card.addEventListener("keydown",e=>{ if(e.key==="Escape"){ e.stopPropagation(); expCollapse(); } });
+  // dispatched after an AI result was pasted back
+  const pasted=()=>expDismissAll();
+  window.addEventListener("mde:ai-pasted",pasted);
+  document.addEventListener("mde:ai-pasted",pasted);
+})();
+/* ==[/EXP2]== */
 
 /* ============ drag & drop .md ============ */
 let dragDepth=0; const dz=$("#dropzone");
@@ -6825,22 +7314,21 @@ $("#bHeroDemo").addEventListener("click", () => {
 
 /* ==[AI]== A — AI answers, suggestions, export options */
 /* Round trip with an AI assistant:
-   1. With "Let AI reply back into mdeverything" on, exports tag every note [NEW] / [FOLLOW-UP] / [ANSWERED]
+   1. With "Answer each comment" ticked (Export options), exports give every note a stable {#id}
       and ask the AI to answer in one ```mdeverything block: "## [n] {#id}" per note plus optional edit
       parts (### Suggested edit · ### Replace + ### With · ### Replace all + ### With ·
       ### Section: <heading> + ### With · ### Whole document).
-   2. "Paste AI answer…" parses that reply and adds replies {by:"ai", round, nh, edits:[…]}
-      (nh = hash of the note text it answered, so an edited note becomes [FOLLOW-UP]).
+   2. "Paste AI result…" parses that reply and adds replies {by:"ai", round, nh, edits:[…]}
+      (nh = hash of the note text it answered).
    3. Each edit shows as a Markdown word diff with Accept / Reject / Copy (Review… for multi-block
       edits, sections and whole-document rewrites) and, optionally, inline in the document.
       Accept rewrites SRC; Undo restores SRC + notes. Accepted ranges are remembered (e.rs) so a
       later edit that overlaps a change the AI didn't know about is blocked.
    Everything inserted into #doc is .no-anchor and never splits text nodes, so anchoring is unaffected.
    `var` for state read from earlier sections (renderCards → w5ApplyFilter → aiHasAnswer). */
-var AI_FMT_KEY="marginalia:exportfmt:v1", AI_SUGG_KEY="marginalia:aisugg:v1";
+var AI_SUGG_KEY="marginalia:aisugg:v1";
 function aiLSGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function aiLSSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-var aiFmt = aiLSGet(AI_FMT_KEY)!=="0";   // on by default: answers can be pasted back under each comment
 var aiShowSugg = aiLSGet(AI_SUGG_KEY)!=="0";     // inline suggestions are on unless the user hid them
 var aiInlineSig = null;
 var aiOldOpen = new Set();                         // earlier AI answers the user expanded (reply ids)
@@ -6920,36 +7408,20 @@ function aiPlainText(md){
   d.innerHTML=mdToHtml(String(md||""));
   return anchorText(d).replace(/^\s+|\s+$/g,"");
 }
-// round state of a note for the export: NEW (no AI answer yet), FOLLOW-UP (the user replied or
-// edited the note after the latest AI answer), ANSWERED (nothing new since)
-function aiNoteStatus(a){
-  const reps=a.replies||[], last=aiLatest(a);
-  if(!last) return "NEW";
-  const user=reps.filter(r=>r.by!=="ai").reduce((m,r)=>Math.max(m, Number(r.ts)||0, Number(r.editedAt)||0), 0);
-  if(user>last.ts) return "FOLLOW-UP";
-  if(last.nh && last.nh!==aiHash36(String(a.note||""))) return "FOLLOW-UP";
-  return "ANSWERED";
-}
-
 /* ---------- export options ---------- */
-function aiExportFmtOn(){ return aiFmt; }
-function aiSyncFmtItem(){
-  const b=document.querySelector('#menuCopy [data-ai="fmt"]');
-  if(b) b.setAttribute("aria-checked", aiFmt ? "true" : "false");
-}
-function aiToggleExportFmt(){
-  aiFmt=!aiFmt; aiLSSet(AI_FMT_KEY, aiFmt ? "1" : "0"); aiSyncFmtItem();
-  toast(aiFmt ? t("ai.fmtOn") : t("ai.fmtOff"));
-}
-function aiHowToAnswer(incDoc){
+// "Answer each comment" (Export options dialog, saved in EXP — see ==[EXP2]==)
+function aiExportFmtOn(){ return !!EXP.answer; }
+// withDoc: "Mark the edits" is ticked too, so the revised document follows the answer block
+function aiHowToAnswer(incDoc, withDoc){
   const sids=aiNoteIds(), first=ANN[0];
   const ex = first ? `[1] {#${sids.get(first.id)}}` : "[1] {#n3f9a}";
   return [
     "===== HOW TO ANSWER =====",
     "",
-    "Reply with ONE fenced code block whose language is `mdeverything`. Open it with ````mdeverything (four backticks) so ``` blocks inside stay intact. Write nothing outside it.",
+    "Reply with ONE fenced code block whose language is `mdeverything`. Open it with ````mdeverything (four backticks) so ``` blocks inside stay intact. " +
+      (withDoc ? "After that block, return the revised document as the reviewer's instructions ask." : "Write nothing outside it."),
     "",
-    "Answer only the notes tagged [NEW] or [FOLLOW-UP]. Notes tagged [ANSWERED] are context only — skip them.",
+    "Answer every note. Replies under a note (including earlier AI answers) are context for it.",
     "",
     "For each note you answer:",
     "",
@@ -7005,28 +7477,7 @@ function aiDownload(name, text){
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url), 5000);
 }
-const AI_DL_NAMES={ "dl-full":t("export.fileFull")+".md", "dl-notes":t("export.fileNotes")+".md", "dl-doc":".md" };   // suffixes are localized (export.fileFull / fileNotes)
-function aiSyncMenuNames(){
-  const base=aiBaseName();
-  document.querySelectorAll("#menuCopy [data-ai^='dl-']").forEach(b=>{
-    const s=b.querySelector(".sub"), suf=AI_DL_NAMES[b.dataset.ai];
-    if(s && suf) s.textContent="→ "+base+suf;
-  });
-}
-function aiMenuAction(act){
-  if(act==="dl-bundle") act="dl-full";            // older names
-  if(act==="dl-md") act="dl-doc";
-  if(act==="dl-full" || act==="dl-notes"){
-    if(!ANN.length){ toast(t("export.needComment")); return; }
-    const name=aiBaseName()+AI_DL_NAMES[act];
-    aiDownload(name, buildBundle(act==="dl-full")); toast(t("lib.downloaded",{file:name}));
-  } else if(act==="dl-doc"){
-    if(!SRC.trim()){ toast(t("ai.noDocDownload")); return; }
-    const name=aiBaseName()+".md";
-    aiDownload(name, SRC.replace(/\s+$/,"")+"\n"); toast(t("lib.downloaded",{file:name}));
-  } else if(act==="paste") aiOpenPaste("");
-}
-// Export menu keyboard: ↑ / ↓ (headings are skipped), Home / End, Esc returns to the ▾ button
+// Export menu keyboard: ↑ / ↓ (separators are skipped), Home / End, Esc returns to the ▾ button
 function aiMenuItems(){ return [...$("#menuCopy").querySelectorAll('[role^="menuitem"]')]; }
 (function aiWireCopyMenu(){
   const mn=$("#menuCopy"), btn=$("#bCopyOpts");
@@ -7035,7 +7486,7 @@ function aiMenuItems(){ return [...$("#menuCopy").querySelectorAll('[role^="menu
   btn.addEventListener("keydown",e=>{
     if(e.key!=="ArrowDown" && e.key!=="ArrowUp") return;
     e.preventDefault();
-    if(mn.hidden){ mn.hidden=false; syncCopyMenu(); aiSyncMenuNames(); }
+    if(mn.hidden){ mn.hidden=false; syncCopyMenu(); }
     focusAt(e.key==="ArrowUp" ? -1 : 0);
   });
   // opened from the keyboard (Enter / Space → click with detail 0): move focus into the menu
@@ -8075,7 +8526,6 @@ function aiUpdateBar(pend){
 function aiOnRendered(){ aiInlineSig=null; aiSyncInline(true); }
 
 (function aiInit(){
-  aiSyncFmtItem();
   // comments panel: "Paste AI answer" + "Show suggestions" (sits in the W5 search / filter bar)
   if(w5Bar){
     const row=document.createElement("div"); row.className="ai-w5row";

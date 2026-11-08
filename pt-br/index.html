@@ -2072,20 +2072,10 @@ button.doc-label .doc-label-text{ min-width:0; overflow:hidden; text-overflow:el
 body[data-theme="beige"]{ --ins:#6b3486; --ins-bg:rgba(107,52,134,.09); --del:#786f5f; }
 body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8e919a; }
 
-/* export menu: separators + checkbox item */
+/* export menu: separators */
 .menu .ai-menu-sep{ height:1px; margin:4px 6px; background:var(--line); }
-.menu>button.ai-menu-check{ position:relative; padding-left:34px; }
-.ai-check{ position:absolute; left:11px; top:11px; width:15px; height:15px; box-sizing:border-box; border-radius:4px;
-  border:1.5px solid var(--line-strong); background:var(--surface); }
-.ai-menu-check[aria-checked="true"] .ai-check{ background:var(--accent); border-color:var(--accent); }
-.ai-menu-check[aria-checked="true"] .ai-check::after{ content:""; position:absolute; left:4px; top:1px; width:4px; height:8px;
-  border:solid var(--accent-contrast); border-width:0 2px 2px 0; transform:rotate(45deg); }
 .menu>button:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
 #menuCopy{ min-width:270px; max-height:calc(100vh - 72px); overflow:auto; }
-.menu .ai-menu-h{ padding:9px 11px 3px; font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
-  color:var(--ink-faint); user-select:none; }
-.menu .ai-menu-h:first-child{ padding-top:4px; }
-.menu .ai-menu-h:not(:first-child){ margin-top:3px; border-top:1px solid var(--line); padding-top:10px; }
 
 /* AI replies (panel card + inline card) */
 .card .c-reply.ai-reply,#hlPop .pc-reply.ai-reply{ border-left-color:var(--accent); padding-right:74px; }
@@ -2556,6 +2546,157 @@ header .lang-menu > a[aria-checked="true"] .mi-check{visibility:visible}
 html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-step > b{ word-break:keep-all; overflow-wrap:anywhere; }
 /* menu sub-lines may wrap so longer translations never make a menu scroll sideways */
 .menu .sub{ white-space:normal; overflow-wrap:anywhere; }
+
+/* ==[EXP2 CSS]== Export options dialog + success card + "Paste AI result" chip */
+.exp-ov{align-items:center}
+.exp-panel{width:min(620px,100%);display:flex;flex-direction:column;max-height:calc(100vh - 80px);max-height:calc(100dvh - 80px)}
+.exp-ov.open .exp-panel{animation:exp-in .22s cubic-bezier(.2,.8,.2,1)}
+.exp-body{overflow:auto;display:flex;flex-direction:column;gap:20px;min-height:0}
+.exp-sec{border:0;margin:0;padding:0;min-width:0}
+.exp-h{display:block;padding:0;margin:0 0 9px;font:600 12px/1.3 var(--font-ui);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft)}
+.exp-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.exp-card{position:relative;display:flex;flex-direction:column;gap:3px;padding:12px 30px 12px 12px;border:1.5px solid var(--line-strong);
+  border-radius:11px;background:var(--surface);cursor:pointer;transition:border-color .12s,background-color .12s;min-width:0}
+.exp-card input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.exp-card .ico{width:20px;height:20px;color:var(--ink-soft);margin-bottom:5px}
+.exp-card-t{font:600 13.5px/1.3 var(--font-ui);color:var(--ink);overflow-wrap:anywhere}
+.exp-card-s{font-size:12px;line-height:1.35;color:var(--ink-faint);overflow-wrap:anywhere}
+.exp-card::after{content:"";position:absolute;top:11px;right:11px;width:14px;height:14px;box-sizing:border-box;border-radius:50%;
+  border:1.5px solid var(--line-strong);background:var(--surface)}
+.exp-card:hover{border-color:var(--ink-faint)}
+.exp-card:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.exp-card:has(input:checked)::after{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px var(--accent-soft)}
+.exp-card:has(input:checked) .ico,.exp-card:has(input:checked) .exp-card-t{color:var(--accent-soft-fg)}
+.exp-card:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.exp-check{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;margin:0 -10px;border-radius:8px;cursor:pointer;font-size:13.5px;line-height:1.4;color:var(--ink)}
+.exp-check:hover{background:var(--surface-2)}
+.exp-check input{width:16px;height:16px;margin:2px 0 0;flex:none;accent-color:var(--accent)}
+.exp-check-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.exp-check small{font-size:12px;color:var(--ink-faint)}
+.exp-check.is-off{opacity:.6;cursor:default}
+.exp-check.is-off:hover{background:none}
+#expExtra{display:block;width:100%;box-sizing:border-box;min-height:78px;resize:vertical;font:13.5px/1.5 var(--font-ui);color:var(--ink);
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:9px;padding:10px 12px}
+#expExtra::placeholder{color:var(--ink-faint)}
+#expExtra:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.exp-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.exp-chip-sug{display:inline-flex;align-items:center;gap:5px;max-width:100%;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-soft);
+  border-radius:999px;padding:5px 11px 5px 8px;font:500 12.5px/1.25 var(--font-ui);cursor:pointer;text-align:left}
+.exp-chip-sug .ico{width:13px;height:13px}
+.exp-chip-sug .k{display:none}
+.exp-chip-sug:hover{border-color:var(--ink-faint);color:var(--ink)}
+.exp-chip-sug[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-soft-fg)}
+.exp-chip-sug[aria-pressed="true"] .p{display:none}
+.exp-chip-sug[aria-pressed="true"] .k{display:inline}
+.exp-chip-sug:focus-visible,.exp-recent-item:focus-visible,.exp-ai-chip:focus-visible,.exp-hide:focus-visible,.exp-prev summary:focus-visible,.exp-prev-text:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.exp-recent{margin-top:14px}
+.exp-recent[hidden]{display:none}
+.exp-mini-h{display:block;margin:0 0 6px;font:600 11.5px/1.3 var(--font-ui);color:var(--ink-faint)}
+.exp-recent-list{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.exp-recent-item{max-width:100%;text-align:left;border:1px dashed var(--line-strong);background:none;border-radius:8px;padding:6px 10px;
+  font:12.5px/1.35 var(--font-ui);color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.exp-recent-item:hover{background:var(--surface-2);color:var(--ink)}
+.exp-prev{border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.exp-prev summary{list-style:none;display:flex;align-items:center;gap:6px;padding:10px 12px;cursor:pointer;border-radius:10px;
+  font:500 13px/1.3 var(--font-ui);color:var(--ink-soft)}
+.exp-prev summary::-webkit-details-marker{display:none}
+.exp-prev summary:hover{color:var(--ink)}
+.exp-prev-chev{width:14px;height:14px;transition:transform .15s}
+.exp-prev[open] .exp-prev-chev{transform:rotate(90deg)}
+.exp-prev-meta{color:var(--ink-faint);font-weight:400}
+.exp-prev-text{margin:0;max-height:260px;overflow:auto;padding:10px 12px 12px;border-top:1px solid var(--line);border-radius:0 0 10px 10px;
+  font:12px/1.55 var(--font-mono);color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
+.exp-prev-text.is-err{color:var(--danger);font-family:var(--font-ui);font-size:13px}
+.exp-foot .btn{display:inline-flex;align-items:center;gap:7px}
+
+.exp-done{position:fixed;right:20px;bottom:20px;z-index:58;width:min(384px,calc(100vw - 32px));box-sizing:border-box;
+  background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);border-radius:16px;box-shadow:var(--shadow-lg);
+  overflow:hidden;font-family:var(--font-ui)}
+.exp-done[hidden]{display:none}
+.exp-done.anim{animation:exp-in .28s cubic-bezier(.2,.8,.2,1)}
+.exp-done-head{display:flex;gap:12px;align-items:flex-start;padding:14px 10px 12px 16px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,var(--accent-soft),color-mix(in srgb,var(--accent-soft) 30%,var(--surface)))}
+.exp-done-ico{flex:none;width:32px;height:32px;color:var(--success)}
+.exp-done-ico svg{display:block;width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.exp-done-ico .w{display:none}
+.exp-done.anim .exp-done-ico .c{stroke-dasharray:60;stroke-dashoffset:60;animation:exp-draw .45s ease-out forwards}
+.exp-done.anim .exp-done-ico .k{stroke-dasharray:14;stroke-dashoffset:14;animation:exp-draw .3s .35s ease-out forwards}
+.exp-done-ht{flex:1;min-width:0}
+.exp-done-title{margin:3px 0 2px;font:600 15px/1.3 var(--font-ui);color:var(--ink);overflow-wrap:anywhere}
+.exp-done-meta{margin:0;font-size:12.5px;line-height:1.4;color:var(--ink-soft);overflow-wrap:anywhere}
+.exp-done-meta:empty{display:none}
+.exp-done-x{flex:none;margin-top:-2px}
+.exp-done-body{padding:14px 16px 10px;display:flex;flex-direction:column;gap:14px}
+.exp-steps{list-style:none;margin:0;padding:0;display:flex}
+.exp-steps li{flex:1 1 0;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 2px;
+  text-align:center;font-size:12px;line-height:1.3;color:var(--ink-faint);overflow-wrap:anywhere}
+.exp-steps li[hidden]{display:none}
+.exp-steps li+li::before{content:"";position:absolute;top:13px;left:calc(-50% + 20px);right:calc(50% + 20px);height:2px;border-radius:2px;background:var(--line-strong)}
+.exp-dot{width:28px;height:28px;box-sizing:border-box;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--line-strong);
+  background:var(--surface);color:var(--ink-faint)}
+.exp-dot .ico{width:14px;height:14px}
+.exp-steps li.on{color:var(--ink);font-weight:600}
+.exp-steps li.on .exp-dot{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);box-shadow:0 0 0 4px var(--accent-soft)}
+.exp-ai-list{display:flex;flex-wrap:wrap;gap:6px}
+.exp-ai-chip{display:inline-flex;align-items:center;gap:3px;padding:5px 9px 5px 11px;border:1px solid var(--line-strong);border-radius:999px;
+  background:var(--surface);color:var(--ink);font:500 12.5px/1.2 var(--font-ui);text-decoration:none;white-space:nowrap;cursor:pointer}
+.exp-ai-chip .ico{width:12px;height:12px;color:var(--ink-faint)}
+.exp-ai-chip:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-soft-fg)}
+.exp-ai-chip:hover .ico{color:inherit}
+.exp-ai-more{border-style:dashed;color:var(--ink-soft);padding-right:11px}
+.exp-ai-note{margin:7px 0 0;font-size:11.5px;color:var(--ink-faint)}
+.exp-done-act{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+.exp-cta{width:100%;min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;font-size:14px;font-weight:600}
+.exp-cta[hidden]{display:none}
+.exp-cta .ico{width:17px;height:17px}
+.exp-done-note{margin:0;font-size:12px;line-height:1.4;color:var(--ink-soft);text-align:center}
+.exp-done-note[hidden]{display:none}
+.exp-hide{align-self:center;border:0;background:none;padding:4px 6px;border-radius:6px;cursor:pointer;
+  font:12px/1.3 var(--font-ui);color:var(--ink-faint);text-decoration:underline;text-underline-offset:2px}
+.exp-hide:hover{color:var(--ink-soft)}
+.exp-done.quiet .exp-steps,.exp-done.quiet .exp-ai,.exp-done.quiet .exp-hide{display:none}
+.exp-done.quiet.no-cta .exp-done-body{display:none}
+.exp-done.quiet.no-cta .exp-done-head{border-bottom:0}
+.exp-done.fail .exp-done-head{background:linear-gradient(180deg,color-mix(in srgb,var(--hl-line) 22%,var(--surface)),color-mix(in srgb,var(--hl-line) 7%,var(--surface)))}
+.exp-done.fail .exp-done-ico{color:var(--hl-line)}
+.exp-done.fail .exp-done-ico svg:first-child{display:none}
+.exp-done.fail .exp-done-ico .w{display:block}
+.exp-done.fail .exp-steps,.exp-done.fail .exp-ai,.exp-done.fail .exp-hide{display:none}
+.exp-chip{position:fixed;right:20px;bottom:20px;z-index:58;display:flex;align-items:center;border-radius:999px;
+  background:var(--accent);color:var(--accent-contrast);box-shadow:var(--shadow-lg);animation:exp-in .22s ease-out}
+.exp-chip[hidden]{display:none}
+.exp-chip-go{display:inline-flex;align-items:center;gap:7px;border:0;background:none;color:inherit;cursor:pointer;
+  padding:11px 6px 11px 16px;border-radius:999px 0 0 999px;font:600 13.5px/1 var(--font-ui)}
+.exp-chip-x{border:0;background:none;color:inherit;opacity:.85;width:36px;height:38px;font-size:18px;line-height:1;cursor:pointer;border-radius:0 999px 999px 0}
+.exp-chip-go:hover,.exp-chip-x:hover{background:color-mix(in srgb,var(--accent-contrast) 14%,transparent)}
+.exp-chip-go:focus-visible,.exp-chip-x:focus-visible{outline:2px solid var(--accent-contrast);outline-offset:-4px}
+@keyframes exp-in{from{opacity:0;transform:translateY(12px) scale(.985)}}
+@keyframes exp-draw{to{stroke-dashoffset:0}}
+@media (max-width:640px){
+  .exp-ov.open{align-items:flex-end;padding:0}
+  .exp-panel{width:100%;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;border-bottom:0}
+  .exp-panel .panel-head{padding:14px 16px}
+  .exp-body{padding:16px}
+  .exp-cards{grid-template-columns:1fr;gap:6px}
+  .exp-card{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;row-gap:1px;align-items:center;padding:10px 34px 10px 12px}
+  .exp-card .ico{grid-row:span 2;margin:0}
+  .exp-card::after{top:50%;margin-top:-7px}
+  .exp-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom));grid-template-columns:1fr 1fr}
+  .exp-foot .btn{flex:1 1 0;justify-content:center}
+  .exp-done{left:0;right:0;bottom:0;width:auto;max-height:85vh;max-height:85dvh;border-radius:16px 16px 0 0;border-bottom:0;flex-direction:column}
+  .exp-done:not([hidden]){display:flex}
+  .exp-done-body{overflow:auto;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .exp-ai-list{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 2px}
+  .exp-ai-list::-webkit-scrollbar{display:none}
+  .exp-done-act{position:sticky;bottom:0;background:var(--surface);padding-top:2px}
+  .exp-chip{right:12px;bottom:calc(14px + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){
+  .exp-ov.open .exp-panel,.exp-done.anim,.exp-chip{animation:none}
+  .exp-done.anim .exp-done-ico .c,.exp-done.anim .exp-done-ico .k{animation:none;stroke-dashoffset:0}
+  .exp-prev-chev,.exp-card{transition:none}
+}
+/* ==[/EXP2 CSS]== */
 </style>
 </head>
 <body>
@@ -2601,18 +2742,14 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
     <span class="pop copy-wrap">
       <button class="btn primary" id="bCopy">Exportar para IA</button>
       <button class="btn primary split" id="bCopyOpts" title="Opções de exportação" aria-label="Opções de exportação" aria-haspopup="menu" aria-expanded="false" aria-controls="menuCopy">▾</button>
-      <div class="menu" id="menuCopy" role="menu" aria-label="Exportar" hidden>
-        <div class="ai-menu-h" role="presentation">Copiar para a área de transferência</div>
-        <button type="button" role="menuitem" data-mode="full">Contexto completo<span class="sub">Documento + comentários + instruções para a IA</span></button>
-        <button type="button" role="menuitem" data-mode="notes">Só comentários<span class="sub">Comentários e trechos citados (sem o documento)</span></button>
-        <button type="button" role="menuitem" data-mode="raw">Só o documento<span class="sub">Apenas o texto Markdown (sem comentários)</span></button>
-        <div class="ai-menu-h" role="presentation">Baixar arquivo</div>
-        <button type="button" role="menuitem" data-ai="dl-full">Contexto completo (.md)<span class="sub">→ document-for-ai.md</span></button>
-        <button type="button" role="menuitem" data-ai="dl-notes">Só comentários (.md)<span class="sub">→ document-comments.md</span></button>
-        <button type="button" role="menuitem" data-ai="dl-doc">Só o documento (.md)<span class="sub">→ document.md</span></button>
-        <div class="ai-menu-h" role="presentation">Respostas da IA</div>
-        <button type="button" role="menuitemcheckbox" aria-checked="false" data-ai="fmt" class="ai-menu-check"><span class="ai-check" aria-hidden="true"></span>Deixar a IA responder no mdeverything<span class="sub">Instruções para colar a resposta aqui depois</span></button>
-        <button type="button" role="menuitem" data-ai="paste">Colar resposta da IA…<span class="sub">Respostas e edições da IA nos seus comentários</span></button>
+      <div class="menu hdr-menu exp-menu" id="menuCopy" role="menu" aria-label="Exportar" hidden>
+        <button type="button" role="menuitem" data-mode="full"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg><span class="mi-txt">Copiar contexto completo<span class="sub">Documento + comentários + instruções</span></span></button>
+        <button type="button" role="menuitem" data-mode="notes"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg><span class="mi-txt">Copiar só os comentários<span class="sub">Só os comentários e os trechos citados</span></span></button>
+        <button type="button" role="menuitem" data-mode="raw"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></svg><span class="mi-txt">Copiar só o documento<span class="sub">Só o texto</span></span></button>
+        <div class="ai-menu-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-ai="opts" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg><span class="mi-txt">Opções de exportação…<span class="sub">Instruções rápidas, pedidos extras, download</span></span></button>
+        <div class="ai-menu-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-ai="paste" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg><span class="mi-txt">Colar resultado da IA…<span class="sub">Cole de volta o que a sua IA devolveu</span></span></button>
       </div>
     </span>
   </div>
@@ -2756,6 +2893,78 @@ Nota: Está certo? Achei que…</pre>
 <div id="dropzone"><div class="dz-box">Solte um arquivo .md — ou um backup .mdeverything.json — para abrir</div></div>
 <div id="toast"></div>
 
+<!-- ==[EXP2 HTML]== Export options dialog + export success card -->
+<div class="overlay exp-ov" id="ovExport">
+  <div class="panel exp-panel" role="dialog" aria-modal="true" aria-labelledby="expTitle">
+    <div class="panel-head"><h3 id="expTitle">Exportar para IA</h3>
+      <button class="x" type="button" data-close aria-label="Fechar" title="Fechar (Esc)">×</button></div>
+    <div class="panel-body exp-body">
+      <fieldset class="exp-sec">
+        <legend class="exp-h">O que enviar</legend>
+        <div class="exp-cards">
+          <label class="exp-card"><input type="radio" name="expMode" value="full"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg><span class="exp-card-t">Contexto completo</span><span class="exp-card-s">Documento + comentários</span></label>
+          <label class="exp-card"><input type="radio" name="expMode" value="notes"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg><span class="exp-card-t">Só comentários</span><span class="exp-card-s">Comentários + trechos citados</span></label>
+          <label class="exp-card"><input type="radio" name="expMode" value="raw"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></svg><span class="exp-card-t">Só o documento</span><span class="exp-card-s">Só o texto</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="exp-sec">
+        <legend class="exp-h">Instruções rápidas</legend>
+        <label class="exp-check"><input type="checkbox" id="expMark"><span class="exp-check-t"><span>Marcar as edições (riscar o removido, roxo no novo)</span></span></label>
+        <label class="exp-check"><input type="checkbox" id="expAnswer" aria-describedby="expAnswerSub"><span class="exp-check-t"><span>Responder cada comentário</span><small id="expAnswerSub">Para colar as respostas de volta sob cada comentário</small></span></label>
+      </fieldset>
+      <div class="exp-sec">
+        <label class="exp-h" for="expExtra">Instruções extras</label>
+        <textarea id="expExtra" rows="3" spellcheck="true" placeholder="Ex.: manter o tom, não mudar os títulos…"></textarea>
+        <div class="exp-chips" id="expChips" role="group" aria-label="Sugestões"></div>
+        <div class="exp-recent" id="expRecentWrap" hidden>
+          <span class="exp-mini-h" id="expRecentH">Usadas recentemente</span>
+          <div class="exp-recent-list" id="expRecent" role="group" aria-labelledby="expRecentH"></div>
+        </div>
+      </div>
+      <details class="exp-prev" id="expPrevBox">
+        <summary><svg class="ico exp-prev-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span>Ver o que será copiado</span><span class="exp-prev-meta" id="expPrevMeta"></span></summary>
+        <pre class="exp-prev-text" id="expPrevText" tabindex="0"></pre>
+      </details>
+    </div>
+    <div class="panel-foot exp-foot">
+      <button class="btn" type="button" id="expDl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>Baixar .md</button>
+      <button class="btn primary" type="button" id="expCopy"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg>Copiar</button>
+    </div>
+  </div>
+</div>
+<section class="exp-done" id="expDone" aria-labelledby="expDoneTitle" hidden>
+  <div class="exp-done-head">
+    <span class="exp-done-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle class="c" cx="12" cy="12" r="9.5"/><path class="k" d="M7.8 12.4l2.9 2.9 5.5-5.6"/></svg><svg class="w" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/></svg></span>
+    <div class="exp-done-ht">
+      <h2 id="expDoneTitle" class="exp-done-title" role="status"></h2>
+      <p class="exp-done-meta" id="expDoneMeta"></p>
+    </div>
+    <button class="x exp-done-x" type="button" id="expDoneX" aria-label="Fechar" title="Fechar">×</button>
+  </div>
+  <div class="exp-done-body">
+    <ol class="exp-steps" id="expSteps" aria-label="Próximos passos">
+      <li class="on" data-step="1"><span class="exp-dot"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/></svg></span><span class="exp-step-t" id="expStep1">Cole na sua IA</span></li>
+      <li data-step="2"><span class="exp-dot"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg></span><span class="exp-step-t">Copie o resultado</span></li>
+      <li data-step="3"><span class="exp-dot"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10M8 10l4 4 4-4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></span><span class="exp-step-t">Cole de volta aqui</span></li>
+    </ol>
+    <div class="exp-ai" id="expAi">
+      <span class="exp-mini-h" id="expAiH">Abra sua IA</span>
+      <div class="exp-ai-list" id="expAiList" role="group" aria-labelledby="expAiH"></div>
+      <p class="exp-ai-note">Funciona com qualquer IA que leia Markdown</p>
+    </div>
+    <div class="exp-done-act">
+      <button class="btn primary exp-cta" type="button" id="expCta"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg><span id="expCtaT"></span></button>
+      <p class="exp-done-note" id="expDoneNote" hidden></p>
+      <button class="exp-hide" type="button" id="expHide">Não mostrar mais estes passos</button>
+    </div>
+  </div>
+</section>
+<div class="exp-chip" id="expChip" hidden>
+  <button type="button" class="exp-chip-go" id="expChipGo"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg>Colar resultado da IA</button>
+  <button type="button" class="exp-chip-x" id="expChipX" aria-label="Fechar" title="Fechar">×</button>
+</div>
+<!-- ==[/EXP2 HTML]== -->
+
 <!-- ==[AI HTML]== A — AI answers, suggestions, export options -->
 <div class="overlay" id="ovAiPaste">
   <div class="panel ai-paste" role="dialog" aria-modal="true" aria-labelledby="aiPasteTitle" aria-describedby="aiPasteHint">
@@ -2808,7 +3017,7 @@ Nota: Está certo? Achei que…</pre>
 <div id="tblLayer" class="tbl-layer" hidden></div>
 <!-- ==[/TABLES HTML]== -->
 
-<script type="application/json" id="i18n">{"lang":"pt-BR","code":"pt-BR","nativeName":"Português (Brasil)","base":"../","locales":[{"code":"en","htmlLang":"en","dir":"ltr","nativeName":"English","href":"../"},{"code":"vi","htmlLang":"vi","dir":"ltr","nativeName":"Tiếng Việt","href":"../vi/"},{"code":"ja","htmlLang":"ja","dir":"ltr","nativeName":"日本語","href":"../ja/"},{"code":"pt-BR","htmlLang":"pt-BR","dir":"ltr","nativeName":"Português (Brasil)","href":"../pt-br/"},{"code":"es","htmlLang":"es","dir":"ltr","nativeName":"Español","href":"../es/"}],"dict":{"lang.button":"Idioma","lang.buttonAria":"Idioma: Português (Brasil)","lang.links":"Idiomas","lang.suggest":"Esta página está disponível em português","lang.suggestGo":"Mudar","lang.suggestDismiss":"Dispensar","hdr.outline":"Sumário","hdr.comments":"Comentários","hdr.outlineToggle":"Mostrar / ocultar sumário","hdr.editMd":"Editar Markdown","hdr.importTitle":"Abrir, colar ou restaurar","hdr.import":"Importar","hdr.theme":"Tema","hdr.railToggle":"Mostrar / ocultar painel de comentários","menu.openTitle":"Abrir um arquivo Markdown","menu.open":"Abrir arquivo…","menu.openSub":".md, .markdown ou .txt do seu computador","menu.pasteTitle":"Colar Markdown","menu.paste":"Colar Markdown…","menu.pasteSub":"Comece com o texto da área de transferência","menu.restoreTitle":"Restaurar documentos e comentários de um arquivo de backup","menu.restore":"Restaurar backup (.json)…","menu.restoreSub":"Recupere documentos e seus comentários","theme.light":"Papel","theme.beige":"Sépia","theme.dark":"Noite","theme.aria":"Tema: {name}","theme.ariaPaper":"Tema: Papel","export.noDoc":"Ainda não há documento Markdown para copiar","export.copiedRaw":"Só o documento copiado (Markdown, sem comentários)","export.copyFailed":"Não foi possível copiar, tente de novo","export.needComment":"Adicione pelo menos um comentário antes de exportar","export.copiedFull":"Contexto completo copiado (documento + {n, plural, one {# comentário} other {# comentários}}) — cole no seu assistente de IA","export.copiedNotes":"Só os comentários copiados ({n, plural, one {# comentário} other {# comentários}}) — cole no seu assistente de IA","export.button":"Exportar para IA","export.options":"Opções de exportação","export.menu":"Exportar","export.copyHead":"Copiar para a área de transferência","export.full":"Contexto completo","export.fullSub":"Documento + comentários + instruções para a IA","export.notes":"Só comentários","export.notesSub":"Comentários e trechos citados (sem o documento)","export.raw":"Só o documento","export.rawSub":"Apenas o texto Markdown (sem comentários)","export.downloadHead":"Baixar arquivo","export.dlFull":"Contexto completo (.md)","export.dlNotes":"Só comentários (.md)","export.fileFull":"-para-IA","export.fileNotes":"-comentarios","export.dlDoc":"Só o documento (.md)","export.aiHead":"Respostas da IA","export.aiFmt":"Deixar a IA responder no mdeverything","export.aiFmtSub":"Instruções para colar a resposta aqui depois","export.paste":"Colar resposta da IA…","export.pasteSub":"Respostas e edições da IA nos seus comentários","home.hideTitle":"Ocultar a introdução e manter a demo","home.hide":"Ocultar intro","home.kicker":"Mesa de revisão de Markdown para IA","home.title_html":"Aponte as palavras exatas.\u003cbr>\u003cspan class=\"hero-em\">Diga à sua IA o que corrigir.\u003c/span>","home.sub":"Comente qualquer arquivo Markdown e exporte com cada comentário preso ao seu trecho — para o ChatGPT, Claude ou Gemini responder no lugar certo.","home.open":"Abrir um arquivo Markdown","home.paste":"Colar Markdown","home.demo":"Explore a demo abaixo","home.dropAria":"Abrir um arquivo Markdown — ou solte um aqui","home.dropTitle":"Solte seu arquivo .md aqui","home.dropBrowse":"ou clique para procurar no computador","home.dropHint":".md · .markdown · .txt — ou um backup .mdeverything.json","how.title":"Como funciona","how.mockDoc_html":"Grátis para equipes de até 5 pessoas. \u003cmark class=\"mk-hl\">A cobrança começa no primeiro dia\u003cspan class=\"mk-badge\">1\u003c/span>\u003c/mark> para os demais.","how.mockNote":"Está certo? Achei que havia um teste de 14 dias.","how.s1Title":"Aponte as palavras","how.s1Text":"Abra ou cole qualquer arquivo Markdown. Selecione um trecho e escreva o que deve mudar.","how.mockExport_html":"\u003cspan class=\"mk-k\">[1] {#n3f9a}\u003c/span> Local: seção “Preços”\nTrecho citado:\n\u003cspan class=\"mk-q\">\"A cobrança começa no primeiro dia\"\u003c/span>\nNota: Está certo? Achei que…","how.s2Title":"Envie para sua IA","how.s2Text":"Exportar copia o documento inteiro com cada comentário preso ao seu trecho. Cole no ChatGPT, Claude ou Gemini.","how.mockReply":"Sim — os planos pagos começam com um teste de 14 dias.","how.mockDiff_html":"A cobrança começa \u003cdel>no primeiro dia\u003c/del> \u003cins>após um teste grátis de 14 dias\u003c/ins>","how.s3Title":"Revise as respostas no lugar","how.s3Text_html":"Cole a resposta de volta. Cada resposta aparece sob o próprio comentário, com as edições sugeridas como \u003cdel>antigo\u003c/del> → \u003cins>novo\u003c/ins>. Aceite ou rejeite cada uma.","how.loopTitle":"Ainda não terminou?","how.loopText":"Responda ou adicione comentários e exporte de novo — só os comentários novos e de acompanhamento são respondidos.","how.foot":"Funciona com ChatGPT, Claude, Gemini — sem conta, nada é enviado","why.aria":"Por que mdeverything","why.c1Title":"Contexto preciso para a IA","why.c1Text":"Cada comentário leva sua citação, seção e o texto ao redor, para as respostas caírem na frase certa.","why.c2Title":"Privado — roda no seu navegador","why.c2Text":"Sem upload, sem conta, sem rastreamento. Seu trabalho fica neste dispositivo.","why.c3Title":"Funciona em qualquer idioma","why.c3Text":"Os comentários se prendem às palavras exatas — English, Português, 日本語, tanto faz.","assure.free":"Grátis","assure.noSignup":"Sem cadastro","assure.autosave":"Salva automaticamente","assure.docs":"Guarde até 10 documentos","tip.text_html":"\u003cb>Experimente:\u003c/b> selecione qualquer frase abaixo e pressione \u003ckbd>Enter\u003c/kbd> para comentar.","tip.dismiss":"Dispensar dica","floater.add":"Adicionar nota","dropzone.text":"Solte um arquivo .md — ou um backup .mdeverything.json — para abrir","source.newTitle":"Novo documento a partir de Markdown","source.create":"Criar documento","source.title":"Colar Markdown","source.render":"Renderizar documento","source.hint_html":"Cole o Markdown e pressione \u003cb>Renderizar documento\u003c/b>. Na página inicial, isso substitui o exemplo da demo. No modo de trabalho, as notas existentes são mantidas quando possível e reancoradas nos trechos correspondentes.","source.openFile":"Abrir Markdown…","confirm.defaultTitle":"Substituir o documento atual?","confirm.defaultMessage":"Esta ação não pode ser desfeita.","confirm.exportFirst":"Exporte suas notas antes se quiser guardar uma cópia.","confirm.continue":"Continuar","confirm.replaceMessage":"Carregar um novo documento vai remover as anotações atuais.","confirm.replaceOk":"Substituir documento","common.cancel":"Cancelar","common.save":"Salvar","common.undo":"Desfazer","common.cancelEsc":"Cancelar (Esc)","common.close":"Fechar","common.closeEsc":"Fechar (Esc)","common.edit":"Editar","common.delete":"Excluir","common.open":"Abrir","doc.sampleName":"Documento de exemplo","doc.untitled":"Documento Markdown","doc.labelTitle":"{name} — Documentos","doc.editedName":"Documento editado","doc.sampleCopy":"Cópia do exemplo","doc.pastedName":"Markdown colado","doc.untitledShort":"Sem título","doc.recoveredName":"Documento recuperado","doc.importedName":"Documento importado","sample.confirmTitle":"Abrir o exemplo?","sample.confirmMessage":"Você tem {n, plural, one {# nota} other {# notas}} agora. Carregar o exemplo vai excluir essas anotações.","sample.confirmOk":"Abrir exemplo","sample.confirmKeep":"Manter documento atual","sample.loaded":"Exemplo carregado com {n, plural, one {# comentário de exemplo} other {# comentários de exemplo}}","sample.liveDemo":"Demo ao vivo · passe o mouse ou clique nos destaques","render.failed":"Não foi possível renderizar o markdown.","code.label":"código","code.copy":"Copiar","code.copied":"Copiado","code.error":"Erro","mermaid.rendering":"Renderizando diagrama…","mermaid.error":"Não foi possível ler o diagrama — mostrando o código.","diag.add":"Comentar","diag.addAria":"Comentar em “{label}”","diag.wrapAria":"Diagrama {n}. Use as setas para escolher uma forma e Enter para comentar.","diag.cardQuote":"Diagrama {n} · “{label}”","diag.cardWhole":"Diagrama {n}","diag.location":"diagrama {n} ({type}) · {shape} “{label}”","diag.locationWhole":"diagrama {n} ({type})","diag.bundleMermaid":"Mermaid: {code}","diag.shapeNode":"nó","diag.shapeEdge":"rótulo da seta","diag.shapeGroup":"grupo","diag.shapeParticipant":"participante","diag.shapeMessage":"mensagem","diag.shapeNote":"nota","outline.untitled":"Seção sem título","outline.title":"Nesta página","outline.close":"Fechar sumário","outline.collapse":"Recolher sumário","outline.empty_html":"Este documento ainda não tem títulos. Adicione títulos \u003ccode>#\u003c/code>, \u003ccode>##\u003c/code> ou \u003ccode>###\u003c/code> para ter um sumário.","outline.expand":"Expandir sumário","outline.aria":"Sumário do documento","gutter.comment":"Comentar este bloco","rail.countLabel":"{n, plural, one {nota} other {notas}}","rail.show":"Mostrar painel de comentários","rail.hide":"Ocultar painel de comentários","rail.collapse":"Recolher painel de comentários","rail.showCount":"Mostrar painel de comentários ({n, plural, one {# comentário} other {# comentários}})","rail.notesWord":"notas","rail.empty_html":"\u003cb>Selecione qualquer trecho\u003c/b> do documento para adicionar uma nota ou pergunta. As notas ficam ao lado do trecho e vão junto quando você copia.","rail.reviewerNotes":"Notas de revisão","rail.exampleNotes":"Notas de exemplo","rail.demoHint":"Os comentários da demo mostram como as anotações se ligam aos trechos destacados.","card.notFound":"Este trecho não foi encontrado no documento","card.exampleChip":"Nota de exemplo","card.replies":"{n, plural, one {# resposta} other {# respostas}}","card.editNote":"Editar nota","card.deleteNote":"Excluir nota","card.replyPlaceholder":"Responder…","card.replyToNote":"Responder à nota {n}","card.reply":"Responder","card.addNotePlaceholder":"Clique para adicionar uma nota…","card.ariaNote":"Nota {n}: {quote}","card.ariaEmpty":"Nota {n} vazia em “{quote}” — ative para escrever","card.deleteNoteN":"Excluir nota {n}","card.editNoteN":"Editar nota {n}","pop.notesOnPassage":"{n, plural, one {# nota neste trecho} other {# notas neste trecho}}","pop.noNoteClick":"Ainda sem nota — clique para adicionar","pop.preview":"Prévia da nota","pop.newNote":"Nova nota","pop.notePlaceholder":"Adicione uma nota ou pergunta…","pop.noteText":"Texto da nota","pop.hint":"Enter para salvar · Shift+Enter nova linha","pop.noteN":"Nota {n}","pop.notesHere":"{n, plural, one {# nota aqui} other {# notas aqui}}","pop.showNote":"Mostrar nota {n}","pop.noNote":"Ainda sem nota","reply.deleted":"Resposta excluída","reply.edit":"Editar resposta","reply.delete":"Excluir resposta","reply.editHintTitle":"Enter para salvar · Shift+Enter nova linha · Esc para cancelar","reply.editHint":"Enter para salvar · Esc para cancelar","reply.edited":"editado","reply.editedAt":"Editado em {date}","filter.none.all":"Nenhum comentário.","filter.none.replies":"Nenhum comentário com respostas.","filter.none.unanchored":"Nenhum comentário desancorado.","filter.none.ai":"Nenhum comentário com resposta da IA.","filter.none.noai":"Nenhum comentário sem resposta da IA.","filter.none.sugg":"Nenhum comentário com sugestões pendentes.","filter.noneQ.all":"Nenhum comentário corresponde a “{q}”.","filter.noneQ.replies":"Nenhum comentário com respostas corresponde a “{q}”.","filter.noneQ.unanchored":"Nenhum comentário desancorado corresponde a “{q}”.","filter.noneQ.ai":"Nenhum comentário com resposta da IA corresponde a “{q}”.","filter.noneQ.noai":"Nenhum comentário sem resposta da IA corresponde a “{q}”.","filter.noneQ.sugg":"Nenhum comentário com sugestões pendentes corresponde a “{q}”.","filter.label":"Filtrar comentários","filter.all":"Todos","filter.replies":"Com respostas","filter.unanchored":"Desancorados","filter.unanchoredTitle":"Notas cujo trecho não está mais no documento","filter.ai":"Com resposta da IA","filter.noai":"Sem resposta da IA","filter.sugg":"Sugestões pendentes","filter.suggTitle":"Edições sugeridas pela IA ainda não aceitas nem rejeitadas","filter.clear":"Limpar filtros","search.placeholder":"Buscar comentários","help.titleShort":"Atalhos de teclado (?)","help.title":"Atalhos de teclado","help.nextPrev":"Comentário seguinte / anterior","help.search":"Buscar comentários","help.addNote":"Adicionar nota ao texto selecionado","help.close":"Fechar um cartão, menu ou diálogo","help.show":"Mostrar estes atalhos","nav.noComments":"Ainda não há comentários","nav.noMatch":"Nenhum comentário corresponde ao filtro","nav.noHighlight":"Nenhum comentário com destaque neste documento","toast.noteGone":"Essa nota não existe mais","toast.noteDeleted":"Nota excluída","toast.noteRestoredOrphan":"Nota restaurada — o trecho dela não está mais no documento","toast.storageFull":"O armazenamento do navegador está cheio — suas últimas alterações não foram salvas","toast.manageStorage":"Gerenciar armazenamento","toast.storageUnavailable":"O armazenamento do navegador não está disponível aqui — as alterações serão perdidas ao recarregar","toast.savedAs":"Suas alterações foram salvas como “{name}”","toast.opened":"{name} aberto","toast.docLoaded":"Documento carregado","toast.cantRead":"Não foi possível ler “{name}”","toast.pasteFirst":"Cole o Markdown primeiro","toast.rendered":"Markdown renderizado","time.justNow":"agora mesmo","time.yesterday":"ontem","editor.undo":"Desfazer","editor.redo":"Refazer","editor.bold":"Negrito","editor.italic":"Itálico","editor.strike":"Tachado","editor.h1":"Título 1","editor.h2":"Título 2","editor.h3":"Título 3","editor.ul":"Lista com marcadores","editor.ol":"Lista numerada","editor.task":"Lista de tarefas","editor.quote":"Citação","editor.code":"Código em linha","editor.codeblock":"Bloco de código","editor.link":"Link","editor.table":"Inserir tabela","editor.hr":"Linha horizontal","editor.region":"Editor de Markdown","editor.formatting":"Formatação","editor.discardTitle":"Descartar alterações e voltar ao documento","editor.discard":"Descartar","editor.applyTitle":"Aplicar alterações ({key})","editor.done":"Concluir","editor.view":"Visualização do editor","editor.write":"Escrever","editor.preview":"Prévia","editor.source":"Código-fonte Markdown","editor.placeholder":"Escreva em Markdown…","editor.livePreview":"Prévia ao vivo","editor.hint_html":"\u003ckbd>{key}\u003c/kbd> aplica · \u003ckbd>Esc\u003c/kbd> e depois \u003ckbd>Tab\u003c/kbd> sai do editor","editor.finishTitle":"Terminar a edição e aplicar as alterações ({key})","editor.editTitle":"Editar o código-fonte Markdown com prévia ao vivo","editor.editing":"Editando","editor.edit":"Editar","editor.draftRestored":"Seu rascunho não salvo foi restaurado","editor.noChanges":"Nenhuma alteração para aplicar","editor.applied":"Alterações aplicadas","editor.lost":"{n, plural, one {# comentário perdeu a âncora} other {# comentários perderam a âncora}}","editor.reanchored":"{n, plural, one {# comentário reancorado} other {# comentários reancorados}}","editor.discardConfirmTitle":"Descartar suas edições?","editor.discardConfirmMessage":"Suas alterações no código-fonte Markdown serão perdidas.","editor.discardConfirmNote":"O documento e os comentários ficam exatamente como estavam antes de você começar a editar.","editor.discardConfirmOk":"Descartar edições","editor.keepEditing":"Continuar editando","editor.discarded":"Edições descartadas","editor.count":"{w, plural, one {# palavra} other {# palavras}} · {c, plural, one {# caractere} other {# caracteres}}","editor.unsaved":"Alterações não salvas","editor.clean":"Sem alterações","editor.nothingToPreview":"Nada para pré-visualizar ainda.","editor.ph.linkText":"texto do link","editor.ph.bold":"texto em negrito","editor.ph.italic":"texto em itálico","editor.ph.strike":"tachado","editor.ph.code":"código","editor.ph.column":"Coluna {n}","editor.ph.cell":"Célula","editor.finishFirst":"Termine a edição primeiro: Concluir ({key}) aplica, Descartar desfaz","editor.finishBeforeOpen":"Termine a edição antes de abrir outro arquivo","editor.finishFirstShort":"Termine a edição primeiro","lib.documents":"Documentos","lib.full":"Você pode guardar até {max} documentos — exclua um para adicionar outro","lib.manage":"Gerenciar","lib.recovered":"{n, plural, one {# documento recuperado que não estava listado} other {# documentos recuperados que não estavam listados}} em Documentos","lib.cantOpen":"Não foi possível abrir “{name}” — os dados salvos estão faltando","lib.deletedOne":"“{name}” excluído","lib.deletedMany":"{n} documentos excluídos","lib.restoredOne":"“{name}” restaurado","lib.restoredMany":"{n} documentos restaurados","lib.notRestored":" — {n, plural, one {# documento não restaurado} other {# documentos não restaurados}} (limite {max})","lib.nothingToBackup":"Ainda não há nada para fazer backup","lib.downloaded":"{file} baixado","lib.importFailed":"Não foi possível importar “{name}” — {why}","lib.importNotJson":"não é um JSON válido","lib.importNotBackup":"não é um backup do mdeverything","lib.importEmpty":"não contém documentos","lib.dupSkipped":" — {n, plural, one {# duplicado ignorado} other {# duplicados ignorados}} (já está em Documentos)","lib.imported":"Importado: {docs, plural, one {# documento} other {# documentos}} · {notes, plural, one {# comentário} other {# comentários}}","lib.importFull":" — o armazenamento está cheio, o restante foi ignorado","lib.importCapped":" — {n, plural, one {# documento ignorado} other {# documentos ignorados}} (limite {max})","lib.dupOne":"“{name}” já está em Documentos — nada de novo para importar","lib.dupAll":"Todos os {n} documentos já estão em Documentos — nada de novo para importar","lib.backupNag":"Nenhum backup há mais de {days} dias — os navegadores podem apagar dados de sites. Guarde uma cópia dos seus documentos em arquivo.","lib.downloadBackup":"Baixar backup","lib.changedElsewhere":"“{name}” foi alterado em outra aba","lib.loadLatest":"Carregar a mais recente","lib.deletedElsewhere":"“{name}” foi excluído em outra aba — ele continua aberto aqui, e sua próxima alteração o salva de novo","lib.cantLoadLatest":"Não foi possível carregar a versão mais recente","lib.loadedLatest":"Versão mais recente de “{name}” carregada","lib.quotaWarn":"O armazenamento está quase cheio — restam só ~{free}. Baixe um backup e remova documentos de que não precisa mais.","lib.lsWarn":"O armazenamento para documentos pequenos deste site está quase cheio (ele é compartilhado com outras páginas deste domínio). Remova documentos de que não precisa mais.","lib.backupFirst":"Baixar backup antes","lib.backupFirstMany":"Baixar backup de {n} documentos antes","lib.backupDone":"Backup baixado ✓","lib.noOld":"Nenhum documento com mais de {days} dias","lib.andMore":"…e mais {n}","lib.oldTitle":"Remover {n, plural, one {# documento antigo} other {# documentos antigos}}?","lib.oldMessage":"Sem alterações nos últimos {days} dias:","lib.oldNote":"Isso libera espaço no navegador. Você pode desfazer logo em seguida.","lib.oldOk":"Remover {n}","lib.oldKeep":"Manter","lib.wipeTitle":"Excluir todos os dados?","lib.wipeMessage":"Isso remove permanentemente {docs, plural, one {# documento} other {# documentos}}, {notes, plural, one {# comentário} other {# comentários}} e suas preferências salvas deste navegador.","lib.wipeNote":"Não é possível desfazer.","lib.wipeOk":"Excluir tudo","lib.wiped":"Todos os dados foram excluídos deste navegador","lib.new":"Novo","lib.newOpen":"Abrir arquivo…","lib.newOpenSub":".md, .markdown ou .txt","lib.newPaste":"Colar Markdown…","lib.newPasteSub":"Comece um documento novo a partir de texto","lib.newSample":"Documento de exemplo","lib.newSampleSub":"A demo guiada (não é salva)","lib.close":"Fechar documentos","lib.search":"Buscar documentos","lib.searchAria":"Buscar documentos pelo nome","lib.listAria":"Documentos salvos","lib.backup":"Backup","lib.backupAll":"Baixar backup (.json)","lib.restore":"Restaurar…","lib.backupNote":"Um backup guarda seus documentos e comentários em um só arquivo — use para mudar de navegador ou ter uma cópia segura.","lib.removeOld":"Remover documentos com mais de {days} dias","lib.wipe":"Excluir todos os dados","lib.showingSample":"Mostrando o documento de exemplo","lib.sampleNotice":"Você está vendo o documento de exemplo. Ele só é salvo se você o alterar — aí fica guardado aqui como “{name}”.","lib.emptyTitle":"Nenhum documento salvo ainda","lib.emptyText":"Abra ou cole um arquivo Markdown — ele fica guardado aqui automaticamente, com os comentários.","lib.noMatch":"Nenhum documento corresponde a “{q}”.","lib.rowComments":"{n, plural, one {# comentário} other {# comentários}}","lib.renameAria":"Renomear {name}","lib.openTitle":"Abrir {name}","lib.current":"Aberto","lib.rename":"Renomear","lib.backupOne":"Baixar backup","lib.backupOneAria":"Baixar backup de {name}","lib.deleteAria":"Excluir {name}","lib.hostStorage":"O armazenamento é gerenciado pelo app que hospeda esta página, então o uso não pode ser medido aqui.","lib.noStorage":"O armazenamento do navegador não está disponível aqui — os documentos serão perdidos ao recarregar.","lib.storage":"Armazenamento","lib.used_html":"\u003cb>~{size}\u003c/b> em uso","lib.meterTitle":"Documentos pequenos: ~{ls} no localStorage · documentos grandes: ~{idb} no IndexedDB","lib.meterFree":" · o navegador tem ~{free} livres para este site","lib.meterAria":"Armazenamento do navegador em uso","ai.fmtOn":"Respostas da IA ativadas — as exportações pedem que a IA responda num formato que você pode colar de volta","ai.fmtOff":"Respostas da IA desativadas — as exportações usam o formato simples","ai.noDocDownload":"Ainda não há documento Markdown para baixar","ai.noNoteId":"Nenhuma nota com id {id} neste documento","ai.noNoteNum":"Nenhuma nota [{n}] neste documento","ai.emptyAnswer":"Resposta vazia","ai.suggestedEdits":"{n, plural, one {Sugeriu uma edição.} other {Sugeriu # edições.}}","ai.addAnswers":"Adicionar respostas","ai.noNotes":"Este documento ainda não tem notas, então não há onde anexar respostas.","ai.srAdd":"Será adicionada: ","ai.srDup":"Ignorada, duplicada: ","ai.srSkip":"Ignorada: ","ai.prevNote":"Nota {n} · {snippet}","ai.byNumber":"Associada pelo número","ai.byId":"Associada pelo id","ai.includes":"{n, plural, one {inclui uma edição sugerida} other {inclui # edições sugeridas}}","ai.round":"A nota {n} já tem uma resposta da IA — esta será a rodada {round}","ai.roundSuperseded":" (as edições pendentes dela serão marcadas como substituídas)","ai.dupSkipped":"Resposta idêntica já adicionada — ignorada","ai.skippedWhy":"{why} — ignorada","ai.general":"Geral","ai.generalNote":"Não é salvo — copie se precisar","ai.generalCopied":"Comentários gerais copiados","ai.noneFound_html":"Nenhuma resposta encontrada. Cada resposta deve começar com um título como \u003ccode>{example}\u003c/code> — ative “{option}” no menu Exportar antes de exportar.","ai.addN":"{n, plural, one {Adicionar # resposta} other {Adicionar # respostas}}","ai.added":"{n, plural, one {# resposta da IA adicionada} other {# respostas da IA adicionadas}}","ai.removed":"{n, plural, one {# resposta da IA removida} other {# respostas da IA removidas}}","ai.line":"Linha {n}","ai.moreChanges":"{n, plural, one {… e mais # alteração — use Revisar} other {… e mais # alterações — use Revisar}}","ai.noChanges":"Sem alterações","ai.scope.quote":"Trecho citado","ai.scope.everywhere":"{n, plural, one {Em todo lugar · # ocorrência} other {Em todo lugar · # ocorrências}}","ai.scope.section":"Seção: {name}","ai.scope.document":"{n, plural, one {Documento inteiro · # alteração} other {Documento inteiro · # alterações}}","ai.scope.sentence":"Frase · parágrafo","ai.scope.elsewhereLine":"Em outro lugar · linha ~{n}","ai.scope.elsewhere":"Em outro lugar","ai.scope.deletion":" · remoção","ai.scope.addition":" · adição","ai.miss.overlap":"Sobrepõe uma alteração aceita","ai.miss.conflict":"Sobrepõe outra edição deste lote","ai.miss.same":"Já está no documento","ai.miss.format":"Não aparece palavra por palavra no Markdown (o trecho atravessa formatação)","ai.miss.changed":"O texto mudou desde que a IA respondeu","ai.byHand":"{why} — aplique manualmente","ai.suggCopied":"Texto sugerido copiado","ai.cantApplyN":"Não foi possível aplicar {n} edições — veja as notas delas","ai.finishFirst":"Termine a edição primeiro: Concluir aplica, Descartar desfaz","ai.applied":"{n, plural, one {Edição sugerida aplicada} other {# edições sugeridas aplicadas}}","ai.notApplied":" · não aplicadas: {n}","ai.lostHighlight":" · {n, plural, one {# nota perdeu o destaque} other {# notas perderam o destaque}}","ai.undone":"{n, plural, one {Edição desfeita} other {Edições desfeitas}}","ai.rejected":"{n, plural, one {Sugestão rejeitada} other {# sugestões rejeitadas}}","ai.noReview":"Nenhuma alteração para revisar","ai.revHint":"Nota {num} · {scope} · {n, plural, one {# alteração} other {# alterações}}. Aceite ou rejeite cada alteração e depois aplique.","ai.revChange":"Alteração {n} · linha ~{line}","ai.accept":"Aceitar","ai.reject":"Rejeitar","ai.acceptN":"Aceitar alteração {n}","ai.rejectN":"Rejeitar alteração {n}","ai.apply":"Aplicar","ai.applyNofM":"{m, plural, one {Aplicar {k} de # alteração} other {Aplicar {k} de # alterações}}","ai.rejectEdit":"Rejeitar esta edição","ai.docChanged":"O documento mudou — abra Revisar de novo","ai.tag":"IA","ai.tagRound":"IA · rodada {n}","ai.tagTitle":"Resposta colada do seu assistente de IA","ai.copyAnswer":"Copiar resposta","ai.copyAnswerAria":"Copiar resposta da IA","ai.answerCopied":"Resposta copiada","ai.earlier":"Resposta anterior da IA · rodada {n}","ai.editN":"Edição {n} · ","ai.st.accepted":"✓ Aceita","ai.st.rejected":"Rejeitada","ai.st.superseded":"Substituída","ai.supersededTitle":"Uma resposta mais nova da IA substituiu esta sugestão","ai.copySugg":"Copiar texto sugerido","ai.dismiss":"Dispensar","ai.dismissAria":"Dispensar edição sugerida da nota {n}","ai.review":"Revisar…","ai.reviewAria":"Revisar alterações sugeridas da nota {n}","ai.acceptAria":"Aceitar edição sugerida da nota {n}","ai.rejectAria":"Rejeitar edição sugerida da nota {n}","ai.chipRewrite":"Nota {n} · Reescrita sugerida · Revisar","ai.chipPlaces":"Nota {n} · Alteração sugerida · {k} lugares","ai.chipChange":"Nota {n} · Alteração sugerida · Revisar","ai.chipShowNote":"Mostrar a nota","ai.chipReview":"Revisar as alterações sugeridas","ai.suggCount":"{n, plural, one {# sugestão} other {# sugestões}}","ai.pasteAnswer":"Colar resposta da IA…","ai.showSuggTitle":"Mostrar edições sugeridas no documento","ai.showSugg":"Mostrar sugestões","ai.pasteTitle":"Colar resposta da IA","ai.pasteHint_html":"Cole a resposta do seu assistente. Cada resposta é associada à sua nota pelo \u003ccode>{#id}\u003c/code> (ou pelo número) e adicionada como resposta da IA.","ai.pasteAria":"Resposta da IA","ai.pastePlaceholder":"```mdeverything\n## [1] {#n3f9a}\nSua resposta…\n```","ai.suggBar":"Edições sugeridas","ai.acceptAll":"Aceitar todas","ai.rejectAll":"Rejeitar todas","ai.hideSuggAria":"Ocultar sugestões no documento","ai.hideSugg":"Ocultar sugestões","ai.reviewTitle":"Revisar alterações","bundle.section":"seção “{name}”","bundle.line":"linha ~{n}","bundle.notFound":"(não encontrado no documento atual)","bundle.location":"Local:","bundle.quoted":"Trecho citado:","bundle.context":"Contexto:","bundle.note":"Nota / pergunta:","bundle.noNote":"(sem nota)","bundle.replies":"Respostas ({n}):","bundle.aiRound":"(IA, rodada {n})","bundle.editsSummary":"({n, plural, one {edição sugerida} other {edições sugeridas}} — {list})","bundle.state.accepted":"aceitas: {n}","bundle.state.rejected":"rejeitadas: {n}","bundle.state.superseded":"substituídas: {n}","bundle.state.pending":"pendentes: {n}","link.kind.section":"Seção","link.kind.p":"Parágrafo","link.kind.li":"Item de lista","link.kind.td":"Célula de tabela","link.kind.quote":"Citação","link.kind.pre":"Bloco de código","link.kind.table":"Tabela","link.kind.figure":"Figura","link.kind.dd":"Definição","link.kind.dt":"Termo","link.broken":"Link quebrado","link.notFound":"Seção não encontrada","link.noMatch":"{frag} não corresponde a nenhum título deste documento","link.jumpHint":"Clique para ir · ↩ Voltar depois","link.email":"E-mail","link.external":"Link externo","link.copy":"Copiar link","link.opensMail":"Abre seu app de e-mail","link.opensTab":"Abre em uma nova aba","link.otherFile":"Outro arquivo","link.fileBlocked":"Links para outros arquivos não podem ser abertos aqui","link.copied":"Link copiado","link.copyFailed":"Não foi possível copiar o link","link.backAria":"Voltar para onde você estava (Alt+Left)","link.back":"Voltar","table.region":"Tabela {n}","table.optionsN":"Opções da tabela {n}","table.options":"Opções da tabela","table.colWidth":"Largura da coluna {n}","table.rowHeight":"Altura da linha {n}","table.reset":"Redefinir tamanhos","table.density":"Densidade","table.compact":"Compacta","table.default":"Padrão","table.comfortable":"Confortável","table.resetDone":"Tamanhos da tabela redefinidos","pane.resizeOutline":"Redimensionar sumário","pane.resizeRail":"Redimensionar painel de comentários","pane.resizeTitle":"Arraste para redimensionar · clique duplo para redefinir"}}</script>
+<script type="application/json" id="i18n">{"lang":"pt-BR","code":"pt-BR","nativeName":"Português (Brasil)","base":"../","locales":[{"code":"en","htmlLang":"en","dir":"ltr","nativeName":"English","href":"../"},{"code":"vi","htmlLang":"vi","dir":"ltr","nativeName":"Tiếng Việt","href":"../vi/"},{"code":"ja","htmlLang":"ja","dir":"ltr","nativeName":"日本語","href":"../ja/"},{"code":"pt-BR","htmlLang":"pt-BR","dir":"ltr","nativeName":"Português (Brasil)","href":"../pt-br/"},{"code":"es","htmlLang":"es","dir":"ltr","nativeName":"Español","href":"../es/"}],"dict":{"lang.button":"Idioma","lang.buttonAria":"Idioma: Português (Brasil)","lang.links":"Idiomas","lang.suggest":"Esta página está disponível em português","lang.suggestGo":"Mudar","lang.suggestDismiss":"Dispensar","hdr.outline":"Sumário","hdr.comments":"Comentários","hdr.outlineToggle":"Mostrar / ocultar sumário","hdr.editMd":"Editar Markdown","hdr.importTitle":"Abrir, colar ou restaurar","hdr.import":"Importar","hdr.theme":"Tema","hdr.railToggle":"Mostrar / ocultar painel de comentários","menu.openTitle":"Abrir um arquivo Markdown","menu.open":"Abrir arquivo…","menu.openSub":".md, .markdown ou .txt do seu computador","menu.pasteTitle":"Colar Markdown","menu.paste":"Colar Markdown…","menu.pasteSub":"Comece com o texto da área de transferência","menu.restoreTitle":"Restaurar documentos e comentários de um arquivo de backup","menu.restore":"Restaurar backup (.json)…","menu.restoreSub":"Recupere documentos e seus comentários","theme.light":"Papel","theme.beige":"Sépia","theme.dark":"Noite","theme.aria":"Tema: {name}","theme.ariaPaper":"Tema: Papel","export.noDoc":"Ainda não há documento Markdown para copiar","export.copyFailed":"Não foi possível copiar, tente de novo","export.needComment":"Adicione pelo menos um comentário antes de exportar","export.button":"Exportar para IA","export.options":"Opções de exportação","export.menu":"Exportar","export.full":"Contexto completo","export.notes":"Só comentários","export.raw":"Só o documento","export.fileFull":"-para-IA","export.fileNotes":"-comentarios","export.aiFmt":"Deixar a IA responder no mdeverything","exp2.mFull":"Copiar contexto completo","exp2.mFullSub":"Documento + comentários + instruções","exp2.mNotes":"Copiar só os comentários","exp2.mNotesSub":"Só os comentários e os trechos citados","exp2.mDoc":"Copiar só o documento","exp2.mDocSub":"Só o texto","exp2.mOptions":"Opções de exportação…","exp2.mOptionsSub":"Instruções rápidas, pedidos extras, download","exp2.mPaste":"Colar resultado da IA…","exp2.mPasteSub":"Cole de volta o que a sua IA devolveu","exp2.title":"Exportar para IA","exp2.what":"O que enviar","exp2.fullSub":"Documento + comentários","exp2.notesSub":"Comentários + trechos citados","exp2.docSub":"Só o texto","exp2.quick":"Instruções rápidas","exp2.optMark":"Marcar as edições (riscar o removido, roxo no novo)","exp2.optAnswer":"Responder cada comentário","exp2.optAnswerSub":"Para colar as respostas de volta sob cada comentário","exp2.optAnswerNa":"Não se aplica ao enviar só o documento","exp2.extra":"Instruções extras","exp2.extraPh":"Ex.: manter o tom, não mudar os títulos…","exp2.suggestions":"Sugestões","exp2.chipTone":"Manter meu tom","exp2.chipOnly":"Editar só onde há comentários","exp2.chipHeadings":"Não mudar os títulos","exp2.chipShorter":"Deixar mais curto","exp2.chipExplain":"Explicar cada mudança em poucas palavras","exp2.chipKeep":"Manter tabelas e código como estão","exp2.chipLang":"Responder em português","exp2.recent":"Usadas recentemente","exp2.useRecent":"Usar: {text}","exp2.preview":"Ver o que será copiado","exp2.download":"Baixar .md","exp2.copy":"Copiar","exp2.markPrompt":"Devolva o documento revisado completo em Markdown e marque as edições: coloque o texto removido entre ~~dois tis~~ (riscado) e o texto novo entre \u003cins>…\u003c/ins> (exibido em roxo). Se o documento já tiver marcas de uma rodada anterior, apague por completo o texto ~~riscado~~ e mantenha o texto \u003cins> anterior como texto normal (sem as tags \u003cins>).","exp2.okFull":"Contexto completo copiado","exp2.okNotes":"Só os comentários copiados","exp2.okDoc":"Só o documento copiado","exp2.okDl":"{file} baixado","exp2.failTitle":"Não foi possível copiar","exp2.failSub":"O navegador bloqueou a cópia. Baixe o arquivo e anexe-o à sua IA.","exp2.metaComments":"{n, plural, one {# comentário} other {# comentários}}","exp2.metaWords":"{n, plural, one {# palavra} other {# palavras}}","exp2.metaWith":"com: {list}","exp2.incMark":"edições marcadas","exp2.incAnswer":"respostas por comentário","exp2.incExtra":"instruções extras","exp2.stepsAria":"Próximos passos","exp2.step1":"Cole na sua IA","exp2.step1Dl":"Anexe o arquivo à sua IA","exp2.step2":"Copie o resultado","exp2.step3":"Cole de volta aqui","exp2.openAi":"Abra sua IA","exp2.more":"+ mais","exp2.newTab":"{name} (abre em nova aba)","exp2.anyAi":"Funciona com qualquer IA que leia Markdown","exp2.cta":"Colar resultado da IA","exp2.ctaDl":"Baixar o arquivo","exp2.noteMark":"Texto antigo riscado, texto novo em roxo","exp2.noteAnswer":"As respostas vão aparecer sob cada comentário","exp2.hideSteps":"Não mostrar mais estes passos","exp2.dismiss":"Fechar","home.hideTitle":"Ocultar a introdução e manter a demo","home.hide":"Ocultar intro","home.kicker":"Mesa de revisão de Markdown para IA","home.title_html":"Aponte as palavras exatas.\u003cbr>\u003cspan class=\"hero-em\">Diga à sua IA o que corrigir.\u003c/span>","home.sub":"Comente qualquer arquivo Markdown e exporte com cada comentário preso ao seu trecho — para o ChatGPT, Claude ou Gemini responder no lugar certo.","home.open":"Abrir um arquivo Markdown","home.paste":"Colar Markdown","home.demo":"Explore a demo abaixo","home.dropAria":"Abrir um arquivo Markdown — ou solte um aqui","home.dropTitle":"Solte seu arquivo .md aqui","home.dropBrowse":"ou clique para procurar no computador","home.dropHint":".md · .markdown · .txt — ou um backup .mdeverything.json","how.title":"Como funciona","how.mockDoc_html":"Grátis para equipes de até 5 pessoas. \u003cmark class=\"mk-hl\">A cobrança começa no primeiro dia\u003cspan class=\"mk-badge\">1\u003c/span>\u003c/mark> para os demais.","how.mockNote":"Está certo? Achei que havia um teste de 14 dias.","how.s1Title":"Aponte as palavras","how.s1Text":"Abra ou cole qualquer arquivo Markdown. Selecione um trecho e escreva o que deve mudar.","how.mockExport_html":"\u003cspan class=\"mk-k\">[1] {#n3f9a}\u003c/span> Local: seção “Preços”\nTrecho citado:\n\u003cspan class=\"mk-q\">\"A cobrança começa no primeiro dia\"\u003c/span>\nNota: Está certo? Achei que…","how.s2Title":"Envie para sua IA","how.s2Text":"Exportar copia o documento inteiro com cada comentário preso ao seu trecho. Cole no ChatGPT, Claude ou Gemini.","how.mockReply":"Sim — os planos pagos começam com um teste de 14 dias.","how.mockDiff_html":"A cobrança começa \u003cdel>no primeiro dia\u003c/del> \u003cins>após um teste grátis de 14 dias\u003c/ins>","how.s3Title":"Revise as respostas no lugar","how.s3Text_html":"Cole a resposta de volta. Cada resposta aparece sob o próprio comentário, com as edições sugeridas como \u003cdel>antigo\u003c/del> → \u003cins>novo\u003c/ins>. Aceite ou rejeite cada uma.","how.loopTitle":"Ainda não terminou?","how.loopText":"Responda ou adicione comentários e exporte de novo — só os comentários novos e de acompanhamento são respondidos.","how.foot":"Funciona com ChatGPT, Claude, Gemini — sem conta, nada é enviado","why.aria":"Por que mdeverything","why.c1Title":"Contexto preciso para a IA","why.c1Text":"Cada comentário leva sua citação, seção e o texto ao redor, para as respostas caírem na frase certa.","why.c2Title":"Privado — roda no seu navegador","why.c2Text":"Sem upload, sem conta, sem rastreamento. Seu trabalho fica neste dispositivo.","why.c3Title":"Funciona em qualquer idioma","why.c3Text":"Os comentários se prendem às palavras exatas — English, Português, 日本語, tanto faz.","assure.free":"Grátis","assure.noSignup":"Sem cadastro","assure.autosave":"Salva automaticamente","assure.docs":"Guarde até 10 documentos","tip.text_html":"\u003cb>Experimente:\u003c/b> selecione qualquer frase abaixo e pressione \u003ckbd>Enter\u003c/kbd> para comentar.","tip.dismiss":"Dispensar dica","floater.add":"Adicionar nota","dropzone.text":"Solte um arquivo .md — ou um backup .mdeverything.json — para abrir","source.newTitle":"Novo documento a partir de Markdown","source.create":"Criar documento","source.title":"Colar Markdown","source.render":"Renderizar documento","source.hint_html":"Cole o Markdown e pressione \u003cb>Renderizar documento\u003c/b>. Na página inicial, isso substitui o exemplo da demo. No modo de trabalho, as notas existentes são mantidas quando possível e reancoradas nos trechos correspondentes.","source.openFile":"Abrir Markdown…","confirm.defaultTitle":"Substituir o documento atual?","confirm.defaultMessage":"Esta ação não pode ser desfeita.","confirm.exportFirst":"Exporte suas notas antes se quiser guardar uma cópia.","confirm.continue":"Continuar","confirm.replaceMessage":"Carregar um novo documento vai remover as anotações atuais.","confirm.replaceOk":"Substituir documento","common.cancel":"Cancelar","common.save":"Salvar","common.undo":"Desfazer","common.cancelEsc":"Cancelar (Esc)","common.close":"Fechar","common.closeEsc":"Fechar (Esc)","common.edit":"Editar","common.delete":"Excluir","common.open":"Abrir","doc.sampleName":"Documento de exemplo","doc.untitled":"Documento Markdown","doc.labelTitle":"{name} — Documentos","doc.editedName":"Documento editado","doc.sampleCopy":"Cópia do exemplo","doc.pastedName":"Markdown colado","doc.untitledShort":"Sem título","doc.recoveredName":"Documento recuperado","doc.importedName":"Documento importado","sample.confirmTitle":"Abrir o exemplo?","sample.confirmMessage":"Você tem {n, plural, one {# nota} other {# notas}} agora. Carregar o exemplo vai excluir essas anotações.","sample.confirmOk":"Abrir exemplo","sample.confirmKeep":"Manter documento atual","sample.loaded":"Exemplo carregado com {n, plural, one {# comentário de exemplo} other {# comentários de exemplo}}","sample.liveDemo":"Demo ao vivo · passe o mouse ou clique nos destaques","render.failed":"Não foi possível renderizar o markdown.","code.label":"código","code.copy":"Copiar","code.copied":"Copiado","code.error":"Erro","mermaid.rendering":"Renderizando diagrama…","mermaid.error":"Não foi possível ler o diagrama — mostrando o código.","diag.add":"Comentar","diag.addAria":"Comentar em “{label}”","diag.wrapAria":"Diagrama {n}. Use as setas para escolher uma forma e Enter para comentar.","diag.cardQuote":"Diagrama {n} · “{label}”","diag.cardWhole":"Diagrama {n}","diag.location":"diagrama {n} ({type}) · {shape} “{label}”","diag.locationWhole":"diagrama {n} ({type})","diag.bundleMermaid":"Mermaid: {code}","diag.shapeNode":"nó","diag.shapeEdge":"rótulo da seta","diag.shapeGroup":"grupo","diag.shapeParticipant":"participante","diag.shapeMessage":"mensagem","diag.shapeNote":"nota","outline.untitled":"Seção sem título","outline.title":"Nesta página","outline.close":"Fechar sumário","outline.collapse":"Recolher sumário","outline.empty_html":"Este documento ainda não tem títulos. Adicione títulos \u003ccode>#\u003c/code>, \u003ccode>##\u003c/code> ou \u003ccode>###\u003c/code> para ter um sumário.","outline.expand":"Expandir sumário","outline.aria":"Sumário do documento","gutter.comment":"Comentar este bloco","rail.countLabel":"{n, plural, one {nota} other {notas}}","rail.show":"Mostrar painel de comentários","rail.hide":"Ocultar painel de comentários","rail.collapse":"Recolher painel de comentários","rail.showCount":"Mostrar painel de comentários ({n, plural, one {# comentário} other {# comentários}})","rail.notesWord":"notas","rail.empty_html":"\u003cb>Selecione qualquer trecho\u003c/b> do documento para adicionar uma nota ou pergunta. As notas ficam ao lado do trecho e vão junto quando você copia.","rail.reviewerNotes":"Notas de revisão","rail.exampleNotes":"Notas de exemplo","rail.demoHint":"Os comentários da demo mostram como as anotações se ligam aos trechos destacados.","card.notFound":"Este trecho não foi encontrado no documento","card.exampleChip":"Nota de exemplo","card.replies":"{n, plural, one {# resposta} other {# respostas}}","card.editNote":"Editar nota","card.deleteNote":"Excluir nota","card.replyPlaceholder":"Responder…","card.replyToNote":"Responder à nota {n}","card.reply":"Responder","card.addNotePlaceholder":"Clique para adicionar uma nota…","card.ariaNote":"Nota {n}: {quote}","card.ariaEmpty":"Nota {n} vazia em “{quote}” — ative para escrever","card.deleteNoteN":"Excluir nota {n}","card.editNoteN":"Editar nota {n}","pop.notesOnPassage":"{n, plural, one {# nota neste trecho} other {# notas neste trecho}}","pop.noNoteClick":"Ainda sem nota — clique para adicionar","pop.preview":"Prévia da nota","pop.newNote":"Nova nota","pop.notePlaceholder":"Adicione uma nota ou pergunta…","pop.noteText":"Texto da nota","pop.hint":"Enter para salvar · Shift+Enter nova linha","pop.noteN":"Nota {n}","pop.notesHere":"{n, plural, one {# nota aqui} other {# notas aqui}}","pop.showNote":"Mostrar nota {n}","pop.noNote":"Ainda sem nota","reply.deleted":"Resposta excluída","reply.edit":"Editar resposta","reply.delete":"Excluir resposta","reply.editHintTitle":"Enter para salvar · Shift+Enter nova linha · Esc para cancelar","reply.editHint":"Enter para salvar · Esc para cancelar","reply.edited":"editado","reply.editedAt":"Editado em {date}","filter.none.all":"Nenhum comentário.","filter.none.replies":"Nenhum comentário com respostas.","filter.none.unanchored":"Nenhum comentário desancorado.","filter.none.ai":"Nenhum comentário com resposta da IA.","filter.none.noai":"Nenhum comentário sem resposta da IA.","filter.none.sugg":"Nenhum comentário com sugestões pendentes.","filter.noneQ.all":"Nenhum comentário corresponde a “{q}”.","filter.noneQ.replies":"Nenhum comentário com respostas corresponde a “{q}”.","filter.noneQ.unanchored":"Nenhum comentário desancorado corresponde a “{q}”.","filter.noneQ.ai":"Nenhum comentário com resposta da IA corresponde a “{q}”.","filter.noneQ.noai":"Nenhum comentário sem resposta da IA corresponde a “{q}”.","filter.noneQ.sugg":"Nenhum comentário com sugestões pendentes corresponde a “{q}”.","filter.label":"Filtrar comentários","filter.all":"Todos","filter.replies":"Com respostas","filter.unanchored":"Desancorados","filter.unanchoredTitle":"Notas cujo trecho não está mais no documento","filter.ai":"Com resposta da IA","filter.noai":"Sem resposta da IA","filter.sugg":"Sugestões pendentes","filter.suggTitle":"Edições sugeridas pela IA ainda não aceitas nem rejeitadas","filter.clear":"Limpar filtros","search.placeholder":"Buscar comentários","help.titleShort":"Atalhos de teclado (?)","help.title":"Atalhos de teclado","help.nextPrev":"Comentário seguinte / anterior","help.search":"Buscar comentários","help.addNote":"Adicionar nota ao texto selecionado","help.close":"Fechar um cartão, menu ou diálogo","help.show":"Mostrar estes atalhos","nav.noComments":"Ainda não há comentários","nav.noMatch":"Nenhum comentário corresponde ao filtro","nav.noHighlight":"Nenhum comentário com destaque neste documento","toast.noteGone":"Essa nota não existe mais","toast.noteDeleted":"Nota excluída","toast.noteRestoredOrphan":"Nota restaurada — o trecho dela não está mais no documento","toast.storageFull":"O armazenamento do navegador está cheio — suas últimas alterações não foram salvas","toast.manageStorage":"Gerenciar armazenamento","toast.storageUnavailable":"O armazenamento do navegador não está disponível aqui — as alterações serão perdidas ao recarregar","toast.savedAs":"Suas alterações foram salvas como “{name}”","toast.opened":"{name} aberto","toast.docLoaded":"Documento carregado","toast.cantRead":"Não foi possível ler “{name}”","toast.pasteFirst":"Cole o Markdown primeiro","toast.rendered":"Markdown renderizado","time.justNow":"agora mesmo","time.yesterday":"ontem","editor.undo":"Desfazer","editor.redo":"Refazer","editor.bold":"Negrito","editor.italic":"Itálico","editor.strike":"Tachado","editor.h1":"Título 1","editor.h2":"Título 2","editor.h3":"Título 3","editor.ul":"Lista com marcadores","editor.ol":"Lista numerada","editor.task":"Lista de tarefas","editor.quote":"Citação","editor.code":"Código em linha","editor.codeblock":"Bloco de código","editor.link":"Link","editor.table":"Inserir tabela","editor.hr":"Linha horizontal","editor.region":"Editor de Markdown","editor.formatting":"Formatação","editor.discardTitle":"Descartar alterações e voltar ao documento","editor.discard":"Descartar","editor.applyTitle":"Aplicar alterações ({key})","editor.done":"Concluir","editor.view":"Visualização do editor","editor.write":"Escrever","editor.preview":"Prévia","editor.source":"Código-fonte Markdown","editor.placeholder":"Escreva em Markdown…","editor.livePreview":"Prévia ao vivo","editor.hint_html":"\u003ckbd>{key}\u003c/kbd> aplica · \u003ckbd>Esc\u003c/kbd> e depois \u003ckbd>Tab\u003c/kbd> sai do editor","editor.finishTitle":"Terminar a edição e aplicar as alterações ({key})","editor.editTitle":"Editar o código-fonte Markdown com prévia ao vivo","editor.editing":"Editando","editor.edit":"Editar","editor.draftRestored":"Seu rascunho não salvo foi restaurado","editor.noChanges":"Nenhuma alteração para aplicar","editor.applied":"Alterações aplicadas","editor.lost":"{n, plural, one {# comentário perdeu a âncora} other {# comentários perderam a âncora}}","editor.reanchored":"{n, plural, one {# comentário reancorado} other {# comentários reancorados}}","editor.discardConfirmTitle":"Descartar suas edições?","editor.discardConfirmMessage":"Suas alterações no código-fonte Markdown serão perdidas.","editor.discardConfirmNote":"O documento e os comentários ficam exatamente como estavam antes de você começar a editar.","editor.discardConfirmOk":"Descartar edições","editor.keepEditing":"Continuar editando","editor.discarded":"Edições descartadas","editor.count":"{w, plural, one {# palavra} other {# palavras}} · {c, plural, one {# caractere} other {# caracteres}}","editor.unsaved":"Alterações não salvas","editor.clean":"Sem alterações","editor.nothingToPreview":"Nada para pré-visualizar ainda.","editor.ph.linkText":"texto do link","editor.ph.bold":"texto em negrito","editor.ph.italic":"texto em itálico","editor.ph.strike":"tachado","editor.ph.code":"código","editor.ph.column":"Coluna {n}","editor.ph.cell":"Célula","editor.finishFirst":"Termine a edição primeiro: Concluir ({key}) aplica, Descartar desfaz","editor.finishBeforeOpen":"Termine a edição antes de abrir outro arquivo","editor.finishFirstShort":"Termine a edição primeiro","lib.documents":"Documentos","lib.full":"Você pode guardar até {max} documentos — exclua um para adicionar outro","lib.manage":"Gerenciar","lib.recovered":"{n, plural, one {# documento recuperado que não estava listado} other {# documentos recuperados que não estavam listados}} em Documentos","lib.cantOpen":"Não foi possível abrir “{name}” — os dados salvos estão faltando","lib.deletedOne":"“{name}” excluído","lib.deletedMany":"{n} documentos excluídos","lib.restoredOne":"“{name}” restaurado","lib.restoredMany":"{n} documentos restaurados","lib.notRestored":" — {n, plural, one {# documento não restaurado} other {# documentos não restaurados}} (limite {max})","lib.nothingToBackup":"Ainda não há nada para fazer backup","lib.downloaded":"{file} baixado","lib.importFailed":"Não foi possível importar “{name}” — {why}","lib.importNotJson":"não é um JSON válido","lib.importNotBackup":"não é um backup do mdeverything","lib.importEmpty":"não contém documentos","lib.dupSkipped":" — {n, plural, one {# duplicado ignorado} other {# duplicados ignorados}} (já está em Documentos)","lib.imported":"Importado: {docs, plural, one {# documento} other {# documentos}} · {notes, plural, one {# comentário} other {# comentários}}","lib.importFull":" — o armazenamento está cheio, o restante foi ignorado","lib.importCapped":" — {n, plural, one {# documento ignorado} other {# documentos ignorados}} (limite {max})","lib.dupOne":"“{name}” já está em Documentos — nada de novo para importar","lib.dupAll":"Todos os {n} documentos já estão em Documentos — nada de novo para importar","lib.backupNag":"Nenhum backup há mais de {days} dias — os navegadores podem apagar dados de sites. Guarde uma cópia dos seus documentos em arquivo.","lib.downloadBackup":"Baixar backup","lib.changedElsewhere":"“{name}” foi alterado em outra aba","lib.loadLatest":"Carregar a mais recente","lib.deletedElsewhere":"“{name}” foi excluído em outra aba — ele continua aberto aqui, e sua próxima alteração o salva de novo","lib.cantLoadLatest":"Não foi possível carregar a versão mais recente","lib.loadedLatest":"Versão mais recente de “{name}” carregada","lib.quotaWarn":"O armazenamento está quase cheio — restam só ~{free}. Baixe um backup e remova documentos de que não precisa mais.","lib.lsWarn":"O armazenamento para documentos pequenos deste site está quase cheio (ele é compartilhado com outras páginas deste domínio). Remova documentos de que não precisa mais.","lib.backupFirst":"Baixar backup antes","lib.backupFirstMany":"Baixar backup de {n} documentos antes","lib.backupDone":"Backup baixado ✓","lib.noOld":"Nenhum documento com mais de {days} dias","lib.andMore":"…e mais {n}","lib.oldTitle":"Remover {n, plural, one {# documento antigo} other {# documentos antigos}}?","lib.oldMessage":"Sem alterações nos últimos {days} dias:","lib.oldNote":"Isso libera espaço no navegador. Você pode desfazer logo em seguida.","lib.oldOk":"Remover {n}","lib.oldKeep":"Manter","lib.wipeTitle":"Excluir todos os dados?","lib.wipeMessage":"Isso remove permanentemente {docs, plural, one {# documento} other {# documentos}}, {notes, plural, one {# comentário} other {# comentários}} e suas preferências salvas deste navegador.","lib.wipeNote":"Não é possível desfazer.","lib.wipeOk":"Excluir tudo","lib.wiped":"Todos os dados foram excluídos deste navegador","lib.new":"Novo","lib.newOpen":"Abrir arquivo…","lib.newOpenSub":".md, .markdown ou .txt","lib.newPaste":"Colar Markdown…","lib.newPasteSub":"Comece um documento novo a partir de texto","lib.newSample":"Documento de exemplo","lib.newSampleSub":"A demo guiada (não é salva)","lib.close":"Fechar documentos","lib.search":"Buscar documentos","lib.searchAria":"Buscar documentos pelo nome","lib.listAria":"Documentos salvos","lib.backup":"Backup","lib.backupAll":"Baixar backup (.json)","lib.restore":"Restaurar…","lib.backupNote":"Um backup guarda seus documentos e comentários em um só arquivo — use para mudar de navegador ou ter uma cópia segura.","lib.removeOld":"Remover documentos com mais de {days} dias","lib.wipe":"Excluir todos os dados","lib.showingSample":"Mostrando o documento de exemplo","lib.sampleNotice":"Você está vendo o documento de exemplo. Ele só é salvo se você o alterar — aí fica guardado aqui como “{name}”.","lib.emptyTitle":"Nenhum documento salvo ainda","lib.emptyText":"Abra ou cole um arquivo Markdown — ele fica guardado aqui automaticamente, com os comentários.","lib.noMatch":"Nenhum documento corresponde a “{q}”.","lib.rowComments":"{n, plural, one {# comentário} other {# comentários}}","lib.renameAria":"Renomear {name}","lib.openTitle":"Abrir {name}","lib.current":"Aberto","lib.rename":"Renomear","lib.backupOne":"Baixar backup","lib.backupOneAria":"Baixar backup de {name}","lib.deleteAria":"Excluir {name}","lib.hostStorage":"O armazenamento é gerenciado pelo app que hospeda esta página, então o uso não pode ser medido aqui.","lib.noStorage":"O armazenamento do navegador não está disponível aqui — os documentos serão perdidos ao recarregar.","lib.storage":"Armazenamento","lib.used_html":"\u003cb>~{size}\u003c/b> em uso","lib.meterTitle":"Documentos pequenos: ~{ls} no localStorage · documentos grandes: ~{idb} no IndexedDB","lib.meterFree":" · o navegador tem ~{free} livres para este site","lib.meterAria":"Armazenamento do navegador em uso","ai.fmtOn":"Respostas da IA ativadas — as exportações pedem que a IA responda num formato que você pode colar de volta","ai.fmtOff":"Respostas da IA desativadas — as exportações usam o formato simples","ai.noDocDownload":"Ainda não há documento Markdown para baixar","ai.noNoteId":"Nenhuma nota com id {id} neste documento","ai.noNoteNum":"Nenhuma nota [{n}] neste documento","ai.emptyAnswer":"Resposta vazia","ai.suggestedEdits":"{n, plural, one {Sugeriu uma edição.} other {Sugeriu # edições.}}","ai.addAnswers":"Adicionar respostas","ai.noNotes":"Este documento ainda não tem notas, então não há onde anexar respostas.","ai.srAdd":"Será adicionada: ","ai.srDup":"Ignorada, duplicada: ","ai.srSkip":"Ignorada: ","ai.prevNote":"Nota {n} · {snippet}","ai.byNumber":"Associada pelo número","ai.byId":"Associada pelo id","ai.includes":"{n, plural, one {inclui uma edição sugerida} other {inclui # edições sugeridas}}","ai.round":"A nota {n} já tem uma resposta da IA — esta será a rodada {round}","ai.roundSuperseded":" (as edições pendentes dela serão marcadas como substituídas)","ai.dupSkipped":"Resposta idêntica já adicionada — ignorada","ai.skippedWhy":"{why} — ignorada","ai.general":"Geral","ai.generalNote":"Não é salvo — copie se precisar","ai.generalCopied":"Comentários gerais copiados","ai.noneFound_html":"Nenhuma resposta encontrada. Cada resposta deve começar com um título como \u003ccode>{example}\u003c/code> — ative “{option}” no menu Exportar antes de exportar.","ai.addN":"{n, plural, one {Adicionar # resposta} other {Adicionar # respostas}}","ai.added":"{n, plural, one {# resposta da IA adicionada} other {# respostas da IA adicionadas}}","ai.removed":"{n, plural, one {# resposta da IA removida} other {# respostas da IA removidas}}","ai.line":"Linha {n}","ai.moreChanges":"{n, plural, one {… e mais # alteração — use Revisar} other {… e mais # alterações — use Revisar}}","ai.noChanges":"Sem alterações","ai.scope.quote":"Trecho citado","ai.scope.everywhere":"{n, plural, one {Em todo lugar · # ocorrência} other {Em todo lugar · # ocorrências}}","ai.scope.section":"Seção: {name}","ai.scope.document":"{n, plural, one {Documento inteiro · # alteração} other {Documento inteiro · # alterações}}","ai.scope.sentence":"Frase · parágrafo","ai.scope.elsewhereLine":"Em outro lugar · linha ~{n}","ai.scope.elsewhere":"Em outro lugar","ai.scope.deletion":" · remoção","ai.scope.addition":" · adição","ai.miss.overlap":"Sobrepõe uma alteração aceita","ai.miss.conflict":"Sobrepõe outra edição deste lote","ai.miss.same":"Já está no documento","ai.miss.format":"Não aparece palavra por palavra no Markdown (o trecho atravessa formatação)","ai.miss.changed":"O texto mudou desde que a IA respondeu","ai.byHand":"{why} — aplique manualmente","ai.suggCopied":"Texto sugerido copiado","ai.cantApplyN":"Não foi possível aplicar {n} edições — veja as notas delas","ai.finishFirst":"Termine a edição primeiro: Concluir aplica, Descartar desfaz","ai.applied":"{n, plural, one {Edição sugerida aplicada} other {# edições sugeridas aplicadas}}","ai.notApplied":" · não aplicadas: {n}","ai.lostHighlight":" · {n, plural, one {# nota perdeu o destaque} other {# notas perderam o destaque}}","ai.undone":"{n, plural, one {Edição desfeita} other {Edições desfeitas}}","ai.rejected":"{n, plural, one {Sugestão rejeitada} other {# sugestões rejeitadas}}","ai.noReview":"Nenhuma alteração para revisar","ai.revHint":"Nota {num} · {scope} · {n, plural, one {# alteração} other {# alterações}}. Aceite ou rejeite cada alteração e depois aplique.","ai.revChange":"Alteração {n} · linha ~{line}","ai.accept":"Aceitar","ai.reject":"Rejeitar","ai.acceptN":"Aceitar alteração {n}","ai.rejectN":"Rejeitar alteração {n}","ai.apply":"Aplicar","ai.applyNofM":"{m, plural, one {Aplicar {k} de # alteração} other {Aplicar {k} de # alterações}}","ai.rejectEdit":"Rejeitar esta edição","ai.docChanged":"O documento mudou — abra Revisar de novo","ai.tag":"IA","ai.tagRound":"IA · rodada {n}","ai.tagTitle":"Resposta colada do seu assistente de IA","ai.copyAnswer":"Copiar resposta","ai.copyAnswerAria":"Copiar resposta da IA","ai.answerCopied":"Resposta copiada","ai.earlier":"Resposta anterior da IA · rodada {n}","ai.editN":"Edição {n} · ","ai.st.accepted":"✓ Aceita","ai.st.rejected":"Rejeitada","ai.st.superseded":"Substituída","ai.supersededTitle":"Uma resposta mais nova da IA substituiu esta sugestão","ai.copySugg":"Copiar texto sugerido","ai.dismiss":"Dispensar","ai.dismissAria":"Dispensar edição sugerida da nota {n}","ai.review":"Revisar…","ai.reviewAria":"Revisar alterações sugeridas da nota {n}","ai.acceptAria":"Aceitar edição sugerida da nota {n}","ai.rejectAria":"Rejeitar edição sugerida da nota {n}","ai.chipRewrite":"Nota {n} · Reescrita sugerida · Revisar","ai.chipPlaces":"Nota {n} · Alteração sugerida · {k} lugares","ai.chipChange":"Nota {n} · Alteração sugerida · Revisar","ai.chipShowNote":"Mostrar a nota","ai.chipReview":"Revisar as alterações sugeridas","ai.suggCount":"{n, plural, one {# sugestão} other {# sugestões}}","ai.pasteAnswer":"Colar resposta da IA…","ai.showSuggTitle":"Mostrar edições sugeridas no documento","ai.showSugg":"Mostrar sugestões","ai.pasteTitle":"Colar resposta da IA","ai.pasteHint_html":"Cole a resposta do seu assistente. Cada resposta é associada à sua nota pelo \u003ccode>{#id}\u003c/code> (ou pelo número) e adicionada como resposta da IA.","ai.pasteAria":"Resposta da IA","ai.pastePlaceholder":"```mdeverything\n## [1] {#n3f9a}\nSua resposta…\n```","ai.suggBar":"Edições sugeridas","ai.acceptAll":"Aceitar todas","ai.rejectAll":"Rejeitar todas","ai.hideSuggAria":"Ocultar sugestões no documento","ai.hideSugg":"Ocultar sugestões","ai.reviewTitle":"Revisar alterações","bundle.section":"seção “{name}”","bundle.line":"linha ~{n}","bundle.notFound":"(não encontrado no documento atual)","bundle.location":"Local:","bundle.quoted":"Trecho citado:","bundle.context":"Contexto:","bundle.note":"Nota / pergunta:","bundle.noNote":"(sem nota)","bundle.replies":"Respostas ({n}):","bundle.aiRound":"(IA, rodada {n})","bundle.editsSummary":"({n, plural, one {edição sugerida} other {edições sugeridas}} — {list})","bundle.state.accepted":"aceitas: {n}","bundle.state.rejected":"rejeitadas: {n}","bundle.state.superseded":"substituídas: {n}","bundle.state.pending":"pendentes: {n}","link.kind.section":"Seção","link.kind.p":"Parágrafo","link.kind.li":"Item de lista","link.kind.td":"Célula de tabela","link.kind.quote":"Citação","link.kind.pre":"Bloco de código","link.kind.table":"Tabela","link.kind.figure":"Figura","link.kind.dd":"Definição","link.kind.dt":"Termo","link.broken":"Link quebrado","link.notFound":"Seção não encontrada","link.noMatch":"{frag} não corresponde a nenhum título deste documento","link.jumpHint":"Clique para ir · ↩ Voltar depois","link.email":"E-mail","link.external":"Link externo","link.copy":"Copiar link","link.opensMail":"Abre seu app de e-mail","link.opensTab":"Abre em uma nova aba","link.otherFile":"Outro arquivo","link.fileBlocked":"Links para outros arquivos não podem ser abertos aqui","link.copied":"Link copiado","link.copyFailed":"Não foi possível copiar o link","link.backAria":"Voltar para onde você estava (Alt+Left)","link.back":"Voltar","table.region":"Tabela {n}","table.optionsN":"Opções da tabela {n}","table.options":"Opções da tabela","table.colWidth":"Largura da coluna {n}","table.rowHeight":"Altura da linha {n}","table.reset":"Redefinir tamanhos","table.density":"Densidade","table.compact":"Compacta","table.default":"Padrão","table.comfortable":"Confortável","table.resetDone":"Tamanhos da tabela redefinidos","pane.resizeOutline":"Redimensionar sumário","pane.resizeRail":"Redimensionar painel de comentários","pane.resizeTitle":"Arraste para redimensionar · clique duplo para redefinir"}}</script>
 <script type="application/json" id="i18n-sample">{"md":"# Boas-vindas ao mdeverything ✨\n\n**Leia, comente e edite Markdown — e depois entregue para a sua IA.** O mdeverything é uma mesa de revisão tranquila e rápida para qualquer arquivo `.md`: aponte as palavras exatas que importam, diga o que você quer e exporte um pacote que o seu assistente consegue usar sem adivinhar.\n\n> 👋 **Esta página é um documento de verdade.** Passe o mouse sobre um trecho destacado para ver um comentário de exemplo, clique para abrir a conversa ou selecione qualquer frase abaixo e pressione **Enter** para adicionar o seu. Nada do que você faz aqui sai do seu navegador.\n\n## 1. Por que o mdeverything?\n\nA maioria das revisões com IA começa do mesmo jeito: você copia e cola alguns parágrafos num chatbot, digita \"dá para melhorar isto?\" e recebe de volta a reescrita da seção errada. O modelo nunca viu o documento inteiro e não sabe de qual frase você estava falando.\n\nO mdeverything resolve essa passagem de bastão:\n\n- **Preciso** — cada comentário fica preso a um trecho citado, à sua seção e ao texto ao redor, então frases repetidas nunca se confundem.\n- **Completo** — exporte o documento inteiro junto com todos os comentários e respostas, numa única cópia.\n- **Rápido** — sem cadastro, sem upload, sem plug-ins. Abra um arquivo e comece a revisar em segundos.\n- **Tranquilo** — uma leitura sem distrações, com sumário, três temas e tipografia pensada para especificações longas.\n\n## 2. Como funciona\n\n1. **Abra** um arquivo Markdown, solte-o na página ou cole o texto.\n2. **Comente** as palavras que importam — selecione um trecho ou use o botão da margem para comentar um parágrafo inteiro.\n3. **Ajuste** o código-fonte no editor embutido quando achar um erro de digitação; seus comentários se reancoram automaticamente.\n4. **Exporte para a IA** e cole o pacote no ChatGPT, Claude, Gemini ou no seu assistente de programação.\n\n```mermaid\nflowchart LR\n    A[Abrir .md] --> B[Ler]\n    B --> C[Comentar]\n    C --> D[Editar]\n    D --> E[Exportar]\n    E --> F[Sua IA]\n```\n\nQuer saber como fica a exportação? Passe o mouse ou clique em [O que a sua IA recebe](#31-o-que-a-sua-ia-recebe) para dar uma olhada.\n\n### 2.1 Pergunte, receba a resposta, aceite\n\nAtive **Deixar a IA responder no mdeverything** no menu Exportar e o seu assistente responde num formato que esta página entende. Cole a resposta com **Colar resposta da IA…**: cada resposta aparece sob o próprio comentário, e cada edição sugerida aparece como um diff que você pode aceitar ou rejeitar. Ao aceitar, o Markdown é reescrito para você, e o Desfazer está sempre a um clique.\n\n## 3. Recursos num relance\n\n| Recurso | O que você ganha | Como |\n| --- | --- | --- |\n| Comentários no texto | Comente direto nas palavras selecionadas, com conversas de respostas | Selecione o texto, pressione `Enter` |\n| Comentários na margem | Um clique para comentar um parágrafo, título ou célula de tabela inteiros | Passe o mouse sobre um bloco, use a margem esquerda |\n| Sumário | Um índice que acompanha a sua posição de leitura | `☰` na barra superior |\n| Editor de Markdown | Barra de formatação, atalhos e prévia ao vivo | `✎ Editar`, depois `Ctrl + Enter` para aplicar |\n| Temas de leitura | Papel, Sépia (papel creme com uma serifa de livro) e Noite | Seletor de tema na barra superior |\n| Salvamento automático | Seu documento e seus comentários continuam aqui quando você volta | Automático |\n| Respostas da IA no lugar | Cole a resposta da IA de volta: cada resposta aparece sob o seu comentário, com as edições como antigo → novo | **Colar resposta da IA** no menu Exportar |\n| Rodadas de acompanhamento | Exporte de novo e só os comentários novos e de acompanhamento são respondidos | Automático |\n\n### 3.1 O que a sua IA recebe\n\nToda exportação começa com instruções claras, depois o documento e então um bloco por comentário:\n\n```text\n[1] Local: seção “Preços” · linha ~42\nTrecho citado:\n\"\"\"\nGrátis para equipes de até 5 pessoas\n\"\"\"\nContexto: …Nossos planos começam simples: 〈Grátis para equipes de até 5 pessoas〉, depois US$ 8 por usuário…\nNota / pergunta:\n\"\"\"\n5 ainda é o limite certo? Confira com a seção de perguntas frequentes.\n\"\"\"\nRespostas (1):\n- Confirme também o preço por usuário na tabela abaixo.\n```\n\nO assistente sabe exatamente **onde** olhar e **o que** você quer — então responde à pergunta que você fez, no lugar em que você fez.\n\n## 4. Feito para documentos reais\n\n- 📐 **Especificações de produto** — PRDs, BRDs e requisitos de usuário com tabelas largas e diagramas de fluxo.\n- 💻 **Documentação técnica** — READMEs, guias de API e runbooks com blocos de código que você copia num clique.\n- 🧪 **Pesquisa e análise** — notas longas em que cada afirmação merece uma segunda olhada.\n- ✍️ **Rascunhos** — posts de blog, propostas e notas de versão antes de serem publicados.\n\nFunciona em qualquer idioma — English, Português, 日本語 — porque os comentários se prendem às palavras exatas, não a números de linha.\n\nJá resolvido para você:\n\n- [x] Tabelas largas rolam para o lado em vez de quebrar palavras\n- [x] Diagramas Mermaid são renderizados direto na página\n- [x] Blocos de código ganham um rótulo de linguagem e um botão de copiar\n- [ ] Agora é a vez do seu documento\n\n## 5. Privado por padrão\n\n> **Sem conta. Sem upload. Sem rastreamento.** O mdeverything roda inteiramente no seu navegador, e seu trabalho fica salvo localmente neste dispositivo. Feche a aba, volte amanhã e continue de onde parou.\n\n## 6. Experimente agora\n\n1. Selecione qualquer frase desta página e pressione **Enter** para deixar um comentário.\n2. Clique num destaque e escreva uma **Resposta** para iniciar uma conversa.\n3. Pressione **Exportar para IA** na barra superior e cole o resultado no seu assistente favorito.\n\nPronto para o seu próprio arquivo? Use **Importar** na barra superior ou solte um arquivo `.md` em qualquer lugar desta página. 🚀","notes":[{"quote":"copia e cola alguns parágrafos num chatbot","note":"Exemplo — faça uma pergunta. Essa dor é o melhor gancho para a introdução, ou “a IA edita a seção errada” deveria vir primeiro? Sugira duas frases de abertura alternativas.","replies":["Estou mais para o ângulo da seção errada — é mais concreto."]},{"quote":"frases repetidas nunca se confundem","note":"Exemplo — confira uma afirmação. Adicione um exemplo de uma linha mostrando como o contexto ao redor diferencia duas frases idênticas."},{"quote":"seus comentários se reancoram automaticamente","note":"Exemplo — peça uma edição. “Reancorar” pode soar como jargão para quem lê pela primeira vez; reescreva este passo em palavras simples."},{"quote":"Um clique para comentar um parágrafo, título ou célula de tabela inteiros","note":"Exemplo — comente uma célula de tabela. Encurte esta descrição para menos de 8 palavras sem perder o sentido.","replies":["Talvez: “Comente um bloco inteiro num clique.”"]},{"quote":"Agora é a vez do seu documento","note":"Exemplo — transforme uma tarefa num convite à ação. Sugira uma frase curta e simpática que leve as pessoas ao botão Importar."},{"quote":"seu trabalho fica salvo localmente neste dispositivo","note":"Exemplo — checagem de fatos. Confirme se isso bate com o funcionamento do salvamento automático (armazenamento do navegador, por dispositivo) e diga o que acontece numa janela anônima.","replies":["Vale mencionar que limpar os dados do site também apaga tudo.","Concordo — mas numa frase curta só."]},{"quote":"cada edição sugerida aparece como um diff que você pode aceitar ou rejeitar","note":"Exemplo — uma resposta da IA com uma edição sugerida. Deixe este trecho mais amigável para quem não conhece a palavra “diff”.","replies":[{"by":"ai","round":1,"text":"Aqui vai uma versão mais simples, sem jargão. Aceite para reescrever a frase ou Rejeite para manter a sua.","edits":[{"kind":"quote","text":"cada edição sugerida mostra o texto antigo e o novo para você aceitar ou rejeitar com um clique"}]}]},{"kind":"diagram","diagram":0,"quote":"Sua IA","label":"Sua IA","shape":"node","mermaidLine":"E --> F[Sua IA]","note":"Exemplo — comente um diagrama. Passe o mouse sobre qualquer caixa ou rótulo de seta para comentar; a exportação inclui esta linha do Mermaid. Renomeie esta etapa para deixar claro que qualquer assistente serve."}]}</script>
 <script>
 "use strict";
@@ -4120,13 +4329,24 @@ function sourceLine(quote){
   if(idx<0) return null;
   return SRC.slice(0,idx).split("\n").length;
 }
-function buildBundle(incDoc){
+// the reviewer's own requests, at the top of the instructions: extra instructions first, then the
+// "mark the edits" sentence (in the UI language, so it reads right in the preview). "" when none.
+function expRequests(o){
+  const parts=[], ex=String((o && o.extra) || "").trim();
+  if(ex) parts.push(ex);
+  if(o && o.mark) parts.push(t("exp2.markPrompt"));
+  return parts.length ? "===== REVIEWER'S INSTRUCTIONS =====\n\n"+parts.join("\n\n") : "";
+}
+// o = { answer, mark, extra } (defaults to the saved Export options)
+function buildBundle(incDoc, o){
+  o = o || expOpts();
   const clean=s=>(s||"").replace(/\s+/g," ").trim();
-  const fmt=aiExportFmtOn(), sids=fmt ? aiNoteIds() : null;   // AI answer format: stable {#id} per note
+  const fmt=!!o.answer, sids=fmt ? aiNoteIds() : null;   // "Answer each comment": stable {#id} per note
   const L=[];
   L.push(HEAD.en,"");
   // translated pages: the instructions stay English (parser keywords too); only the labels below are localized
   if(LANG!=="en") L.push("The reviewer's UI language is "+(I18N.nativeName||LANG)+".","");
+  const req=expRequests(o); if(req) L.push(req,"");
   if(incDoc){ L.push("===== DOCUMENT (markdown) =====","",SRC.trim(),""); }
   L.push(`===== NOTES (${ANN.length}) =====`,"");
   ANN.forEach((a,i)=>{
@@ -4135,8 +4355,7 @@ function buildBundle(incDoc){
     if(a.kind==="diagram") loc.push(dgLocation(a));   // diagram 2 (flowchart) · node “…”
     const ln=a.kind==="diagram" ? dgSourceLine(a) : sourceLine(a.quote); if(ln) loc.push(t("bundle.line",{n:ln}));
     if(a.resolved===false) loc.push(t("bundle.notFound"));
-    // with AI replies on: [NEW] / [FOLLOW-UP] / [ANSWERED] tells the AI which notes to answer this round
-    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${fmt?" ["+aiNoteStatus(a)+"]":""}${loc.length?" "+t("bundle.location")+" "+loc.join(" · "):""}`);
+    L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${loc.length?" "+t("bundle.location")+" "+loc.join(" · "):""}`);
     L.push(t("bundle.quoted"),`"""`,clean(a.quote),`"""`);
     if(a.kind==="diagram"){ if(a.mermaidLine) L.push(t("diag.bundleMermaid",{code:a.mermaidLine})); }   // the shape's Mermaid source line
     else L.push(`${t("bundle.context")} …${clean(a.prefix)} 〈${clean(a.quote)}〉 ${clean(a.suffix)}…`);
@@ -4151,7 +4370,7 @@ function buildBundle(incDoc){
     }
     L.push("");
   });
-  if(fmt) L.push(aiHowToAnswer(incDoc),"");
+  if(fmt) L.push(aiHowToAnswer(incDoc, !!o.mark),"");
   return L.join("\n").trim()+"\n";
 }
 
@@ -4303,24 +4522,41 @@ async function restore(){
 async function copyText(t){
   try{ await navigator.clipboard.writeText(t); return true; }
   catch(e){
+    const prev=document.activeElement;   // the hidden textarea takes focus; give it back afterwards
     try{ const ta=document.createElement("textarea"); ta.value=t;
       ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta);
-      ta.select(); document.execCommand("copy"); ta.remove(); return true; }
+      ta.select(); const ok=document.execCommand("copy"); ta.remove();
+      if(prev && prev!==document.body && prev.isConnected) try{ prev.focus({preventScroll:true}); }catch(_){}
+      return ok!==false; }
     catch(_){ return false; }
   }
 }
-function doExport(mode="full"){
+// what an export of `mode` (full · notes · raw) copies: { text } or { err } (a toast message)
+function expText(mode, o){
+  o = o || expOpts();
   if(mode==="raw"){
-    if(!SRC.trim()){ toast(t("export.noDoc")); return; }
-    copyText(SRC.trim()+"\n").then(ok=>toast(ok ? t("export.copiedRaw") : t("export.copyFailed")));
+    if(!SRC.trim()) return { err:t("export.noDoc") };
+    const req=expRequests(o);   // Document only + saved requests → the requests, then the document
+    return { text: req ? req+"\n\n===== DOCUMENT (markdown) =====\n\n"+SRC.trim()+"\n" : SRC.trim()+"\n" };
+  }
+  if(!ANN.length) return { err:t("export.needComment") };
+  return { text: buildBundle(mode!=="notes", o) };
+}
+function expFileName(mode){
+  return aiBaseName() + (mode==="full" ? t("export.fileFull") : mode==="notes" ? t("export.fileNotes") : "") + ".md";
+}
+// copy (or download) an export with the saved quick instructions + extra instructions,
+// then show the success card with the next steps
+function doExport(mode="full", how="copy"){
+  const o=expOpts(), r=expText(mode, o);
+  if(r.err){ toast(r.err); return; }
+  if(how==="download"){
+    const file=expFileName(mode);
+    aiDownload(file, r.text); expRemember(o);
+    expShowDone({ mode, o, text:r.text, file });
     return;
   }
-  if(!ANN.length){ toast(t("export.needComment")); return; }
-  const incDoc = mode !== "notes", n=ANN.length;
-  copyText(buildBundle(incDoc)).then(ok=>
-    toast(ok ? (incDoc ? t("export.copiedFull",{n})
-                       : t("export.copiedNotes",{n}))
-             : t("export.copyFailed")));
+  copyText(r.text).then(ok=>{ if(ok) expRemember(o); expShowDone({ mode, o, text:r.text, fail:!ok }); });
 }
 
 /* ============ overlays ============ */
@@ -4383,16 +4619,269 @@ $("#bRender").addEventListener("click",()=>{
 /* ============ export ============ */
 function syncCopyMenu(){ $("#bCopyOpts").setAttribute("aria-expanded", $("#menuCopy").hidden ? "false" : "true"); }
 $("#bCopy").addEventListener("click",()=>doExport("full"));
-$("#bCopyOpts").addEventListener("click",e=>{e.stopPropagation(); const mn=$("#menuCopy"); mn.hidden=!mn.hidden; syncCopyMenu(); if(!mn.hidden) aiSyncMenuNames();});
-$("#menuCopy").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b){ e.stopPropagation(); return; }   // headings keep it open
-  if(b.dataset.ai==="fmt"){ e.stopPropagation(); aiToggleExportFmt(); return; }   // toggle keeps the menu open
+$("#bCopyOpts").addEventListener("click",e=>{e.stopPropagation(); const mn=$("#menuCopy"); mn.hidden=!mn.hidden; syncCopyMenu();});
+$("#menuCopy").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b){ e.stopPropagation(); return; }   // separators keep it open
   const mn=$("#menuCopy"), hadFocus=mn.contains(document.activeElement);
-  if(b.dataset.ai==="paste"){ aiMenuAction("paste"); return; }   // the dialog closes the menu and remembers ▾ for focus
+  if(hadFocus) $("#bCopyOpts").focus();          // focus leaves the menu before it hides (dialogs return it here)
   mn.hidden=true; syncCopyMenu();
-  if(hadFocus) $("#bCopyOpts").focus();
-  if(b.dataset.ai){ aiMenuAction(b.dataset.ai); return; }
+  if(b.dataset.ai==="paste"){ expOpenPaste(); return; }
+  if(b.dataset.ai==="opts"){ expOpenDialog($("#bCopyOpts")); return; }
   doExport(b.dataset.mode || "full"); });
 document.addEventListener("click",e=>{ if(!e.target.closest(".pop")){ $("#menuCopy").hidden=true; syncCopyMenu(); } });
+
+/* ==[EXP2]== Export options (saved), Export options dialog, success card + "Paste AI result" chip */
+var EXP_KEY="mdeverything:export:v2";
+var EXP=(function expLoad(){
+  let d={};
+  try{ d=JSON.parse(localStorage.getItem(EXP_KEY)||"{}")||{}; }catch(e){}
+  return {
+    mode: ["full","notes","raw"].includes(d.mode) ? d.mode : "full",   // the dialog's choice (the main button is always full)
+    mark: d.mark===true, answer: d.answer===true,                       // quick instructions, both off by default
+    extra: typeof d.extra==="string" ? d.extra : "",
+    recent: Array.isArray(d.recent) ? d.recent.filter(x=>typeof x==="string" && x.trim()).slice(0,3) : [],
+    quiet: d.quiet===true                                                // "Don't show these steps again"
+  };
+})();
+function expSave(){ try{ localStorage.setItem(EXP_KEY, JSON.stringify(EXP)); }catch(e){} }
+function expOpts(){ return { mark:EXP.mark, answer:EXP.answer, extra:EXP.extra }; }
+function expRemember(o){
+  const x=String(o.extra||"").trim(); if(!x) return;
+  EXP.recent=[x, ...EXP.recent.filter(r=>r.trim()!==x)].slice(0,3); expSave();
+}
+function expOpenPaste(){
+  if(typeof window.openPasteAiResult==="function") window.openPasteAiResult();
+  else aiOpenPaste("");
+}
+function expWords(s){
+  try{
+    if(typeof Intl!=="undefined" && Intl.Segmenter){
+      let n=0; for(const x of new Intl.Segmenter(LANG,{granularity:"word"}).segment(s)) if(x.isWordLike) n++;
+      return n;
+    }
+  }catch(e){}
+  return (String(s).match(/\S+/g)||[]).length;
+}
+function expList(items){
+  try{ return new Intl.ListFormat(LANG,{type:"conjunction"}).format(items); }catch(e){ return items.join(", "); }
+}
+
+/* ---------- Export options dialog ---------- */
+var expReturn=null, expPrevT=0;
+const EXP_CHIPS=[t("exp2.chipTone"), t("exp2.chipOnly"), t("exp2.chipHeadings"), t("exp2.chipShorter"),
+  t("exp2.chipExplain"), t("exp2.chipKeep"), t("exp2.chipLang")];
+function expLines(s){ return String(s||"").split("\n"); }
+function expHasLine(s, line){ return expLines(s).some(l=>l.trim()===line); }
+function expToggleLine(line){
+  let s=EXP.extra;
+  if(expHasLine(s, line)) s=expLines(s).filter(l=>l.trim()!==line).join("\n").replace(/^\n+|\n+$/g,"");
+  else s=(s.replace(/\s+$/,"") ? s.replace(/\s+$/,"")+"\n" : "")+line;
+  EXP.extra=s; expSave();
+  $("#expExtra").value=s; expSyncChips(); expQueuePreview();
+}
+function expSyncChips(){
+  $("#expChips").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", expHasLine(EXP.extra, b.dataset.line) ? "true" : "false"));
+}
+function expRenderRecent(){
+  const wrap=$("#expRecentWrap"), box=$("#expRecent");
+  box.textContent="";
+  EXP.recent.forEach(r=>{
+    const b=document.createElement("button"); b.type="button"; b.className="exp-recent-item";
+    b.textContent=r.replace(/\s+/g," "); b.title=r; b.setAttribute("aria-label", t("exp2.useRecent",{text:r}));
+    b.addEventListener("click",()=>{ EXP.extra=r; expSave(); $("#expExtra").value=r; expSyncChips(); expQueuePreview(); });
+    box.appendChild(b);
+  });
+  wrap.hidden=!EXP.recent.length;
+}
+function expRenderPreview(){
+  clearTimeout(expPrevT);
+  const r=expText(EXP.mode), pre=$("#expPrevText");
+  pre.classList.toggle("is-err", !!r.err);
+  pre.textContent = r.err || r.text;
+  $("#expPrevMeta").textContent = r.err ? "" : " · "+t("exp2.metaWords",{n:expWords(r.text)});
+  $("#expCopy").disabled = $("#expDl").disabled = !!r.err;
+}
+function expQueuePreview(){ clearTimeout(expPrevT); expPrevT=setTimeout(expRenderPreview, 120); }
+function expSyncDialog(){
+  const ov=$("#ovExport");
+  ov.querySelectorAll('input[name="expMode"]').forEach(r=>{ r.checked = r.value===EXP.mode; });
+  $("#expMark").checked=EXP.mark;
+  const ans=$("#expAnswer"), raw=EXP.mode==="raw";
+  ans.checked=EXP.answer && !raw; ans.disabled=raw;
+  ans.closest(".exp-check").classList.toggle("is-off", raw);
+  $("#expAnswerSub").textContent = raw ? t("exp2.optAnswerNa") : t("exp2.optAnswerSub");
+  $("#expExtra").value=EXP.extra;
+  expSyncChips(); expRenderRecent(); expRenderPreview();
+}
+function expOpenDialog(ret){
+  if(mdeIsOpen()){ toast(t("editor.finishFirstShort")); return; }
+  const ae=document.activeElement;
+  expReturn = ret || (ae && ae!==document.body ? ae : null);
+  closeOverlays();
+  expSyncDialog();
+  openOverlay($("#ovExport"));
+  setTimeout(()=>{ const c=$('#ovExport input[name="expMode"]:checked'); focusWithoutScrolling(c || $("#expCopy")); },0);
+}
+(function expWireDialog(){
+  const ov=$("#ovExport");
+  const chips=$("#expChips");
+  EXP_CHIPS.forEach(line=>{
+    const b=document.createElement("button"); b.type="button"; b.className="exp-chip-sug";
+    b.dataset.line=line; b.setAttribute("aria-pressed","false");
+    b.innerHTML='<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="p" d="M12 6v12M6 12h12"/><path class="k" d="M6 12.5l4 4 8-9"/></svg>';
+    b.appendChild(document.createTextNode(line));
+    b.addEventListener("click",()=>expToggleLine(line));
+    chips.appendChild(b);
+  });
+  ov.querySelectorAll('input[name="expMode"]').forEach(r=>r.addEventListener("change",()=>{ if(r.checked){ EXP.mode=r.value; expSave(); expSyncDialog(); } }));
+  $("#expMark").addEventListener("change",e=>{ EXP.mark=e.target.checked; expSave(); expRenderPreview(); });
+  $("#expAnswer").addEventListener("change",e=>{ EXP.answer=e.target.checked; expSave(); expRenderPreview(); });
+  $("#expExtra").addEventListener("input",e=>{ EXP.extra=e.target.value; expSave(); expSyncChips(); expQueuePreview(); });
+  $("#expPrevBox").addEventListener("toggle",()=>{ if($("#expPrevBox").open) expRenderPreview(); });
+  const run=how=>{ expRenderPreview(); if($("#expCopy").disabled) return; closeOverlays(); doExport(EXP.mode, how); };
+  $("#expCopy").addEventListener("click",()=>run("copy"));
+  $("#expDl").addEventListener("click",()=>run("download"));
+  $("#expExtra").addEventListener("keydown",e=>{ if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ e.preventDefault(); run("copy"); } });
+  // Tab stays inside; closing (×, Esc, outside click, Copy) returns focus to the opener
+  ov.addEventListener("keydown",e=>{
+    if(e.key!=="Tab") return;
+    const f=[...ov.querySelectorAll('button:not([disabled]), textarea, input:not([disabled]), summary, [href], [tabindex]:not([tabindex="-1"])')]
+      .filter(x=>x.getClientRects().length && !(x.type==="radio" && !x.checked));
+    if(!f.length) return;
+    const i=f.indexOf(document.activeElement);
+    if(e.shiftKey && i<=0){ e.preventDefault(); f[f.length-1].focus(); }
+    else if(!e.shiftKey && (i===f.length-1 || i<0)){ e.preventDefault(); f[0].focus(); }
+  });
+  new MutationObserver(()=>{
+    if(ov.classList.contains("open")) return;
+    clearTimeout(expPrevT);
+    const r=expReturn; expReturn=null;
+    const ae=document.activeElement;
+    if(ae && ae!==document.body && !ov.contains(ae)) return;   // something else already took focus
+    if(r && r.isConnected && r.getClientRects().length) focusWithoutScrolling(r);
+  }).observe(ov,{attributes:true, attributeFilter:["class"]});
+})();
+
+/* ---------- success card + chip ---------- */
+const EXP_AIS=[["ChatGPT","https://chatgpt.com"],["Claude","https://claude.ai"],["Gemini","https://gemini.google.com"],
+  ["Copilot","https://copilot.microsoft.com"],["Grok","https://grok.com"],["DeepSeek","https://chat.deepseek.com"],
+  ["Perplexity","https://www.perplexity.ai"]];
+const EXP_AIS_MORE=[["Mistral Le Chat","https://chat.mistral.ai"],["Qwen","https://chat.qwen.ai"],["Kimi","https://www.kimi.com"]];
+var expT=0, expLast=null, expHold=false;
+function expAiLink([name,href]){
+  const a=document.createElement("a");
+  a.className="exp-ai-chip"; a.href=href; a.target="_blank"; a.rel="noopener noreferrer";
+  a.setAttribute("aria-label", t("exp2.newTab",{name}));
+  a.textContent=name;
+  a.insertAdjacentHTML("beforeend",'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16L16 8M9 8h7v7"/></svg>');
+  return a;
+}
+function expRenderAis(){
+  const box=$("#expAiList"); box.textContent="";
+  EXP_AIS.forEach(x=>box.appendChild(expAiLink(x)));
+  const more=document.createElement("button"); more.type="button"; more.className="exp-ai-chip exp-ai-more";
+  more.textContent=t("exp2.more"); more.setAttribute("aria-expanded","false");
+  more.addEventListener("click",()=>{
+    const first=expAiLink(EXP_AIS_MORE[0]);
+    more.replaceWith(first, ...EXP_AIS_MORE.slice(1).map(expAiLink));
+    first.focus();
+  });
+  box.appendChild(more);
+}
+function expArm(ms){
+  clearTimeout(expT);
+  if(expHold) return;
+  expT=setTimeout(expCollapse, ms || 10000);
+}
+function expShowDone(r){
+  expLast=r;
+  const card=$("#expDone"), raw=r.mode==="raw", quiet=EXP.quiet && !r.fail;
+  $("#expChip").hidden=true;
+  $("#expDoneTitle").textContent = r.fail ? t("exp2.failTitle")
+    : r.file ? t("exp2.okDl",{file:r.file})
+    : t(raw ? "exp2.okDoc" : r.mode==="notes" ? "exp2.okNotes" : "exp2.okFull");
+  let meta="";
+  if(r.fail) meta=t("exp2.failSub");
+  else{
+    const parts=[], inc=[];
+    if(!raw) parts.push(t("exp2.metaComments",{n:ANN.length}));
+    parts.push(t("exp2.metaWords",{n:expWords(r.text)}));
+    if(r.o.mark) inc.push(t("exp2.incMark"));
+    if(r.o.answer && !raw) inc.push(t("exp2.incAnswer"));
+    if(String(r.o.extra||"").trim()) inc.push(t("exp2.incExtra"));
+    if(inc.length) parts.push(t("exp2.metaWith",{list:expList(inc)}));
+    meta=parts.join(" · ");
+  }
+  $("#expDoneMeta").textContent=meta;
+  card.classList.toggle("fail", !!r.fail);
+  card.classList.toggle("quiet", quiet);
+  card.classList.toggle("no-cta", raw && !r.fail);
+  $("#expStep1").textContent = t(r.file ? "exp2.step1Dl" : "exp2.step1");
+  $('#expSteps [data-step="3"]').hidden = raw;
+  if(!quiet && !r.fail) expRenderAis();
+  $("#expCtaT").textContent = r.fail ? t("exp2.ctaDl") : t("exp2.cta");
+  $("#expCta").hidden = raw && !r.fail;
+  const notes=[];
+  if(!r.fail && !raw){
+    if(r.o.mark) notes.push(t("exp2.noteMark"));
+    if(r.o.answer) notes.push(t("exp2.noteAnswer"));
+  }
+  $("#expDoneNote").textContent=notes.join(" · "); $("#expDoneNote").hidden=!notes.length;
+  card.classList.remove("anim"); void card.offsetWidth; card.classList.add("anim");
+  card.hidden=false;
+  expHold=card.matches(":hover");
+  expArm(quiet && raw ? 5000 : 10000);
+}
+// the card folds into the corner chip (kept until the AI result is pasted back or ×)
+function expCollapse(){
+  clearTimeout(expT);
+  const card=$("#expDone"); if(card.hidden) return;
+  const hadFocus=card.contains(document.activeElement);
+  card.hidden=true; expHold=false;
+  const chip = expLast && !expLast.fail && expLast.mode!=="raw";
+  $("#expChip").hidden=!chip;
+  if(hadFocus){
+    if(chip) $("#expChipGo").focus();
+    else { const b=$("#bCopy"); if(b && b.getClientRects().length) focusWithoutScrolling(b); }
+  }
+}
+function expDismissAll(){ clearTimeout(expT); $("#expDone").hidden=true; $("#expChip").hidden=true; expHold=false; }
+(function expWireDone(){
+  const card=$("#expDone");
+  $("#expDoneX").addEventListener("click",expCollapse);
+  $("#expCta").addEventListener("click",()=>{
+    const r=expLast; if(!r) return;
+    if(r.fail){   // copy was blocked → download the same text instead
+      const file=expFileName(r.mode);
+      aiDownload(file, r.text); expRemember(r.o);
+      expShowDone({ mode:r.mode, o:r.o, text:r.text, file });
+      $("#expCta").focus();
+      return;
+    }
+    expCollapse(); $("#expChipGo").focus(); expOpenPaste();
+  });
+  $("#expHide").addEventListener("click",()=>{
+    EXP.quiet=true; expSave();
+    card.classList.add("quiet");
+    ($("#expCta").hidden ? $("#expDoneX") : $("#expCta")).focus();
+  });
+  $("#expChipGo").addEventListener("click",expOpenPaste);
+  $("#expChipX").addEventListener("click",()=>{
+    $("#expChip").hidden=true;
+    const b=$("#bCopy"); if(b && b.getClientRects().length) focusWithoutScrolling(b);
+  });
+  // hovering or focusing the card pauses the countdown (WCAG 2.2.1)
+  const hold=v=>{ expHold=v; if(v) clearTimeout(expT); else if(!card.hidden) expArm(6000); };
+  card.addEventListener("mouseenter",()=>hold(true));
+  card.addEventListener("mouseleave",()=>{ if(!card.contains(document.activeElement)) hold(false); });
+  card.addEventListener("focusin",()=>hold(true));
+  card.addEventListener("focusout",e=>{ if(!card.contains(e.relatedTarget) && !card.matches(":hover")) hold(false); });
+  card.addEventListener("keydown",e=>{ if(e.key==="Escape"){ e.stopPropagation(); expCollapse(); } });
+  // dispatched after an AI result was pasted back
+  const pasted=()=>expDismissAll();
+  window.addEventListener("mde:ai-pasted",pasted);
+  document.addEventListener("mde:ai-pasted",pasted);
+})();
+/* ==[/EXP2]== */
 
 /* ============ drag & drop .md ============ */
 let dragDepth=0; const dz=$("#dropzone");
@@ -6825,22 +7314,21 @@ $("#bHeroDemo").addEventListener("click", () => {
 
 /* ==[AI]== A — AI answers, suggestions, export options */
 /* Round trip with an AI assistant:
-   1. With "Let AI reply back into mdeverything" on, exports tag every note [NEW] / [FOLLOW-UP] / [ANSWERED]
+   1. With "Answer each comment" ticked (Export options), exports give every note a stable {#id}
       and ask the AI to answer in one ```mdeverything block: "## [n] {#id}" per note plus optional edit
       parts (### Suggested edit · ### Replace + ### With · ### Replace all + ### With ·
       ### Section: <heading> + ### With · ### Whole document).
-   2. "Paste AI answer…" parses that reply and adds replies {by:"ai", round, nh, edits:[…]}
-      (nh = hash of the note text it answered, so an edited note becomes [FOLLOW-UP]).
+   2. "Paste AI result…" parses that reply and adds replies {by:"ai", round, nh, edits:[…]}
+      (nh = hash of the note text it answered).
    3. Each edit shows as a Markdown word diff with Accept / Reject / Copy (Review… for multi-block
       edits, sections and whole-document rewrites) and, optionally, inline in the document.
       Accept rewrites SRC; Undo restores SRC + notes. Accepted ranges are remembered (e.rs) so a
       later edit that overlaps a change the AI didn't know about is blocked.
    Everything inserted into #doc is .no-anchor and never splits text nodes, so anchoring is unaffected.
    `var` for state read from earlier sections (renderCards → w5ApplyFilter → aiHasAnswer). */
-var AI_FMT_KEY="marginalia:exportfmt:v1", AI_SUGG_KEY="marginalia:aisugg:v1";
+var AI_SUGG_KEY="marginalia:aisugg:v1";
 function aiLSGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function aiLSSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-var aiFmt = aiLSGet(AI_FMT_KEY)!=="0";   // on by default: answers can be pasted back under each comment
 var aiShowSugg = aiLSGet(AI_SUGG_KEY)!=="0";     // inline suggestions are on unless the user hid them
 var aiInlineSig = null;
 var aiOldOpen = new Set();                         // earlier AI answers the user expanded (reply ids)
@@ -6920,36 +7408,20 @@ function aiPlainText(md){
   d.innerHTML=mdToHtml(String(md||""));
   return anchorText(d).replace(/^\s+|\s+$/g,"");
 }
-// round state of a note for the export: NEW (no AI answer yet), FOLLOW-UP (the user replied or
-// edited the note after the latest AI answer), ANSWERED (nothing new since)
-function aiNoteStatus(a){
-  const reps=a.replies||[], last=aiLatest(a);
-  if(!last) return "NEW";
-  const user=reps.filter(r=>r.by!=="ai").reduce((m,r)=>Math.max(m, Number(r.ts)||0, Number(r.editedAt)||0), 0);
-  if(user>last.ts) return "FOLLOW-UP";
-  if(last.nh && last.nh!==aiHash36(String(a.note||""))) return "FOLLOW-UP";
-  return "ANSWERED";
-}
-
 /* ---------- export options ---------- */
-function aiExportFmtOn(){ return aiFmt; }
-function aiSyncFmtItem(){
-  const b=document.querySelector('#menuCopy [data-ai="fmt"]');
-  if(b) b.setAttribute("aria-checked", aiFmt ? "true" : "false");
-}
-function aiToggleExportFmt(){
-  aiFmt=!aiFmt; aiLSSet(AI_FMT_KEY, aiFmt ? "1" : "0"); aiSyncFmtItem();
-  toast(aiFmt ? t("ai.fmtOn") : t("ai.fmtOff"));
-}
-function aiHowToAnswer(incDoc){
+// "Answer each comment" (Export options dialog, saved in EXP — see ==[EXP2]==)
+function aiExportFmtOn(){ return !!EXP.answer; }
+// withDoc: "Mark the edits" is ticked too, so the revised document follows the answer block
+function aiHowToAnswer(incDoc, withDoc){
   const sids=aiNoteIds(), first=ANN[0];
   const ex = first ? `[1] {#${sids.get(first.id)}}` : "[1] {#n3f9a}";
   return [
     "===== HOW TO ANSWER =====",
     "",
-    "Reply with ONE fenced code block whose language is `mdeverything`. Open it with ````mdeverything (four backticks) so ``` blocks inside stay intact. Write nothing outside it.",
+    "Reply with ONE fenced code block whose language is `mdeverything`. Open it with ````mdeverything (four backticks) so ``` blocks inside stay intact. " +
+      (withDoc ? "After that block, return the revised document as the reviewer's instructions ask." : "Write nothing outside it."),
     "",
-    "Answer only the notes tagged [NEW] or [FOLLOW-UP]. Notes tagged [ANSWERED] are context only — skip them.",
+    "Answer every note. Replies under a note (including earlier AI answers) are context for it.",
     "",
     "For each note you answer:",
     "",
@@ -7005,28 +7477,7 @@ function aiDownload(name, text){
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url), 5000);
 }
-const AI_DL_NAMES={ "dl-full":t("export.fileFull")+".md", "dl-notes":t("export.fileNotes")+".md", "dl-doc":".md" };   // suffixes are localized (export.fileFull / fileNotes)
-function aiSyncMenuNames(){
-  const base=aiBaseName();
-  document.querySelectorAll("#menuCopy [data-ai^='dl-']").forEach(b=>{
-    const s=b.querySelector(".sub"), suf=AI_DL_NAMES[b.dataset.ai];
-    if(s && suf) s.textContent="→ "+base+suf;
-  });
-}
-function aiMenuAction(act){
-  if(act==="dl-bundle") act="dl-full";            // older names
-  if(act==="dl-md") act="dl-doc";
-  if(act==="dl-full" || act==="dl-notes"){
-    if(!ANN.length){ toast(t("export.needComment")); return; }
-    const name=aiBaseName()+AI_DL_NAMES[act];
-    aiDownload(name, buildBundle(act==="dl-full")); toast(t("lib.downloaded",{file:name}));
-  } else if(act==="dl-doc"){
-    if(!SRC.trim()){ toast(t("ai.noDocDownload")); return; }
-    const name=aiBaseName()+".md";
-    aiDownload(name, SRC.replace(/\s+$/,"")+"\n"); toast(t("lib.downloaded",{file:name}));
-  } else if(act==="paste") aiOpenPaste("");
-}
-// Export menu keyboard: ↑ / ↓ (headings are skipped), Home / End, Esc returns to the ▾ button
+// Export menu keyboard: ↑ / ↓ (separators are skipped), Home / End, Esc returns to the ▾ button
 function aiMenuItems(){ return [...$("#menuCopy").querySelectorAll('[role^="menuitem"]')]; }
 (function aiWireCopyMenu(){
   const mn=$("#menuCopy"), btn=$("#bCopyOpts");
@@ -7035,7 +7486,7 @@ function aiMenuItems(){ return [...$("#menuCopy").querySelectorAll('[role^="menu
   btn.addEventListener("keydown",e=>{
     if(e.key!=="ArrowDown" && e.key!=="ArrowUp") return;
     e.preventDefault();
-    if(mn.hidden){ mn.hidden=false; syncCopyMenu(); aiSyncMenuNames(); }
+    if(mn.hidden){ mn.hidden=false; syncCopyMenu(); }
     focusAt(e.key==="ArrowUp" ? -1 : 0);
   });
   // opened from the keyboard (Enter / Space → click with detail 0): move focus into the menu
@@ -8075,7 +8526,6 @@ function aiUpdateBar(pend){
 function aiOnRendered(){ aiInlineSig=null; aiSyncInline(true); }
 
 (function aiInit(){
-  aiSyncFmtItem();
   // comments panel: "Paste AI answer" + "Show suggestions" (sits in the W5 search / filter bar)
   if(w5Bar){
     const row=document.createElement("div"); row.className="ai-w5row";
