@@ -2092,27 +2092,172 @@ body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8
 .ai-review .panel-foot{ flex-wrap:wrap; }
 .ai-rev-sp{ flex:1; }
 
-/* paste-back dialog */
-.ai-paste{ width:min(720px,100%); font-family:var(--font-ui); }
-.ai-paste textarea.ai-paste-ta{ min-height:200px; max-height:42vh; }
+/* paste-back dialog: answer match cards (inside the shared paste dialog, see ==[PASTE2 CSS]==) */
 .ai-paste code{ font-family:var(--font-mono); font-size:12px; }
-.ai-prev{ margin-top:12px; }
-.ai-prev-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
-.ai-prev-list li{ display:flex; gap:9px; align-items:flex-start; padding:7px 10px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
-.ai-prev-ico{ flex:none; width:18px; text-align:center; font-weight:700; line-height:20px; }
-.ai-prev-list li.ok .ai-prev-ico{ color:var(--success); }
-.ai-prev-list li.warn .ai-prev-ico{ color:var(--danger); }
+.ai-prev-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+.ai-prev-list li{ display:flex; gap:11px; align-items:flex-start; padding:11px 13px; border:1px solid var(--line); border-radius:10px;
+  background:var(--surface); box-shadow:var(--shadow-sm); }
+.ai-prev-ico{ flex:none; width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+  font-size:12.5px; font-weight:700; line-height:1; background:var(--surface-2); }
+.ai-prev-list li.ok{ border-color:color-mix(in srgb,var(--success) 35%,var(--line)); }
+.ai-prev-list li.ok .ai-prev-ico{ color:var(--success); background:color-mix(in srgb,var(--success) 13%,transparent); }
+.ai-prev-list li.warn{ border-style:dashed; }
+.ai-prev-list li.warn .ai-prev-ico{ color:var(--danger); background:color-mix(in srgb,var(--danger) 11%,transparent); }
 .ai-prev-list li.dup .ai-prev-ico{ color:var(--ink-faint); }
 .ai-prev-list li.dup .ai-prev-t,.ai-prev-list li.warn .ai-prev-t{ color:var(--ink-soft); }
 .ai-prev-main{ min-width:0; flex:1; }
-.ai-prev-t{ font-size:13px; font-weight:600; color:var(--ink); overflow-wrap:anywhere; }
-.ai-prev-s{ font-size:12px; color:var(--ink-soft); margin-top:1px; }
-.ai-prev-gen{ margin-top:8px; padding:8px 10px; border:1px dashed var(--line-strong); border-radius:8px; }
+.ai-prev-t{ font-size:13.5px; font-weight:600; color:var(--ink); overflow-wrap:anywhere; line-height:1.4; }
+.ai-prev-s{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+.ai-prev-gen{ margin-top:10px; padding:10px 12px; border:1px dashed var(--line-strong); border-radius:10px; background:var(--surface); }
 .ai-prev-gen-h{ display:flex; align-items:center; gap:8px; font-size:13px; }
 .ai-prev-gen-h span{ font-size:12px; color:var(--ink-faint); margin-right:auto; }
 .ai-prev-gen-h .mini{ border:1px solid var(--line-strong); padding:3px 10px; font-size:12px; }
-.ai-prev-gen-b{ margin-top:5px; font-size:12.5px; line-height:1.5; color:var(--ink-soft); white-space:pre-wrap; max-height:120px; overflow:auto; overflow-wrap:anywhere; }
+.ai-prev-gen-b{ margin-top:5px; font-size:12.5px; line-height:1.5; color:var(--ink-soft); white-space:pre-wrap; max-height:160px; overflow:auto; overflow-wrap:anywhere; }
 .ai-prev-empty{ margin:0; font-size:13px; color:var(--ink-soft); }
+
+/* ==[PASTE2 CSS]== shared paste dialog (Paste Markdown + Paste AI result) and AI edit marks */
+/* AI edit marks written by the assistant (the app never computes them): ~~old~~ → <del>, <ins>/<mark> → new.
+   Styling only — no text is added, so comment anchoring is untouched. Cloned onto the paste previews at runtime. */
+#doc del:not(.ai-del),#doc s{ color:var(--del, var(--danger)); text-decoration:line-through; text-decoration-thickness:1.5px;
+  text-decoration-color:color-mix(in srgb,var(--danger) 70%,transparent); background:color-mix(in srgb,var(--danger) 7%,transparent);
+  border-radius:3px; padding:0 1px; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+#doc ins:not(.ai-sugg-new):not(.ai-sugg-diff):not(.ai-ins),#doc mark:not(.hl){ color:var(--ins, #7c3aed); background:var(--ins-bg, rgba(124,58,237,.1));
+  text-decoration:none; border-radius:3px; padding:0 2px; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+
+.overlay.p2-ov{ align-items:center; padding:24px; opacity:0; transition:opacity .18s ease, display .18s allow-discrete, overlay .18s allow-discrete; }
+.overlay.p2-ov.open{ opacity:1; }
+@starting-style{ .overlay.p2-ov.open{ opacity:0; } }
+.p2-ov .p2{ transform:translateY(10px) scale(.985); transition:transform .22s cubic-bezier(.2,.8,.2,1); }
+.p2-ov.open .p2{ transform:none; }
+@starting-style{ .p2-ov.open .p2{ transform:translateY(10px) scale(.985); } }
+.p2{ width:min(1180px,100%); height:min(800px,calc(100vh - 48px)); display:flex; flex-direction:column; font-family:var(--font-ui);
+  border-radius:16px; }
+@supports (height:100dvh){ .p2{ height:min(800px,calc(100dvh - 48px)); } }
+.p2-head{ display:flex; align-items:center; gap:14px; padding:18px 20px 16px 22px; }
+.p2-icon{ flex:none; width:46px; height:46px; border-radius:13px; display:inline-flex; align-items:center; justify-content:center;
+  background:var(--accent-soft); color:var(--accent-soft-fg); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent); }
+.p2-icon.is-ai{ background:var(--ins-bg); color:var(--ins); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ins) 22%,transparent); }
+.p2-icon svg{ width:25px; height:25px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.p2-titles{ min-width:0; flex:1; }
+.p2-titles h3{ margin:0; font-size:18px; font-weight:650; line-height:1.25; color:var(--ink); letter-spacing:-.01em; }
+.p2-sub{ margin:3px 0 0; font-size:13px; line-height:1.4; color:var(--ink-soft); }
+.p2-head .x{ align-self:flex-start; }
+.p2-tabs{ display:none; gap:4px; margin:0 14px 10px; padding:3px; border-radius:10px; background:var(--surface-2); }
+.p2-tabs button{ flex:1; border:none; background:none; font:600 13px/1 var(--font-ui); color:var(--ink-soft); padding:9px 8px; border-radius:8px; cursor:pointer; }
+.p2-tabs button[aria-selected="true"]{ background:var(--surface); color:var(--ink); box-shadow:var(--shadow-sm); }
+.p2-tabs button:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.p2-tabs button.has-dot::after{ content:""; display:inline-block; width:6px; height:6px; margin-left:6px; border-radius:50%; background:var(--accent); vertical-align:2px; }
+.p2-body{ flex:1; min-height:0; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line); background:var(--app-bg); }
+.p2-col{ min-width:0; min-height:0; display:flex; flex-direction:column; }
+.p2-col + .p2-col{ border-left:1px solid var(--line); }
+.p2-colh{ display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:38px; padding:8px 16px 6px;
+  font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); }
+.p2-link{ border:none; background:none; padding:3px 6px; border-radius:6px; font:600 12px/1.2 var(--font-ui); letter-spacing:0; text-transform:none;
+  color:var(--accent); cursor:pointer; }
+.p2-link:hover{ background:var(--accent-soft); }
+.p2-link:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.p2:not(.is-filled) .p2-colh .p2-link{ visibility:hidden; }
+.p2-editor{ position:relative; flex:1; min-height:0; display:flex; margin:0 12px 12px; border:1px solid var(--line-strong); border-radius:11px;
+  background:var(--surface-2); overflow:hidden; transition:border-color .15s, box-shadow .15s; }
+.p2-editor:focus-within{ border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+.p2-gutter{ flex:none; width:46px; overflow:hidden; padding:14px 0; border-right:1px solid var(--line);
+  background:color-mix(in srgb,var(--surface-2) 70%,var(--line)); user-select:none; }
+.p2-gutter-in{ padding-right:10px; text-align:right; font:11.5px/21px var(--font-mono); color:var(--ink-faint); white-space:pre; will-change:transform; }
+.p2-ta{ flex:1; min-width:0; height:100%; margin:0; border:none; outline:none; resize:none; background:transparent; color:var(--ink);
+  padding:14px 16px; font:13px/21px var(--font-mono); white-space:pre; overflow-wrap:normal; overflow:auto; tab-size:4; }
+.p2-empty{ position:absolute; inset:0 0 0 46px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  padding:24px; text-align:center; pointer-events:none; }
+.p2.is-filled .p2-empty{ display:none; }
+.p2-empty-ico{ width:46px; height:46px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+  background:var(--surface); color:var(--ink-faint); box-shadow:var(--shadow-sm), inset 0 0 0 1px var(--line); }
+.p2-empty-ico svg{ width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.p2-empty-t{ margin:0; font-size:14px; font-weight:600; color:var(--ink-soft); }
+.p2-empty-acts{ display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; pointer-events:auto; }
+.p2-clip{ display:inline-flex; align-items:center; gap:7px; }
+.p2-clip svg{ width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.p2-empty-tip{ margin:2px 0 0; max-width:34ch; font-size:12px; line-height:1.45; color:var(--ink-faint); }
+.p2-empty-msg{ margin:0; min-height:1em; font-size:12.5px; color:var(--danger); }
+.p2-empty-msg:empty{ display:none; }
+.p2-dropcue{ position:absolute; inset:6px; display:none; align-items:center; justify-content:center; border:2px dashed var(--accent); border-radius:9px;
+  background:color-mix(in srgb,var(--accent-soft) 88%,transparent); color:var(--accent-soft-fg); font-size:14px; font-weight:600; pointer-events:none; }
+.p2-editor.is-drag .p2-dropcue{ display:flex; }
+.p2-prev{ position:relative; flex:1; min-height:0; overflow:auto; margin:0 12px 12px; padding:24px 28px 30px; border:1px solid var(--line);
+  border-radius:11px; background:var(--paper); box-shadow:var(--shadow-sm); overscroll-behavior:contain; }
+.p2-prev-empty{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; margin:0; padding:20px; text-align:center;
+  font-size:13px; color:var(--ink-faint); }
+.p2.is-filled .p2-prev-empty{ display:none; }
+.p2-doc:empty{ display:none; }
+.p2-doc{ font-size:14.5px; }
+.p2-doc .p2-mmd{ margin:12px 0; border:1px dashed var(--line-strong); border-radius:8px; background:var(--surface-2); overflow:hidden; }
+.p2-mmd-h{ display:flex; align-items:center; gap:6px; padding:7px 12px; font:600 11.5px/1.2 var(--font-ui); color:var(--ink-soft);
+  border-bottom:1px solid var(--line); }
+.p2-mmd-h::before{ content:"◇"; color:var(--accent); }
+.p2-doc .p2-mmd pre{ margin:0; border-radius:0; max-height:220px; background:transparent; color:var(--ink-soft); font-size:12px; }
+.ai-paste #aiPrev:empty{ display:none; }
+.ai-paste[data-kind="both"] #aiPrev{ margin-bottom:18px; padding-bottom:18px; border-bottom:1px dashed var(--line-strong); }
+.ai-prev-warn{ display:flex; gap:12px; align-items:flex-start; padding:14px 16px; border-radius:10px;
+  background:color-mix(in srgb,var(--hl-line) 11%,var(--surface)); border:1px solid color-mix(in srgb,var(--hl-line) 35%,var(--line)); }
+.ai-prev-warn b{ display:block; font-size:13.5px; color:var(--ink); margin-bottom:3px; }
+.ai-prev-warn p{ margin:0; font-size:12.5px; line-height:1.5; color:var(--ink-soft); }
+.ai-prev-warn > span{ flex:none; font-size:17px; line-height:1.2; }
+.p2-foot{ display:flex; flex-direction:column; gap:10px; padding:12px 20px 16px 22px; }
+.p2-detect{ display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; min-height:24px; font-size:13px; color:var(--ink-soft); }
+.p2-det-ico{ flex:none; width:20px; height:20px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:800; background:var(--surface-2); color:var(--ink-faint); }
+.p2-detect.is-ok .p2-det-ico{ background:color-mix(in srgb,var(--success) 14%,transparent); color:var(--success); }
+.p2-detect.is-warn .p2-det-ico{ background:color-mix(in srgb,var(--hl-line) 18%,transparent); color:color-mix(in srgb,var(--hl-line) 70%,var(--ink)); }
+.p2-det-kind{ font-weight:650; color:var(--ink); }
+.p2-det-sep{ color:var(--ink-faint); }
+.p2-pill{ display:inline-flex; align-items:center; gap:5px; padding:2px 9px; border-radius:999px; font-size:12px; font-weight:600;
+  background:var(--accent-soft); color:var(--accent-soft-fg); }
+.p2-pill.is-ins{ background:var(--ins-bg); color:var(--ins); }
+.p2-pill.is-warn{ background:color-mix(in srgb,var(--danger) 10%,transparent); color:var(--danger); }
+.p2-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.p2-opts{ display:flex; flex-wrap:wrap; gap:6px; margin-right:auto; }
+.p2-opts label{ display:inline-flex; align-items:center; gap:7px; padding:6px 12px 6px 9px; border:1px solid var(--line-strong); border-radius:9px;
+  font-size:13px; color:var(--ink-soft); cursor:pointer; background:var(--surface); transition:border-color .12s, background .12s; }
+.p2-opts label:has(input:checked){ border-color:var(--accent); background:var(--accent-soft); color:var(--accent-soft-fg); font-weight:600; }
+.p2-opts label:has(input:disabled){ opacity:.5; cursor:not-allowed; }
+.p2-opts label:has(input:focus-visible){ outline:2px solid var(--accent); outline-offset:1px; }
+.p2-opts input{ margin:0; accent-color:var(--accent); }
+.p2-info{ margin:0 auto 0 0; min-width:0; font-size:13px; color:var(--ink-soft); }
+.p2-info b{ color:var(--ink); font-weight:650; }
+.p2-info:empty{ visibility:hidden; }
+.p2-kbd{ display:inline-flex; align-items:center; gap:3px; color:var(--ink-faint); font-size:11px; }
+.p2-kbd kbd{ display:inline-flex; align-items:center; min-width:20px; height:20px; padding:0 5px; justify-content:center; border-radius:5px;
+  border:1px solid var(--line-strong); border-bottom-width:2px; background:var(--surface); font:600 11px/1 var(--font-ui); color:var(--ink-soft); }
+.p2-row .btn.primary{ min-width:150px; }
+.p2-row .btn.primary:disabled{ opacity:.45; cursor:not-allowed; box-shadow:none; }
+@media (prefers-reduced-motion:reduce){
+  .overlay.p2-ov,.p2-ov .p2,.p2-editor{ transition:none; }
+}
+@media (max-width:760px){
+  .overlay.p2-ov{ padding:0; align-items:stretch; }
+  .p2-ov .p2{ transform:translateY(16px); }
+  @starting-style{ .p2-ov.open .p2{ transform:translateY(16px); } }
+  .p2{ width:100%; height:100vh; max-height:none; border-radius:0; border:none; }
+  @supports (height:100dvh){ .p2{ height:100dvh; } }
+  .p2-head{ padding:14px 12px 12px 14px; gap:11px; }
+  .p2-icon{ width:38px; height:38px; border-radius:11px; }
+  .p2-icon svg{ width:21px; height:21px; }
+  .p2-titles h3{ font-size:16.5px; }
+  .p2-sub{ font-size:12.5px; }
+  .p2-tabs{ display:flex; }
+  .p2-body{ grid-template-columns:minmax(0,1fr); }
+  .p2-col + .p2-col{ border-left:none; }
+  .p2[data-tab="paste"] .p2-out,.p2[data-tab="preview"] .p2-in{ display:none; }
+  .p2-editor,.p2-prev{ margin:0 10px 10px; }
+  .p2-prev{ padding:18px 16px 24px; }
+  .p2-foot{ padding:10px 12px calc(12px + env(safe-area-inset-bottom)); gap:8px; box-shadow:0 -6px 16px rgba(0,0,0,.05); }
+  .p2-row{ gap:8px; }
+  .p2-opts{ width:100%; margin-right:0; }
+  .p2-opts label{ flex:1 1 140px; }
+  .p2-info{ width:100%; }
+  .p2-kbd{ display:none; }
+  .p2-row .btn{ flex:1; min-width:0; }
+  .p2-row .btn.primary{ flex:2; }
+}
 
 /* comments panel row: Paste AI answer / Show suggestions */
 .ai-w5row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; padding-top:7px; border-top:1px solid var(--line); }
@@ -2651,19 +2796,58 @@ Note: Is that right? I thought…</pre>
 <div id="hlPop" role="dialog" aria-label="Note preview" data-i18n-attr="aria-label:pop.preview"></div>
 
 <!-- Source drawer -->
-<div class="overlay" id="ovSource">
-  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="ovSourceTitle">
-    <div class="panel-head"><h3 id="ovSourceTitle" data-i18n="source.title">Paste Markdown</h3>
-      <button class="x" data-close>×</button></div>
-    <div class="panel-body">
-      <p class="hint" data-i18n="source.hint_html">Paste Markdown and press <b>Render document</b>. From the homepage, this replaces the demo sample. In workspace mode, existing notes are kept when possible and re-anchored to matching passages.</p>
-      <textarea class="big" id="srcArea" spellcheck="false"></textarea>
+<input type="file" id="fileMd" accept=".md,.markdown,.txt,text/markdown,text/plain" hidden>
+<input type="file" id="p2File" accept=".md,.markdown,.mdx,.txt,text/markdown,text/plain" hidden>
+<!-- ==[PASTE2 HTML]== shared paste dialog shell: Paste Markdown (#ovSource) + Paste AI result (#ovAiPaste) -->
+<div class="overlay p2-ov" id="ovSource">
+  <div class="panel p2" data-tab="paste" role="dialog" aria-modal="true" aria-labelledby="ovSourceTitle" aria-describedby="ovSourceSub">
+    <div class="p2-head">
+      <span class="p2-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><path d="M8 5H6.5A1.5 1.5 0 0 0 5 6.5v13A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 17.5 5H16"/><path d="M8.5 15.5v-5l2 2.5 2-2.5v5M15.5 10.5v5m-1.6-1.6 1.6 1.6 1.6-1.6"/></svg></span>
+      <div class="p2-titles"><h3 id="ovSourceTitle" data-i18n="source.title">Paste Markdown</h3>
+        <p class="p2-sub" id="ovSourceSub" data-i18n="paste2.mdSub">From any AI chat or editor — check the preview, then open it.</p></div>
+      <button class="x" type="button" data-close aria-label="Close" title="Close (Esc)" data-i18n-attr="aria-label:common.close;title:common.closeEsc">×</button>
     </div>
-    <div class="panel-foot">
-      <input type="file" id="fileMd" accept=".md,.markdown,.txt,text/markdown,text/plain" hidden>
-      <button class="btn" id="bImportFile" style="margin-right:auto" data-i18n="source.openFile">Open Markdown…</button>
-      <button class="btn" data-close data-i18n="common.cancel">Cancel</button>
-      <button class="btn primary" id="bRender" data-i18n="source.render">Render document</button>
+    <div class="p2-tabs" role="tablist">
+      <button type="button" role="tab" data-p2tab="paste" aria-selected="true" data-i18n="paste2.tabPaste">Paste</button>
+      <button type="button" role="tab" data-p2tab="preview" aria-selected="false" data-i18n="paste2.tabPreview">Preview</button>
+    </div>
+    <div class="p2-body">
+      <section class="p2-col p2-in">
+        <div class="p2-colh"><span data-i18n="paste2.colInput">Markdown</span><button type="button" class="p2-link" data-p2="clear" data-i18n="paste2.clear">Clear</button></div>
+        <div class="p2-editor">
+          <div class="p2-gutter" aria-hidden="true"><div class="p2-gutter-in">1</div></div>
+          <textarea class="p2-ta" id="srcArea" spellcheck="false" autocomplete="off" aria-label="Markdown to paste" data-i18n-attr="aria-label:paste2.inputAria"></textarea>
+          <div class="p2-empty">
+            <span class="p2-empty-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4m-4 4 4-4 4 4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/></svg></span>
+            <p class="p2-empty-t" data-p2key="emptyHint"></p>
+            <div class="p2-empty-acts">
+              <button type="button" class="btn p2-clip" data-p2="clip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><path d="M8 5H6.5A1.5 1.5 0 0 0 5 6.5v13A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 17.5 5H16"/></svg><span data-i18n="paste2.fromClipboard">Paste from clipboard</span></button>
+              <button type="button" class="p2-link" id="bImportFile" data-i18n="source.openFile">Open Markdown…</button>
+            </div>
+            <p class="p2-empty-msg" role="status"></p>
+          </div>
+          <div class="p2-dropcue" aria-hidden="true"><span data-i18n="paste2.dropHere">Drop the file to paste its text</span></div>
+        </div>
+      </section>
+      <section class="p2-col p2-out">
+        <div class="p2-colh"><span data-i18n="paste2.colPreview">Preview</span></div>
+        <div class="p2-prev">
+          <div class="p2-doc" id="srcPrev"></div>
+          <p class="p2-prev-empty" data-i18n="paste2.prevEmpty">The preview appears here</p>
+        </div>
+      </section>
+    </div>
+    <div class="p2-foot">
+      <div class="p2-detect" id="srcDetect" aria-live="polite"></div>
+      <div class="p2-row">
+        <div class="p2-opts" role="radiogroup" aria-label="Open as" data-i18n-attr="aria-label:paste2.optLegend">
+          <label><input type="radio" name="p2mode" value="new" checked> <span data-i18n="paste2.optNew">New document</span></label>
+          <label><input type="radio" name="p2mode" value="replace"> <span data-i18n="paste2.optReplace">Replace the open document (keep comments)</span></label>
+        </div>
+        <span class="p2-kbd" aria-hidden="true"><kbd class="p2-mod">Ctrl</kbd><kbd>Enter</kbd></span>
+        <button class="btn" type="button" data-close data-i18n="common.cancel">Cancel</button>
+        <button class="btn primary" type="button" id="bRender" data-i18n="paste2.btnOpen">Open document</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2690,18 +2874,53 @@ Note: Is that right? I thought…</pre>
 <div id="toast"></div>
 
 <!-- ==[AI HTML]== A — AI answers, suggestions, export options -->
-<div class="overlay" id="ovAiPaste">
-  <div class="panel ai-paste" role="dialog" aria-modal="true" aria-labelledby="aiPasteTitle" aria-describedby="aiPasteHint">
-    <div class="panel-head"><h3 id="aiPasteTitle" data-i18n="ai.pasteTitle">Paste AI answer</h3>
-      <button class="x" type="button" data-close aria-label="Close" title="Close (Esc)" data-i18n-attr="aria-label:common.close;title:common.closeEsc">×</button></div>
-    <div class="panel-body">
-      <p class="hint" id="aiPasteHint" data-i18n="ai.pasteHint_html">Paste your assistant's reply. Each answer is matched to its note by <code>{#id}</code> (or by number) and added as an AI reply.</p>
-      <textarea class="big ai-paste-ta" id="aiPasteTa" spellcheck="false" aria-label="AI answer" data-i18n-attr="aria-label:ai.pasteAria;placeholder:ai.pastePlaceholder" placeholder="```mdeverything&#10;## [1] {#n3f9a}&#10;Your answer…&#10;```"></textarea>
-      <div class="ai-prev" id="aiPrev" aria-live="polite"></div>
+<div class="overlay p2-ov" id="ovAiPaste">
+  <div class="panel p2 ai-paste" data-tab="paste" data-kind="empty" role="dialog" aria-modal="true" aria-labelledby="aiPasteTitle" aria-describedby="aiPasteHint">
+    <div class="p2-head">
+      <span class="p2-icon is-ai" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><path d="M8 5H6.5A1.5 1.5 0 0 0 5 6.5v13A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 17.5 5H16"/><path d="M12 9.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg></span>
+      <div class="p2-titles"><h3 id="aiPasteTitle" data-i18n="paste2.aiTitle">Paste AI result</h3>
+        <p class="p2-sub" id="aiPasteHint" data-i18n="paste2.aiSub">Answers to your comments or a whole revised document — it's recognised automatically.</p></div>
+      <button class="x" type="button" data-close aria-label="Close" title="Close (Esc)" data-i18n-attr="aria-label:common.close;title:common.closeEsc">×</button>
     </div>
-    <div class="panel-foot">
-      <button class="btn" type="button" data-close data-i18n="common.cancel">Cancel</button>
-      <button class="btn primary" type="button" id="aiPasteAdd" disabled data-i18n="ai.addAnswers">Add answers</button>
+    <div class="p2-tabs" role="tablist">
+      <button type="button" role="tab" data-p2tab="paste" aria-selected="true" data-i18n="paste2.tabPaste">Paste</button>
+      <button type="button" role="tab" data-p2tab="preview" aria-selected="false" data-i18n="paste2.tabPreview">Preview</button>
+    </div>
+    <div class="p2-body">
+      <section class="p2-col p2-in">
+        <div class="p2-colh"><span data-i18n="paste2.colAi">AI reply</span><button type="button" class="p2-link" data-p2="clear" data-i18n="paste2.clear">Clear</button></div>
+        <div class="p2-editor">
+          <div class="p2-gutter" aria-hidden="true"><div class="p2-gutter-in">1</div></div>
+          <textarea class="p2-ta" id="aiPasteTa" spellcheck="false" autocomplete="off" aria-label="AI result" data-i18n-attr="aria-label:paste2.aiInputAria"></textarea>
+          <div class="p2-empty">
+            <span class="p2-empty-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4m-4 4 4-4 4 4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/></svg></span>
+            <p class="p2-empty-t" data-p2key="emptyHint"></p>
+            <div class="p2-empty-acts">
+              <button type="button" class="btn p2-clip" data-p2="clip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><path d="M8 5H6.5A1.5 1.5 0 0 0 5 6.5v13A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 17.5 5H16"/></svg><span data-i18n="paste2.fromClipboard">Paste from clipboard</span></button>
+            </div>
+            <p class="p2-empty-tip" data-i18n="paste2.aiEmptyTip">Answers to comments start with ## [1]. Anything else is read as a revised document.</p>
+            <p class="p2-empty-msg" role="status"></p>
+          </div>
+          <div class="p2-dropcue" aria-hidden="true"><span data-i18n="paste2.dropHere">Drop the file to paste its text</span></div>
+        </div>
+      </section>
+      <section class="p2-col p2-out">
+        <div class="p2-colh"><span id="aiPrevHead" data-i18n="paste2.colPreview">Preview</span></div>
+        <div class="p2-prev">
+          <div class="ai-prev" id="aiPrev" aria-live="polite"></div>
+          <div class="p2-doc" id="aiDocPrev"></div>
+          <p class="p2-prev-empty" data-i18n="paste2.prevEmpty">The preview appears here</p>
+        </div>
+      </section>
+    </div>
+    <div class="p2-foot">
+      <div class="p2-detect" id="aiDetect" aria-live="polite"></div>
+      <div class="p2-row">
+        <p class="p2-info" id="aiInfo"></p>
+        <span class="p2-kbd" aria-hidden="true"><kbd class="p2-mod">Ctrl</kbd><kbd>Enter</kbd></span>
+        <button class="btn" type="button" data-close data-i18n="common.cancel">Cancel</button>
+        <button class="btn primary" type="button" id="aiPasteAdd" disabled data-i18n="paste2.apply">Apply</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2900,9 +3119,22 @@ function setWorkspaceMode({home=false, sample=false, fileName=""}={}){
   updateWorkspaceChrome();
 }
 function openFilePicker(){ $("#fileMd").click(); }
+// Paste Markdown dialog (shell + preview in ==[PASTE2 JS]==). Default target: a new document from
+// Documents → New → Paste (libPasteNew) or the homepage; "replace" when a library document is open.
 function openSourceDrawer(){
-  $("#srcArea").value = isHomeMode && isSampleMode ? "" : SRC;
-  openOverlay($("#ovSource"));
+  if(mdeIsOpen()){ toast(t("editor.finishFirstShort")); return; }
+  const ov=$("#ovSource");
+  if(!ov.classList.contains("open")) p2SetReturn(ov);
+  closeOverlays();
+  const libDoc = !!LIB.activeId && !isSampleMode;
+  const mode = (libPasteNew || isHomeMode || !libDoc) ? "new" : "replace";
+  const rep = ov.querySelector('input[name="p2mode"][value="replace"]');
+  rep.disabled = isHomeMode && isSampleMode;          // nothing worth keeping on the demo homepage
+  ov.querySelector(`input[name="p2mode"][value="${mode}"]`).checked = true;
+  $("#srcArea").value = "";
+  p2Reset(ov);
+  openOverlay(ov);
+  p2SourceUpdate();
   setTimeout(()=>focusWithoutScrolling($("#srcArea")),0);
 }
 function sampleAnnotations(){
@@ -4279,28 +4511,28 @@ $("#bHeroOpen").addEventListener("click",openFilePicker);
 $("#bHeroPaste").addEventListener("click",openSourceDrawer);
 $("#bHeroSample").addEventListener("click",useSampleDocument);
 $("#heroDrop").addEventListener("click",openFilePicker);
-$("#bImportFile").addEventListener("click",openFilePicker);
+$("#bImportFile").addEventListener("click",()=>$("#p2File").click());   // fills the paste box (see PASTE2)
 $("#fileMd").setAttribute("accept", ".md,.markdown,.txt,.json,text/markdown,text/plain,application/json");
 $("#fileMd").addEventListener("change",async e=>{
   const files=[...e.target.files]; e.target.value="";
   for(const f of files) await loadMdFile(f);
 });
-// Pasting & rendering edits the current doc — from homepage it replaces the demo notes; in workspace it keeps notes when possible.
-// Documents → New → Paste (libPasteNew) creates a new library document instead.
-$("#bRender").addEventListener("click",()=>{
-  const next=$("#srcArea").value;
+// "New document" files the paste as a new library document; "Replace" swaps the open document's text and
+// keeps its comments (re-anchored by quote + context; Undo restores the previous text and comments).
+// A single code fence around the whole paste (```markdown … ```) is removed first.
+function p2CommitSource(){
+  const ov=$("#ovSource"), next=p2Unfence($("#srcArea").value).text;
   if(!next.trim()){ toast(t("toast.pasteFirst")); return; }
-  if(libPasteNew){
-    if(libFull()){ libFullToast(); return; }   // keep the drawer (and the pasted text) open
+  const mode=(ov.querySelector('input[name="p2mode"]:checked')||{}).value;
+  if(mode!=="replace" || (isHomeMode && isSampleMode)){
+    if(libFull()){ libFullToast(); return; }   // keep the dialog (and the pasted text) open
     closeOverlays(); libResetPasteMode(); loadNewDoc(next, t("doc.pastedName")); return;
   }
   if(isSampleMode && libFull()){ libFullToast(); return; }   // would become a new library document
-  const replaceDemo = isHomeMode && isSampleMode;
-  SRC=next; if(replaceDemo) ANN=[]; activeId=null; closeOverlays();
-  if(isSampleMode) setWorkspaceMode({home:false, sample:false, fileName: replaceDemo ? t("doc.pastedName") : t("doc.sampleCopy")});
-  else updateWorkspaceChrome();      // a library document keeps its name
-  renderDoc(); toast(t("toast.rendered"));
-});
+  closeOverlays(); libResetPasteMode();
+  p2ReplaceSrc(next, p2Snapshot(), "");
+}
+$("#bRender").addEventListener("click",p2CommitSource);
 
 /* ============ export ============ */
 function syncCopyMenu(){ $("#bCopyOpts").setAttribute("aria-expanded", $("#menuCopy").hidden ? "false" : "true"); }
@@ -6167,9 +6399,8 @@ function libBuildPanel(){
       case "new": setMenu(menu.hidden); if(!menu.hidden) menu.querySelector("button").focus(); break;
       case "open-file": libClosePanel(); openFilePicker(); break;
       case "paste":
-        libClosePanel(); openSourceDrawer();
-        libPasteNew = true; $("#srcArea").value = "";
-        $("#ovSourceTitle").textContent = t("source.newTitle"); $("#bRender").textContent = t("source.create");
+        libClosePanel(); libPasteNew = true; openSourceDrawer();   // defaults to "New document"
+        if(!$("#ovSource").classList.contains("open")) libPasteNew = false;
         break;
       case "sample": libClosePanel(); libLeaveCurrent(); loadSample({ home:false }); window.scrollTo(0,0); toast(t("lib.showingSample")); break;
       case "import": p.querySelector(".lib-import-input").click(); break;
@@ -6332,7 +6563,6 @@ new MutationObserver(() => {
 // the normal Paste buttons edit the current document again
 function libResetPasteMode(){
   libPasteNew = false;
-  $("#ovSourceTitle").textContent = t("source.title"); $("#bRender").textContent = t("source.render");
 }
 ["#bSource", "#bHeroPaste"].forEach(s => { const b = $(s); if(b) b.addEventListener("click", libResetPasteMode, true); });
 new MutationObserver(() => { if(libPasteNew && !$("#ovSource").classList.contains("open")) libResetPasteMode(); })
@@ -6763,8 +6993,315 @@ function aiRemoveAnswers(res){
   aiRefreshViews();
 }
 
-/* ---------- paste dialog ---------- */
-var aiPasteReturn=null, aiPasteT=0, aiPasteItems=[];
+/* ==[PASTE2 JS]== shared paste dialog: Paste Markdown (#ovSource) + Paste AI result (#ovAiPaste).
+   One shell: paste box with line numbers (empty state, clipboard button, .md drop) · live preview with the
+   real reading styles (the #doc rules are cloned onto the previews) · detection bar · context button.
+   The app only shows what the AI wrote: ~~old~~ / <ins>new</ins> are styled, never computed. */
+const P2_MOD = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent || "") ? "⌘" : "Ctrl";
+const P2_DOC_LANGS = /^(?:|markdown|md|mdx|gfm|text|txt|plain|plaintext|mdeverything(?:-doc(?:ument)?)?)$/i;
+const P2_REVISED_RE = /^\s{0,3}#{1,6}\s*(?:\*\*|__)?\s*(?:(?:the|full|complete|whole|final)\s+)*(?:revised|updated|edited|rewritten|corrected|improved|amended|new)\s+(?:(?:full|whole|complete)\s+)?(?:document|version|markdown|draft|text|plan)\b/i;
+const P2_DOCFENCE_RE = /^\s{0,3}(`{3,}|~{3,})\s*mdeverything-doc(?:ument)?\b/i;
+const P2_WRAP_RE = /^\s{0,3}(`{3,}|~{3,})\s*mdeverything\s*$/i;
+var p2SrcT = 0, p2SrcReturn = null;
+
+function p2SetReturn(ov){ if(ov.id==="ovSource") p2SrcReturn = document.activeElement; }
+// line numbers + filled state (the gutter follows the textarea's scroll)
+function p2Sync(ov){
+  const ta=ov.querySelector(".p2-ta"), g=ov.querySelector(".p2-gutter-in");
+  const n=ta.value ? ta.value.split("\n").length : 1;
+  if(g._n!==n){ g._n=n; let s=""; for(let i=1;i<=n;i++) s+=i+"\n"; g.textContent=s; }
+  g.style.transform="translateY("+(-ta.scrollTop)+"px)";
+  ov.querySelector(".p2").classList.toggle("is-filled", !!ta.value.trim());
+}
+function p2SetTab(ov, tab){
+  ov.querySelector(".p2").dataset.tab=tab;
+  ov.querySelectorAll("[data-p2tab]").forEach(b=>{
+    b.setAttribute("aria-selected", b.dataset.p2tab===tab ? "true" : "false");
+    if(b.dataset.p2tab===tab) b.classList.remove("has-dot");
+  });
+  if(tab==="paste") focusWithoutScrolling(ov.querySelector(".p2-ta"));
+}
+function p2Reset(ov){
+  p2SetTab(ov, "paste");
+  ov.querySelectorAll("[data-p2tab]").forEach(b=>b.classList.remove("has-dot"));
+  const m=ov.querySelector(".p2-empty-msg"); if(m) m.textContent="";
+  ov.querySelector(".p2-ta").scrollTop=0; ov.querySelector(".p2-prev").scrollTop=0;
+  p2Sync(ov);
+}
+// index of the line that closes the fence opened at lines[i]; a fence with an info string (```mermaid)
+// or a different / shorter fence inside it opens a nested block. -1 when it never closes.
+function p2FenceEnd(lines, i, fence){
+  let inner=null;
+  for(let j=i+1;j<lines.length;j++){
+    const m=lines[j].match(/^\s{0,3}(`{3,}|~{3,})(.*)$/); if(!m) continue;
+    const f=m[1], info=m[2].trim();
+    if(inner){ if(f[0]===inner[0] && f.length>=inner.length && !info) inner=null; continue; }
+    if(f[0]===fence[0] && f.length>=fence.length && !info) return j;
+    inner=f;
+  }
+  return -1;
+}
+// a single code fence around the whole text (```markdown / ```md / ``` / ````) → its content
+function p2Unfence(text){
+  const s=String(text||"").replace(/\r\n?/g,"\n"), lines=s.split("\n");
+  let a=0; while(a<lines.length && !lines[a].trim()) a++;
+  let b=lines.length-1; while(b>a && !lines[b].trim()) b--;
+  if(b<=a) return {text:s, unwrapped:false};
+  const m=lines[a].match(/^\s{0,3}(`{3,}|~{3,})[ \t]*([\w.+-]*)[^`\n]*$/);
+  if(!m || !P2_DOC_LANGS.test(m[2]) || p2FenceEnd(lines, a, m[1])!==b) return {text:s, unwrapped:false};
+  return {text:lines.slice(a+1, b).join("\n"), unwrapped:true};
+}
+function p2Trim(s){ return String(s||"").replace(/^(?:[ \t]*\n)+/,"").replace(/\s+$/,""); }
+// split an AI reply into a revised-document part (```mdeverything-document fence, or a "## Revised document"
+// section) and the rest (per-comment answers, read by aiParseAnswer as before)
+function p2SplitAiResult(raw){
+  const lines=String(raw||"").replace(/\r\n?/g,"\n").split("\n");
+  const isClose=(L,f)=>{ const m=L.match(AI_FENCE_RE); return !!m && m[1][0]===f[0] && m[1].length>=f.length && !L.trim().slice(m[1].length).trim(); };
+  let wrap=null, cut=null;
+  for(let i=0;i<lines.length && !cut;i++){
+    const L=lines[i], fm=L.match(AI_FENCE_RE);
+    if(fm){
+      const df=L.match(P2_DOCFENCE_RE);
+      if(df){ const e=p2FenceEnd(lines, i, df[1]); cut={from:i, to:e<0 ? lines.length : e+1, text:lines.slice(i+1, e<0 ? lines.length : e).join("\n"), fenced:true}; break; }
+      if(!wrap && P2_WRAP_RE.test(L)){ wrap=fm[1]; continue; }
+      if(wrap && isClose(L, wrap)){ wrap=null; continue; }
+      const e=p2FenceEnd(lines, i, fm[1]); if(e<0) break; i=e; continue;
+    }
+    if(!P2_REVISED_RE.test(L)) continue;
+    // the section runs to the end, to the close of the ```mdeverything wrapper, or to the next "## [n]" answer
+    let j=i+1;
+    for(;j<lines.length;j++){
+      const M=lines[j], m2=M.match(AI_FENCE_RE);
+      if(m2){
+        if(wrap && isClose(M, wrap)) break;
+        const e=p2FenceEnd(lines, j, m2[1]); if(e<0){ j=lines.length; break; } j=e; continue;
+      }
+      const h=aiHeading(M); if(h && h.kind==="note") break;
+    }
+    cut={from:i, to:j, text:lines.slice(i+1, j).join("\n"), fenced:false};
+  }
+  if(!cut) return {rest:lines.join("\n"), doc:null, unwrapped:false};
+  const u=p2Unfence(cut.text);
+  return { rest:lines.slice(0, cut.from).concat(lines.slice(cut.to)).join("\n"), doc:p2Trim(u.text), unwrapped:cut.fenced || u.unwrapped };
+}
+function p2LooksLikeDoc(s){
+  s=String(s||"").trim(); if(!s) return false;
+  if(/^#{1,6}\s+\S/m.test(s) || /^\s*(?:[-*+]|\d+[.)])\s+\S/m.test(s) || /^\s*\|.*\|\s*$/m.test(s) || /^\s{0,3}(`{3,}|~{3,})/m.test(s)) return true;
+  return wordCount(s)>=8 || s.split("\n").filter(l=>l.trim()).length>=3;
+}
+// what an AI reply holds: "answers" (## [n] {#id}), "doc" (a whole revised document), "both", "none" or "empty"
+function p2DetectAi(raw){
+  if(!String(raw||"").trim()) return {kind:"empty"};
+  const sp=p2SplitAiResult(raw), parsed=aiParseAnswer(sp.rest);
+  const wrapped=sp.rest.split("\n").some(l=>P2_WRAP_RE.test(l));
+  const answers=parsed.answers.length>0 || (!!parsed.general && (wrapped || sp.doc!=null));
+  let doc=sp.doc, unwrapped=sp.unwrapped;
+  if(doc==null && !answers){
+    const u=p2Unfence(raw);
+    if(p2LooksLikeDoc(u.text)){ doc=p2Trim(u.text); unwrapped=u.unwrapped; }
+  }
+  if(doc!=null && !doc.trim()) doc=null;
+  const kind = answers && doc!=null ? "both" : answers ? "answers" : doc!=null ? "doc" : "none";
+  return {kind, answers, parsed:answers ? parsed : null, doc, unwrapped};
+}
+// render Markdown into a preview with the reading styles; diagrams stay as a light code placeholder
+function p2RenderPreview(el, md){
+  el.innerHTML=mdToHtml(md);
+  el.querySelectorAll("code.language-mermaid, code.lang-mermaid").forEach(code=>{
+    const host=code.closest("pre") || code, w=document.createElement("div");
+    w.className="p2-mmd no-anchor";
+    const h=document.createElement("div"); h.className="p2-mmd-h"; h.textContent=t("paste2.diagram");
+    const pre=document.createElement("pre"); pre.textContent=code.textContent;
+    w.append(h, pre); host.replaceWith(w);
+  });
+  el.querySelectorAll("table").forEach(tb=>{
+    if(tb.parentElement && tb.parentElement.classList.contains("table-scroll")) return;
+    const w=document.createElement("div"); w.className="table-scroll"; tb.replaceWith(w); w.appendChild(tb);
+  });
+  el.querySelectorAll("a[href], input, button, textarea, select, [tabindex]").forEach(x=>x.setAttribute("tabindex","-1"));
+  const c=el.cloneNode(true); c.querySelectorAll(".p2-mmd").forEach(x=>x.remove());
+  return { headings:el.querySelectorAll("h1,h2,h3,h4,h5,h6").length, tables:el.querySelectorAll("table").length,
+    diagrams:el.querySelectorAll(".p2-mmd").length, words:wordCount(c.textContent),
+    marks:el.querySelectorAll("del, s, ins, mark").length, text:anchorText(el) };
+}
+// comments that would still find their passage in the new rendered text (same anchoring as renderDoc)
+function p2Kept(T){ return ANN.filter(a=>findStart(T, a)!==-1).length; }
+function p2Counts(st){
+  const out=[];
+  if(st.headings) out.push(t("paste2.nHeadings",{n:st.headings}));
+  if(st.tables) out.push(t("paste2.nTables",{n:st.tables}));
+  if(st.diagrams) out.push(t("paste2.nDiagrams",{n:st.diagrams}));
+  out.push(t("paste2.nWords",{n:st.words}));
+  return out;
+}
+function p2DetectBar(el, state, kind, parts, pills){
+  el.className="p2-detect"+(state ? " is-"+state : ""); el.textContent="";
+  const ico=document.createElement("span"); ico.className="p2-det-ico"; ico.setAttribute("aria-hidden","true");
+  ico.textContent = state==="ok" ? "✓" : state==="warn" ? "!" : "·";
+  const k=document.createElement("span"); k.className="p2-det-kind"; k.textContent=kind;
+  el.append(ico, k);
+  (parts||[]).forEach(p=>{
+    const s=document.createElement("span"); s.className="p2-det-sep"; s.setAttribute("aria-hidden","true"); s.textContent="·";
+    const v=document.createElement("span"); v.textContent=p; el.append(s, v);
+  });
+  (pills||[]).forEach(p=>{ const s=document.createElement("span"); s.className="p2-pill"+(p.cls ? " "+p.cls : ""); s.textContent=p.text; el.appendChild(s); });
+}
+function p2PreviewDot(ov, on){
+  const b=ov.querySelector('[data-p2tab="preview"]');
+  if(b) b.classList.toggle("has-dot", !!on && ov.querySelector(".p2").dataset.tab!=="preview");
+}
+function p2SetText(ov, text){
+  const ta=ov.querySelector(".p2-ta");
+  ta.value=String(text||"").replace(/\r\n?/g,"\n");
+  ta.scrollTop=0; ta.setSelectionRange(0,0);
+  const m=ov.querySelector(".p2-empty-msg"); if(m) m.textContent="";
+  p2Sync(ov); if(ov._p2input) ov._p2input(true);
+  focusWithoutScrolling(ta);
+}
+async function p2FromClipboard(ov){
+  const ta=ov.querySelector(".p2-ta"), msg=ov.querySelector(".p2-empty-msg");
+  msg.textContent="";
+  let text=null;
+  try{ if(navigator.clipboard && navigator.clipboard.readText) text=await navigator.clipboard.readText(); }catch(e){ text=null; }
+  if(text==null){ msg.textContent=t("paste2.clipBlocked",{key:P2_MOD}); focusWithoutScrolling(ta); return; }
+  if(!text.trim()){ msg.textContent=t("paste2.clipEmpty"); focusWithoutScrolling(ta); return; }
+  p2SetText(ov, text);
+}
+function p2Wire(ov, onInput, commit){
+  const ta=ov.querySelector(".p2-ta");
+  ov._p2input=onInput;
+  ta.addEventListener("input",()=>{ const m=ov.querySelector(".p2-empty-msg"); if(m) m.textContent=""; p2Sync(ov); onInput(false); });
+  ta.addEventListener("scroll",()=>{ ov.querySelector(".p2-gutter-in").style.transform="translateY("+(-ta.scrollTop)+"px)"; },{passive:true});
+  ov.addEventListener("keydown",e=>{ if(e.key==="Enter" && (e.ctrlKey||e.metaKey) && !e.isComposing){ e.preventDefault(); commit(); } });
+  ov.addEventListener("click",e=>{
+    if(e.target.closest(".p2-prev a")) e.preventDefault();          // the preview never navigates
+    const b=e.target.closest("[data-p2],[data-p2tab]"); if(!b || !ov.contains(b)) return;
+    if(b.dataset.p2tab) p2SetTab(ov, b.dataset.p2tab);
+    else if(b.dataset.p2==="clear"){ ta.value=""; p2Sync(ov); onInput(true); focusWithoutScrolling(ta); }
+    else if(b.dataset.p2==="clip") p2FromClipboard(ov);
+  });
+  ov.querySelector(".p2-tabs").addEventListener("keydown",e=>{
+    if(e.key!=="ArrowLeft" && e.key!=="ArrowRight") return;
+    e.preventDefault();
+    const tab=ov.querySelector(".p2").dataset.tab==="paste" ? "preview" : "paste";
+    p2SetTab(ov, tab); ov.querySelector(`[data-p2tab="${tab}"]`).focus();
+  });
+}
+// snapshot / replace the open document's text (comments re-anchor; unfound ones go to "Unanchored")
+function p2Snapshot(){ return { src:SRC, ann:JSON.parse(JSON.stringify(ANN)), activeId }; }
+function p2ReplaceSrc(next, before, lead){
+  if(POP.mode) closePop(true);
+  SRC=next; activeId=null; aiVer++;
+  if(isSampleMode) setWorkspaceMode({home:false, sample:false, fileName:t("doc.sampleCopy")});
+  else updateWorkspaceChrome();      // a library document keeps its name
+  renderDoc();
+  const total=ANN.length, kept=ANN.filter(a=>a.resolved!==false).length;
+  let msg = total ? t("paste2.replacedKept",{kept, total}) : t("paste2.replaced");
+  if(lead) msg = lead+" · "+msg;
+  toast(msg, { action:{ label:t("common.undo"), run:()=>{
+    if(mdeIsOpen()){ toast(t("editor.finishFirstShort")); return; }
+    if(POP.mode) closePop(true);
+    SRC=before.src; ANN=before.ann; activeId=before.activeId; aiVer++; libFp="";
+    renderDoc(); toast(t("paste2.undone"));
+  } }, ms:10000 });
+}
+function p2Pasted(answers, replaced){
+  try{ document.dispatchEvent(new CustomEvent("mde:ai-pasted", { detail:{ answers, replaced } })); }catch(e){}
+}
+// Paste Markdown: preview + detection + button label
+function p2SourceUpdate(){
+  clearTimeout(p2SrcT); p2SrcT=0;
+  const ov=$("#ovSource"), raw=$("#srcArea").value, prev=$("#srcPrev"), det=$("#srcDetect"), btn=$("#bRender");
+  p2Sync(ov);
+  const rep=(ov.querySelector('input[name="p2mode"]:checked')||{}).value==="replace" && !(isHomeMode && isSampleMode);
+  btn.textContent = rep ? t("paste2.btnReplace") : t("paste2.btnOpen");
+  if(!raw.trim()){
+    prev.textContent=""; p2PreviewDot(ov, false);
+    p2DetectBar(det, "", t("paste2.detEmpty"), [], []); btn.disabled=true; return;
+  }
+  const u=p2Unfence(raw), st=p2RenderPreview(prev, u.text), pills=[];
+  if(u.unwrapped) pills.push({text:t("paste2.unwrapped")});
+  if(st.marks) pills.push({text:t("paste2.nMarks",{n:st.marks}), cls:"is-ins"});
+  if(rep && ANN.length) pills.push({text:t("paste2.keptShort",{kept:p2Kept(st.text), total:ANN.length})});
+  p2DetectBar(det, "ok", t("paste2.detDoc"), p2Counts(st), pills);
+  btn.disabled=false; p2PreviewDot(ov, true);
+}
+(function p2WireSource(){
+  const ov=$("#ovSource");
+  p2Wire(ov, now=>{ clearTimeout(p2SrcT); if(now) p2SourceUpdate(); else p2SrcT=setTimeout(p2SourceUpdate,150); },
+    ()=>{ if(p2SrcT) p2SourceUpdate(); if(!$("#bRender").disabled) p2CommitSource(); });
+  ov.querySelectorAll('input[name="p2mode"]').forEach(r=>r.addEventListener("change",p2SourceUpdate));
+  aiTrapFocus(ov, ()=>{ const r=p2SrcReturn; p2SrcReturn=null; return r; }, ()=>{ clearTimeout(p2SrcT); p2SrcT=0; });
+  // Open Markdown… in the empty state fills the paste box (the file is not opened yet)
+  $("#p2File").addEventListener("change",async e=>{
+    const f=e.target.files && e.target.files[0]; e.target.value="";
+    const o=document.querySelector(".overlay.p2-ov.open"); if(!f || !o) return;
+    try{ p2SetText(o, await f.text()); }catch(err){ toast(t("toast.cantRead",{name:f.name})); }
+  });
+  // localized hints that need the platform key
+  document.querySelectorAll(".p2-mod").forEach(k=>{ k.textContent=P2_MOD; });
+  document.querySelectorAll(".p2-kbd").forEach(k=>{ k.title=t("paste2.kbdHint",{key:P2_MOD}); });
+  document.querySelectorAll('[data-p2key="emptyHint"]').forEach(p=>{ p.textContent=t("paste2.emptyHint",{key:P2_MOD}); });
+  // drop a .md / .txt file anywhere on an open paste dialog → its text goes into the paste box
+  // (capture phase, so the page-wide "drop to open" zone does not take it)
+  const openOv=()=>document.querySelector(".overlay.p2-ov.open");
+  const hasFiles=e=>!!(e.dataTransfer && [...e.dataTransfer.types].includes("Files"));
+  const editor=o=>o.querySelector(".p2-editor");
+  window.addEventListener("dragenter",e=>{
+    const o=openOv(); if(!o || !hasFiles(e)) return;
+    e.stopImmediatePropagation(); e.preventDefault();
+    if(o.querySelector(".p2").dataset.tab!=="paste") p2SetTab(o, "paste");
+    editor(o).classList.add("is-drag");
+  }, true);
+  window.addEventListener("dragover",e=>{
+    const o=openOv(); if(!o || !hasFiles(e)) return;
+    e.stopImmediatePropagation(); e.preventDefault(); e.dataTransfer.dropEffect="copy";
+  }, true);
+  window.addEventListener("dragleave",e=>{
+    const o=openOv(); if(!o || !hasFiles(e)) return;
+    e.stopImmediatePropagation();
+    if(!e.relatedTarget || !o.contains(e.relatedTarget)) editor(o).classList.remove("is-drag");
+  }, true);
+  window.addEventListener("drop",async e=>{
+    const o=openOv(); if(!o || !hasFiles(e)) return;
+    e.stopImmediatePropagation(); e.preventDefault();
+    editor(o).classList.remove("is-drag");
+    const f=[...(e.dataTransfer.files||[])][0]; if(!f) return;
+    const msg=o.querySelector(".p2-empty-msg");
+    if(!/\.(md|markdown|mdx|txt)$/i.test(f.name) && !/^text\//.test(f.type||"")){
+      if(msg && !o.querySelector(".p2").classList.contains("is-filled")) msg.textContent=t("paste2.dropBad"); else toast(t("paste2.dropBad"));
+      return;
+    }
+    try{ p2SetText(o, await f.text()); }catch(err){ toast(t("toast.cantRead",{name:f.name})); }
+  }, true);
+})();
+// the reading styles (#doc …) cloned onto the two previews, so a preview looks exactly like the document
+(function p2CloneDocStyles(){
+  const SEL=":is(#srcPrev,#aiDocPrev)", HAS=/#doc(?![\w-])/, ALL=/#doc(?![\w-])/g;
+  const split=s=>{ const out=[]; let d=0, cur=""; for(const ch of s){ if(ch==="("||ch==="[") d++; else if(ch===")"||ch==="]") d--; if(ch==="," && !d){ out.push(cur); cur=""; } else cur+=ch; } out.push(cur); return out; };
+  const conv=rules=>{
+    let css="";
+    for(const r of rules){
+      if(r instanceof CSSStyleRule){
+        if(!HAS.test(r.selectorText)) continue;
+        const sel=split(r.selectorText).filter(x=>HAS.test(x)).map(x=>x.replace(ALL, SEL)).join(",");
+        css+=sel+"{"+r.style.cssText+"}";
+      } else if(r instanceof CSSMediaRule){
+        const inner=conv(r.cssRules); if(inner) css+="@media "+r.conditionText+"{"+inner+"}";
+      } else if(window.CSSSupportsRule && r instanceof CSSSupportsRule){
+        const inner=conv(r.cssRules); if(inner) css+="@supports "+r.conditionText+"{"+inner+"}";
+      }
+    }
+    return css;
+  };
+  let css="";
+  for(const sh of [...document.styleSheets]){ let rules; try{ rules=sh.cssRules; }catch(e){ continue; } if(rules) css+=conv(rules); }
+  const st=document.createElement("style"); st.id="p2DocStyles"; st.textContent=css; document.head.appendChild(st);
+})();
+/* ==[/PASTE2 JS]== */
+
+/* ---------- paste dialog (Paste AI result; shell + detection in ==[PASTE2 JS]==) ---------- */
+var aiPasteReturn=null, aiPasteT=0, aiPasteItems=[], aiPasteRes=null;
 function aiPasteOpen(){ return $("#ovAiPaste").classList.contains("open"); }
 function aiOpenPaste(text){
   if(mdeIsOpen()){ toast(t("editor.finishFirstShort")); return; }
@@ -6776,26 +7313,20 @@ function aiOpenPaste(text){
   closeOverlays();
   const mn=$("#menuCopy"); if(mn && !mn.hidden){ mn.hidden=true; syncCopyMenu(); }
   ta.value=text||"";
+  p2Reset(ov);
   openOverlay(ov);
   aiRenderPreview();
-  setTimeout(()=>{ focusWithoutScrolling(ta); if(text){ ta.setSelectionRange(0,0); ta.scrollTop=0; } },0);
+  setTimeout(()=>{ focusWithoutScrolling(ta); if(text){ ta.setSelectionRange(0,0); ta.scrollTop=0; p2Sync(ov); } },0);
 }
+// public entry point (e.g. the "Paste AI result" button after an export)
+window.openPasteAiResult = function(text){ aiOpenPaste(typeof text==="string" ? text : ""); };
 function aiNoteSnippet(a){
   const s=String(a.note||a.quote||"").replace(/\s+/g," ").trim();
   const w=s.split(" ");
   return w.length>9 ? w.slice(0,9).join(" ")+"…" : s;
 }
-function aiRenderPreview(){
-  const box=$("#aiPrev"), btn=$("#aiPasteAdd"), raw=$("#aiPasteTa").value;
-  box.textContent="";
-  aiPasteItems=[];
-  if(!raw.trim()){ btn.disabled=true; btn.textContent=t("ai.addAnswers"); return; }
-  if(!ANN.length){
-    box.innerHTML='<p class="ai-prev-empty">'+te("ai.noNotes")+'</p>';
-    btn.disabled=true; btn.textContent=t("ai.addAnswers"); return;
-  }
-  const parsed=aiParseAnswer(raw), items=aiMatch(parsed);
-  aiPasteItems=items;
+// the answer → note match cards (✓ matched · ⚠ not found · ↻ already added) + the "General" block
+function aiRenderMatches(box, items, parsed){
   const ul=document.createElement("ul"); ul.className="ai-prev-list";
   items.forEach(it=>{
     const li=document.createElement("li");
@@ -6835,26 +7366,81 @@ function aiRenderPreview(){
     g.querySelector("button").addEventListener("click",()=>copyText(parsed.general).then(ok=>toast(ok?t("ai.generalCopied"):t("export.copyFailed"))));
     box.appendChild(g);
   }
-  if(!items.length && !parsed.general){
-    box.innerHTML='<p class="ai-prev-empty">'+t("ai.noneFound_html",{example:"## [1] {#n3f9a}", option:t("export.aiFmt")})+'</p>';
-  }
-  const n=items.filter(x=>x.status==="ok").length;
-  btn.disabled=!n;
-  btn.textContent = n ? t("ai.addN",{n}) : t("ai.addAnswers");
 }
+function aiRenderPreview(){
+  clearTimeout(aiPasteT); aiPasteT=0;
+  const ov=$("#ovAiPaste"), panel=ov.querySelector(".p2"), box=$("#aiPrev"), docEl=$("#aiDocPrev"), btn=$("#aiPasteAdd");
+  const det=$("#aiDetect"), info=$("#aiInfo"), raw=$("#aiPasteTa").value;
+  box.textContent=""; docEl.textContent=""; info.textContent="";
+  aiPasteItems=[];
+  p2Sync(ov);
+  const R=p2DetectAi(raw);
+  aiPasteRes=R; panel.dataset.kind=R.kind;
+  $("#aiPrevHead").textContent = R.kind==="answers" ? t("paste2.colMatches") : t("paste2.colPreview");
+  btn.textContent=t("paste2.apply"); btn.disabled=true;
+  if(R.kind==="empty"){ p2PreviewDot(ov,false); p2DetectBar(det, "", t("paste2.detEmpty"), [], []); return; }
+  p2PreviewDot(ov,true);
+  if(R.kind==="none"){
+    box.innerHTML='<div class="ai-prev-warn" role="note"><span aria-hidden="true">💡</span><div><b>'+te("paste2.detNone")+'</b><p>'+te("paste2.tipNone")+'</p></div></div>';
+    p2DetectBar(det, "warn", t("paste2.detNone"), [], []);
+    return;
+  }
+  const parts=[], pills=[];
+  let nOk=0;
+  if(R.answers){
+    if(!ANN.length) box.innerHTML='<p class="ai-prev-empty">'+te("ai.noNotes")+'</p>';
+    else {
+      const items=aiMatch(R.parsed);
+      aiPasteItems=items;
+      aiRenderMatches(box, items, R.parsed);
+      nOk=items.filter(x=>x.status==="ok").length;
+      const miss=items.filter(x=>x.status==="nomatch" || x.status==="empty").length, dup=items.filter(x=>x.status==="dup").length;
+      if(items.length) parts.push(t("paste2.nMatched",{n:nOk}));
+      if(miss) parts.push(t("paste2.nNotFound",{n:miss}));
+      if(dup) parts.push(t("paste2.nDup",{n:dup}));
+    }
+  }
+  if(R.doc!=null){
+    const st=p2RenderPreview(docEl, R.doc);
+    if(R.kind==="doc") parts.push(...p2Counts(st));
+    if(st.marks) pills.push({text:t("paste2.nMarks",{n:st.marks}), cls:"is-ins"});
+    const oldWords=wordCount(anchorText(doc));
+    if(oldWords>80 && st.words < oldWords*0.3) pills.push({text:t("paste2.shorter"), cls:"is-warn"});
+    R.kept=p2Kept(st.text);
+    info.textContent = ANN.length ? t("paste2.docInfo",{kept:R.kept, total:ANN.length}) : t("paste2.docInfoNoNotes");
+  }
+  if(R.unwrapped) pills.push({text:t("paste2.unwrapped")});
+  const kind = R.kind==="both" ? t("paste2.detBoth") : R.kind==="doc" ? t("paste2.detRevised") : t("paste2.detAnswers");
+  p2DetectBar(det, R.kind==="answers" && !nOk ? "warn" : "ok", kind, parts, pills);
+  if(R.kind==="answers"){ btn.disabled=!nOk; if(nOk) btn.textContent=t("ai.addN",{n:nOk}); }
+  else { btn.disabled=false; btn.textContent = nOk ? t("paste2.btnBoth",{n:nOk}) : t("paste2.btnReplace"); }
+}
+// answers go under their notes (one batch, one Undo); a revised document replaces the open one (Undo restores
+// the previous text + comments); both at once share one Undo. Fires "mde:ai-pasted" afterwards.
 function aiCommitPaste(){
+  const R=aiPasteRes; if(!R) return;
   const ok=aiPasteItems.filter(x=>x.status==="ok" && annById(x.a.id));
-  if(!ok.length) return;
+  const docText = R.doc!=null && R.doc.trim() ? R.doc : null;
+  if(!ok.length && !docText) return;
+  if(docText && isSampleMode && libFull()){ libFullToast(); return; }   // would become a new library document
   closeOverlays();
-  const res=aiAddAnswers(ok);
-  const n=res.added.length;
-  toast(t("ai.added",{n}), { action:{ label:t("common.undo"), run:()=>{ aiRemoveAnswers(res); toast(t("ai.removed",{n})); } }, ms:8000 });
+  if(!docText){
+    const res=aiAddAnswers(ok);
+    const n=res.added.length;
+    toast(t("ai.added",{n}), { action:{ label:t("common.undo"), run:()=>{ aiRemoveAnswers(res); toast(t("ai.removed",{n})); } }, ms:8000 });
+    p2Pasted(n, false);
+    return;
+  }
+  const before=p2Snapshot();
+  const n = ok.length ? aiAddAnswers(ok).added.length : 0;
+  p2ReplaceSrc(docText, before, n ? t("ai.added",{n}) : "");
+  p2Pasted(n, true);
 }
 // Tab stays inside a dialog; closing it (Cancel, ×, Esc, outside click) returns focus
 function aiTrapFocus(ov, getReturn, onClose){
   ov.addEventListener("keydown",e=>{
     if(e.key!=="Tab") return;
-    const f=[...ov.querySelectorAll('button:not([disabled]), textarea, [href], input, [tabindex]:not([tabindex="-1"])')].filter(x=>x.getClientRects().length);
+    const f=[...ov.querySelectorAll('button:not([disabled]), textarea, [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])')].filter(x=>x.getClientRects().length);
     if(!f.length) return;
     const i=f.indexOf(document.activeElement);
     if(e.shiftKey && (i<=0)){ e.preventDefault(); f[f.length-1].focus(); }
@@ -6868,13 +7454,11 @@ function aiTrapFocus(ov, getReturn, onClose){
   }).observe(ov,{attributes:true, attributeFilter:["class"]});
 }
 (function aiWirePaste(){
-  const ov=$("#ovAiPaste"), ta=$("#aiPasteTa");
-  ta.addEventListener("input",()=>{ clearTimeout(aiPasteT); aiPasteT=setTimeout(aiRenderPreview,120); });
-  ta.addEventListener("keydown",e=>{
-    if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ e.preventDefault(); clearTimeout(aiPasteT); aiRenderPreview(); aiCommitPaste(); }
-  });
-  $("#aiPasteAdd").addEventListener("click",()=>{ clearTimeout(aiPasteT); aiRenderPreview(); aiCommitPaste(); });
-  aiTrapFocus(ov, ()=>{ const r=aiPasteReturn; aiPasteReturn=null; return r; }, ()=>clearTimeout(aiPasteT));
+  const ov=$("#ovAiPaste");
+  p2Wire(ov, now=>{ clearTimeout(aiPasteT); if(now) aiRenderPreview(); else aiPasteT=setTimeout(aiRenderPreview,180); },
+    ()=>{ if(aiPasteT) aiRenderPreview(); aiCommitPaste(); });
+  $("#aiPasteAdd").addEventListener("click",()=>{ if(aiPasteT) aiRenderPreview(); aiCommitPaste(); });
+  aiTrapFocus(ov, ()=>{ const r=aiPasteReturn; aiPasteReturn=null; return r; }, ()=>{ clearTimeout(aiPasteT); aiPasteT=0; });
   // Ctrl+V of an mdeverything answer anywhere outside a text field opens the dialog
   document.addEventListener("paste",e=>{
     if(w5IsTyping(e.target) || w5IsTyping(document.activeElement)) return;
