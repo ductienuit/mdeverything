@@ -132,7 +132,8 @@
     "noteMark": "削除は取り消し線、追加は紫で表示",
     "noteAnswer": "回答は各コメントの下に表示されます",
     "hideSteps": "今後この手順を表示しない",
-    "dismiss": "閉じる"
+    "dismiss": "閉じる",
+    "chipTip": "{time} に{kind}をエクスポートしました"
   },
   "home": {
     "hideTitle": "紹介を隠してデモだけを表示",

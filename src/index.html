@@ -2774,8 +2774,17 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
 .exp-chip{position:fixed;right:20px;bottom:20px;z-index:58;display:flex;align-items:center;border-radius:999px;
   background:var(--accent);color:var(--accent-contrast);box-shadow:var(--shadow-lg);animation:exp-in .22s ease-out}
 .exp-chip[hidden]{display:none}
-.exp-chip-go{display:inline-flex;align-items:center;gap:7px;border:0;background:none;color:inherit;cursor:pointer;
-  padding:11px 6px 11px 16px;border-radius:999px 0 0 999px;font:600 13.5px/1 var(--font-ui)}
+.exp-chip{max-width:calc(100vw - 40px)}
+.exp-chip.pulse{animation:exp-pulse 1.1s ease-out 1}
+@keyframes exp-pulse{0%{box-shadow:var(--shadow-lg),0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}
+  40%{transform:scale(1.04)}100%{box-shadow:var(--shadow-lg),0 0 0 14px color-mix(in srgb,var(--accent) 0%,transparent)}}
+.exp-chip-go{display:inline-flex;align-items:center;gap:7px;border:0;background:none;color:inherit;cursor:pointer;min-width:0;
+  padding:9px 6px 9px 16px;border-radius:999px 0 0 999px;font:600 13.5px/1.3 var(--font-ui)}
+.exp-chip-go .ico{flex:none}
+.exp-chip-t,.exp-chip-time,.exp-chip-sep{flex:none;white-space:nowrap}
+.exp-chip-sep{opacity:.6;font-weight:400}
+.exp-chip-name{min-width:0;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.exp-chip-time{font-weight:400;opacity:.9}
 .exp-chip-x{border:0;background:none;color:inherit;opacity:.85;width:36px;height:38px;font-size:18px;line-height:1;cursor:pointer;border-radius:0 999px 999px 0}
 .exp-chip-go:hover,.exp-chip-x:hover{background:color-mix(in srgb,var(--accent-contrast) 14%,transparent)}
 .exp-chip-go:focus-visible,.exp-chip-x:focus-visible{outline:2px solid var(--accent-contrast);outline-offset:-4px}
@@ -2798,10 +2807,11 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
   .exp-ai-list{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 2px}
   .exp-ai-list::-webkit-scrollbar{display:none}
   .exp-done-act{position:sticky;bottom:0;background:var(--surface);padding-top:2px}
-  .exp-chip{right:12px;bottom:calc(14px + env(safe-area-inset-bottom))}
+  .exp-chip{right:12px;bottom:calc(14px + env(safe-area-inset-bottom));max-width:calc(100vw - 24px)}
+  .exp-chip-name{max-width:none}
 }
 @media (prefers-reduced-motion:reduce){
-  .exp-ov.open .exp-panel,.exp-done.anim,.exp-chip{animation:none}
+  .exp-ov.open .exp-panel,.exp-done.anim,.exp-chip,.exp-chip.pulse{animation:none}
   .exp-done.anim .exp-done-ico .c,.exp-done.anim .exp-done-ico .k{animation:none;stroke-dashoffset:0}
   .exp-prev-chev,.exp-card{transition:none}
 }
@@ -3109,7 +3119,7 @@ Note: Is that right? I thought…</pre>
   </div>
 </section>
 <div class="exp-chip" id="expChip" hidden>
-  <button type="button" class="exp-chip-go" id="expChipGo"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg><!--t:exp2.cta-->Paste AI result<!--/t--></button>
+  <button type="button" class="exp-chip-go" id="expChipGo"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg><span class="exp-chip-t"><!--t:exp2.cta-->Paste AI result<!--/t--></span><span class="exp-chip-sep" aria-hidden="true">·</span><span class="exp-chip-name" id="expChipName"></span><span class="exp-chip-sep" aria-hidden="true">·</span><span class="exp-chip-time" id="expChipTime"></span></button>
   <button type="button" class="exp-chip-x" id="expChipX" aria-label="Dismiss" title="Dismiss" data-i18n-attr="aria-label:exp2.dismiss;title:exp2.dismiss">×</button>
 </div>
 <!-- ==[/EXP2 HTML]== -->
@@ -3349,6 +3359,7 @@ function updateWorkspaceChrome(){
     label.replaceChildren(span);
     label.title = t("doc.labelTitle",{name});
   }
+  try{ expAwaitSync(false); }catch(e){}   // the "Paste AI result" chip follows the open document
 }
 function setWorkspaceMode({home=false, sample=false, fileName=""}={}){
   // the editor applying changes to the demo turns it into the user's own copy (see W6 library)
@@ -4963,7 +4974,7 @@ const EXP_AIS=[["ChatGPT","https://chatgpt.com"],["Claude","https://claude.ai"],
   ["Copilot","https://copilot.microsoft.com"],["Grok","https://grok.com"],["DeepSeek","https://chat.deepseek.com"],
   ["Perplexity","https://www.perplexity.ai"]];
 const EXP_AIS_MORE=[["Mistral Le Chat","https://chat.mistral.ai"],["Qwen","https://chat.qwen.ai"],["Kimi","https://www.kimi.com"]];
-var expT=0, expLast=null, expHold=false;
+var expLast=null;
 function expAiLink([name,href]){
   const a=document.createElement("a");
   a.className="exp-ai-chip"; a.href=href; a.target="_blank"; a.rel="noopener noreferrer";
@@ -4984,13 +4995,75 @@ function expRenderAis(){
   });
   box.appendChild(more);
 }
-function expArm(ms){
-  clearTimeout(expT);
-  if(expHold) return;
-  expT=setTimeout(expCollapse, ms || 10000);
+/* "awaiting the AI result": per library document, { docId, at, kind:"full"|"notes", how:"copy"|"download" }.
+   Starts on a Full context / Comments only export of a library document; ends on paste-back, chip ×,
+   deleting the document, or after 24 h. The chip shows only while the CURRENT document is awaiting. */
+var EXP_AWAIT_KEY="mdeverything:awaitAi:v1", EXP_AWAIT_TTL=24*3600*1000, expAwaitTick=0, expAwaitDoc;
+function expAwaitWrite(m){
+  try{ if(Object.keys(m).length) localStorage.setItem(EXP_AWAIT_KEY, JSON.stringify(m)); else localStorage.removeItem(EXP_AWAIT_KEY); }catch(e){}
+}
+function expAwaitAll(){
+  let m={};
+  try{ m=JSON.parse(localStorage.getItem(EXP_AWAIT_KEY)||"{}")||{}; }catch(e){}
+  if(typeof m!=="object" || Array.isArray(m)) m={};
+  const now=Date.now(); let dirty=false;
+  Object.keys(m).forEach(k=>{
+    const a=m[k];
+    if(!a || typeof a.at!=="number" || now-a.at>EXP_AWAIT_TTL || a.at>now+60000){ delete m[k]; dirty=true; }
+  });
+  if(dirty) expAwaitWrite(m);
+  return m;
+}
+function expAwaitCur(){
+  if(isSampleMode || !LIB.activeId) return null;
+  return expAwaitAll()[LIB.activeId] || null;
+}
+function expAwaitClear(ids){
+  const m=expAwaitAll(); let ch=false;
+  (ids||[]).forEach(id=>{ if(id && m[id]){ delete m[id]; ch=true; } });
+  if(ch) expAwaitWrite(m);
+}
+// after a successful export: only Full context / Comments only, only from a library document
+function expAwaitFromExport(mode, how){
+  if(mode==="raw" || isSampleMode || !ANN.length) return;
+  try{ saveFlush(); }catch(e){}           // an unsaved document gets its library id now
+  const id=LIB.activeId; if(!id || !libMeta(id)) return;
+  const m=expAwaitAll();
+  m[id]={ docId:id, at:Date.now(), kind:mode==="notes" ? "notes" : "full", how:how==="download" ? "download" : "copy" };
+  expAwaitWrite(m);
+}
+function expAwaitTime(at){
+  const d=new Date(at), now=new Date(), o={hour:"2-digit",minute:"2-digit"};
+  try{
+    return d.toDateString()===now.toDateString() ? d.toLocaleTimeString(LANG,o) : d.toLocaleString(LANG,{month:"short",day:"numeric",...o});
+  }catch(e){ return d.toLocaleString(); }
+}
+// shows / hides the chip for the current document; `pulse` = one gentle pulse (returning to the tab)
+function expAwaitSync(pulse){
+  const chip=$("#expChip"), card=$("#expDone"); if(!chip || !card) return;
+  let doc=null; try{ doc=isSampleMode ? "@demo" : LIB.activeId || null; }catch(e){ return; }   // the library isn't set up yet
+  if(expAwaitDoc && doc!==expAwaitDoc && !card.hidden) card.hidden=true;   // the card belonged to the document left
+  expAwaitDoc=doc;
+  const a=expAwaitCur(), show=!!a && card.hidden;
+  clearInterval(expAwaitTick); expAwaitTick=0;
+  if(!show){
+    if(!chip.hidden && chip.contains(document.activeElement)){ const b=$("#bCopy"); if(b && b.getClientRects().length) focusWithoutScrolling(b); }
+    chip.hidden=true; chip.classList.remove("pulse"); return;
+  }
+  const name=currentFileName || t("doc.untitled");
+  $("#expChipName").textContent=name;
+  $("#expChipTime").textContent=relTime(a.at);
+  const tip=t("exp2.chipTip",{ kind:t(a.kind==="notes" ? "export.notes" : "export.full"), time:expAwaitTime(a.at) });
+  const go=$("#expChipGo");
+  go.title=name+"\n"+tip;
+  go.setAttribute("aria-label", t("exp2.cta")+" · "+name+" · "+relTime(a.at)+". "+tip);
+  chip.hidden=false;
+  if(pulse){ chip.classList.remove("pulse"); void chip.offsetWidth; chip.classList.add("pulse"); }
+  if(document.visibilityState!=="hidden") expAwaitTick=setInterval(()=>expAwaitSync(false), 60000);
 }
 function expShowDone(r){
   expLast=r;
+  if(!r.fail) expAwaitFromExport(r.mode, r.file ? "download" : "copy");
   const card=$("#expDone"), raw=r.mode==="raw", quiet=EXP.quiet && !r.fail;
   $("#expChip").hidden=true;
   $("#expDoneTitle").textContent = r.fail ? t("exp2.failTitle")
@@ -5025,23 +5098,26 @@ function expShowDone(r){
   $("#expDoneNote").textContent=notes.join(" · "); $("#expDoneNote").hidden=!notes.length;
   card.classList.remove("anim"); void card.offsetWidth; card.classList.add("anim");
   card.hidden=false;
-  expHold=card.matches(":hover");
-  expArm(quiet && raw ? 5000 : 10000);
+  expAwaitDoc=isSampleMode ? "@demo" : LIB.activeId || null;
+  expAwaitSync(false);                    // hides the chip while the card is up
 }
-// the card folds into the corner chip (kept until the AI result is pasted back or ×)
+// the card folds into the corner chip (no timer: on ×, Esc or when the tab is left);
+// the chip then shows only while the current document awaits the AI result
 function expCollapse(){
-  clearTimeout(expT);
   const card=$("#expDone"); if(card.hidden) return;
   const hadFocus=card.contains(document.activeElement);
-  card.hidden=true; expHold=false;
-  const chip = expLast && !expLast.fail && expLast.mode!=="raw";
-  $("#expChip").hidden=!chip;
+  card.hidden=true;
+  expAwaitSync(false);
   if(hadFocus){
-    if(chip) $("#expChipGo").focus();
+    if(!$("#expChip").hidden) $("#expChipGo").focus();
     else { const b=$("#bCopy"); if(b && b.getClientRects().length) focusWithoutScrolling(b); }
   }
 }
-function expDismissAll(){ clearTimeout(expT); $("#expDone").hidden=true; $("#expChip").hidden=true; expHold=false; }
+function expDismissAll(){
+  expAwaitClear([LIB.activeId]);
+  $("#expDone").hidden=true;
+  expAwaitSync(false);
+}
 (function expWireDone(){
   const card=$("#expDone");
   $("#expDoneX").addEventListener("click",expCollapse);
@@ -5063,16 +5139,18 @@ function expDismissAll(){ clearTimeout(expT); $("#expDone").hidden=true; $("#exp
   });
   $("#expChipGo").addEventListener("click",expOpenPaste);
   $("#expChipX").addEventListener("click",()=>{
-    $("#expChip").hidden=true;
     const b=$("#bCopy"); if(b && b.getClientRects().length) focusWithoutScrolling(b);
+    expAwaitClear([LIB.activeId]);
+    expAwaitSync(false);
   });
-  // hovering or focusing the card pauses the countdown (WCAG 2.2.1)
-  const hold=v=>{ expHold=v; if(v) clearTimeout(expT); else if(!card.hidden) expArm(6000); };
-  card.addEventListener("mouseenter",()=>hold(true));
-  card.addEventListener("mouseleave",()=>{ if(!card.contains(document.activeElement)) hold(false); });
-  card.addEventListener("focusin",()=>hold(true));
-  card.addEventListener("focusout",e=>{ if(!card.contains(e.relatedTarget) && !card.matches(":hover")) hold(false); });
+  $("#expChip").addEventListener("animationend",e=>{ if(e.animationName==="exp-pulse") $("#expChip").classList.remove("pulse"); });
   card.addEventListener("keydown",e=>{ if(e.key==="Escape"){ e.stopPropagation(); expCollapse(); } });
+  // leaving the tab (for the AI) folds the card; coming back shows the chip with one pulse
+  document.addEventListener("visibilitychange",()=>{
+    if(document.visibilityState==="hidden"){ clearInterval(expAwaitTick); expAwaitTick=0; if(!card.hidden) expCollapse(); }
+    else expAwaitSync(true);
+  });
+  // a reload restores the chip of an awaiting document via updateWorkspaceChrome() once the library is loaded
   // dispatched after an AI result was pasted back
   const pasted=()=>expDismissAll();
   window.addEventListener("mde:ai-pasted",pasted);
@@ -6929,6 +7007,7 @@ async function libDeleteMany(ids){
   if(!items.length) return;
   const gone = new Set(items.map(i => i.meta.id));
   gone.forEach(id => libGoneIds.add(id));
+  try{ expAwaitClear([...gone]); }catch(e){}              // a deleted document no longer awaits an AI result
   LIB.docs = LIB.docs.filter(d => !gone.has(d.id));
   if(activeWas && gone.has(activeWas)){ LIB.activeId = null; libFp = ""; }
   await libWriteIndex();                                  // the index first: a failure below leaves an orphan, never a ghost
@@ -8339,9 +8418,12 @@ function aiTrapFocus(ov, getReturn, onClose){
   // Ctrl+V of an mdeverything answer anywhere outside a text field opens the dialog
   document.addEventListener("paste",e=>{
     if(w5IsTyping(e.target) || w5IsTyping(document.activeElement)) return;
-    if(w5DialogOpen() || mdeIsOpen() || !ANN.length) return;
+    if(w5DialogOpen() || mdeIsOpen()) return;
     const t=e.clipboardData ? e.clipboardData.getData("text/plain") : "";
-    if(!t || !AI_DETECT.test(t)) return;
+    if(!t || !t.trim()) return;
+    // while this document awaits the AI result, any pasted text (answers or a revised document) opens the dialog
+    if(expAwaitCur()){ e.preventDefault(); window.openPasteAiResult(t); return; }
+    if(!ANN.length || !AI_DETECT.test(t)) return;
     e.preventDefault();
     aiOpenPaste(t);
   });

@@ -132,7 +132,8 @@
     "noteMark": "Old text struck through, new text in purple",
     "noteAnswer": "Answers will appear under each comment",
     "hideSteps": "Don't show these steps again",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "chipTip": "You exported {kind} at {time}"
   },
   "home": {
     "hideTitle": "Hide the intro and keep the demo",

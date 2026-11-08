@@ -132,7 +132,8 @@
     "noteMark": "Chỗ cũ gạch ngang, chỗ mới tô tím",
     "noteAnswer": "Câu trả lời sẽ hiện dưới từng comment",
     "hideSteps": "Không hiện hướng dẫn nữa",
-    "dismiss": "Đóng"
+    "dismiss": "Đóng",
+    "chipTip": "Bạn đã export {kind} lúc {time}"
   },
   "home": {
     "hideTitle": "Ẩn phần giới thiệu, giữ lại bản demo",

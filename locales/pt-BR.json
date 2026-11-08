@@ -132,7 +132,8 @@
     "noteMark": "Texto antigo riscado, texto novo em roxo",
     "noteAnswer": "As respostas vão aparecer sob cada comentário",
     "hideSteps": "Não mostrar mais estes passos",
-    "dismiss": "Fechar"
+    "dismiss": "Fechar",
+    "chipTip": "Você exportou {kind} às {time}"
   },
   "home": {
     "hideTitle": "Ocultar a introdução e manter a demo",

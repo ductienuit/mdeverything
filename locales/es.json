@@ -132,7 +132,8 @@
     "noteMark": "Texto anterior tachado, texto nuevo en morado",
     "noteAnswer": "Las respuestas aparecerán debajo de cada comentario",
     "hideSteps": "No volver a mostrar estos pasos",
-    "dismiss": "Cerrar"
+    "dismiss": "Cerrar",
+    "chipTip": "Exportaste {kind} a las {time}"
   },
   "home": {
     "hideTitle": "Ocultar la introducción y mantener la demo",
