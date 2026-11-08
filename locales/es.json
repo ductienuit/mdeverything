@@ -199,6 +199,22 @@
     "rendering": "Generando diagrama…",
     "error": "No se pudo leer el diagrama; se muestra el código."
   },
+  "diag": {
+    "add": "Comentar",
+    "addAria": "Comentar en “{label}”",
+    "wrapAria": "Diagrama {n}. Usa las flechas para elegir una forma y Enter para comentar.",
+    "cardQuote": "Diagrama {n} · “{label}”",
+    "cardWhole": "Diagrama {n}",
+    "location": "diagrama {n} ({type}) · {shape} “{label}”",
+    "locationWhole": "diagrama {n} ({type})",
+    "bundleMermaid": "Mermaid: {code}",
+    "shapeNode": "nodo",
+    "shapeEdge": "etiqueta de flecha",
+    "shapeGroup": "grupo",
+    "shapeParticipant": "participante",
+    "shapeMessage": "mensaje",
+    "shapeNote": "nota"
+  },
   "outline": {
     "untitled": "Sección sin título",
     "title": "En esta página",

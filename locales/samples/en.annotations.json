@@ -37,5 +37,14 @@
         "edits": [{ "kind": "quote", "text": "every suggested edit appears as a tracked change you can accept or reject in one click" }]
       }
     ]
+  },
+  {
+    "kind": "diagram",
+    "diagram": 0,
+    "quote": "Your AI",
+    "label": "Your AI",
+    "shape": "node",
+    "mermaidLine": "E --> F[Your AI]",
+    "note": "Example — comment on a diagram. Hover any box or arrow label to comment on it; the export quotes this Mermaid line. Rename this step so it's clear any assistant works."
   }
 ]

@@ -1482,6 +1482,36 @@ body.no-notes:not(.outline-hidden) .rail{grid-column:2}
 #doc .w3-block-target{ outline:2px dashed var(--hl-line); outline-offset:3px; border-radius:3px; }
 @media (hover:none), (max-width:760px){ .w3-gutter{ display:none !important; } }
 /* ==[/W3]== */
+
+/* ==[DIAGRAM CSS]== comments on Mermaid diagram shapes: overlay outline, badge, hover "+ Comment" */
+#doc .mermaid-wrap{ position:relative; }
+#doc .mermaid-wrap:focus{ outline:none; }
+#doc .mermaid-wrap:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+#doc .dg-layer{ position:absolute; left:0; top:0; width:0; height:0; pointer-events:none; z-index:2; text-align:left; }
+#doc mark.hl.dg-hl{ position:absolute; display:block; padding:0; margin:0; pointer-events:auto; cursor:pointer;
+  background:color-mix(in srgb, var(--hl) 70%, transparent); border-radius:6px;
+  box-shadow:0 0 0 2px var(--hl-line); transition:background .12s, box-shadow .12s; }
+#doc mark.hl.dg-hl:hover, #doc mark.hl.dg-hl.on{ background:var(--hl-active); box-shadow:0 0 0 2.5px var(--hl-line); }
+#doc mark.hl.dg-hl.pulse{ animation:dgPulse .85s ease-out; }
+@keyframes dgPulse{ 0%{ box-shadow:0 0 0 2px var(--hl-line), 0 0 0 7px var(--hl-active); } 100%{ box-shadow:0 0 0 2px var(--hl-line), 0 0 0 0 transparent; } }
+#doc mark.hl.dg-hl.dg-pending{ visibility:hidden; pointer-events:none; width:0; height:0; }
+#doc mark.hl.dg-hl > .hl-badge{ position:absolute; top:-9px; right:calc(-9px + var(--dg-k, 0) * 18px);
+  margin:0; vertical-align:baseline; box-shadow:0 0 0 2px var(--paper); }
+#doc mark.hl.dg-hl > .hl-badge.on{ box-shadow:0 0 0 2px var(--accent-soft); }
+#doc .dg-hover{ position:absolute; border:2px dashed var(--hl-line); border-radius:6px; pointer-events:none;
+  visibility:hidden; opacity:0; transition:opacity .12s; }
+#doc .dg-hover.show{ visibility:visible; opacity:1; }
+#doc .dg-add{ position:absolute; display:inline-flex; align-items:center; gap:4px; height:24px; padding:0 9px 0 7px;
+  border:none; border-radius:999px; background:var(--accent); color:var(--accent-contrast);
+  font:600 12px/1 var(--font-ui); white-space:nowrap; cursor:pointer; box-shadow:var(--shadow-md);
+  pointer-events:auto; visibility:hidden; opacity:0; transform:translateY(2px); transition:opacity .12s, transform .12s; }
+#doc .dg-add.show{ visibility:visible; opacity:1; transform:none; }
+#doc .dg-add:hover{ background:var(--accent-strong); }
+#doc .dg-add:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
+#doc .dg-add svg{ width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2.4; stroke-linecap:round; }
+@media (hover:none){ #doc .dg-add{ height:30px; padding:0 12px 0 10px; font-size:13px; } }
+@media (prefers-reduced-motion:reduce){ #doc .dg-add, #doc .dg-hover, #doc mark.hl.dg-hl{ transition:none; } #doc mark.hl.dg-hl.pulse{ animation:none; } }
+/* ==[/DIAGRAM CSS]== */
 </style>
 
 <style>
@@ -2917,6 +2947,7 @@ function sampleAnnotations(){
       prefix:typeof n.prefix==="string" ? n.prefix : s>=0 ? SAMPLE.slice(Math.max(0,s-CTX),s) : "",
       suffix:typeof n.suffix==="string" ? n.suffix : s>=0 ? SAMPLE.slice(e,e+CTX) : "",
       note:n.note,
+      ...(n.kind==="diagram" ? {kind:"diagram", diagram:n.diagram|0, label:n.label||n.quote, shape:n.shape||"node", mermaidLine:n.mermaidLine||""} : {}),
       // a reply is a string, or an object (the demo AI answer with its suggested edit)
       replies:(n.replies||[]).map((x,k,all)=>{
         const r = typeof x==="string" ? {text:x} : {...x, edits:(x.edits||[]).map(e=>({...e}))};
@@ -3216,6 +3247,7 @@ async function drawMermaid(){
       w.innerHTML='<div class="mmd-errmsg">'+esc(t("mermaid.error"))+'</div><pre>'+esc(src)+'</pre>';
     }
   }
+  try{ dgAfterDraw(); }catch(e){ console.error(e); }   // DIAGRAM: re-anchor notes on diagram shapes
   layoutCards();   // diagram heights changed → re-anchor the notes
   applyViewportLock();
 }
@@ -3228,10 +3260,12 @@ function renderDoc(){
   enhanceCodeBlocks();                 // code header + copy button (excluded from anchoring)
   const T = anchorText(doc);
   ANN.forEach(a=>{
+    if(a.kind==="diagram") return;     // anchored on the rendered SVG (DIAGRAM region)
     const s=findStart(T,a);
     a.resolved = s!==-1;
     if(s!==-1){ wrapRange(doc, s, s+a.quote.length, a.id); bindMarkClicks(a.id); }
   });
+  try{ dgPrep(); }catch(e){ console.error(e); }   // provisional diagram marks until the SVG is drawn
   renumber();                          // reading-order numbering + badges + section paths
   renderCards(); save();
   onDocRendered();                     // feature hooks: outline, comment gutter (see region stubs)
@@ -3277,6 +3311,7 @@ function renumber(){
     if(badge.parentNode!==host) host.appendChild(badge);   // keep badge on the last mark
     badge.textContent=String(i+1);
   });
+  if(typeof dgAfterRenumber==="function") dgAfterRenumber();   // stacked badges on a shared diagram shape
 }
 
 /* P2 polish: entrance animation for a new card + a brief pulse on its highlight */
@@ -3334,7 +3369,7 @@ function renderCards(){
     c.innerHTML =
       `<div class="c-top">
          <span class="badge">${i+1}</span>
-         <span class="c-quote">${esc(a.quote)}</span>
+         <span class="c-quote">${esc(annQuote(a))}</span>
          ${warn}
          <button class="c-editbtn" title="${te("card.editNote")}" aria-label="${te("card.editNote")}">✎</button>
          <button class="c-del" title="${te("card.deleteNote")}">×</button>
@@ -3373,7 +3408,7 @@ function renderCards(){
     }
     c.tabIndex = 0;
     c.setAttribute("role","button");
-    c.setAttribute("aria-label", a.note ? t("card.ariaNote",{n:i+1,quote:a.quote}) : t("card.ariaEmpty",{n:i+1,quote:a.quote}));
+    c.setAttribute("aria-label", a.note ? t("card.ariaNote",{n:i+1,quote:annQuote(a)}) : t("card.ariaEmpty",{n:i+1,quote:annQuote(a)}));
 
     // delete is immediate; the toast offers Undo (restoreAnn re-anchors the note in place)
     const del=c.querySelector(".c-del");
@@ -3512,10 +3547,13 @@ function restoreAnn(snap){
   if(!snap || !snap.id || annById(snap.id)) return false;
   const a=normAnn(JSON.parse(JSON.stringify(snap)));
   ANN.push(a);
-  const T=anchorText(doc);
-  const s=findStart(T,a);
-  a.resolved=s!==-1;
-  if(s!==-1){ wrapRange(doc, s, s+a.quote.length, a.id); bindMarkClicks(a.id); }
+  if(a.kind==="diagram") a.resolved=dgResolve(a);   // DIAGRAM: back onto its shape
+  else {
+    const T=anchorText(doc);
+    const s=findStart(T,a);
+    a.resolved=s!==-1;
+    if(s!==-1){ wrapRange(doc, s, s+a.quote.length, a.id); bindMarkClicks(a.id); }
+  }
   renumber();
   renderCards(); save();
   if(a.resolved){ pulseMark(a.id); focusCard(a.id,true); }
@@ -3703,6 +3741,7 @@ const POP={ mode:null, id:null, anchor:null, group:[], isNew:false, armT:null };
 const annById=id=>ANN.find(a=>a.id===id);
 // all annotation ids whose highlight covers the hovered point (self + nested + ancestors)
 function marksAtPoint(mark){
+  if(mark.classList.contains("dg-hl")) return dgMarksAt(mark);   // notes sharing one diagram shape
   const ids=new Set();
   let el=mark;
   while(el && el.classList && el.classList.contains("hl")){
@@ -3737,7 +3776,7 @@ function showHlPop(mark){
     const row=document.createElement("div"); row.className="pop-row"; row.tabIndex=0;
     row.innerHTML=`<span class="pop-badge"></span><div class="pop-body"><div class="pop-quote"></div><div class="pop-note"></div><div class="pop-meta"></div></div>`;
     row.querySelector(".pop-badge").textContent=num;
-    row.querySelector(".pop-quote").textContent=a.quote;
+    row.querySelector(".pop-quote").textContent=annQuote(a);
     const note=row.querySelector(".pop-note");
     note.textContent=a.note || t("pop.noNoteClick");
     if(!a.note) note.classList.add("muted");
@@ -3829,7 +3868,7 @@ function openComposer(id,{isNew=false}={}){
        <button type="button" class="mini cancel">${te("common.cancel")}</button><button type="button" class="mini save">${te("common.save")}</button></div>`;
   hlPop.querySelector(".pop-badge").textContent=ANN.indexOf(a)+1;
   hlPop.querySelector(".pc-title").textContent=isNew?t("pop.newNote"):t("card.editNote");
-  hlPop.querySelector(".pc-quote").textContent=a.quote;
+  hlPop.querySelector(".pc-quote").textContent=annQuote(a);
   const ta=hlPop.querySelector(".pc-ta");
   ta.value=a.note||"";
   const autoGrow=()=>{ ta.style.height="auto"; ta.style.height=Math.min(ta.scrollHeight,260)+"px"; };
@@ -3915,7 +3954,7 @@ function renderPop(){
       sw.appendChild(b);
     });
   } else sw.remove();
-  hlPop.querySelector(".pc-quote").textContent=a.quote;
+  hlPop.querySelector(".pc-quote").textContent=annQuote(a);
   const note=hlPop.querySelector(".pc-note");
   note.textContent=a.note||t("pop.noNote");
   if(!a.note) note.classList.add("muted");
@@ -4056,12 +4095,14 @@ function buildBundle(incDoc){
   ANN.forEach((a,i)=>{
     const loc=[];
     if(a.section) loc.push(t("bundle.section",{name:clean(a.section)}));
-    const ln=sourceLine(a.quote); if(ln) loc.push(t("bundle.line",{n:ln}));
+    if(a.kind==="diagram") loc.push(dgLocation(a));   // diagram 2 (flowchart) · node “…”
+    const ln=a.kind==="diagram" ? dgSourceLine(a) : sourceLine(a.quote); if(ln) loc.push(t("bundle.line",{n:ln}));
     if(a.resolved===false) loc.push(t("bundle.notFound"));
     // with AI replies on: [NEW] / [FOLLOW-UP] / [ANSWERED] tells the AI which notes to answer this round
     L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${fmt?" ["+aiNoteStatus(a)+"]":""}${loc.length?" "+t("bundle.location")+" "+loc.join(" · "):""}`);
     L.push(t("bundle.quoted"),`"""`,clean(a.quote),`"""`);
-    L.push(`${t("bundle.context")} …${clean(a.prefix)} 〈${clean(a.quote)}〉 ${clean(a.suffix)}…`);
+    if(a.kind==="diagram"){ if(a.mermaidLine) L.push(t("diag.bundleMermaid",{code:a.mermaidLine})); }   // the shape's Mermaid source line
+    else L.push(`${t("bundle.context")} …${clean(a.prefix)} 〈${clean(a.quote)}〉 ${clean(a.suffix)}…`);
     L.push(t("bundle.note"),`"""`,(a.note||t("bundle.noNote")),`"""`);
     const reps=Array.isArray(a.replies)?a.replies:[];
     if(reps.length){
@@ -4542,6 +4583,7 @@ function normAnn(a){
   const seen=new Set();                // ids must be unique within a thread
   a.replies.forEach(r=>{ if(seen.has(r.id)) r.id=newReplyId(r.ts); seen.add(r.id); });
   delete a.done;                     // the resolve feature was removed; drop old flags
+  if(a.kind==="diagram") dgNormAnn(a); // DIAGRAM: diagram index + label
   return a;
 }
 
@@ -4618,6 +4660,388 @@ function refreshGutter(){
   if(POP.mode) closePop(true);
 }
 /* ==[/W3]== */
+
+/* ==[DIAGRAM]== comments on Mermaid diagram shapes (nodes, edge labels, subgraph titles,
+   sequence participants / messages / notes, class / state / mindmap labels).
+   A diagram note is { id, kind:"diagram", diagram:<index among .mermaid-wrap>, label, quote:label,
+   shape:"node"|"edge"|…, mermaidLine, note, replies }. Its "highlight" is an absolutely positioned
+   <mark class="hl dg-hl"> in a .dg-layer overlay inside the (.no-anchor) .mermaid-wrap, so every
+   mark-based feature (numbering, badges, hover preview, pinned card, panel layout, J/K) works
+   unchanged and no text node of #doc is touched. Marks are rebuilt after every Mermaid draw. */
+const DG_GROUPS="g.node, g.cluster, g.edgeLabel, g.mindmap-node";
+const DG_SHAPE_EL=":scope > rect, :scope > polygon, :scope > circle, :scope > ellipse";
+const dgNorm=s=>String(s||"").replace(/\s+/g," ").trim();
+const dgWraps=()=>[...doc.querySelectorAll(".mermaid-wrap")];
+let dgHover=null, dgHideT=0, dgSel=null;
+const dgObserved=new WeakSet();
+const dgRO = window.ResizeObserver ? new ResizeObserver(es=>es.forEach(e=>dgPosition(e.target))) : null;
+
+// visible text of a label element (HTML label in a foreignObject, or SVG <text>)
+function dgLabelOf(el){
+  if(el.namespaceURI==="http://www.w3.org/2000/svg" && el.tagName.toLowerCase()==="text"){
+    const ts=[...el.querySelectorAll("tspan")].filter(x=>!x.querySelector("tspan"));   // innermost only (mindmap nests them)
+    return dgNorm(ts.length ? ts.map(x=>x.textContent).join(" ") : el.textContent);
+  }
+  return dgNorm(el.innerText!=null && el.innerText!=="" ? el.innerText : el.textContent);
+}
+function dgLeaves(svg){
+  const cand=[...svg.querySelectorAll(".nodeLabel, span.edgeLabel, foreignObject, text")];
+  const isFoWithLabel=el=>el.tagName.toLowerCase()==="foreignobject" && el.querySelector(".nodeLabel, .edgeLabel");
+  const set=new Set(cand.filter(el=>!isFoWithLabel(el)));
+  return [...set].filter(el=>{
+    for(let p=el.parentElement; p && p!==svg; p=p.parentElement) if(set.has(p)) return false;   // nested label
+    return !!dgLabelOf(el);
+  });
+}
+function dgShapeKind(leaf, group){
+  const cls=n=>(n && n.getAttribute && n.getAttribute("class")) || "";
+  if(group && group.matches("g.edgeLabel")) return "edge";
+  if(group && group.matches("g.cluster")) return "group";
+  const c=cls(leaf);
+  if(/\bmessageText\b/.test(c)) return "message";
+  if(/\bnoteText\b/.test(c) || (leaf.parentNode && leaf.parentNode.querySelector && leaf.parentNode.querySelector(":scope > rect.note"))) return "note";
+  if(/\bactor\b/.test(c) || (leaf.parentNode && leaf.parentNode.querySelector && leaf.parentNode.querySelector(":scope > rect.actor"))) return "participant";
+  return "node";
+}
+// every commentable shape of a rendered diagram: { wrap, target, label, kind }
+function dgShapesOf(w){
+  const svg=w.querySelector(":scope > svg");
+  if(!svg || w.classList.contains("mmd-error")) return [];
+  const leaves=dgLeaves(svg), out=[];
+  const countIn=g=>leaves.filter(l=>g.contains(l)).length;
+  leaves.forEach(leaf=>{
+    const group=leaf.closest(DG_GROUPS);
+    let target;
+    if(group && group.matches("g.cluster")) target=leaf.closest(".cluster-label") || leaf;   // title only: never cover the nodes inside
+    else if(group && countIn(group)===1) target=group;
+    else if(leaf.tagName.toLowerCase()==="text"){
+      const p=leaf.parentNode;
+      target = (p && p.tagName && p.tagName.toLowerCase()==="g" && countIn(p)===1 && p.querySelector(DG_SHAPE_EL)) ? p : leaf;
+    } else target=leaf.closest("foreignObject") || leaf.closest("g.label") || leaf;   // one box per label (class members share a g.label)
+    if(out.some(s=>s.target===target)) return;
+    out.push({ wrap:w, target, label:dgLabelOf(leaf), kind:dgShapeKind(leaf, group) });
+  });
+  // no discoverable label (unsupported diagram type) → the whole diagram is one target
+  if(!out.length) out.push({ wrap:w, target:svg, label:"", kind:"diagram" });
+  return out;
+}
+function dgType(src){
+  let lines=String(src||"").split("\n").map(s=>s.trim()).filter(s=>s && !s.startsWith("%%"));
+  if(lines[0]==="---"){ const e=lines.indexOf("---",1); lines=e>0 ? lines.slice(e+1) : lines.slice(1); }
+  const kw=((lines[0]||"").match(/^[A-Za-z][\w-]*/)||[""])[0];
+  const map={ graph:"flowchart", flowchart:"flowchart", "flowchart-elk":"flowchart", sequenceDiagram:"sequence",
+    classDiagram:"class", "classDiagram-v2":"class", stateDiagram:"state", "stateDiagram-v2":"state",
+    erDiagram:"er", gitGraph:"git", mindmap:"mindmap" };
+  return map[kw] || kw.toLowerCase() || "diagram";
+}
+// the source line of the diagram that carries the label (best effort)
+function dgFindLine(src, label){
+  if(!label) return "";
+  const L=dgNorm(label).toLowerCase();
+  const clean=s=>dgNorm(s.replace(/<br\s*\/?>/gi," ").replace(/&nbsp;|#nbsp;/g," ").replace(/["`]/g,"")).toLowerCase();
+  const hit=String(src||"").split("\n").find(l=>clean(l).includes(L));
+  return hit ? hit.trim() : "";
+}
+function dgNormAnn(a){
+  a.diagram=Math.max(0, parseInt(a.diagram,10)||0);
+  a.label=dgNorm(typeof a.label==="string" ? a.label : a.quote);
+  if(typeof a.quote!=="string" || !a.quote) a.quote=a.label || "diagram";
+  if(typeof a.mermaidLine!=="string") a.mermaidLine="";
+  if(typeof a.shape!=="string") a.shape=a.label ? "node" : "diagram";
+  if(typeof a.prefix!=="string") a.prefix="";
+  if(typeof a.suffix!=="string") a.suffix="";
+}
+// label used for a note everywhere a passage quote is shown (cards, popover)
+function annQuote(a){
+  if(!a || a.kind!=="diagram") return a ? a.quote : "";
+  return a.label ? t("diag.cardQuote",{n:a.diagram+1, label:a.label}) : t("diag.cardWhole",{n:a.diagram+1});
+}
+function dgShapeName(kind){
+  const k={node:"shapeNode", edge:"shapeEdge", group:"shapeGroup", participant:"shapeParticipant", message:"shapeMessage", note:"shapeNote"}[kind]||"shapeNode";
+  return t("diag."+k);
+}
+// export: Location part, e.g. diagram 2 (flowchart) · node “Export for AI”
+function dgLocation(a){
+  const w=dgWraps()[a.diagram], type=dgType(w ? w.dataset.src : dgSrcBlocks()[a.diagram]);
+  return a.label ? t("diag.location",{n:a.diagram+1, type, shape:dgShapeName(a.shape), label:a.label})
+                 : t("diag.locationWhole",{n:a.diagram+1, type});
+}
+// Mermaid fences in the Markdown source: [{start (offset of the body), body}]
+function dgSrcFences(){
+  const out=[], re=/^[ \t]*(```|~~~)[ \t]*mermaid\b[^\n]*\n([\s\S]*?)^[ \t]*\1[ \t]*$/gm;
+  let m; while((m=re.exec(SRC))) out.push({ start:m.index+m[0].indexOf("\n")+1, body:m[2] });
+  return out;
+}
+function dgSrcBlocks(){ return dgSrcFences().map(f=>f.body); }
+// offset of the note's Mermaid line in SRC (inside its own fence when possible)
+function dgLineOffset(a){
+  if(!a.mermaidLine) return -1;
+  const f=dgSrcFences()[a.diagram];
+  if(f){ const i=f.body.indexOf(a.mermaidLine); if(i>=0) return f.start+i; }
+  return SRC.indexOf(a.mermaidLine);
+}
+function dgSourceLine(a){
+  const o=dgLineOffset(a);
+  return o<0 ? null : SRC.slice(0,o).split("\n").length;
+}
+// AI "quote" edits on a diagram note rewrite the label inside its Mermaid line
+function dgLocateSrc(a){
+  const o=dgLineOffset(a); if(o<0 || !a.quote) return null;
+  const i=a.mermaidLine.indexOf(a.quote);
+  return i<0 ? null : o+i;
+}
+
+/* ---- overlay layer + marks ---- */
+function dgLayer(w){
+  let L=w.querySelector(":scope > .dg-layer");
+  if(!L){ L=document.createElement("div"); L.className="dg-layer"; w.appendChild(L); }
+  return L;
+}
+function dgRectIn(w, el){
+  const wr=w.getBoundingClientRect(), r=el.getBoundingClientRect(), pad=3;
+  return { left:r.left-wr.left-w.clientLeft+w.scrollLeft-pad, top:r.top-wr.top-w.clientTop+w.scrollTop-pad,
+           width:r.width+pad*2, height:r.height+pad*2 };
+}
+function dgPlace(el, w, target){
+  const R=dgRectIn(w, target);
+  el.style.left=R.left+"px"; el.style.top=R.top+"px"; el.style.width=R.width+"px"; el.style.height=R.height+"px";
+}
+function dgMakeMark(a, w, shape){
+  const m=document.createElement("mark");
+  m.className="hl dg-hl"+(shape ? "" : " dg-pending"); m.dataset.id=a.id;
+  if(shape){ m._dgTarget=shape.target; m.setAttribute("aria-hidden","true"); }
+  dgLayer(w).appendChild(m);
+  if(shape) dgPlace(m, w, shape.target);
+  bindMarkClicks(a.id);
+  return m;
+}
+function dgRemoveMarks(id){
+  doc.querySelectorAll(`.dg-layer mark.hl[data-id="${id}"]`).forEach(m=>m.remove());
+}
+// reading order inside one diagram: top → bottom, then left → right
+function dgSortLayer(L){
+  const ms=[...L.querySelectorAll(":scope > mark.dg-hl")];
+  ms.sort((x,y)=>(Math.round(parseFloat(x.style.top)||0)-Math.round(parseFloat(y.style.top)||0)) || ((parseFloat(x.style.left)||0)-(parseFloat(y.style.left)||0)));
+  ms.forEach(m=>L.appendChild(m));
+}
+// several notes on one shape: offset their badges so all numbers stay visible
+function dgAfterRenumber(){
+  doc.querySelectorAll(".dg-layer").forEach(L=>{
+    const seen=new Map();
+    L.querySelectorAll(":scope > mark.dg-hl").forEach(m=>{
+      const k=seen.get(m._dgTarget)||0; seen.set(m._dgTarget,k+1);
+      m.style.setProperty("--dg-k",k);
+    });
+  });
+}
+function dgMarksAt(mark){
+  const tg=mark._dgTarget;
+  if(!tg) return [mark.dataset.id];
+  return [...mark.parentNode.querySelectorAll(":scope > mark.dg-hl")].filter(m=>m._dgTarget===tg).map(m=>m.dataset.id);
+}
+function dgPosition(w){
+  if(!w || !w.isConnected) return;
+  w.querySelectorAll(":scope > .dg-layer > mark.dg-hl").forEach(m=>{ if(m._dgTarget && m._dgTarget.isConnected) dgPlace(m, w, m._dgTarget); });
+  if(dgHover && dgHover.wrap===w) dgShowHover(dgHover);
+}
+// find the shape for a note: same label in diagram #index, else a unique label across diagrams
+function dgFind(a, wraps){
+  wraps=wraps||dgWraps();
+  const w=wraps[a.diagram];
+  if(!a.label){ const svg=w && !w.classList.contains("mmd-error") && w.querySelector(":scope > svg"); return svg ? { wrap:w, target:svg, label:"", kind:"diagram" } : null; }
+  const pick=list=>list.find(s=>s.kind===a.shape) || list[0];
+  const own=w ? (w._dgShapes||[]).filter(s=>s.label===a.label) : [];
+  if(own.length) return pick(own);
+  const all=[]; wraps.forEach((x,i)=>(x._dgShapes||[]).forEach(s=>{ if(s.label===a.label) all.push({s,i}); }));
+  const idx=new Set(all.map(x=>x.i));
+  if(idx.size===1){ a.diagram=all[0].i; return pick(all.map(x=>x.s)); }
+  return null;
+}
+// (re)anchor one diagram note on the drawn SVG; returns whether it landed
+function dgResolve(a){
+  dgRemoveMarks(a.id);
+  const sh=dgFind(a);
+  if(!sh) return false;
+  dgMakeMark(a, sh.wrap, sh);
+  dgSortLayer(dgLayer(sh.wrap));
+  return true;
+}
+// before the async draw: provisional (invisible) marks for notes whose label is in the diagram source,
+// so numbering, the panel and the editor's "lost" count are right straight away
+function dgPrep(){
+  const wraps=dgWraps();
+  const has=(w,a)=>!a.label || dgFindLine(w.dataset.src, a.label)!=="" || dgNorm(w.dataset.src).toLowerCase().includes(a.label.toLowerCase());
+  ANN.forEach(a=>{
+    if(a.kind!=="diagram") return;
+    normAnn(a);
+    let w=wraps[a.diagram];
+    if(!w || !has(w,a)){ const c=wraps.filter(x=>a.label && has(x,a)); w = c.length===1 ? c[0] : null; }
+    a.resolved=!!w;
+    if(w) dgMakeMark(a, w, null);
+  });
+}
+// after every Mermaid draw / re-theme: index the shapes, re-anchor every diagram note
+function dgAfterDraw(){
+  const wraps=dgWraps();
+  wraps.forEach(w=>{
+    w._dgShapes=dgShapesOf(w);
+    dgLayer(w);
+    const ok=w._dgShapes.length>0;
+    if(ok){
+      w.tabIndex=0;
+      w.setAttribute("role","group");
+      w.setAttribute("aria-label", t("diag.wrapAria",{n:wraps.indexOf(w)+1}));
+    } else { w.removeAttribute("tabindex"); w.removeAttribute("role"); w.removeAttribute("aria-label"); }
+    if(dgRO && !dgObserved.has(w)){ dgObserved.add(w); dgRO.observe(w); }
+  });
+  if(dgHover && !dgHover.wrap.isConnected) dgHover=null;
+  const sig=()=>ANN.map(a=>a.id+(a.resolved===false?"-":"+")).join();
+  const before=sig();
+  ANN.forEach(a=>{ if(a.kind==="diagram") dgResolve(a); });
+  renumber();
+  if(sig()!==before) renderCards();
+  else if(activeId) doc.querySelectorAll(`mark.dg-hl[data-id="${activeId}"]`).forEach(m=>m.classList.add("on"));
+  doc.querySelectorAll(".dg-layer .hl-badge").forEach(b=>b.classList.toggle("on", b.dataset.id===activeId));
+}
+
+/* ---- hover / keyboard: highlight a shape + "+ Comment" button ---- */
+function dgHoverEls(w){
+  const L=dgLayer(w);
+  let box=L.querySelector(":scope > .dg-hover"), btn=L.querySelector(":scope > .dg-add");
+  if(!box){ box=document.createElement("div"); box.className="dg-hover"; L.appendChild(box); }
+  if(!btn){
+    btn=document.createElement("button"); btn.type="button"; btn.className="dg-add";
+    btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span></span>';
+    btn.addEventListener("mousedown",e=>e.preventDefault());
+    btn.addEventListener("click",e=>{ e.stopPropagation(); if(dgHover) dgCommit(dgHover); });
+    btn.addEventListener("keydown",e=>{ if(e.key==="Escape"){ e.stopPropagation(); const ww=dgHover && dgHover.wrap; dgHideHover(); if(ww) focusWithoutScrolling(ww); } });
+    btn.addEventListener("blur",()=>{ setTimeout(()=>{ if(dgHover && !dgHover.wrap.contains(document.activeElement) && !dgHover.wrap.matches(":hover")) dgHideHover(); },0); });
+    L.appendChild(btn);
+  }
+  return {box, btn};
+}
+function dgShowHover(sh){
+  clearTimeout(dgHideT);
+  if(dgHover && dgHover.wrap!==sh.wrap) dgHideHover();
+  dgHover=sh;
+  const {box, btn}=dgHoverEls(sh.wrap);
+  dgPlace(box, sh.wrap, sh.target);
+  box.classList.add("show");
+  btn.querySelector("span").textContent=t("diag.add");
+  const lbl=sh.label || t("diag.cardWhole",{n:dgWraps().indexOf(sh.wrap)+1});
+  btn.setAttribute("aria-label", t("diag.addAria",{label:lbl}));
+  btn.title=btn.getAttribute("aria-label");
+  btn.classList.add("show");
+  // top-right corner of the shape, kept inside the diagram box
+  const R=dgRectIn(sh.wrap, sh.target), bw=btn.offsetWidth||90, bh=btn.offsetHeight||24;
+  const maxL=sh.wrap.scrollWidth-bw-4;
+  btn.style.left=Math.max(4, Math.min(maxL, R.left+R.width-bw+6))+"px";
+  btn.style.top=Math.max(4, R.top-bh-4)+"px";
+}
+function dgHideHover(){
+  clearTimeout(dgHideT);
+  if(dgHover){
+    const L=dgHover.wrap.querySelector(":scope > .dg-layer");
+    if(L) L.querySelectorAll(":scope > .dg-hover, :scope > .dg-add").forEach(x=>x.classList.remove("show"));
+  }
+  dgHover=null;
+}
+function dgShapeAt(node){
+  const w=node && node.closest ? node.closest(".mermaid-wrap") : null;
+  if(!w || !w._dgShapes || !doc.contains(w)) return null;
+  for(let el=node; el && el!==w; el=el.parentNode){
+    const s=w._dgShapes.find(x=>x.target===el && x.kind!=="diagram");
+    if(s) return s;
+  }
+  // whole-diagram target (unsupported type): anywhere on the SVG
+  const svg=w.querySelector(":scope > svg");
+  if(svg && svg.contains(node) && w._dgShapes.length===1 && w._dgShapes[0].kind==="diagram") return w._dgShapes[0];
+  return null;
+}
+doc.addEventListener("mouseover",e=>{
+  const t0=e.target;
+  if(!t0 || !t0.closest) return;
+  if(t0.closest(".dg-add")){ clearTimeout(dgHideT); return; }
+  const sh=dgShapeAt(t0);
+  if(sh){ if(!dgHover || dgHover.target!==sh.target) dgShowHover(sh); else clearTimeout(dgHideT); return; }
+  if(dgHover && document.activeElement && dgHover.wrap.contains(document.activeElement) && document.activeElement!==dgHover.wrap) return;   // keyboard focus on the button
+  if(dgHover){ clearTimeout(dgHideT); dgHideT=setTimeout(dgHideHover,260); }
+});
+doc.addEventListener("mouseleave",()=>{ if(dgHover){ clearTimeout(dgHideT); dgHideT=setTimeout(dgHideHover,260); } });
+// keyboard: focus a diagram, arrows pick a shape, Enter comments on it
+doc.addEventListener("keydown",e=>{
+  const w=e.target;
+  if(!w || !w.classList || !w.classList.contains("mermaid-wrap") || !w._dgShapes || !w._dgShapes.length) return;
+  const list=w._dgShapes;
+  if(["ArrowRight","ArrowDown","ArrowLeft","ArrowUp"].includes(e.key)){
+    e.preventDefault();
+    const dir=(e.key==="ArrowRight"||e.key==="ArrowDown") ? 1 : -1;
+    let i=dgHover && dgHover.wrap===w ? list.findIndex(s=>s.target===dgHover.target) : -1;
+    i = i<0 ? (dir>0 ? 0 : list.length-1) : (i+dir+list.length)%list.length;
+    dgShowHover(list[i]);
+    const r=list[i].target.getBoundingClientRect();
+    if(r.top<76 || r.bottom>window.innerHeight-20) list[i].target.scrollIntoView({block:"nearest"});
+  } else if(e.key==="Enter" && dgHover && dgHover.wrap===w){ e.preventDefault(); dgCommit(dgHover); }
+  else if(e.key==="Escape" && dgHover){ dgHideHover(); }
+});
+doc.addEventListener("focusout",e=>{
+  const w=e.target && e.target.classList && e.target.classList.contains("mermaid-wrap") ? e.target : null;
+  if(w && dgHover && dgHover.wrap===w && !w.contains(e.relatedTarget) && !w.matches(":hover")) dgHideHover();
+});
+// select text inside a label, then Enter → comment on that shape
+document.addEventListener("mouseup",()=>setTimeout(()=>{
+  const sel=window.getSelection();
+  dgSel=null;
+  if(!sel || sel.isCollapsed || !sel.toString().trim()) return;
+  const a=sel.anchorNode, f=sel.focusNode;
+  const sa=dgShapeAt(a && (a.nodeType===1 ? a : a.parentElement));
+  const sf=dgShapeAt(f && (f.nodeType===1 ? f : f.parentElement));
+  if(sa && sf && sa.target===sf.target){ dgSel=sa; dgShowHover(sa); }
+},0));
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter" || !dgSel || e.isComposing) return;
+  const sel=window.getSelection();
+  if(!sel || sel.isCollapsed || !dgSel.target.isConnected){ dgSel=null; return; }
+  e.preventDefault();
+  const sh=dgSel; dgSel=null; dgCommit(sh);
+});
+
+// a plain click (or tap) on a shape comments on it too
+doc.addEventListener("click",e=>{
+  const t0=e.target; if(!t0 || !t0.closest || t0.closest(".dg-add, mark.hl")) return;
+  const sel=window.getSelection(); if(sel && !sel.isCollapsed && sel.toString().trim()) return;
+  const sh=dgShapeAt(t0); if(sh) dgCommit(sh);
+});
+
+// new diagram note → the same inline composer as text notes
+function dgCommit(sh){
+  if(!sh || !sh.target.isConnected) return;
+  const wraps=dgWraps(), idx=wraps.indexOf(sh.wrap); if(idx<0) return;
+  const src=sh.wrap.dataset.src||"";
+  const quote=sh.label || (String(src).split("\n").map(s=>s.trim()).find(Boolean)||"diagram");
+  const a={ id:"a"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), kind:"diagram",
+    diagram:idx, label:sh.label, quote, shape:sh.kind, mermaidLine:dgFindLine(src, sh.label),
+    prefix:"", suffix:"", note:"", replies:[] };
+  ANN.push(a);
+  if(typeof markOnboarded==="function") markOnboarded();
+  activeId=a.id;
+  dgSel=null; dgHideHover(); hideFloater(); hideHlPop(true);
+  try{ window.getSelection().removeAllRanges(); }catch(e){}
+  dgMakeMark(a, sh.wrap, sh);
+  dgSortLayer(dgLayer(sh.wrap));
+  a.resolved=true;
+  renumber();
+  renderCards(); save();
+  pulseMark(a.id);
+  focusCard(a.id,false);
+  const m=doc.querySelector(`mark.hl[data-id="${a.id}"]`);
+  if(m){
+    const r=m.getBoundingClientRect();
+    if(r.top<84 || r.bottom>window.innerHeight-200) m.scrollIntoView({behavior:"auto", block:"center"});
+    openComposer(a.id,{isNew:true});
+  }
+}
+/* ==[/DIAGRAM]== */
 
 /* ==[W4 EDITOR]== owned by the editor workstream (also wires #bEdit) */
 /* Markdown source editor: toolbar + textarea + debounced live preview. It renders
@@ -7008,6 +7432,7 @@ function aiHunksEl(oldT, newT, max){
 /* ---------- locating edits in the Markdown source ---------- */
 // where the quoted (rendered) passage sits in the Markdown source; null when it isn't there verbatim
 function aiLocate(a){
+  if(a.kind==="diagram") return dgLocateSrc(a);   // the label inside its Mermaid source line
   const q=a.quote; if(!q) return null;
   const occ=[]; let i=-1;
   while((i=SRC.indexOf(q,i+1))!==-1) occ.push(i);

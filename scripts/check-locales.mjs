@@ -31,6 +31,14 @@ function checkSample(code) {
     const where = `${code}.annotations.json #${i + 1}`;
     if (!n || typeof n.quote !== "string" || !n.quote) return err(`${where}: missing "quote"`);
     if (typeof n.note !== "string" || !n.note.trim()) err(`${where}: missing "note"`);
+    if (n.kind === "diagram") {   // a note on a Mermaid shape: its label + source line live in a ```mermaid block
+      const blocks = [...md.matchAll(/^```mermaid[^\n]*\n([\s\S]*?)^```/gm)].map(m => m[1]);
+      const b = blocks[n.diagram | 0];
+      if (!b) return err(`${where}: diagram ${(n.diagram | 0) + 1} not found in ${code}.md`);
+      if (!b.includes(n.label || n.quote)) err(`${where}: label not in diagram ${(n.diagram | 0) + 1}: "${n.label || n.quote}"`);
+      if (n.mermaidLine && !b.includes(n.mermaidLine)) err(`${where}: mermaidLine not in diagram ${(n.diagram | 0) + 1}: "${n.mermaidLine}"`);
+      return;
+    }
     const count = md.split(n.quote).length - 1;
     if (count !== 1) err(`${where}: quote must occur exactly once in ${code}.md (found ${count}): "${n.quote}"`);
     if (/[*`|\[\]\n]/.test(n.quote)) err(`${where}: quote must be plain rendered text (no Markdown syntax / newline): "${n.quote}"`);

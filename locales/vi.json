@@ -199,6 +199,22 @@
     "rendering": "Đang vẽ sơ đồ…",
     "error": "Không đọc được sơ đồ — đang hiện mã nguồn."
   },
+  "diag": {
+    "add": "Bình luận",
+    "addAria": "Bình luận về “{label}”",
+    "wrapAria": "Sơ đồ {n}. Dùng phím mũi tên để chọn một ô, rồi nhấn Enter để bình luận.",
+    "cardQuote": "Sơ đồ {n} · ô “{label}”",
+    "cardWhole": "Sơ đồ {n}",
+    "location": "sơ đồ {n} ({type}) · {shape} “{label}”",
+    "locationWhole": "sơ đồ {n} ({type})",
+    "bundleMermaid": "Mermaid: {code}",
+    "shapeNode": "ô",
+    "shapeEdge": "nhãn mũi tên",
+    "shapeGroup": "nhóm",
+    "shapeParticipant": "đối tượng",
+    "shapeMessage": "thông điệp",
+    "shapeNote": "ghi chú"
+  },
   "outline": {
     "untitled": "Mục chưa đặt tên",
     "title": "Trên trang này",

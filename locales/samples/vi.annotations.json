@@ -37,5 +37,14 @@
         "edits": [{ "kind": "quote", "text": "mỗi đề xuất sửa hiện rõ chữ cũ và chữ mới để bạn chấp nhận hoặc từ chối chỉ bằng một cú bấm" }]
       }
     ]
+  },
+  {
+    "kind": "diagram",
+    "diagram": 0,
+    "quote": "AI của bạn",
+    "label": "AI của bạn",
+    "shape": "node",
+    "mermaidLine": "E --> F[AI của bạn]",
+    "note": "Ví dụ — bình luận trên sơ đồ. Rê chuột lên ô hay nhãn mũi tên bất kỳ để bình luận; bản export kèm đúng dòng Mermaid này. Đổi tên bước này để thấy rõ là AI nào cũng dùng được."
   }
 ]

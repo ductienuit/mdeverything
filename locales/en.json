@@ -199,6 +199,22 @@
     "rendering": "Rendering diagram…",
     "error": "Diagram didn’t parse — showing source."
   },
+  "diag": {
+    "add": "Comment",
+    "addAria": "Comment on “{label}”",
+    "wrapAria": "Diagram {n}. Use the arrow keys to pick a shape, then Enter to comment on it.",
+    "cardQuote": "Diagram {n} · “{label}”",
+    "cardWhole": "Diagram {n}",
+    "location": "diagram {n} ({type}) · {shape} “{label}”",
+    "locationWhole": "diagram {n} ({type})",
+    "bundleMermaid": "Mermaid: {code}",
+    "shapeNode": "node",
+    "shapeEdge": "edge label",
+    "shapeGroup": "group",
+    "shapeParticipant": "participant",
+    "shapeMessage": "message",
+    "shapeNote": "note"
+  },
   "outline": {
     "untitled": "Untitled section",
     "title": "On this page",

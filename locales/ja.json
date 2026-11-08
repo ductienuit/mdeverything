@@ -199,6 +199,22 @@
     "rendering": "図を描画中…",
     "error": "図を解析できませんでした — ソースを表示しています。"
   },
+  "diag": {
+    "add": "コメント",
+    "addAria": "「{label}」にコメント",
+    "wrapAria": "図 {n}。矢印キーで図形を選び、Enter でコメントします。",
+    "cardQuote": "図 {n} · 「{label}」",
+    "cardWhole": "図 {n}",
+    "location": "図 {n}（{type}）· {shape}「{label}」",
+    "locationWhole": "図 {n}（{type}）",
+    "bundleMermaid": "Mermaid: {code}",
+    "shapeNode": "ノード",
+    "shapeEdge": "矢印のラベル",
+    "shapeGroup": "グループ",
+    "shapeParticipant": "参加者",
+    "shapeMessage": "メッセージ",
+    "shapeNote": "ノート"
+  },
   "outline": {
     "untitled": "無題のセクション",
     "title": "このページの内容",

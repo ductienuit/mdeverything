@@ -199,6 +199,22 @@
     "rendering": "Renderizando diagrama…",
     "error": "Não foi possível ler o diagrama — mostrando o código."
   },
+  "diag": {
+    "add": "Comentar",
+    "addAria": "Comentar em “{label}”",
+    "wrapAria": "Diagrama {n}. Use as setas para escolher uma forma e Enter para comentar.",
+    "cardQuote": "Diagrama {n} · “{label}”",
+    "cardWhole": "Diagrama {n}",
+    "location": "diagrama {n} ({type}) · {shape} “{label}”",
+    "locationWhole": "diagrama {n} ({type})",
+    "bundleMermaid": "Mermaid: {code}",
+    "shapeNode": "nó",
+    "shapeEdge": "rótulo da seta",
+    "shapeGroup": "grupo",
+    "shapeParticipant": "participante",
+    "shapeMessage": "mensagem",
+    "shapeNote": "nota"
+  },
   "outline": {
     "untitled": "Seção sem título",
     "title": "Nesta página",

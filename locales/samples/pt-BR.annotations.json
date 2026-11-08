@@ -37,5 +37,14 @@
         "edits": [{ "kind": "quote", "text": "cada edição sugerida mostra o texto antigo e o novo para você aceitar ou rejeitar com um clique" }]
       }
     ]
+  },
+  {
+    "kind": "diagram",
+    "diagram": 0,
+    "quote": "Sua IA",
+    "label": "Sua IA",
+    "shape": "node",
+    "mermaidLine": "E --> F[Sua IA]",
+    "note": "Exemplo — comente um diagrama. Passe o mouse sobre qualquer caixa ou rótulo de seta para comentar; a exportação inclui esta linha do Mermaid. Renomeie esta etapa para deixar claro que qualquer assistente serve."
   }
 ]
