@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Round trip of the AI export format, per built language page:
-//   build the bundle (with "AI replies" on) → a sample AI answer (a quote edit, Replace/With, a question)
+//   build the bundle (with "Answer each comment" on) → a sample AI answer (a quote edit, Replace/With, a question)
 //   → parse it → every answer must reach the right note with the right edit kind.
 // The functions are taken from the BUILT page (index.html, <dir>/index.html) and run in a vm sandbox,
 // so this tests exactly what ships, including the embedded dictionary. Run after `node scripts/build.mjs`.
@@ -11,7 +11,7 @@ import assert from "node:assert/strict";
 import { LOCALES } from "./locales.mjs";
 import { rel, readText } from "./i18n-lib.mjs";
 
-const NEED = ["sourceLine", "buildBundle", "aiHash36", "aiNoteIds", "aiLatest", "aiEdits", "aiNoteStatus",
+const NEED = ["sourceLine", "buildBundle", "aiHash36", "aiNoteIds", "aiLatest", "aiEdits", "expRequests",
   "aiEditsSummary", "aiHowToAnswer", "aiHeadText", "aiCleanSection", "aiHeading", "aiTidy", "aiPartText",
   "aiUnfence", "aiEmptyMarker", "aiUnwrapSuggest", "aiBuildEdits", "aiParseAnswer", "aiEditsKey", "aiMatch"];
 
@@ -87,13 +87,21 @@ for (const loc of LOCALES) {
       { id: "a3", quote: "Contact sales", note: "Who do we contact exactly?", replies: [], section: "Limits", prefix: "", suffix: "" },
     ];
     api.set(SRC, ANN);
-    const bundle = api.buildBundle(true);
+    const bundle = api.buildBundle(true, { answer: true });
     const ids = api.aiNoteIds();
     // the AI instructions stay English everywhere; labels are localized
     assert.match(bundle, /^You are reviewing a Markdown document/, "English instructions");
     assert.match(bundle, /===== HOW TO ANSWER =====/);
     assert.match(bundle, /===== DOCUMENT \(markdown\) =====/);
-    for (const a of ANN) assert.ok(bundle.includes(`{#${ids.get(a.id)}} [NEW]`), `note ${a.id} tagged with id + [NEW]`);
+    ANN.forEach((a, i) => assert.ok(bundle.includes(`[${i + 1}] {#${ids.get(a.id)}}`), `note ${a.id} has its id`));
+    assert.ok(!/\[(?:NEW|FOLLOW-UP|ANSWERED)\]/.test(bundle), "no round tags");
+    assert.ok(!/REVIEWER'S INSTRUCTIONS/.test(bundle), "no requests section when nothing was asked");
+    // extra instructions + "mark the edits" go at the top of the instructions; without answers: no ids, no HOW TO ANSWER
+    const asked = api.buildBundle(true, { mark: true, extra: "Keep my tone" });
+    assert.match(asked, /===== REVIEWER'S INSTRUCTIONS =====\n\nKeep my tone\n\n/);
+    assert.ok(asked.includes(api.t("exp2.markPrompt")), "localized mark-the-edits sentence");
+    assert.ok(asked.indexOf("REVIEWER'S INSTRUCTIONS") < asked.indexOf("===== DOCUMENT"), "requests before the document");
+    assert.ok(!/\{#n/.test(asked) && !/HOW TO ANSWER/.test(asked), "plain format without answers");
     assert.ok(bundle.includes(api.t("bundle.quoted")), "localized 'Quoted passage' label");
     assert.ok(bundle.includes(api.t("bundle.replies", { n: 1 })), "localized 'Replies' label");
     if (loc.code === "en") assert.ok(!/UI language is/.test(bundle), "no UI-language line in English");
