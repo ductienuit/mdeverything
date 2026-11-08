@@ -2806,6 +2806,8 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
   .exp-prev-chev,.exp-card{transition:none}
 }
 /* ==[/EXP2 CSS]== */
+/* raw Markdown must show ~~, --, => as typed: no font ligatures in source boxes */
+.p2 textarea, textarea.big, .mde-ta, #mdeText{ font-variant-ligatures:none; font-feature-settings:"liga" 0, "calt" 0; }
 </style>
 </head>
 <body>
