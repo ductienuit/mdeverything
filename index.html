@@ -10134,7 +10134,8 @@ function lkShow(a){
   lkPop.style.display = "block"; lkPop.setAttribute("aria-hidden","false");
   lkPlace(a);
   a.setAttribute("aria-describedby","linkPop");
-  requestAnimationFrame(()=>lkPop.classList.add("show"));
+  void lkPop.offsetWidth;            // start the fade now (no rAF: nothing can cancel it in between)
+  lkPop.classList.add("show");
 }
 function lkHide(now){
   clearTimeout(lkShowT); clearTimeout(lkHideT); lkShowT = 0;
@@ -10176,7 +10177,14 @@ doc.addEventListener("focusout", e=>{
   clearTimeout(lkShowT); if(lkCur === a) lkHide(false);
 });
 lkPop.addEventListener("focusout", e=>{ if(!(e.relatedTarget && (lkPop.contains(e.relatedTarget) || e.relatedTarget === lkCur))) lkHide(false); });
-window.addEventListener("scroll", ()=>{ if(lkCur || lkShowT) lkHide(true); }, {passive:true, capture:true});
+// only the page scrolling (or the scroll box the link sits in) moves the link away from its preview —
+// other panes, sticky table headers, the outline etc. scrolling must not close it
+document.addEventListener("scroll", e=>{
+  if(!(lkCur || lkShowT)) return;
+  const t = e.target;
+  const linkEl = lkCur || null;
+  if(t === document || t === document.documentElement || t === document.body || (linkEl && t.contains && t.contains(linkEl))) lkHide(true);
+}, {passive:true, capture:true});
 window.addEventListener("resize", ()=>{ if(lkCur) lkHide(true); });
 
 /* ---- jump · flash · back ---- */
