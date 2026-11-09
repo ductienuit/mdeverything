@@ -761,6 +761,18 @@
     "comfortable": "Confortável",
     "resetDone": "Tamanhos da tabela redefinidos"
   },
+  "tview": {
+    "expand": "Expandir tabela",
+    "expandN": "Expandir tabela {n}",
+    "title": "Tabela {n}",
+    "rows": "{n, plural, one {# linha} other {# linhas}}",
+    "copyMd": "Copiar como Markdown",
+    "copyTsv": "Copiar para o Excel",
+    "close": "Fechar",
+    "copiedMd": "Tabela copiada como Markdown",
+    "copiedTsv": "Tabela copiada, pronta para colar no Excel ou Planilhas",
+    "copyFailed": "Não foi possível copiar a tabela"
+  },
   "pane": {
     "resizeOutline": "Redimensionar sumário",
     "resizeRail": "Redimensionar painel de comentários",

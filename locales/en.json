@@ -761,6 +761,18 @@
     "comfortable": "Comfortable",
     "resetDone": "Table sizes reset"
   },
+  "tview": {
+    "expand": "Expand table",
+    "expandN": "Expand table {n}",
+    "title": "Table {n}",
+    "rows": "{n, plural, one {# row} other {# rows}}",
+    "copyMd": "Copy as Markdown",
+    "copyTsv": "Copy for Excel",
+    "close": "Close",
+    "copiedMd": "Table copied as Markdown",
+    "copiedTsv": "Table copied, ready to paste into Excel or Sheets",
+    "copyFailed": "Couldn't copy the table"
+  },
   "pane": {
     "resizeOutline": "Resize outline",
     "resizeRail": "Resize comments panel",
