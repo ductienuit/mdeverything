@@ -753,6 +753,18 @@
     "comfortable": "Thoáng",
     "resetDone": "Đã đặt lại kích thước bảng"
   },
+  "tview": {
+    "expand": "Phóng to bảng",
+    "expandN": "Phóng to bảng {n}",
+    "title": "Bảng {n}",
+    "rows": "{n, plural, other {# hàng}}",
+    "copyMd": "Copy dạng Markdown",
+    "copyTsv": "Copy để dán vào Excel",
+    "close": "Đóng",
+    "copiedMd": "Đã copy bảng dạng Markdown",
+    "copiedTsv": "Đã copy bảng, dán được vào Excel hoặc Sheets",
+    "copyFailed": "Không copy được bảng"
+  },
   "pane": {
     "resizeOutline": "Đổi kích thước mục lục",
     "resizeRail": "Đổi kích thước bảng bình luận",

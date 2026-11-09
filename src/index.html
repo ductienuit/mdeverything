@@ -2583,6 +2583,67 @@ body.tbl-dragging.tbl-row.tbl-limit, body.tbl-dragging.tbl-row.tbl-limit *{ curs
 @media (max-width:768px){ .tbl-layer{ display:none!important; } }
 body.editing .tbl-layer{ display:none!important; }
 @media print{ .tbl-layer{ display:none!important; } }
+
+/* ---- tview: sticky first column (wide tables only), floating header clone, fullscreen view ---- */
+/* Wide tables (wrapper scrolls sideways): the first column stays put. Only position/background/shadow
+   change on existing cells; nothing is inserted into rows or cells. */
+#doc .table-scroll table.tv-wide > * > tr > :first-child{ position:sticky; left:0; z-index:1;
+  background-color:var(--paper); box-shadow:inset -1px 0 0 var(--line-strong); }
+#doc .table-scroll table.tv-wide > thead > tr > :first-child{ background-color:var(--surface-2); }
+#doc .table-scroll table.tv-wide > tbody > tr:nth-child(even) > td:first-child{ background-color:var(--row-alt); }
+
+/* Floating header: a visual copy of the real header row, outside #doc (not document text). */
+.tv-sticky{ position:fixed; left:0; top:0; z-index:24; overflow:hidden; pointer-events:none;
+  user-select:none; -webkit-user-select:none; background:var(--paper);
+  box-shadow:0 1px 0 var(--line-strong), 0 8px 14px -10px color-mix(in srgb, var(--ink) 38%, transparent); }
+.tv-sticky[hidden]{ display:none; }
+.tv-sticky .tv-c{ position:absolute; top:0; bottom:0; box-sizing:border-box; overflow:hidden; }
+.tv-sticky .tv-c.tv-first{ z-index:1; box-shadow:inset -1px 0 0 var(--line-strong); }
+.tv-sticky code{ font-family:var(--font-mono); font-size:.88em; }
+.tv-sticky a{ color:inherit; text-decoration:none; }
+body.editing .tv-sticky{ display:none!important; }
+@media print{ .tv-sticky{ display:none!important; } }
+
+/* expand button sits left of the "⋯" options button */
+.tbl-more.tbl-exp{ font-size:14px; letter-spacing:0; }
+
+/* Fullscreen table view */
+.tv-ov{ position:fixed; inset:0; z-index:70; display:flex; flex-direction:column; background:var(--app-bg); color:var(--ink); }
+.tv-bar{ flex:none; display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:10px 16px;
+  border-bottom:1px solid var(--line); background:var(--surface); font:13px/1.3 var(--font-ui); }
+.tv-ttl{ font-weight:600; font-size:14px; }
+.tv-meta{ color:var(--ink-faint); margin-right:auto; }
+.tv-btn{ display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 11px; border-radius:8px;
+  border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); font:500 13px/1 var(--font-ui); cursor:pointer; }
+.tv-btn:hover{ background:var(--surface-2); border-color:var(--line-strong); color:var(--ink); }
+.tv-btn:focus-visible,.tv-scroll:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.tv-btn.tv-x{ width:32px; padding:0; justify-content:center; font-size:18px; }
+.tv-scroll{ flex:1 1 auto; min-height:0; overflow:auto; margin:14px; border-radius:10px; background:var(--paper);
+  box-shadow:0 0 0 1px var(--line); overscroll-behavior:contain; }
+.tv-scroll:focus{ outline:none; }
+.tv-ov table{ border-collapse:separate; border-spacing:0; width:auto; min-width:100%; margin:0;
+  font:13.5px/1.5 var(--font-doc); color:var(--ink); }
+.tv-ov table.tbl-sized{ table-layout:fixed; min-width:0; }
+.tv-ov th,.tv-ov td{ padding:9px 11px; text-align:left; vertical-align:top; min-width:6.5em; background:var(--paper);
+  border-right:1px solid var(--line); border-bottom:1px solid var(--line); overflow-wrap:normal; word-break:normal; }
+.tv-ov table.tbl-sized th,.tv-ov table.tbl-sized td{ min-width:0; overflow-wrap:anywhere; }
+.tv-ov table.tbl-compact th,.tv-ov table.tbl-compact td{ padding:4px 8px; }
+.tv-ov table.tbl-comfortable th,.tv-ov table.tbl-comfortable td{ padding:13px 16px; }
+.tv-ov tr > :last-child{ border-right:none; }
+.tv-ov tbody tr:last-child > *{ border-bottom:none; }
+.tv-ov tbody tr:nth-child(even) > td{ background:var(--row-alt); }
+.tv-ov thead th{ position:sticky; top:0; z-index:2; background:var(--surface-2); font-weight:600;
+  border-bottom-color:var(--line-strong); box-shadow:0 6px 10px -9px color-mix(in srgb, var(--ink) 40%, transparent); }
+.tv-ov table.tv-wide tr > :first-child{ position:sticky; left:0; z-index:1; box-shadow:inset -1px 0 0 var(--line-strong); }
+.tv-ov table.tv-wide thead tr > :first-child{ z-index:3; }
+.tv-ov code{ font-family:var(--font-mono); font-size:.88em; background:var(--surface-2); padding:1px 4px; border-radius:4px; }
+.tv-ov a{ color:var(--accent); }
+@media (max-width:768px){
+  .tv-bar{ padding:8px 10px; }
+  .tv-scroll{ margin:8px; }
+  .tv-btn{ padding:0 9px; }
+}
+@media print{ .tv-ov{ display:none!important; } }
 /* ==[/TABLES CSS]== */
 
 /* ==[HOW3]== "How it works" in 3 steps with mini mock-ups of the real UI (tokens only) */
@@ -3209,6 +3270,7 @@ Note: Is that right? I thought…</pre>
 <!-- ==[/LAYOUT HTML]== -->
 <!-- ==[TABLES HTML]== D — table column/row sizing -->
 <div id="tblLayer" class="tbl-layer" hidden></div>
+<div id="tvSticky" class="tv-sticky" aria-hidden="true" hidden></div>
 <!-- ==[/TABLES HTML]== -->
 
 <script type="application/json" id="i18n">{{i18nJson}}</script>
@@ -9916,6 +9978,7 @@ function tablesOnRendered(){
   });
   if(pairs.length){ tblSync(pairs); layoutCards(); }
   if(changed) save();
+  tvOnRendered();
 }
 
 /* ---------- overlay ---------- */
@@ -9936,6 +9999,8 @@ function tblActivate(wrap){
   tblLayer.textContent = "";
   const more = tblEl("button", "tbl-more", { type:"button", "aria-label":t("table.optionsN",{n:idx + 1}), "aria-haspopup":"menu", "aria-expanded":"false", title:t("table.options") });
   more.textContent = "⋯";
+  const exp = tblEl("button", "tbl-more tbl-exp", { type:"button", "aria-label":t("tview.expandN",{n:idx + 1}), title:t("tview.expand") });
+  exp.textContent = "⤢";
   const menu = tblEl("div", "tbl-menu", { role:"menu", "aria-label":t("table.options") });
   menu.hidden = true;
   const colH = [], rowH = [];
@@ -9949,8 +10014,8 @@ function tblActivate(wrap){
       "aria-label":t("table.rowHeight",{n:r + 1}) });
     h.dataset.i = r; rowH.push(h);
   }
-  tblLayer.append(...colH, ...rowH, more, menu);
-  TBL = { wrap, table, idx, cols, rows, more, menu, colH, rowH };
+  tblLayer.append(...colH, ...rowH, exp, more, menu);
+  TBL = { wrap, table, idx, cols, rows, exp, more, menu, colH, rowH };
   tblLayer.hidden = false;
   if(window.ResizeObserver){
     tblRO = new ResizeObserver(() => tblSchedule(false));
@@ -9991,11 +10056,12 @@ function tblPlace(){
   const vl = Math.max(wr.left, tr.left), vr = Math.min(wr.right, tr.right);
   const head = rowR[0] ? rowR[0].height : 32;
   const vals = cellR.map(r => Math.round(r.width));
+  const stickR = T.table.classList.contains("tv-wide") && cellR[0] ? cellR[0].right : -1e4;   // sticky first column
   // writes
   T.colH.forEach((h, i) => {
     const r = cellR[i];
     const x = r ? r.right : -1e4;
-    const off = !r || x < vl - 2 || x > vr + 2;
+    const off = !r || x < vl - 2 || x > vr + 2 || (i > 0 && x < stickR + 2);
     h.classList.toggle("off", off);
     h.style.left = (x - o.left) + "px";
     h.style.top = (tr.top - o.top) + "px";
@@ -10014,6 +10080,7 @@ function tblPlace(){
   });
   const mx = vr - o.left - 34, my = tr.top - o.top + 5;
   T.more.style.left = mx + "px"; T.more.style.top = my + "px";
+  T.exp.style.left = (mx - 32) + "px"; T.exp.style.top = my + "px";
   T.menu.style.right = "auto";
   T.menu.style.left = Math.max(0, mx + 28 - 180) + "px";
   T.menu.style.top = (my + 26) + "px";
@@ -10055,7 +10122,7 @@ new MutationObserver(() => { if(TBL && !tblEnabled()) tblDeactivate(); })
 /* ---------- keyboard: Tab goes wrapper → overlay → rest of the table ---------- */
 function tblFocusables(){
   if(!TBL) return [];
-  const list = [TBL.more, ...TBL.colH, ...TBL.rowH].filter(el => !el.classList.contains("off"));
+  const list = [TBL.exp, TBL.more, ...TBL.colH, ...TBL.rowH].filter(el => !el.classList.contains("off"));
   return list;
 }
 function tblFocusAfterWrap(wrap){
@@ -10245,7 +10312,8 @@ function tblMenuItems(){
   const reset = item(t("table.reset"), "reset");
   if(!sized) reset.setAttribute("aria-disabled", "true");
   const lab = tblEl("div", "tbl-label", { role:"presentation" }); lab.textContent = t("table.density");
-  m.append(reset, tblEl("div", "tbl-sep", { role:"separator" }), lab,
+  m.append(item(t("tview.expand"), "expand"), tblEl("div", "tbl-sep", { role:"separator" }),
+    reset, tblEl("div", "tbl-sep", { role:"separator" }), lab,
     item(t("table.compact"), "compact", e.density === "compact"),
     item(t("table.default"), "default", !e.density),
     item(t("table.comfortable"), "comfortable", e.density === "comfortable"));
@@ -10265,9 +10333,11 @@ function tblCloseMenu(refocus){
 }
 tblLayer.addEventListener("click", e => {
   if(!TBL) return;
+  if(e.target.closest(".tbl-exp")){ tblCloseMenu(false); tvOpen(TBL.table, TBL.idx, TBL.exp); return; }
   if(e.target.closest(".tbl-more")){ if(TBL.menu.hidden) tblOpenMenu(); else tblCloseMenu(true); return; }
   const b = e.target.closest(".tbl-menu button"); if(!b) return;
   const act = b.dataset.act, T = TBL;
+  if(act === "expand"){ tblCloseMenu(false); tvOpen(T.table, T.idx, T.more); return; }
   if(act === "reset"){
     const e2 = VIEW.tables[T.idx];
     if(e2){ delete e2.w; delete e2.h; }
@@ -10294,6 +10364,251 @@ tblLayer.addEventListener("keydown", e => {
   else if(e.key === "End"){ e.preventDefault(); items[items.length - 1].focus(); }
   else if(e.key === "Tab"){ e.preventDefault(); tblCloseMenu(true); }
 });
+/* ---------- tview: sticky first column · floating header clone · fullscreen view ----------
+   Everything here lives outside #doc (the clone and the dialog) or only toggles a class on the
+   <table> (sticky first column); no element is inserted into rows/cells and no text node changes. */
+const tvSticky = $("#tvSticky");
+const TV_MIN_ROWS = 8;                  // more body rows than this (or taller than the viewport) → header floats
+const TV_FIRST_MAX = 0.45;              // sticky first column only when it takes < 45% of the visible width
+const TV_PROPS = ["paddingTop","paddingRight","paddingBottom","paddingLeft","fontFamily","fontSize","fontWeight",
+  "fontStyle","lineHeight","letterSpacing","color","textAlign","overflowWrap","wordBreak","whiteSpace",
+  "borderTopWidth","borderTopStyle","borderTopColor","borderBottomWidth","borderBottomStyle","borderBottomColor",
+  "borderLeftWidth","borderLeftStyle","borderLeftColor"];
+let tvRAF = 0, tvCur = null, tvRO = null, TVO = null;
+
+// the single header row of a GFM table (thead with one row of <th>); null → no floating header
+function tvHeadRow(tb){
+  const h = tb.tHead;
+  if(!h || h.rows.length !== 1) return null;
+  const r = h.rows[0];
+  if(!r.cells.length || [...r.cells].some(c => c.tagName !== "TH" || c.colSpan > 1)) return null;
+  return r;
+}
+// a copy of an element's content without comment UI: marks unwrapped, badges / no-anchor bits dropped
+function tvClean(root){
+  root.querySelectorAll(".no-anchor,.hl-badge").forEach(x => x.remove());
+  root.querySelectorAll("mark.hl").forEach(m => m.replaceWith(...m.childNodes));
+  root.querySelectorAll("[id]").forEach(x => x.removeAttribute("id"));
+  root.querySelectorAll("[tabindex]").forEach(x => x.removeAttribute("tabindex"));
+  return root;
+}
+function tvEnabled(){
+  return !document.body.classList.contains("editing") && !TVO && doc.getClientRects().length > 0;
+}
+function tvSchedule(){ if(!tvRAF) tvRAF = requestAnimationFrame(tvFrame); }
+
+/* sticky first column: wide tables only (wrapper scrolls sideways) and a reasonably narrow first column */
+function tvWideCheck(tables){
+  const res = tables.map(tb => {
+    const w = tb.parentElement, c = tb.rows[0] && tb.rows[0].cells[0];
+    if(!w || !c || tblCols(tb) <= 1) return false;
+    return w.scrollWidth > w.clientWidth + 1 && c.getBoundingClientRect().width < w.clientWidth * TV_FIRST_MAX;
+  });
+  let changed = false;
+  tables.forEach((tb, i) => { if(tb.classList.contains("tv-wide") !== res[i]){ tb.classList.toggle("tv-wide", res[i]); changed = true; } });
+  if(changed && TBL) tblSchedule(false);
+}
+
+function tvOnRendered(){
+  tvHide();
+  if(tvRO){ tvRO.disconnect(); tvRO = null; }
+  const tables = tblTables();
+  tvWideCheck(tables);
+  if(window.ResizeObserver && tables.length){
+    tvRO = new ResizeObserver(entries => {
+      const set = new Set(entries.map(e => e.target.tagName === "TABLE" ? e.target : e.target.querySelector(":scope > table")).filter(Boolean));
+      tvWideCheck([...set].filter(tb => tb.isConnected));
+      tvSchedule();
+    });
+    tables.forEach(tb => { tvRO.observe(tb); tvRO.observe(tb.parentElement); });
+  }
+  tvSchedule();
+}
+
+function tvHide(){
+  if(!tvSticky.hidden){ tvSticky.hidden = true; tvSticky.textContent = ""; }
+  tvCur = null;
+}
+// (re)build the clone for `tb`; styles are copied from the real cells so all themes / densities match
+function tvBuild(tb, row, sig, narrow){
+  tvSticky.textContent = "";
+  const cells = [...row.cells].map(c => {
+    const d = document.createElement("div");
+    d.className = "tv-c";
+    const cs = getComputedStyle(c);
+    for(const p of TV_PROPS) d.style[p] = cs[p];
+    const bg = cs.backgroundColor;
+    if(bg && bg !== "transparent" && !/rgba\([^)]*,\s*0\)$/.test(bg)) d.style.backgroundColor = bg;
+    if(narrow){ d.style.paddingTop = "4px"; d.style.paddingBottom = "4px"; }
+    for(const n of c.childNodes) d.appendChild(n.cloneNode(true));
+    tvClean(d);
+    return d;
+  });
+  const last = row.cells[row.cells.length - 1], lcs = getComputedStyle(last);
+  const lastD = cells[cells.length - 1];
+  lastD.style.borderRight = lcs.borderRightWidth + " " + lcs.borderRightStyle + " " + lcs.borderRightColor;
+  const f = getComputedStyle(row.cells[0]);
+  const shave = narrow ? Math.max(0, parseFloat(f.paddingTop) + parseFloat(f.paddingBottom) - 8) : 0;
+  tvSticky.append(...cells);
+  tvCur = { tb, row, sig, cells, shave };
+}
+function tvFrame(){
+  tvRAF = 0;
+  if(!tvEnabled()){ tvHide(); return; }
+  const hdr = document.querySelector("body > header") || document.querySelector("header");
+  const hb = hdr ? Math.max(0, Math.round(hdr.getBoundingClientRect().bottom)) : 0;
+  const vh = window.innerHeight;
+  let pick = null;
+  for(const tb of tblTables()){                         // reads only
+    const tr = tb.getBoundingClientRect();
+    if(tr.top >= hb || tr.bottom <= hb) continue;
+    const row = tvHeadRow(tb); if(!row) continue;
+    if(!(tb.rows.length - 1 > TV_MIN_ROWS || tr.height > vh - hb)) continue;
+    const hr = row.getBoundingClientRect();
+    if(hr.top >= hb - 1) continue;                      // the real header is still in view
+    pick = { tb, row, tr, hr }; break;
+  }
+  if(!pick){ tvHide(); return; }
+  const { tb, row, tr, hr } = pick, wrap = tb.parentElement;
+  const wr = wrap.getBoundingClientRect();
+  const clipL = Math.max(0, wr.left + wrap.clientLeft), clipR = Math.min(window.innerWidth, wr.left + wrap.clientLeft + wrap.clientWidth);
+  const narrow = tblNarrowMQ.matches;
+  const sig = [document.body.dataset.theme || "", tb.className, row.cells.length, narrow, Math.round(hr.height),
+    getComputedStyle(row.cells[0]).fontSize].join("|");
+  const cellR = [...row.cells].map(c => c.getBoundingClientRect());
+  // writes
+  if(!tvCur || tvCur.tb !== tb || tvCur.sig !== sig) tvBuild(tb, row, sig, narrow);
+  const h = Math.max(12, hr.height - tvCur.shave);
+  const top = Math.min(hb, tr.bottom - h);
+  tvSticky.style.left = clipL + "px";
+  tvSticky.style.width = Math.max(0, clipR - clipL) + "px";
+  tvSticky.style.top = top + "px";
+  tvSticky.style.height = h + "px";
+  const wide = tb.classList.contains("tv-wide");
+  tvCur.cells.forEach((d, i) => {
+    const r = cellR[i];
+    d.style.left = (r.left - clipL) + "px";
+    d.style.width = r.width + "px";
+    d.classList.toggle("tv-first", wide && i === 0);
+  });
+  tvSticky.hidden = false;
+}
+document.addEventListener("scroll", tvSchedule, { capture:true, passive:true });
+window.addEventListener("resize", tvSchedule);
+new MutationObserver(tvSchedule).observe(document.body, { attributes:true, attributeFilter:["class", "data-theme"] });
+
+/* ---------- copy helpers (cell text, no comment UI) ---------- */
+function tvCellText(cell, md){
+  const c = tvClean(cell.cloneNode(true));
+  c.querySelectorAll("br").forEach(b => b.replaceWith(md ? "" : " "));
+  if(md) c.querySelectorAll("code").forEach(k => {
+    const s = k.textContent, f = s.includes("`") ? "``" : "`";
+    k.replaceWith(f + (f.length > 1 ? " " + s + " " : s) + f);
+  });
+  let s = c.textContent.replace(/\s+/g, " ").trim();
+  if(md) s = s.replace(/\|/g, "\\|").replace(/\s*\s*/g, "<br>");
+  return s;
+}
+function tvGrid(tb, md){
+  return [...tb.rows].map(r => [...r.cells].map(c => tvCellText(c, md)));
+}
+function tvMarkdown(tb){
+  const g = tvGrid(tb, true); if(!g.length) return "";
+  const n = Math.max(...g.map(r => r.length));
+  const head = tb.rows[0];
+  const al = [...Array(n)].map((_, i) => {
+    const c = head.cells[i]; if(!c) return "---";
+    const a = (c.style.textAlign || c.getAttribute("align") || "").toLowerCase();
+    return a === "center" ? ":---:" : a === "right" ? "---:" : a === "left" ? ":---" : "---";
+  });
+  const line = r => "| " + [...Array(n)].map((_, i) => r[i] || "").join(" | ") + " |";
+  return [line(g[0]), "| " + al.join(" | ") + " |", ...g.slice(1).map(line)].join("\n");
+}
+function tvTsv(tb){
+  return tvGrid(tb, false).map(r => r.map(v => v.includes('"') ? '"' + v.replace(/"/g, '""') + '"' : v).join("\t")).join("\n");
+}
+function tvHtml(tb){
+  const g = tvGrid(tb, false);
+  const hasHead = !!tvHeadRow(tb);
+  const row = (r, tag) => "<tr>" + r.map(v => "<" + tag + ">" + esc(v) + "</" + tag + ">").join("") + "</tr>";
+  return "<table>" + (hasHead ? "<thead>" + row(g[0], "th") + "</thead>" : "") + "<tbody>" +
+    g.slice(hasHead ? 1 : 0).map(r => row(r, "td")).join("") + "</tbody></table>";
+}
+async function tvCopy(kind, tb){
+  let ok = false;
+  try{
+    if(kind === "md") ok = await copyText(tvMarkdown(tb));
+    else {
+      const tsv = tvTsv(tb);
+      if(navigator.clipboard && navigator.clipboard.write && window.ClipboardItem){
+        try{
+          await navigator.clipboard.write([new ClipboardItem({
+            "text/plain": new Blob([tsv], { type:"text/plain" }),
+            "text/html": new Blob([tvHtml(tb)], { type:"text/html" }) })]);
+          ok = true;
+        }catch(e){ ok = false; }
+      }
+      if(!ok) ok = await copyText(tsv);
+    }
+  }catch(e){ ok = false; }
+  toast(ok ? t(kind === "md" ? "tview.copiedMd" : "tview.copiedTsv") : t("tview.copyFailed"));
+}
+
+/* ---------- fullscreen view ---------- */
+function tvOpen(table, idx, opener){
+  if(TVO) tvClose();
+  const title = t("tview.title", { n:idx + 1 });
+  const ov = tblEl("div", "tv-ov", { role:"dialog", "aria-modal":"true", "aria-label":title });
+  const bar = tblEl("div", "tv-bar");
+  const ttl = tblEl("span", "tv-ttl"); ttl.textContent = title;
+  const meta = tblEl("span", "tv-meta"); meta.textContent = t("tview.rows", { n:Math.max(0, table.rows.length - (tvHeadRow(table) ? 1 : 0)) });
+  const bMd = tblEl("button", "tv-btn", { type:"button" }); bMd.textContent = t("tview.copyMd");
+  const bTsv = tblEl("button", "tv-btn", { type:"button" }); bTsv.textContent = t("tview.copyTsv");
+  const bX = tblEl("button", "tv-btn tv-x", { type:"button", "aria-label":t("tview.close"), title:t("tview.close") }); bX.textContent = "×";
+  bar.append(ttl, meta, bMd, bTsv, bX);
+  const sc = tblEl("div", "tv-scroll", { tabindex:"0", role:"region", "aria-label":title });
+  const copy = tvClean(table.cloneNode(true));
+  copy.classList.remove("tv-wide");
+  copy.style.removeProperty("height");
+  sc.appendChild(copy);
+  ov.append(bar, sc);
+  document.body.appendChild(ov);
+  const prevOverflow = document.documentElement.style.overflow;
+  document.documentElement.style.overflow = "hidden";
+  TVO = { ov, sc, table, copy, opener: opener || null, wrap: table.parentElement, prevOverflow };
+  tvHide();
+  // sticky first column inside the dialog, same rule as in the document
+  const c0 = copy.rows[0] && copy.rows[0].cells[0];
+  if(c0 && tblCols(copy) > 1 && sc.scrollWidth > sc.clientWidth + 1 && c0.getBoundingClientRect().width < sc.clientWidth * TV_FIRST_MAX)
+    copy.classList.add("tv-wide");
+  bMd.addEventListener("click", () => tvCopy("md", table));
+  bTsv.addEventListener("click", () => tvCopy("tsv", table));
+  bX.addEventListener("click", () => tvClose());
+  ov.addEventListener("keydown", e => {
+    e.stopPropagation();                         // app shortcuts stay out of the dialog
+    if(e.key === "Escape"){ e.preventDefault(); tvClose(); return; }
+    if(e.key === "Tab"){
+      const f = [...ov.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])')].filter(el => el.getClientRects().length);
+      if(!f.length) return;
+      const i = f.indexOf(document.activeElement);
+      if(e.shiftKey && i <= 0){ e.preventDefault(); f[f.length - 1].focus(); }
+      else if(!e.shiftKey && (i === f.length - 1 || i < 0)){ e.preventDefault(); f[0].focus(); }
+    }
+  });
+  ov.addEventListener("focusout", e => {           // keep focus inside the dialog
+    if(TVO && e.relatedTarget && !ov.contains(e.relatedTarget) && !e.relatedTarget.matches("textarea")) setTimeout(() => { if(TVO) sc.focus({ preventScroll:true }); }, 0);
+  });
+  sc.focus({ preventScroll:true });
+}
+function tvClose(){
+  if(!TVO) return;
+  const o = TVO; TVO = null;
+  o.ov.remove();
+  document.documentElement.style.overflow = o.prevOverflow;
+  const back = o.opener && o.opener.isConnected ? o.opener : (o.wrap && o.wrap.isConnected ? o.wrap : null);
+  if(back) try{ back.focus({ preventScroll:true }); }catch(e){}
+  tvSchedule();
+}
 /* ==[/TABLES]== */
 
 /* ==[I18N]== language switcher, homepage language links, first-visit language suggestion

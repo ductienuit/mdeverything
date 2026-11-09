@@ -753,6 +753,18 @@
     "comfortable": "広い",
     "resetDone": "表のサイズをリセットしました"
   },
+  "tview": {
+    "expand": "表を拡大",
+    "expandN": "表 {n} を拡大",
+    "title": "表 {n}",
+    "rows": "{n, plural, other {#行}}",
+    "copyMd": "Markdown としてコピー",
+    "copyTsv": "Excel 用にコピー",
+    "close": "閉じる",
+    "copiedMd": "表を Markdown としてコピーしました",
+    "copiedTsv": "表をコピーしました。Excel やスプレッドシートに貼り付けできます",
+    "copyFailed": "表をコピーできませんでした"
+  },
   "pane": {
     "resizeOutline": "アウトラインのサイズを変更",
     "resizeRail": "コメントパネルのサイズを変更",

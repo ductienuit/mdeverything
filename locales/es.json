@@ -753,6 +753,18 @@
     "comfortable": "Amplia",
     "resetDone": "Tamaños de la tabla restablecidos"
   },
+  "tview": {
+    "expand": "Ampliar tabla",
+    "expandN": "Ampliar tabla {n}",
+    "title": "Tabla {n}",
+    "rows": "{n, plural, one {# fila} other {# filas}}",
+    "copyMd": "Copiar como Markdown",
+    "copyTsv": "Copiar para Excel",
+    "close": "Cerrar",
+    "copiedMd": "Tabla copiada como Markdown",
+    "copiedTsv": "Tabla copiada, lista para pegar en Excel o Sheets",
+    "copyFailed": "No se pudo copiar la tabla"
+  },
   "pane": {
     "resizeOutline": "Cambiar tamaño del índice",
     "resizeRail": "Cambiar tamaño del panel de comentarios",
