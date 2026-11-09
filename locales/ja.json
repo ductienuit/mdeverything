@@ -355,6 +355,14 @@
     "deleteNoteN": "メモ {n} を削除",
     "editNoteN": "メモ {n} を編集"
   },
+  "ctime": {
+    "created": "{date} に作成",
+    "edited": "編集済み",
+    "editedAt": "{date} に編集",
+    "sortLabel": "コメントの並び順",
+    "sortDoc": "文書の順",
+    "sortNew": "新しい順"
+  },
   "pop": {
     "notesOnPassage": "{n, plural, other {この箇所のメモ # 件}}",
     "noNoteClick": "メモはまだありません — クリックして追加",

@@ -355,6 +355,14 @@
     "deleteNoteN": "Xóa ghi chú {n}",
     "editNoteN": "Sửa ghi chú {n}"
   },
+  "ctime": {
+    "created": "Tạo lúc {date}",
+    "edited": "đã sửa",
+    "editedAt": "Đã sửa {date}",
+    "sortLabel": "Sắp xếp bình luận",
+    "sortDoc": "Theo vị trí",
+    "sortNew": "Mới nhất trước"
+  },
   "pop": {
     "notesOnPassage": "{n, plural, other {# ghi chú cho đoạn này}}",
     "noNoteClick": "Chưa có ghi chú — bấm để thêm",

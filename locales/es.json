@@ -355,6 +355,14 @@
     "deleteNoteN": "Eliminar nota {n}",
     "editNoteN": "Editar nota {n}"
   },
+  "ctime": {
+    "created": "Creado el {date}",
+    "edited": "editado",
+    "editedAt": "Editado el {date}",
+    "sortLabel": "Ordenar comentarios",
+    "sortDoc": "Orden del documento",
+    "sortNew": "Más recientes"
+  },
   "pop": {
     "notesOnPassage": "{n, plural, one {# nota en este pasaje} other {# notas en este pasaje}}",
     "noNoteClick": "Aún sin nota — haz clic para agregar",

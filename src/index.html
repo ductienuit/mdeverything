@@ -1727,6 +1727,15 @@ button.doc-label::after{ content:"▾"; font-size:.8em; opacity:.6; }
 .w5-help-btn{ flex:none; width:24px; height:24px; padding:0; border-radius:50%; border:1px solid var(--line-strong); background:none;
   color:var(--ink-faint); font:inherit; font-size:12px; font-weight:700; line-height:1; cursor:pointer; }
 .w5-help-btn:hover{ color:var(--accent); border-color:var(--accent); }
+.w5-sort{ flex:none; max-width:118px; height:24px; padding:0 4px; border:1px solid var(--line-strong); border-radius:7px;
+  background:var(--paper); color:var(--ink-soft); font:inherit; font-size:11.5px; font-weight:600; cursor:pointer; }
+.w5-sort:hover{ border-color:var(--accent); color:var(--ink); }
+.w5-sort:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+/* note times: "5 min ago · edited" beside the note number */
+.a-when{ flex:none; font-size:11px; font-weight:500; color:var(--ink-faint); white-space:nowrap; font-variant-numeric:tabular-nums; }
+.card .c-when{ align-self:center; }
+#hlPop .pc-when{ font-size:11.5px; }
+#hlPop .pop-meta .a-when{ font-size:inherit; }
 .w5-none{ margin-top:8px; padding:10px; border:1px dashed var(--line-strong); border-radius:8px; text-align:center;
   font-size:12.5px; line-height:1.45; color:var(--ink-soft); overflow-wrap:anywhere; }
 .w5-clear{ font:inherit; font-weight:600; color:var(--accent); background:none; border:none; padding:0; cursor:pointer;
@@ -3806,6 +3815,7 @@ function renderCards(){
   });
   const refocusEdit=w5EditFocused(railInner);   // a reply being edited in place keeps its focus too
   railInner.innerHTML="";
+  const built=[];
   ANN.forEach((a,i)=>{
     // a brand-new note still being written in the inline composer has no panel card yet:
     // the card appears once the note is saved (avoids showing the same draft twice)
@@ -3835,6 +3845,7 @@ function renderCards(){
        <div class="c-replybox"><textarea class="c-reply-ta" rows="1" placeholder="${te("card.replyPlaceholder")}" aria-label="${te("card.replyToNote",{n:i+1})}"></textarea>
          <button type="button" class="c-send" disabled>${te("card.reply")}</button></div>` : ""}`;
     c.querySelector(".c-note").textContent = a.note || t("card.addNotePlaceholder");
+    const when=annWhenEl(a,"c-when"); if(when) c.querySelector(".badge").after(when);
     // replies thread + reply box: shown when the card is the active one (same thread as the inline card)
     const th=c.querySelector(".c-thread");
     if(th){
@@ -3890,14 +3901,18 @@ function renderCards(){
       if(e.key==="Enter"||e.key===" "){ e.preventDefault(); focusCard(a.id,false); editCard(c,a); }
       if(e.key==="Delete"||e.key==="Backspace"){   // immediate delete + Undo; keep focus in the list
         e.preventDefault();
+        const at=[...railInner.children].indexOf(c);   // list position (differs from i when sorted newest first)
         deleteAnnWithUndo(a.id);
         const cards=[...railInner.children], shown=x=>!x.classList.contains("w5-out");
-        const nx=cards.slice(i).find(shown) || cards.slice(0,i).reverse().find(shown);
+        const nx=cards.slice(at).find(shown) || cards.slice(0,at).reverse().find(shown);
         if(nx) focusWithoutScrolling(nx);
       }
     });
-    railInner.appendChild(c);
+    built.push({c, a, i});
   });
+  // panel order: reading order, or newest first (notes without a time go last, in reading order)
+  if(w5Sort==="new") built.sort((x,y)=>((y.a.createdAt||0)-(x.a.createdAt||0)) || (x.i-y.i));
+  built.forEach(x=>railInner.appendChild(x.c));
   if(focusedReply){
     const nc=[...railInner.children].find(x=>x.dataset.id===focusedReply);
     const t=nc && nc.querySelector(".c-reply-ta"); if(t) focusWithoutScrolling(t);
@@ -3962,7 +3977,7 @@ function editCard(c,a){
   const autoGrow=()=>{ ta.style.height="auto"; ta.style.height=ta.scrollHeight+"px"; };
   autoGrow();
   ta.addEventListener("input",()=>{ autoGrow(); layoutCards(); });
-  const commit=()=>{ a.note=ta.value.trim(); renderCards(); save(); if(POP.mode==="card" && POP.id===a.id) renderPop(); };
+  const commit=()=>{ annSetNote(a,ta.value.trim()); renderCards(); save(); if(POP.mode==="card" && POP.id===a.id) renderPop(); };
   ta.addEventListener("keydown",e=>{
     if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); commit(); }  // Enter = save
     if(e.key==="Escape"){ e.preventDefault(); renderCards(); }            // Shift+Enter = newline
@@ -4044,6 +4059,12 @@ function doLayout(){
   if(isMobile()){ railInner.style.height=""; list.forEach(c=>{c.style.top="";}); return; }
   const railTop=railInner.getBoundingClientRect().top;
   const gap=10;
+  if(w5Sort==="new"){   // "Newest first": a plain stacked list in panel order, not aligned to the anchors
+    let top=0;
+    list.forEach(c=>{ c.style.top=top+"px"; c.dataset.lastTop=top; top+=c.offsetHeight+gap; });
+    railInner.style.height=(top-gap+12)+"px";
+    return;
+  }
   const items=list.map(c=>{
     const m=doc.querySelector(`mark.hl[data-id="${c.dataset.id}"]`);
     const anchor=m ? (m.getBoundingClientRect().top - railTop)
@@ -4237,7 +4258,9 @@ function showHlPop(mark){
     const nRep=(a.replies||[]).length;
     const meta=nRep?t("card.replies",{n:nRep}):"";
     const metaEl=row.querySelector(".pop-meta");
-    if(meta) metaEl.textContent=meta; else metaEl.remove();
+    const when=annWhenEl(a);
+    if(when){ metaEl.appendChild(when); if(meta) metaEl.append(" · "+meta); }
+    else if(meta) metaEl.textContent=meta; else metaEl.remove();
     const go=()=>{ if(a.note) openCard(a.id,{anchor:mark}); else openComposer(a.id,{isNew:false}); };
     row.addEventListener("click",go);
     row.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); go(); } });
@@ -4348,7 +4371,7 @@ function finishComposer(how){
   const isNew=POP.isNew, id=a.id;
   const keep = how==="save" || (how==="commit" && text);
   if(keep && (text || !isNew)){
-    a.note=text; renderCards(); save();
+    annSetNote(a,text); renderCards(); save();
     if(isNew){   // the panel card appears now → a short highlight shows where it landed
       const c=[...railInner.children].find(x=>x.dataset.id===id);
       if(c && typeof animateNewCard==="function") animateNewCard(c);
@@ -4396,6 +4419,7 @@ function renderPop(){
      <div class="pc-replybox"><textarea class="pc-reply-ta" rows="1" placeholder="${te("card.replyPlaceholder")}" aria-label="${te("card.reply")}"></textarea>
        <button type="button" class="pc-send" disabled>${te("card.reply")}</button></div>`;
   hlPop.querySelector(".pop-badge").textContent=num;
+  const when=annWhenEl(a,"pc-when"); if(when) hlPop.querySelector(".pop-badge").after(when);
   // several notes on the clicked spot → number chips to switch between them
   const sw=hlPop.querySelector(".pc-sw");
   if(POP.group.length>1){
@@ -4531,6 +4555,12 @@ function initTheme(){ let s="light"; try{ s=localStorage.getItem(THEME_KEY)||"li
 const HEAD={
   en:`You are reviewing a Markdown document with inline annotations left by a reviewer. Each note points to a specific passage (with its section location and surrounding context) plus a question or request. "Replies" under a note are follow-up comments in the same thread — treat the note and its replies together as one request about that passage. Read the whole document, then for each note use "Location" + "Context" to pinpoint the exact passage (even when wording repeats), and answer the question and/or edit the text as requested.`
 };
+// a note's created time in the export: "2026-11-09 14:05" (local time, locale-neutral so the AI can order requests)
+function expStamp(ts){
+  const d=new Date(Number(ts)); if(!ts || isNaN(d)) return "";
+  const p=n=>String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
 function sourceLine(quote){
   if(!quote) return null;
   const idx=SRC.indexOf(quote);
@@ -4563,6 +4593,7 @@ function buildBundle(incDoc, o){
     if(a.kind==="diagram") loc.push(dgLocation(a));   // diagram 2 (flowchart) · node “…”
     const ln=a.kind==="diagram" ? dgSourceLine(a) : sourceLine(a.quote); if(ln) loc.push(t("bundle.line",{n:ln}));
     if(a.resolved===false) loc.push(t("bundle.notFound"));
+    const when=expStamp(a.createdAt); if(when) loc.push(when);
     L.push(`[${i+1}]${sids?" {#"+sids.get(a.id)+"}":""}${loc.length?" "+t("bundle.location")+" "+loc.join(" · "):""}`);
     L.push(t("bundle.quoted"),`"""`,clean(a.quote),`"""`);
     if(a.kind==="diagram"){ if(a.mermaidLine) L.push(t("diag.bundleMermaid",{code:a.mermaidLine})); }   // the shape's Mermaid source line
@@ -5384,9 +5415,43 @@ function normAnn(a){
   const seen=new Set();                // ids must be unique within a thread
   a.replies.forEach(r=>{ if(seen.has(r.id)) r.id=newReplyId(r.ts); seen.add(r.id); });
   delete a.done;                     // the resolve feature was removed; drop old flags
+  // note timestamps (ms): createdAt = first saved, editedAt = text changed later. Older notes have none.
+  ["createdAt","editedAt"].forEach(k=>{ if(a[k]!=null){ const v=Number(a[k]); if(v>0 && isFinite(v)) a[k]=v; else delete a[k]; } });
   if(a.kind==="diagram") dgNormAnn(a); // DIAGRAM: diagram index + label
   return a;
 }
+// the one place a note's text is written: stamps createdAt on the first text, editedAt on later changes
+function annSetNote(a, text){
+  text=text||"";
+  if(!a || text===(a.note||"")) return;
+  const now=Date.now();
+  if(!a.note){ if(!a.createdAt && text) a.createdAt=now; }
+  else if(text) a.editedAt=now;
+  a.note=text;
+}
+// "5 min ago · edited" next to a note's number (panel card, pinned card, hover preview); null when the note has no times
+function annWhenEl(a, cls){
+  if(!a || (!a.createdAt && !a.editedAt)) return null;
+  const el=document.createElement("span"); el.className="a-when"+(cls?" "+cls:"");
+  if(a.createdAt){
+    const r=document.createElement("span"); r.className="a-rel"; r.dataset.ts=a.createdAt;
+    r.textContent=relTime(a.createdAt); r.title=t("ctime.created",{date:new Date(a.createdAt).toLocaleString(LANG)});
+    el.appendChild(r);
+  }
+  if(a.editedAt){
+    const e=document.createElement("span"); e.className="a-ed";
+    e.textContent=(a.createdAt?" · ":"")+t("ctime.edited"); e.title=t("ctime.editedAt",{date:new Date(a.editedAt).toLocaleString(LANG)});
+    el.appendChild(e);
+  }
+  return el;
+}
+// relative times ("5 min ago") on notes and replies stay current while the page is visible
+setInterval(()=>{
+  if(document.visibilityState==="hidden") return;
+  document.querySelectorAll(".a-rel[data-ts], .w5-rtime[data-ts]").forEach(el=>{
+    const s=relTime(Number(el.dataset.ts)); if(el.textContent!==s) el.textContent=s;
+  });
+}, 60000);
 
 /* ---- margin ("gutter") comment button: comment on a whole block ---- */
 const GUTTER_BLOCKS="p, li, h1, h2, h3, h4, blockquote, td, th";
@@ -6488,7 +6553,7 @@ function w5ReplyEl(a, r, scope){
     <div class="w5-racts"><button type="button" class="w5-rbtn" data-r="edit" title="${te("reply.edit")}" aria-label="${te("reply.edit")}">✎</button><button type="button" class="w5-rbtn w5-rdel" data-r="del" title="${te("reply.delete")}" aria-label="${te("reply.delete")}">×</button></div>`;
   el.querySelector("."+pre+"-rtext").textContent=r.text;
   const tm=el.querySelector(".w5-rtime");
-  tm.textContent=relTime(r.ts); tm.title=new Date(r.ts).toLocaleString(LANG);
+  tm.textContent=relTime(r.ts); tm.title=new Date(r.ts).toLocaleString(LANG); tm.dataset.ts=r.ts;
   if(r.editedAt){
     const ed=document.createElement("span"); ed.className="w5-edited";
     ed.textContent=" · "+t("reply.edited"); ed.title=t("reply.editedAt",{date:new Date(r.editedAt).toLocaleString(LANG)});
@@ -6502,6 +6567,9 @@ function w5ReplyEl(a, r, scope){
 
 /* ---- E. search & filter in the comments panel ---- */
 var w5Q="", w5F="all", w5Bar=null;
+// panel order: "doc" (reading order, cards beside their passages) or "new" (newest first, a stacked list)
+var W5_SORT_KEY="marginalia:csort:v1", w5Sort="doc";
+try{ if(localStorage.getItem(W5_SORT_KEY)==="new") w5Sort="new"; }catch(e){}
 // accent-insensitive fold: NFD + strip combining marks, đ → d, lowercase ("thanh toán" ~ "thanh toan")
 function w5Fold(s){
   return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[đĐ]/g,"d").toLowerCase();
@@ -6578,6 +6646,9 @@ function w5ClearFilter(){
          <button type="button" class="w5-chip ai-chip" data-f="noai" aria-pressed="false" hidden>${te("filter.noai")} <span class="w5-n">0</span></button>
          <button type="button" class="w5-chip ai-chip" data-f="sugg" aria-pressed="false" title="${te("filter.suggTitle")}" hidden>${te("filter.sugg")} <span class="w5-n">0</span></button>
        </div>
+       <select class="w5-sort" aria-label="${te("ctime.sortLabel")}" title="${te("ctime.sortLabel")}">
+         <option value="doc">${te("ctime.sortDoc")}</option><option value="new">${te("ctime.sortNew")}</option>
+       </select>
        <button type="button" class="w5-help-btn" title="${te("help.titleShort")}" aria-label="${te("help.title")}">?</button>
      </div>
      <div class="w5-none" role="status" hidden><span class="w5-none-msg"></span> <button type="button" class="w5-clear">${te("filter.clear")}</button></div>`;
@@ -6597,6 +6668,13 @@ function w5ClearFilter(){
   w5Bar.querySelector(".w5-chips").addEventListener("click",e=>{
     const b=e.target.closest(".w5-chip"); if(!b) return;
     w5F=b.dataset.f; w5Refilter();
+  });
+  const sortSel=w5Bar.querySelector(".w5-sort");
+  sortSel.value=w5Sort;
+  sortSel.addEventListener("change",()=>{
+    w5Sort = sortSel.value==="new" ? "new" : "doc";
+    try{ localStorage.setItem(W5_SORT_KEY, w5Sort); }catch(e){}
+    renderCards();
   });
   w5Bar.querySelector(".w5-clear").addEventListener("click",w5ClearFilter);
   w5Bar.querySelector(".w5-help-btn").addEventListener("click",()=>w5OpenHelp());
@@ -6761,8 +6839,12 @@ function libHash(str){
 }
 function libContentFp(src, ann, view){
   const vk = tblViewKey(view);             // table sizes (tables workstream); "" when none → old fingerprints unchanged
-  const list = (ann || []).map(a => [String(a.id), a.quote, a.note || "", a.prefix || "", a.suffix || "",
-    (a.replies || []).map(r => { const k = aiReplyStateKey(r); return k ? [r.text, r.ts, k] : [r.text, r.ts]; })]);
+  const list = (ann || []).map(a => {
+    const e = [String(a.id), a.quote, a.note || "", a.prefix || "", a.suffix || "",
+      (a.replies || []).map(r => { const k = aiReplyStateKey(r); return k ? [r.text, r.ts, k] : [r.text, r.ts]; })];
+    if(a.createdAt || a.editedAt) e.push([a.createdAt || 0, a.editedAt || 0]);   // note times; absent → old fingerprints unchanged
+    return e;
+  });
   list.sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0);
   const notes = JSON.stringify(list);
   return `${src.length}.${libHash(src)}.${notes.length}.${libHash(notes)}` + (vk ? `.${vk.length}.${libHash(vk)}` : "");

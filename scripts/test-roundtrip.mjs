@@ -82,7 +82,7 @@ for (const loc of LOCALES) {
       "Contact sales for more seats.",
     ].join("\n");
     const ANN = [
-      { id: "a1", quote: "Billing starts on day one", note: "Is that right? I thought there's a 14-day trial.", replies: [], section: "Pricing", prefix: "people. ", suffix: " for everyone" },
+      { id: "a1", quote: "Billing starts on day one", note: "Is that right? I thought there's a 14-day trial.", replies: [], section: "Pricing", prefix: "people. ", suffix: " for everyone", createdAt: new Date(2026, 10, 9, 14, 5).getTime() },
       { id: "a2", quote: "Old drafts are removed after 30 days", note: "Make this 60 days.", replies: [{ text: "Agreed." }], section: "Limits", prefix: "", suffix: "" },
       { id: "a3", quote: "Contact sales", note: "Who do we contact exactly?", replies: [], section: "Limits", prefix: "", suffix: "" },
     ];
@@ -95,6 +95,9 @@ for (const loc of LOCALES) {
     assert.match(bundle, /===== DOCUMENT \(markdown\) =====/);
     ANN.forEach((a, i) => assert.ok(bundle.includes(`[${i + 1}] {#${ids.get(a.id)}}`), `note ${a.id} has its id`));
     assert.ok(!/\[(?:NEW|FOLLOW-UP|ANSWERED)\]/.test(bundle), "no round tags");
+    const locLines = bundle.split("\n").filter(l => /^\[\d+\]/.test(l));
+    assert.ok(locLines[0].endsWith(" · 2026-11-09 14:05"), "created time on the note's Location line");
+    assert.ok(!/\d{4}-\d\d-\d\d \d\d:\d\d/.test(locLines[1]), "no time for a note without createdAt");
     assert.ok(!/REVIEWER'S INSTRUCTIONS/.test(bundle), "no requests section when nothing was asked");
     // extra instructions + "mark the edits" go at the top of the instructions; without answers: no ids, no HOW TO ANSWER
     const asked = api.buildBundle(true, { mark: true, extra: "Keep my tone" });

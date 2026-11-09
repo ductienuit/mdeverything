@@ -355,6 +355,14 @@
     "deleteNoteN": "Delete note {n}",
     "editNoteN": "Edit note {n}"
   },
+  "ctime": {
+    "created": "Created {date}",
+    "edited": "edited",
+    "editedAt": "Edited {date}",
+    "sortLabel": "Sort comments",
+    "sortDoc": "Document order",
+    "sortNew": "Newest first"
+  },
   "pop": {
     "notesOnPassage": "{n, plural, one {# note on this passage} other {# notes on this passage}}",
     "noNoteClick": "No note yet — click to add",

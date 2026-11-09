@@ -355,6 +355,14 @@
     "deleteNoteN": "Excluir nota {n}",
     "editNoteN": "Editar nota {n}"
   },
+  "ctime": {
+    "created": "Criado em {date}",
+    "edited": "editado",
+    "editedAt": "Editado em {date}",
+    "sortLabel": "Ordenar comentários",
+    "sortDoc": "Ordem do documento",
+    "sortNew": "Mais recentes"
+  },
   "pop": {
     "notesOnPassage": "{n, plural, one {# nota neste trecho} other {# notas neste trecho}}",
     "noNoteClick": "Ainda sem nota — clique para adicionar",
