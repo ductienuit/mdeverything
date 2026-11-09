@@ -4464,6 +4464,18 @@ function marksAtPoint(mark){
   mark.querySelectorAll("mark.hl").forEach(m=>ids.add(m.dataset.id));
   return [...ids];
 }
+// clock time for comments and replies: "14:05" today, "9 Nov, 14:05" earlier this year, "9 Nov 2025, 14:05" before
+function stampTime(ts){
+  const d=new Date(ts); if(!isFinite(d)) return "";
+  const now=new Date(), time={ hour:"2-digit", minute:"2-digit" };
+  try{
+    if(d.toDateString()===now.toDateString()) return d.toLocaleTimeString(LANG, time);
+    const o={ day:"numeric", month:"short" };
+    if(d.getFullYear()!==now.getFullYear()) o.year="numeric";
+    const sep=/^(ja|zh|ko)/.test(LANG) ? " " : ", ";   // always "date, time"
+    return d.toLocaleDateString(LANG, o)+sep+d.toLocaleTimeString(LANG, time);
+  }catch(e){ return d.toLocaleString(); }
+}
 function relTime(ts){
   const s=Math.round((Date.now()-ts)/1000);
   if(!isFinite(s)) return "";
@@ -5675,7 +5687,7 @@ function annWhenEl(a, cls){
   const el=document.createElement("span"); el.className="a-when"+(cls?" "+cls:"");
   if(a.createdAt){
     const r=document.createElement("span"); r.className="a-rel"; r.dataset.ts=a.createdAt;
-    r.textContent=relTime(a.createdAt); r.title=t("ctime.created",{date:new Date(a.createdAt).toLocaleString(LANG)});
+    r.textContent=stampTime(a.createdAt); r.title=t("ctime.created",{date:new Date(a.createdAt).toLocaleString(LANG)})+" · "+relTime(a.createdAt);
     el.appendChild(r);
   }
   if(a.editedAt){
@@ -5689,7 +5701,7 @@ function annWhenEl(a, cls){
 setInterval(()=>{
   if(document.visibilityState==="hidden") return;
   document.querySelectorAll(".a-rel[data-ts], .w5-rtime[data-ts]").forEach(el=>{
-    const s=relTime(Number(el.dataset.ts)); if(el.textContent!==s) el.textContent=s;
+    const s=stampTime(Number(el.dataset.ts)); if(el.textContent!==s) el.textContent=s;   // a day change turns "14:05" into "9 Nov, 14:05"
   });
 }, 60000);
 
@@ -7219,7 +7231,7 @@ function w5ReplyEl(a, r, scope){
     <div class="w5-racts"><button type="button" class="w5-rbtn" data-r="edit" title="${te("reply.edit")}" aria-label="${te("reply.edit")}">✎</button><button type="button" class="w5-rbtn w5-rdel" data-r="del" title="${te("reply.delete")}" aria-label="${te("reply.delete")}">×</button></div>`;
   el.querySelector("."+pre+"-rtext").textContent=r.text;
   const tm=el.querySelector(".w5-rtime");
-  tm.textContent=relTime(r.ts); tm.title=new Date(r.ts).toLocaleString(LANG); tm.dataset.ts=r.ts;
+  tm.textContent=stampTime(r.ts); tm.title=new Date(r.ts).toLocaleString(LANG)+" · "+relTime(r.ts); tm.dataset.ts=r.ts;
   if(r.editedAt){
     const ed=document.createElement("span"); ed.className="w5-edited";
     ed.textContent=" · "+t("reply.edited"); ed.title=t("reply.editedAt",{date:new Date(r.editedAt).toLocaleString(LANG)});
