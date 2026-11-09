@@ -130,14 +130,14 @@
   .sheet{background:var(--paper);border:1px solid var(--line);border-radius:8px;
     box-shadow:var(--shadow-md);
     padding:44px 52px 56px;min-height:60vh}
-  #doc{font-family:var(--font-doc);font-size:15px;line-height:1.6;color:var(--ink);
+  #doc{font-family:var(--font-doc);font-size:calc(15px * var(--rv-k,1));line-height:1.6;color:var(--ink);
     word-wrap:break-word}
   #doc>:first-child{margin-top:0}
   #doc h1,#doc h2,#doc h3,#doc h4{color:var(--ink);line-height:1.3;font-weight:700}
-  #doc h1{font-size:25px;border-bottom:1px solid var(--line);padding-bottom:10px;margin:0 0 6px}
-  #doc h2{font-size:20px;margin:30px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px}
-  #doc h3{font-size:16.5px;margin:22px 0 6px}
-  #doc h4{font-size:14.5px;margin:16px 0 4px;color:var(--ink-soft)}
+  #doc h1{font-size:calc(25px * var(--rv-k,1));border-bottom:1px solid var(--line);padding-bottom:10px;margin:0 0 6px}
+  #doc h2{font-size:calc(20px * var(--rv-k,1));margin:30px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px}
+  #doc h3{font-size:calc(16.5px * var(--rv-k,1));margin:22px 0 6px}
+  #doc h4{font-size:calc(14.5px * var(--rv-k,1));margin:16px 0 4px;color:var(--ink-soft)}
   #doc p{margin:8px 0}
   #doc ul,#doc ol{margin:8px 0;padding-left:26px}
   #doc li{margin:4px 0}
@@ -405,9 +405,9 @@ main{max-width:1280px;grid-template-columns:minmax(0,1fr) 340px;gap:28px;padding
   box-shadow:var(--shadow-md);
   padding:52px 60px 64px;
 }
-#doc{font-size:15.5px;line-height:1.7}
-#doc h1{font-size:28px;letter-spacing:-.015em;padding-bottom:12px;margin-bottom:14px}
-#doc h2{font-size:21px;letter-spacing:-.01em;margin-top:34px}
+#doc{font-size:calc(15.5px * var(--rv-k,1));line-height:1.7}
+#doc h1{font-size:calc(28px * var(--rv-k,1));letter-spacing:-.015em;padding-bottom:12px;margin-bottom:14px}
+#doc h2{font-size:calc(21px * var(--rv-k,1));letter-spacing:-.01em;margin-top:34px}
 #doc blockquote{border-radius:0}
 #doc table{border-radius:10px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
 #doc th,#doc td{padding:9px 11px}
@@ -711,10 +711,10 @@ header{gap:14px;min-width:0}
   main{padding:14px 10px 90px;gap:14px}
   .sheet{padding:24px 16px 34px;border-radius:14px}
   body.home-mode .sheet::before{margin:-8px 0 14px;font-size:11.5px}
-  #doc{font-size:14.5px;line-height:1.62}
-  #doc h1{font-size:23px}
-  #doc h2{font-size:19px}
-  #doc h3{font-size:15.5px}
+  #doc{font-size:calc(14.5px * var(--rv-k,1));line-height:1.62}
+  #doc h1{font-size:calc(23px * var(--rv-k,1))}
+  #doc h2{font-size:calc(19px * var(--rv-k,1))}
+  #doc h3{font-size:calc(15.5px * var(--rv-k,1))}
   .rail::before{font-size:11.5px;margin-bottom:8px}
   .card{padding:11px 12px;margin-bottom:10px}
   .overlay{padding:14px 10px;align-items:flex-start}
@@ -1016,16 +1016,16 @@ main > .rail{min-width:0;max-width:100%}
     margin-left:30px!important;
   }
   #doc{
-    font-size:15px;
+    font-size:calc(15px * var(--rv-k,1));
     overflow-wrap:break-word;
   }
   #doc h1{
-    font-size:26px!important;
+    font-size:calc(26px * var(--rv-k,1))!important;
     line-height:1.18!important;
     overflow-wrap:break-word;
   }
-  #doc h2{font-size:21px!important}
-  #doc h3{font-size:17px!important}
+  #doc h2{font-size:calc(21px * var(--rv-k,1))!important}
+  #doc h3{font-size:calc(17px * var(--rv-k,1))!important}
   #doc table{
     display:block;
     width:100%;
@@ -1039,7 +1039,7 @@ main > .rail{min-width:0;max-width:100%}
 @media (max-width:420px){
   main{padding-left:10px!important;padding-right:10px!important}
   .sheet{padding:22px 16px 32px!important}
-  #doc h1{font-size:24px!important}
+  #doc h1{font-size:calc(24px * var(--rv-k,1))!important}
   .rail{padding:14px!important}
 }
 
@@ -1549,6 +1549,123 @@ body.no-notes:not(.outline-hidden) .rail{grid-column:2}
 @media (hover:none){ #doc .dg-add{ height:30px; padding:0 12px 0 10px; font-size:13px; } }
 @media (prefers-reduced-motion:reduce){ #doc .dg-add, #doc .dg-hover, #doc mark.hl.dg-hl{ transition:none; } #doc mark.hl.dg-hl.pulse{ animation:none; } }
 /* ==[/DIAGRAM CSS]== */
+
+/* ==[READ CSS]== reading tools: diagram full screen · collapsible sections · text size / column width · back to top · reading time */
+/* text size: --rv-k (0.9 … 1.3) multiplies every #doc font size (the base rules use calc(… * var(--rv-k,1))) */
+#doc pre, #doc pre code{ font-size:calc(13px * var(--rv-k,1)); }
+#doc table{ font-size:calc(13.5px * var(--rv-k,1)); }
+/* column width: Medium = the default layout; Narrow caps the sheet; Wide lifts the workspace cap */
+@media (min-width:901px){
+  body.rv-w-narrow:not(.editing) main > .sheet{ width:100%; max-width:720px; justify-self:center; box-sizing:border-box; }
+  body.rv-w-wide:not(.editing) main{ max-width:none; }
+}
+@media (min-width:1101px){
+  body.rv-w-wide:not(.editing) main > .sheet{ padding-left:40px; padding-right:40px; }
+}
+
+/* Theme ▾ → Reading group */
+header .theme-menu .rv-msep{ height:1px; margin:4px 6px; background:var(--line); }
+header .theme-menu .rv-mgroup{ padding:2px 4px 4px; }
+header .theme-menu .rv-mlbl{ padding:6px 7px 4px; font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); }
+header .theme-menu .rv-mrow{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:3px 7px; }
+header .theme-menu .rv-mrow-lbl{ font-size:12.5px; color:var(--ink-soft); white-space:nowrap; }
+header .theme-menu .rv-seg{ display:inline-flex; align-items:center; gap:2px; padding:2px; border-radius:8px; background:var(--surface-2); }
+header .theme-menu .rv-seg button{ font:500 12px/1 var(--font-ui); color:var(--ink-soft); background:none; border:0; border-radius:6px;
+  padding:6px 8px; min-height:26px; cursor:pointer; white-space:nowrap; }
+header .theme-menu .rv-seg button:hover{ background:var(--surface); color:var(--ink); }
+header .theme-menu .rv-seg button:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+header .theme-menu .rv-seg button[aria-checked="true"]{ background:var(--surface); color:var(--ink); font-weight:600; box-shadow:0 0 0 1px var(--line); }
+header .theme-menu .rv-seg button[aria-disabled="true"]{ opacity:.4; cursor:default; }
+header .theme-menu .rv-sz{ min-width:30px; font-weight:600 !important; }
+header .theme-menu .rv-sz-up{ font-size:13.5px !important; }
+header .theme-menu .rv-sz-val{ min-width:40px; text-align:center; font:600 11.5px/1 var(--font-ui); color:var(--ink); font-variant-numeric:tabular-nums; }
+
+/* reading time beside the document name */
+.rv-time{ flex:none; font:400 12px/1.2 var(--font-ui); color:var(--ink-faint); white-space:nowrap; }
+.rv-time[hidden]{ display:none; }
+@media (max-width:720px){ .rv-time{ display:none; } }
+
+/* collapsible sections: chevron before each h1–h3; hidden blocks stay in the DOM */
+#doc .rv-hidden{ display:none !important; }
+#doc .rv-fold{ display:inline-flex; align-items:center; justify-content:center; width:1.05em; height:1.05em; min-width:20px; min-height:20px;
+  margin:0 .3em 0 -.1em; padding:0; vertical-align:-.12em; border:0; border-radius:5px; background:none; color:var(--ink-faint);
+  cursor:pointer; opacity:.45; transition:opacity .12s, background .12s, color .12s; user-select:none; -webkit-user-select:none; }
+#doc .rv-fold svg{ width:70%; height:70%; fill:none; stroke:currentColor; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round;
+  transition:transform .15s; }
+#doc .rv-fold[aria-expanded="false"] svg{ transform:rotate(-90deg); }
+#doc h1:hover > .rv-fold, #doc h2:hover > .rv-fold, #doc h3:hover > .rv-fold,
+#doc .rv-fold:focus-visible, #doc .rv-fold[aria-expanded="false"]{ opacity:1; }
+#doc .rv-fold:hover{ background:var(--surface-2); color:var(--ink); }
+#doc .rv-fold:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+@media (hover:none){ #doc .rv-fold{ opacity:.7; } }
+#doc .rv-hint{ margin-left:.5em; padding:2px 8px; border:0; border-radius:999px; background:var(--accent-soft); color:var(--accent-soft-fg);
+  font:500 12px/1.4 var(--font-ui); letter-spacing:0; vertical-align:.15em; cursor:pointer; white-space:nowrap; }
+#doc .rv-hint:hover{ background:color-mix(in srgb, var(--accent) 18%, var(--accent-soft)); }
+#doc .rv-hint:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+#doc .rv-hint[hidden]{ display:none; }
+#doc .rv-folded-head{ color:var(--ink-soft); }
+.card.rv-folded{ opacity:.6; }
+.card.rv-folded:hover, .card.rv-folded:focus-visible, .card.rv-folded.on{ opacity:1; }
+#outline .ol-item.rv-ol-folded{ opacity:.55; }
+#outline .rv-olbtn{ display:inline-flex; width:24px; height:24px; flex:none; align-items:center; justify-content:center; padding:0; border:0; border-radius:6px;
+  background:none; color:var(--ink-faint); cursor:pointer; }
+#outline .rv-olbtn[hidden]{ display:none; }
+#outline .rv-olbtn:hover{ background:var(--surface-2); color:var(--ink); }
+#outline .rv-olbtn:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+#outline .rv-olbtn svg{ width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* diagram full screen */
+#doc .mermaid-wrap > .rv-fsbtn{ position:absolute; top:8px; right:8px; z-index:3; display:inline-flex; align-items:center; justify-content:center;
+  width:30px; height:30px; padding:0; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink-soft);
+  box-shadow:var(--shadow-md); cursor:pointer; opacity:0; transition:opacity .12s, background .12s; }
+#doc .mermaid-wrap:hover > .rv-fsbtn, #doc .mermaid-wrap:focus-within > .rv-fsbtn, #doc .mermaid-wrap > .rv-fsbtn:focus-visible{ opacity:1; }
+#doc .mermaid-wrap > .rv-fsbtn:hover{ background:var(--surface-2); color:var(--ink); }
+#doc .mermaid-wrap > .rv-fsbtn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+#doc .mermaid-wrap > .rv-fsbtn svg{ width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+@media (hover:none){ #doc .mermaid-wrap > .rv-fsbtn{ opacity:.85; } }
+body.rv-fs-open{ overflow:hidden; }
+.rv-fs{ position:fixed; inset:0; z-index:96; display:flex; flex-direction:column; background:var(--app-bg, var(--paper)); color:var(--ink); }
+.rv-fs-bar{ display:flex; align-items:center; gap:12px; padding:10px 14px; border-bottom:1px solid var(--line); background:var(--surface); font-family:var(--font-ui); }
+.rv-fs-title{ font-weight:600; font-size:14px; white-space:nowrap; }
+.rv-fs-hint{ flex:1 1 auto; min-width:0; font-size:12px; color:var(--ink-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.rv-fs-tools{ display:flex; align-items:center; gap:4px; margin-left:auto; }
+.rv-fs-tools button{ min-width:32px; height:32px; padding:0 10px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink);
+  font:600 13px/1 var(--font-ui); cursor:pointer; }
+.rv-fs-tools button:hover{ background:var(--surface-2); }
+.rv-fs-tools button:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.rv-fs-tools .rv-fs-x{ margin-left:6px; font-size:18px; font-weight:400; }
+.rv-fs-pct{ min-width:46px; text-align:center; font:600 12px/1 var(--font-ui); color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+.rv-fs-view{ position:relative; flex:1 1 auto; overflow:hidden; background:var(--paper); cursor:grab; touch-action:none; outline:none; }
+.rv-fs-view:focus-visible{ box-shadow:inset 0 0 0 2px var(--accent); }
+.rv-fs-view.dragging{ cursor:grabbing; }
+.rv-fs-stage{ position:absolute; left:0; top:0; transform-origin:0 0; }
+.rv-fs-stage svg{ display:block; max-width:none !important; font-family:var(--font-ui) !important; }
+@media (max-width:720px){
+  .rv-fs-bar{ flex-wrap:wrap; gap:8px; padding:8px 10px; }
+  .rv-fs-hint{ display:none; }
+  .rv-fs-tools .rv-fs-one{ display:none; }
+}
+
+/* back to top: bottom-left, clear of the Paste AI result chip (bottom-right) and toasts (bottom-centre) */
+.rv-top{ position:fixed; left:16px; bottom:20px; z-index:54; display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px;
+  padding:0; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--ink-soft); box-shadow:var(--shadow-lg);
+  cursor:pointer; opacity:0; visibility:hidden; transform:translateY(8px); transition:opacity .15s, transform .15s, visibility .15s, bottom .15s; }
+.rv-top.show{ opacity:1; visibility:visible; transform:none; }
+.rv-top:hover{ background:var(--surface-2); color:var(--ink); }
+.rv-top:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.rv-top svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+body:has(#aiSuggBar:not([hidden])) .rv-top{ bottom:72px; }
+body.editing .rv-top{ display:none; }
+@media (min-width:1101px){ body.rv-top-on:not(.outline-hidden) #outline{ padding-bottom:52px; } }
+@media (max-width:720px){
+  .rv-top{ left:12px; bottom:16px; }
+  body:has(#toast.show) .rv-top{ bottom:76px; }
+  body:has(#aiSuggBar:not([hidden])) .rv-top{ bottom:130px; }
+}
+@media (prefers-reduced-motion:reduce){
+  .rv-top, #doc .rv-fold, #doc .rv-fold svg, #doc .mermaid-wrap > .rv-fsbtn{ transition:none; }
+}
+/* ==[/READ CSS]== */
 </style>
 
 <style>
@@ -2925,6 +3042,16 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
 /* ==[/EXP2 CSS]== */
 /* raw Markdown must show ~~, --, => as typed: no font ligatures in source boxes */
 .p2 textarea, textarea.big, .mde-ta, #mdeText{ font-variant-ligatures:none; font-feature-settings:"liga" 0, "calt" 0; }
+/* phones: "Expand table" line above each table (the hover toolbar is hidden there) */
+#doc .tv-mexp{ display:none; }
+@media (max-width:768px){
+  #doc .tv-mexp{ display:flex; align-items:center; gap:6px; margin:10px 0 -6px auto; padding:4px 10px; border:1px solid var(--line); border-radius:999px;
+    background:var(--surface); color:var(--ink-soft); font:600 12px/1.2 var(--font-ui); cursor:pointer; }
+  #doc .tv-mexp svg{ width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+}
+@media print{ #doc .tv-mexp{ display:none !important; } }
+/* section fold chevron: a little easier to see, especially on Night */
+#doc .rv-fold{ opacity:.6; }
 </style>
 </head>
 <body>
@@ -2935,6 +3062,7 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
     <div class="brand">
       <h1 class="logo" aria-label="mdeverything"><span class="logo-md">md</span><span class="logo-rest">everything</span></h1>
       <button type="button" class="doc-label" id="docLabel" title="Documents" aria-haspopup="dialog" aria-expanded="false">Sample document</button>
+      <span class="rv-time" id="rvTime" hidden></span>
     </div>
   </div>
   <div class="tools">
@@ -2953,6 +3081,12 @@ html:lang(ja) #home h2, html:lang(ja) #home .home-h, html:lang(ja) #home .h3-ste
         <button type="button" role="menuitemradio" data-theme-set="light" aria-checked="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="mi-txt">Paper</span><svg class="ico mi-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <button type="button" role="menuitemradio" data-theme-set="beige" aria-checked="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></svg><span class="mi-txt">Sepia</span><svg class="ico mi-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <button type="button" role="menuitemradio" data-theme-set="dark" aria-checked="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span class="mi-txt">Night</span><svg class="ico mi-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        <div class="rv-msep" role="separator"></div>
+        <div class="rv-mgroup" role="group" aria-labelledby="rvGrpLbl">
+          <div class="rv-mlbl" id="rvGrpLbl">Reading</div>
+          <div class="rv-mrow"><span class="rv-mrow-lbl">Text size</span><span class="rv-seg"><button type="button" role="menuitem" class="rv-sz" data-rv-size="-1" title="Smaller text" aria-label="Smaller text"><span aria-hidden="true">A−</span></button><span class="rv-sz-val" id="rvSizeVal" aria-live="polite">100%</span><button type="button" role="menuitem" class="rv-sz rv-sz-up" data-rv-size="1" title="Larger text" aria-label="Larger text"><span aria-hidden="true">A+</span></button></span></div>
+          <div class="rv-mrow"><span class="rv-mrow-lbl">Column width</span><span class="rv-seg rv-wseg"><button type="button" role="menuitemradio" aria-checked="false" data-rv-width="narrow">Narrow</button><button type="button" role="menuitemradio" aria-checked="true" data-rv-width="medium">Medium</button><button type="button" role="menuitemradio" aria-checked="false" data-rv-width="wide">Wide</button></span></div>
+        </div>
       </div>
     </span>
     <span class="pop hdr-pop" id="langWrap">
@@ -3320,7 +3454,7 @@ Note: Is that right? I thought…</pre>
 <div id="tvSticky" class="tv-sticky" aria-hidden="true" hidden></div>
 <!-- ==[/TABLES HTML]== -->
 
-<script type="application/json" id="i18n">{"lang":"en","code":"en","nativeName":"English","base":"","locales":[{"code":"en","htmlLang":"en","dir":"ltr","nativeName":"English","href":"./"},{"code":"vi","htmlLang":"vi","dir":"ltr","nativeName":"Tiếng Việt","href":"vi/"},{"code":"ja","htmlLang":"ja","dir":"ltr","nativeName":"日本語","href":"ja/"},{"code":"pt-BR","htmlLang":"pt-BR","dir":"ltr","nativeName":"Português (Brasil)","href":"pt-br/"},{"code":"es","htmlLang":"es","dir":"ltr","nativeName":"Español","href":"es/"}],"dict":{"lang.button":"Language","lang.buttonAria":"Language: English","lang.links":"Languages","lang.suggest":"This page is available in English","lang.suggestGo":"Switch","lang.suggestDismiss":"Dismiss","hdr.outline":"Outline","hdr.comments":"Comments","hdr.outlineToggle":"Show / hide outline","hdr.editMd":"Edit Markdown","hdr.importTitle":"Open, paste or restore","hdr.import":"Import","hdr.theme":"Theme","hdr.railToggle":"Show / hide comments panel","menu.openTitle":"Open a Markdown file","menu.open":"Open file…","menu.openSub":".md, .markdown or .txt from your computer","menu.pasteTitle":"Paste Markdown","menu.paste":"Paste Markdown…","menu.pasteSub":"Start from text on your clipboard","menu.restoreTitle":"Restore documents and comments from a backup file","menu.restore":"Restore from backup (.json)…","menu.restoreSub":"Bring back documents and their comments","theme.light":"Paper","theme.beige":"Sepia","theme.dark":"Night","theme.aria":"Theme: {name}","theme.ariaPaper":"Theme: Paper","export.noDoc":"No Markdown document to copy yet","export.copyFailed":"Couldn't copy, try again","export.needComment":"Add at least one comment before exporting","export.button":"Export for AI","export.options":"Export options","export.menu":"Export","export.full":"Full context","export.notes":"Comments only","export.raw":"Document only","export.fileFull":"-for-ai","export.fileNotes":"-comments","export.aiFmt":"Let AI reply back into mdeverything","exp2.mFull":"Copy full context","exp2.mFullSub":"Document + comments + instructions","exp2.mNotes":"Copy comments only","exp2.mNotesSub":"Just the comments and their quoted passages","exp2.mDoc":"Copy document only","exp2.mDocSub":"Just the text","exp2.mOptions":"Export options…","exp2.mOptionsSub":"Quick instructions, extra requests, download","exp2.mPaste":"Paste AI result…","exp2.mPasteSub":"Paste back what your AI returned","exp2.title":"Export for AI","exp2.what":"What to send","exp2.fullSub":"Document + comments","exp2.notesSub":"Comments + quoted passages","exp2.docSub":"Just the text","exp2.quick":"Quick instructions","exp2.optMark":"Mark the edits (strike removed text, purple for new)","exp2.optAnswer":"Answer each comment","exp2.optAnswerSub":"So the answers can be pasted back under each comment","exp2.optAnswerNa":"Not used when sending the document only","exp2.extra":"Extra instructions","exp2.extraPh":"e.g. keep my tone, don't change the headings…","exp2.suggestions":"Suggestions","exp2.chipTone":"Keep my tone","exp2.chipOnly":"Only edit where there are comments","exp2.chipHeadings":"Don't change the headings","exp2.chipShorter":"Make it shorter","exp2.chipExplain":"Explain each change briefly","exp2.chipKeep":"Keep tables and code as they are","exp2.chipLang":"Reply in English","exp2.recent":"Recently used","exp2.useRecent":"Use: {text}","exp2.preview":"Preview what will be copied","exp2.download":"Download .md","exp2.copy":"Copy","exp2.markPrompt":"Return the full revised document in Markdown and mark your edits: wrap removed text in ~~double tildes~~ (struck through) and new text in \u003cins>…\u003c/ins> (shown in purple). If the document already has marks from a previous round, delete the ~~struck-through~~ text entirely and keep the earlier \u003cins> text as normal text (drop the \u003cins> tags).","exp2.okFull":"Copied full context","exp2.okNotes":"Copied comments only","exp2.okDoc":"Copied document only","exp2.okDl":"Downloaded {file}","exp2.failTitle":"Couldn't copy to the clipboard","exp2.failSub":"Your browser blocked it. Download the file and attach it to your AI instead.","exp2.metaComments":"{n, plural, one {# comment} other {# comments}}","exp2.metaWords":"{n, plural, one {# word} other {# words}}","exp2.metaWith":"with: {list}","exp2.incMark":"marked edits","exp2.incAnswer":"answers per comment","exp2.incExtra":"extra instructions","exp2.stepsAria":"Next steps","exp2.step1":"Paste into your AI","exp2.step1Dl":"Attach the file to your AI","exp2.step2":"Copy the result","exp2.step3":"Paste it back here","exp2.openAi":"Open your AI","exp2.more":"+ more","exp2.newTab":"{name} (opens in a new tab)","exp2.anyAi":"Works with any AI that reads Markdown","exp2.cta":"Paste AI result","exp2.ctaDl":"Download file instead","exp2.noteMark":"Old text struck through, new text in purple","exp2.noteAnswer":"Answers will appear under each comment","exp2.hideSteps":"Don't show these steps again","exp2.dismiss":"Dismiss","exp2.chipTip":"You exported {kind} at {time}","home.hideTitle":"Hide the intro and keep the demo","home.hide":"Hide intro","home.kicker":"Markdown review desk for AI","home.title_html":"Point at the exact words.\u003cbr>\u003cspan class=\"hero-em\">Tell your AI what to fix.\u003c/span>","home.sub":"Comment on any Markdown file, then export it with every comment pinned to its passage — so ChatGPT, Claude or Gemini answers in the right place.","home.open":"Open a Markdown file","home.paste":"Paste Markdown","home.demo":"Explore the demo below","home.dropAria":"Open a Markdown file — or drop one here","home.dropTitle":"Drop your .md file here","home.dropBrowse":"or click to browse your computer","home.dropHint":".md · .markdown · .txt — or a .mdeverything.json backup","how.title":"How it works","how.mockDoc_html":"Free for teams of up to 5 people. \u003cmark class=\"mk-hl\">Billing starts on day one\u003cspan class=\"mk-badge\">1\u003c/span>\u003c/mark> for everyone else.","how.mockNote":"Is that right? I thought there's a 14-day trial.","how.s1Title":"Point at the words","how.s1Text":"Open or paste any Markdown file. Select a passage and write what should change.","how.mockExport_html":"\u003cspan class=\"mk-k\">[1] {#n3f9a}\u003c/span> Location: section “Pricing”\nQuoted passage:\n\u003cspan class=\"mk-q\">\"Billing starts on day one\"\u003c/span>\nNote: Is that right? I thought…","how.s2Title":"Send it to your AI","how.s2Text":"Export copies the whole document with every comment pinned to its passage. Paste it into ChatGPT, Claude or Gemini.","how.mockReply":"Yes — paid plans start with a 14-day trial.","how.mockDiff_html":"Billing starts \u003cdel>on day one\u003c/del> \u003cins>after a 14-day free trial\u003c/ins>","how.s3Title":"Review answers in place","how.s3Text_html":"Paste the reply back. Each answer lands under its own comment, with suggested edits shown as \u003cdel>old\u003c/del> → \u003cins>new\u003c/ins>. Accept or reject each one.","how.loopTitle":"Not done yet?","how.loopText":"Reply or add comments and export again — only new and follow-up comments get answered.","how.foot":"Works with ChatGPT, Claude, Gemini — no account, nothing uploaded","why.aria":"Why mdeverything","why.c1Title":"Precise context for AI","why.c1Text":"Each comment carries its quote, section and surrounding text, so answers land on the right sentence.","why.c2Title":"Private — runs in your browser","why.c2Text":"No upload, no account, no tracking. Your work stays on this device.","why.c3Title":"Works in any language","why.c3Text":"Comments anchor to the exact words — English, Tiếng Việt, 日本語 alike.","assure.free":"Free","assure.noSignup":"No sign-up","assure.autosave":"Autosaves as you work","assure.docs":"Keep up to 10 documents","tip.text_html":"\u003cb>Try it:\u003c/b> select any sentence below and press \u003ckbd>Enter\u003c/kbd> to leave a comment.","tip.dismiss":"Dismiss tip","floater.add":"Add note","dropzone.text":"Drop a .md file — or a .mdeverything.json backup — to open it","source.title":"Paste Markdown","source.openFile":"Open Markdown…","paste2.mdSub":"From any AI chat or editor — check the preview, then open it.","paste2.aiTitle":"Paste AI result","paste2.aiSub":"Answers to your comments or a whole revised document — recognised automatically.","paste2.tabPaste":"Paste","paste2.tabPreview":"Preview","paste2.colInput":"Markdown","paste2.colAi":"AI reply","paste2.colPreview":"Preview","paste2.colMatches":"Matched comments","paste2.clear":"Clear","paste2.inputAria":"Markdown to paste","paste2.aiInputAria":"AI result to paste","paste2.emptyHint":"{key}+V to paste · or drop a .md file","paste2.fromClipboard":"Paste from clipboard","paste2.aiEmptyTip":"Answers to comments start with ## [1]. Anything else is read as a revised document.","paste2.dropHere":"Drop the file to paste its text","paste2.dropBad":"Only .md or .txt files can be dropped here","paste2.clipBlocked":"The browser blocked clipboard access — press {key}+V in the box instead","paste2.clipEmpty":"The clipboard has no text","paste2.prevEmpty":"The preview appears here","paste2.optLegend":"Open as","paste2.optNew":"New document","paste2.optReplace":"Replace the open document (keep comments)","paste2.btnOpen":"Open document","paste2.btnReplace":"Replace document","paste2.btnBoth":"{n, plural, one {Add # answer + replace document} other {Add # answers + replace document}}","paste2.apply":"Apply","paste2.kbdHint":"{key}+Enter to apply","paste2.detEmpty":"Nothing pasted yet","paste2.detDoc":"Markdown document","paste2.detAnswers":"Answers to your comments","paste2.detRevised":"Revised document","paste2.detBoth":"Answers + revised document","paste2.detNone":"Couldn't recognise this","paste2.tipNone":"Paste the AI's whole reply. Answers to comments start with ## [1]; a revised document is ordinary Markdown.","paste2.unwrapped":"Removed the code block wrapper","paste2.nHeadings":"{n, plural, one {# heading} other {# headings}}","paste2.nTables":"{n, plural, one {# table} other {# tables}}","paste2.nDiagrams":"{n, plural, one {# diagram} other {# diagrams}}","paste2.nWords":"{n, plural, one {# word} other {# words}}","paste2.nMarks":"{n, plural, one {# marked edit} other {# marked edits}}","paste2.nMatched":"{n, plural, one {# matched} other {# matched}}","paste2.nNotFound":"{n, plural, one {# not found} other {# not found}}","paste2.nDup":"{n, plural, one {# already added} other {# already added}}","paste2.keptShort":"Comments still anchored: {kept}/{total}","paste2.docInfo":"Replaces the open document · comments still anchored: {kept}/{total}","paste2.docInfoNoNotes":"Replaces the open document","paste2.shorter":"Much shorter than the open document","paste2.diagram":"Mermaid diagram (drawn after opening)","paste2.replaced":"Document replaced","paste2.replacedKept":"Document replaced · {kept}/{total} comments still anchored","paste2.undone":"Restored the previous document and comments","confirm.defaultTitle":"Replace current document?","confirm.defaultMessage":"This action cannot be undone.","confirm.exportFirst":"Export your notes first if you want to keep a copy.","confirm.continue":"Continue","confirm.replaceMessage":"Loading a new document will remove the current annotations.","confirm.replaceOk":"Replace document","common.cancel":"Cancel","common.save":"Save","common.undo":"Undo","common.cancelEsc":"Cancel (Esc)","common.close":"Close","common.closeEsc":"Close (Esc)","common.edit":"Edit","common.delete":"Delete","common.open":"Open","doc.sampleName":"Sample document","doc.untitled":"Markdown document","doc.labelTitle":"{name} — Documents","doc.editedName":"Edited document","doc.sampleCopy":"Sample copy","doc.pastedName":"Pasted Markdown","doc.untitledShort":"Untitled","doc.recoveredName":"Recovered document","doc.importedName":"Imported document","sample.confirmTitle":"Open sample workspace?","sample.confirmMessage":"You currently have {n, plural, one {# note} other {# notes}}. Loading the sample will delete these annotations.","sample.confirmOk":"Open sample","sample.confirmKeep":"Keep current document","sample.loaded":"Sample loaded with {n, plural, one {# example comment} other {# example comments}}","sample.liveDemo":"Live demo · hover or click the highlights","render.failed":"Could not render markdown.","code.label":"code","code.copy":"Copy","code.copied":"Copied","code.error":"Error","mermaid.rendering":"Rendering diagram…","mermaid.error":"Diagram didn’t parse — showing source.","diag.add":"Comment","diag.addAria":"Comment on “{label}”","diag.wrapAria":"Diagram {n}. Use the arrow keys to pick a shape, then Enter to comment on it.","diag.cardQuote":"Diagram {n} · “{label}”","diag.cardWhole":"Diagram {n}","diag.location":"diagram {n} ({type}) · {shape} “{label}”","diag.locationWhole":"diagram {n} ({type})","diag.bundleMermaid":"Mermaid: {code}","diag.shapeNode":"node","diag.shapeEdge":"edge label","diag.shapeGroup":"group","diag.shapeParticipant":"participant","diag.shapeMessage":"message","diag.shapeNote":"note","outline.untitled":"Untitled section","outline.title":"On this page","outline.close":"Close outline","outline.collapse":"Collapse outline","outline.empty_html":"No headings in this document yet. Add \u003ccode>#\u003c/code>, \u003ccode>##\u003c/code> or \u003ccode>###\u003c/code> headings to get an outline.","outline.expand":"Expand outline","outline.aria":"Document outline","gutter.comment":"Comment on this block","rail.countLabel":"{n, plural, one {note} other {notes}}","rail.show":"Show comments panel","rail.hide":"Hide comments panel","rail.collapse":"Collapse comments panel","rail.showCount":"Show comments panel ({n, plural, one {# comment} other {# comments}})","rail.notesWord":"notes","rail.empty_html":"\u003cb>Select any passage\u003c/b> in the document to add a note or question. Notes anchor right beside the passage and travel with it when you copy.","rail.reviewerNotes":"Reviewer notes","rail.exampleNotes":"Example notes","rail.demoHint":"Demo comments show how annotations connect to highlighted passages.","card.notFound":"This passage was not found in the document","card.exampleChip":"Example note","card.replies":"{n, plural, one {# reply} other {# replies}}","card.editNote":"Edit note","card.deleteNote":"Delete note","card.replyPlaceholder":"Reply…","card.replyToNote":"Reply to note {n}","card.reply":"Reply","card.addNotePlaceholder":"Click to add a note…","card.ariaNote":"Note {n}: {quote}","card.ariaEmpty":"Empty note {n} on “{quote}” — activate to write","card.deleteNoteN":"Delete note {n}","card.editNoteN":"Edit note {n}","ctime.created":"Created {date}","ctime.edited":"edited","ctime.editedAt":"Edited {date}","ctime.sortLabel":"Sort comments","ctime.sortDoc":"Document order","ctime.sortNew":"Newest first","pop.notesOnPassage":"{n, plural, one {# note on this passage} other {# notes on this passage}}","pop.noNoteClick":"No note yet — click to add","pop.preview":"Note preview","pop.newNote":"New note","pop.notePlaceholder":"Add a note or question…","pop.noteText":"Note text","pop.hint":"Enter to save · Shift+Enter new line","pop.noteN":"Note {n}","pop.notesHere":"{n, plural, one {# note here} other {# notes here}}","pop.showNote":"Show note {n}","pop.noNote":"No note yet","reply.deleted":"Reply deleted","reply.edit":"Edit reply","reply.delete":"Delete reply","reply.editHintTitle":"Enter to save · Shift+Enter new line · Esc to cancel","reply.editHint":"Enter to save · Esc to cancel","reply.edited":"edited","reply.editedAt":"Edited {date}","filter.none.all":"No comments.","filter.none.replies":"No comments with replies.","filter.none.unanchored":"No unanchored comments.","filter.none.ai":"No comments with an AI answer.","filter.none.noai":"No comments without an AI answer.","filter.none.sugg":"No comments with pending suggestions.","filter.noneQ.all":"No comments match “{q}”.","filter.noneQ.replies":"No comments with replies match “{q}”.","filter.noneQ.unanchored":"No unanchored comments match “{q}”.","filter.noneQ.ai":"No comments with an AI answer match “{q}”.","filter.noneQ.noai":"No comments without an AI answer match “{q}”.","filter.noneQ.sugg":"No comments with pending suggestions match “{q}”.","filter.label":"Filter comments","filter.all":"All","filter.replies":"With replies","filter.unanchored":"Unanchored","filter.unanchoredTitle":"Notes whose passage is no longer in the document","filter.ai":"With AI answer","filter.noai":"No AI answer","filter.sugg":"Pending suggestions","filter.suggTitle":"AI suggested edits not yet accepted or rejected","filter.clear":"Clear filters","search.placeholder":"Search comments","help.titleShort":"Keyboard shortcuts (?)","help.title":"Keyboard shortcuts","help.nextPrev":"Next / previous comment","help.search":"Search comments","help.addNote":"Add a note on the selected text","help.close":"Close a card, menu or dialog","help.show":"Show these shortcuts","nav.noComments":"No comments yet","nav.noMatch":"No comments match the filter","nav.noHighlight":"No comments with a highlight in this document","toast.noteGone":"That note no longer exists","toast.noteDeleted":"Note deleted","toast.noteRestoredOrphan":"Note restored — its passage is no longer in the document","toast.storageFull":"Browser storage is full — your latest changes aren't saved","toast.manageStorage":"Manage storage","toast.storageUnavailable":"Browser storage isn't available here — changes won't be kept after a reload","toast.savedAs":"Your changes are saved as “{name}”","toast.opened":"Opened {name}","toast.docLoaded":"Document loaded","toast.cantRead":"Couldn't read “{name}”","toast.pasteFirst":"Paste Markdown first","toast.rendered":"Markdown rendered","time.justNow":"just now","time.yesterday":"yesterday","editor.undo":"Undo","editor.redo":"Redo","editor.bold":"Bold","editor.italic":"Italic","editor.strike":"Strikethrough","editor.h1":"Heading 1","editor.h2":"Heading 2","editor.h3":"Heading 3","editor.ul":"Bulleted list","editor.ol":"Numbered list","editor.task":"Task list","editor.quote":"Quote","editor.code":"Inline code","editor.codeblock":"Code block","editor.link":"Link","editor.table":"Insert table","editor.hr":"Horizontal rule","editor.region":"Markdown editor","editor.formatting":"Formatting","editor.discardTitle":"Discard changes and return to the document","editor.discard":"Discard","editor.applyTitle":"Apply changes ({key})","editor.done":"Done","editor.view":"Editor view","editor.write":"Write","editor.preview":"Preview","editor.source":"Markdown source","editor.placeholder":"Write Markdown…","editor.livePreview":"Live preview","editor.hint_html":"\u003ckbd>{key}\u003c/kbd> apply · \u003ckbd>Esc\u003c/kbd> then \u003ckbd>Tab\u003c/kbd> leaves the editor","editor.finishTitle":"Finish editing and apply changes ({key})","editor.editTitle":"Edit Markdown source with live preview","editor.editing":"Editing","editor.edit":"Edit","editor.draftRestored":"Restored your unsaved draft","editor.noChanges":"No changes to apply","editor.applied":"Changes applied","editor.lost":"{n, plural, one {# comment lost its anchor} other {# comments lost their anchor}}","editor.reanchored":"{n, plural, one {# comment re-anchored} other {# comments re-anchored}}","editor.discardConfirmTitle":"Discard your edits?","editor.discardConfirmMessage":"Your changes to the Markdown source will be lost.","editor.discardConfirmNote":"The document and its comments stay exactly as they were before you started editing.","editor.discardConfirmOk":"Discard edits","editor.keepEditing":"Keep editing","editor.discarded":"Edits discarded","editor.count":"{w, plural, one {# word} other {# words}} · {c, plural, one {# character} other {# characters}}","editor.unsaved":"Unsaved changes","editor.clean":"No changes","editor.nothingToPreview":"Nothing to preview yet.","editor.ph.linkText":"link text","editor.ph.bold":"bold text","editor.ph.italic":"italic text","editor.ph.strike":"strikethrough","editor.ph.code":"code","editor.ph.column":"Column {n}","editor.ph.cell":"Cell","editor.finishFirst":"Finish editing first: Done ({key}) applies, Discard reverts","editor.finishBeforeOpen":"Finish editing before opening another file","editor.finishFirstShort":"Finish editing first","lib.documents":"Documents","lib.full":"You can keep up to {max} documents — delete one to add another","lib.manage":"Manage","lib.recovered":"Recovered {n, plural, one {# document that wasn't} other {# documents that weren't}} listed in Documents","lib.cantOpen":"Couldn't open “{name}” — its saved data is missing","lib.deletedOne":"Deleted “{name}”","lib.deletedMany":"Deleted {n} documents","lib.restoredOne":"Restored “{name}”","lib.restoredMany":"Restored {n} documents","lib.notRestored":" — {n, plural, one {# document} other {# documents}} not restored (limit {max})","lib.nothingToBackup":"Nothing to back up yet","lib.downloaded":"Downloaded {file}","lib.importFailed":"Couldn't import “{name}” — {why}","lib.importNotJson":"it isn't valid JSON","lib.importNotBackup":"it isn't an mdeverything backup","lib.importEmpty":"it contains no documents","lib.dupSkipped":" — {n, plural, one {# duplicate} other {# duplicates}} skipped (already in Documents)","lib.imported":"Imported {docs, plural, one {# document} other {# documents}} · {notes, plural, one {# comment} other {# comments}}","lib.importFull":" — storage is full, the rest were skipped","lib.importCapped":" — {n, plural, one {# document} other {# documents}} skipped (limit {max})","lib.dupOne":"“{name}” is already in Documents — nothing new to import","lib.dupAll":"All {n} documents are already in Documents — nothing new to import","lib.backupNag":"No backup in over {days} days — browsers can clear site data. Keep a copy of your documents as a file.","lib.downloadBackup":"Download backup","lib.changedElsewhere":"“{name}” was changed in another tab","lib.loadLatest":"Load latest","lib.deletedElsewhere":"“{name}” was deleted in another tab — it stays open here, and your next change saves it again","lib.cantLoadLatest":"Couldn't load the latest version","lib.loadedLatest":"Loaded the latest “{name}”","lib.quotaWarn":"Storage is almost full — only ~{free} left. Download a backup and remove documents you no longer need.","lib.lsWarn":"This site's small-document storage is almost full (it's shared with other pages on this domain). Remove documents you no longer need.","lib.backupFirst":"Download backup first","lib.backupFirstMany":"Download backup of {n} documents first","lib.backupDone":"Backup downloaded ✓","lib.noOld":"No documents older than {days} days","lib.andMore":"…and {n} more","lib.oldTitle":"Remove {n, plural, one {# old document} other {# old documents}}?","lib.oldMessage":"Not changed in the last {days} days:","lib.oldNote":"This frees browser storage. You can undo right after.","lib.oldOk":"Remove {n}","lib.oldKeep":"Keep them","lib.wipeTitle":"Delete all data?","lib.wipeMessage":"This permanently removes {docs, plural, one {# document} other {# documents}}, {notes, plural, one {# comment} other {# comments}} and your saved preferences from this browser.","lib.wipeNote":"This can't be undone.","lib.wipeOk":"Delete everything","lib.wiped":"All data deleted from this browser","lib.new":"New","lib.newOpen":"Open file…","lib.newOpenSub":".md, .markdown or .txt","lib.newPaste":"Paste Markdown…","lib.newPasteSub":"Start a new document from text","lib.newSample":"Sample document","lib.newSampleSub":"The guided demo (not saved)","lib.close":"Close documents","lib.search":"Search documents","lib.searchAria":"Search documents by name","lib.listAria":"Saved documents","lib.backup":"Backup","lib.backupAll":"Download backup (.json)","lib.restore":"Restore from backup…","lib.backupNote":"A backup keeps your documents and comments in one file — use it to move to another browser or keep a safe copy.","lib.removeOld":"Remove documents older than {days} days","lib.wipe":"Delete all data","lib.showingSample":"Showing the sample document","lib.sampleNotice":"You're viewing the sample document. It isn't saved unless you change it — then it's kept here as “{name}”.","lib.emptyTitle":"No saved documents yet","lib.emptyText":"Open or paste a Markdown file — it's kept here automatically, with its comments.","lib.noMatch":"No documents match “{q}”.","lib.rowComments":"{n, plural, one {# comment} other {# comments}}","lib.renameAria":"Rename {name}","lib.openTitle":"Open {name}","lib.current":"Open","lib.rename":"Rename","lib.backupOne":"Download backup","lib.backupOneAria":"Download backup of {name}","lib.deleteAria":"Delete {name}","lib.hostStorage":"Storage is managed by the app hosting this page, so usage can't be measured here.","lib.noStorage":"Browser storage isn't available here — documents won't be kept after a reload.","lib.storage":"Storage","lib.used_html":"\u003cb>~{size}\u003c/b> used","lib.meterTitle":"Small documents: ~{ls} in localStorage · large documents: ~{idb} in IndexedDB","lib.meterFree":" · the browser has ~{free} free for this site","lib.meterAria":"Browser storage used","ai.fmtOn":"AI replies on — exports ask the AI to answer in a format you can paste back","ai.fmtOff":"AI replies off — exports use the plain format","ai.noDocDownload":"No Markdown document to download yet","ai.noNoteId":"No note with id {id} in this document","ai.noNoteNum":"No note [{n}] in this document","ai.emptyAnswer":"Empty answer","ai.suggestedEdits":"{n, plural, one {Suggested an edit.} other {Suggested # edits.}}","ai.noNotes":"This document has no notes yet, so there is nothing to attach answers to.","ai.srAdd":"Will be added: ","ai.srDup":"Skipped, duplicate: ","ai.srSkip":"Skipped: ","ai.prevNote":"Note {n} · {snippet}","ai.byNumber":"Matched by number","ai.byId":"Matched by id","ai.includes":"{n, plural, one {includes a suggested edit} other {includes # suggested edits}}","ai.round":"Note {n} already has an AI answer — this will be round {round}","ai.roundSuperseded":" (its pending edits will be marked superseded)","ai.dupSkipped":"Identical answer already added — skipped","ai.skippedWhy":"{why} — skipped","ai.general":"General","ai.generalNote":"Not stored — copy it if you need it","ai.generalCopied":"General comments copied","ai.addN":"{n, plural, one {Add # answer} other {Add # answers}}","ai.added":"{n, plural, one {Added # AI answer} other {Added # AI answers}}","ai.removed":"{n, plural, one {Removed # AI answer} other {Removed # AI answers}}","ai.line":"Line {n}","ai.moreChanges":"{n, plural, one {… and # more change — use Review} other {… and # more changes — use Review}}","ai.noChanges":"No changes","ai.scope.quote":"Quoted passage","ai.scope.everywhere":"{n, plural, one {Everywhere · # place} other {Everywhere · # places}}","ai.scope.section":"Section: {name}","ai.scope.document":"{n, plural, one {Whole document · # change} other {Whole document · # changes}}","ai.scope.sentence":"Sentence · paragraph","ai.scope.elsewhereLine":"Elsewhere · line ~{n}","ai.scope.elsewhere":"Elsewhere","ai.scope.deletion":" · deletion","ai.scope.addition":" · addition","ai.miss.overlap":"Overlaps an accepted change","ai.miss.conflict":"Overlaps another edit in this batch","ai.miss.same":"Already in the document","ai.miss.format":"Not word for word in the Markdown (the passage spans formatting)","ai.miss.changed":"Text changed since the AI answered","ai.byHand":"{why} — apply it by hand","ai.suggCopied":"Suggested text copied","ai.cantApplyN":"Couldn't apply {n} edits — see their notes","ai.finishFirst":"Finish editing first: Done applies, Discard reverts","ai.applied":"{n, plural, one {Suggested edit applied} other {Applied # suggested edits}}","ai.notApplied":" · {n} couldn't be applied","ai.lostHighlight":" · {n, plural, one {# note lost its highlight} other {# notes lost their highlight}}","ai.undone":"{n, plural, one {Edit undone} other {Edits undone}}","ai.rejected":"{n, plural, one {Suggestion rejected} other {Rejected # suggestions}}","ai.noReview":"No changes to review","ai.revHint":"Note {num} · {scope} · {n, plural, one {# change} other {# changes}}. Accept or reject each change, then apply.","ai.revChange":"Change {n} · line ~{line}","ai.accept":"Accept","ai.reject":"Reject","ai.acceptN":"Accept change {n}","ai.rejectN":"Reject change {n}","ai.apply":"Apply","ai.applyNofM":"{m, plural, one {Apply {k} of # change} other {Apply {k} of # changes}}","ai.rejectEdit":"Reject this edit","ai.docChanged":"The document changed — open Review again","ai.tag":"AI","ai.tagRound":"AI · round {n}","ai.tagTitle":"Answer pasted from your AI assistant","ai.copyAnswer":"Copy answer","ai.copyAnswerAria":"Copy AI answer","ai.answerCopied":"Answer copied","ai.earlier":"Earlier AI answer · round {n}","ai.editN":"Edit {n} · ","ai.st.accepted":"✓ Accepted","ai.st.rejected":"Rejected","ai.st.superseded":"Superseded","ai.supersededTitle":"A newer AI answer replaced this suggestion","ai.copySugg":"Copy suggested text","ai.dismiss":"Dismiss","ai.dismissAria":"Dismiss suggested edit for note {n}","ai.review":"Review…","ai.reviewAria":"Review suggested changes for note {n}","ai.acceptAria":"Accept suggested edit for note {n}","ai.rejectAria":"Reject suggested edit for note {n}","ai.chipRewrite":"Note {n} · Suggested rewrite · Review","ai.chipPlaces":"Note {n} · Suggested change · {k} places","ai.chipChange":"Note {n} · Suggested change · Review","ai.chipShowNote":"Show the note","ai.chipReview":"Review the suggested changes","ai.suggCount":"{n, plural, one {# suggestion} other {# suggestions}}","ai.pasteAnswer":"Paste AI answer…","ai.showSuggTitle":"Show suggested edits in the document","ai.showSugg":"Show suggestions","ai.suggBar":"Suggested edits","ai.acceptAll":"Accept all","ai.rejectAll":"Reject all","ai.hideSuggAria":"Hide suggestions in the document","ai.hideSugg":"Hide suggestions","ai.reviewTitle":"Review changes","bundle.section":"section “{name}”","bundle.line":"line ~{n}","bundle.notFound":"(not found in the current document)","bundle.location":"Location:","bundle.quoted":"Quoted passage:","bundle.context":"Context:","bundle.note":"Note / question:","bundle.noNote":"(no note)","bundle.replies":"Replies ({n}):","bundle.aiRound":"(AI, round {n})","bundle.editsSummary":"({n, plural, one {suggested edit} other {suggested edits}}: {list})","bundle.state.accepted":"{n} accepted","bundle.state.rejected":"{n} rejected","bundle.state.superseded":"{n} superseded","bundle.state.pending":"{n} pending","link.kind.section":"Section","link.kind.p":"Paragraph","link.kind.li":"List item","link.kind.td":"Table cell","link.kind.quote":"Quote","link.kind.pre":"Code block","link.kind.table":"Table","link.kind.figure":"Figure","link.kind.dd":"Definition","link.kind.dt":"Term","link.broken":"Broken link","link.notFound":"Section not found","link.noMatch":"{frag} doesn't match any heading in this document","link.jumpHint":"Click to jump · ↩ Back afterwards","link.email":"Email","link.external":"External link","link.copy":"Copy link","link.opensMail":"Opens your email app","link.opensTab":"Opens in a new tab","link.otherFile":"Other file","link.fileBlocked":"Links to other files can't be opened here","link.copied":"Link copied","link.copyFailed":"Couldn't copy the link","link.backAria":"Back to where you were (Alt+Left)","link.back":"Back","table.region":"Table {n}","table.optionsN":"Table {n} options","table.options":"Table options","table.colWidth":"Column {n} width","table.rowHeight":"Row {n} height","table.reset":"Reset sizes","table.density":"Density","table.compact":"Compact","table.default":"Default","table.comfortable":"Comfortable","table.resetDone":"Table sizes reset","tview.expand":"Expand table","tview.expandN":"Expand table {n}","tview.title":"Table {n}","tview.rows":"{n, plural, one {# row} other {# rows}}","tview.copyMd":"Copy as Markdown","tview.copyTsv":"Copy for Excel","tview.close":"Close","tview.copiedMd":"Table copied as Markdown","tview.copiedTsv":"Table copied, ready to paste into Excel or Sheets","tview.copyFailed":"Couldn't copy the table","pane.resizeOutline":"Resize outline","pane.resizeRail":"Resize comments panel","pane.resizeTitle":"Drag to resize · double-click to reset"},"suggest":{"vi":{"text":"Trang này có bản Tiếng Việt","go":"Chuyển","dismiss":"Đóng"},"ja":{"text":"このページは日本語でもご覧いただけます","go":"切り替える","dismiss":"閉じる"},"pt-BR":{"text":"Esta página está disponível em português","go":"Mudar","dismiss":"Dispensar"},"es":{"text":"Esta página está disponible en español","go":"Cambiar","dismiss":"Cerrar"}}}</script>
+<script type="application/json" id="i18n">{"lang":"en","code":"en","nativeName":"English","base":"","locales":[{"code":"en","htmlLang":"en","dir":"ltr","nativeName":"English","href":"./"},{"code":"vi","htmlLang":"vi","dir":"ltr","nativeName":"Tiếng Việt","href":"vi/"},{"code":"ja","htmlLang":"ja","dir":"ltr","nativeName":"日本語","href":"ja/"},{"code":"pt-BR","htmlLang":"pt-BR","dir":"ltr","nativeName":"Português (Brasil)","href":"pt-br/"},{"code":"es","htmlLang":"es","dir":"ltr","nativeName":"Español","href":"es/"}],"dict":{"lang.button":"Language","lang.buttonAria":"Language: English","lang.links":"Languages","lang.suggest":"This page is available in English","lang.suggestGo":"Switch","lang.suggestDismiss":"Dismiss","hdr.outline":"Outline","hdr.comments":"Comments","hdr.outlineToggle":"Show / hide outline","hdr.editMd":"Edit Markdown","hdr.importTitle":"Open, paste or restore","hdr.import":"Import","hdr.theme":"Theme","hdr.railToggle":"Show / hide comments panel","menu.openTitle":"Open a Markdown file","menu.open":"Open file…","menu.openSub":".md, .markdown or .txt from your computer","menu.pasteTitle":"Paste Markdown","menu.paste":"Paste Markdown…","menu.pasteSub":"Start from text on your clipboard","menu.restoreTitle":"Restore documents and comments from a backup file","menu.restore":"Restore from backup (.json)…","menu.restoreSub":"Bring back documents and their comments","theme.light":"Paper","theme.beige":"Sepia","theme.dark":"Night","theme.aria":"Theme: {name}","theme.ariaPaper":"Theme: Paper","export.noDoc":"No Markdown document to copy yet","export.copyFailed":"Couldn't copy, try again","export.needComment":"Add at least one comment before exporting","export.button":"Export for AI","export.options":"Export options","export.menu":"Export","export.full":"Full context","export.notes":"Comments only","export.raw":"Document only","export.fileFull":"-for-ai","export.fileNotes":"-comments","export.aiFmt":"Let AI reply back into mdeverything","exp2.mFull":"Copy full context","exp2.mFullSub":"Document + comments + instructions","exp2.mNotes":"Copy comments only","exp2.mNotesSub":"Just the comments and their quoted passages","exp2.mDoc":"Copy document only","exp2.mDocSub":"Just the text","exp2.mOptions":"Export options…","exp2.mOptionsSub":"Quick instructions, extra requests, download","exp2.mPaste":"Paste AI result…","exp2.mPasteSub":"Paste back what your AI returned","exp2.title":"Export for AI","exp2.what":"What to send","exp2.fullSub":"Document + comments","exp2.notesSub":"Comments + quoted passages","exp2.docSub":"Just the text","exp2.quick":"Quick instructions","exp2.optMark":"Mark the edits (strike removed text, purple for new)","exp2.optAnswer":"Answer each comment","exp2.optAnswerSub":"So the answers can be pasted back under each comment","exp2.optAnswerNa":"Not used when sending the document only","exp2.extra":"Extra instructions","exp2.extraPh":"e.g. keep my tone, don't change the headings…","exp2.suggestions":"Suggestions","exp2.chipTone":"Keep my tone","exp2.chipOnly":"Only edit where there are comments","exp2.chipHeadings":"Don't change the headings","exp2.chipShorter":"Make it shorter","exp2.chipExplain":"Explain each change briefly","exp2.chipKeep":"Keep tables and code as they are","exp2.chipLang":"Reply in English","exp2.recent":"Recently used","exp2.useRecent":"Use: {text}","exp2.preview":"Preview what will be copied","exp2.download":"Download .md","exp2.copy":"Copy","exp2.markPrompt":"Return the full revised document in Markdown and mark your edits: wrap removed text in ~~double tildes~~ (struck through) and new text in \u003cins>…\u003c/ins> (shown in purple). If the document already has marks from a previous round, delete the ~~struck-through~~ text entirely and keep the earlier \u003cins> text as normal text (drop the \u003cins> tags).","exp2.okFull":"Copied full context","exp2.okNotes":"Copied comments only","exp2.okDoc":"Copied document only","exp2.okDl":"Downloaded {file}","exp2.failTitle":"Couldn't copy to the clipboard","exp2.failSub":"Your browser blocked it. Download the file and attach it to your AI instead.","exp2.metaComments":"{n, plural, one {# comment} other {# comments}}","exp2.metaWords":"{n, plural, one {# word} other {# words}}","exp2.metaWith":"with: {list}","exp2.incMark":"marked edits","exp2.incAnswer":"answers per comment","exp2.incExtra":"extra instructions","exp2.stepsAria":"Next steps","exp2.step1":"Paste into your AI","exp2.step1Dl":"Attach the file to your AI","exp2.step2":"Copy the result","exp2.step3":"Paste it back here","exp2.openAi":"Open your AI","exp2.more":"+ more","exp2.newTab":"{name} (opens in a new tab)","exp2.anyAi":"Works with any AI that reads Markdown","exp2.cta":"Paste AI result","exp2.ctaDl":"Download file instead","exp2.noteMark":"Old text struck through, new text in purple","exp2.noteAnswer":"Answers will appear under each comment","exp2.hideSteps":"Don't show these steps again","exp2.dismiss":"Dismiss","exp2.chipTip":"You exported {kind} at {time}","home.hideTitle":"Hide the intro and keep the demo","home.hide":"Hide intro","home.kicker":"Markdown review desk for AI","home.title_html":"Point at the exact words.\u003cbr>\u003cspan class=\"hero-em\">Tell your AI what to fix.\u003c/span>","home.sub":"Comment on any Markdown file, then export it with every comment pinned to its passage — so ChatGPT, Claude or Gemini answers in the right place.","home.open":"Open a Markdown file","home.paste":"Paste Markdown","home.demo":"Explore the demo below","home.dropAria":"Open a Markdown file — or drop one here","home.dropTitle":"Drop your .md file here","home.dropBrowse":"or click to browse your computer","home.dropHint":".md · .markdown · .txt — or a .mdeverything.json backup","how.title":"How it works","how.mockDoc_html":"Free for teams of up to 5 people. \u003cmark class=\"mk-hl\">Billing starts on day one\u003cspan class=\"mk-badge\">1\u003c/span>\u003c/mark> for everyone else.","how.mockNote":"Is that right? I thought there's a 14-day trial.","how.s1Title":"Point at the words","how.s1Text":"Open or paste any Markdown file. Select a passage and write what should change.","how.mockExport_html":"\u003cspan class=\"mk-k\">[1] {#n3f9a}\u003c/span> Location: section “Pricing”\nQuoted passage:\n\u003cspan class=\"mk-q\">\"Billing starts on day one\"\u003c/span>\nNote: Is that right? I thought…","how.s2Title":"Send it to your AI","how.s2Text":"Export copies the whole document with every comment pinned to its passage. Paste it into ChatGPT, Claude or Gemini.","how.mockReply":"Yes — paid plans start with a 14-day trial.","how.mockDiff_html":"Billing starts \u003cdel>on day one\u003c/del> \u003cins>after a 14-day free trial\u003c/ins>","how.s3Title":"Review answers in place","how.s3Text_html":"Paste the reply back. Each answer lands under its own comment, with suggested edits shown as \u003cdel>old\u003c/del> → \u003cins>new\u003c/ins>. Accept or reject each one.","how.loopTitle":"Not done yet?","how.loopText":"Reply or add comments and export again — only new and follow-up comments get answered.","how.foot":"Works with ChatGPT, Claude, Gemini — no account, nothing uploaded","why.aria":"Why mdeverything","why.c1Title":"Precise context for AI","why.c1Text":"Each comment carries its quote, section and surrounding text, so answers land on the right sentence.","why.c2Title":"Private — runs in your browser","why.c2Text":"No upload, no account, no tracking. Your work stays on this device.","why.c3Title":"Works in any language","why.c3Text":"Comments anchor to the exact words — English, Tiếng Việt, 日本語 alike.","assure.free":"Free","assure.noSignup":"No sign-up","assure.autosave":"Autosaves as you work","assure.docs":"Keep up to 10 documents","tip.text_html":"\u003cb>Try it:\u003c/b> select any sentence below and press \u003ckbd>Enter\u003c/kbd> to leave a comment.","tip.dismiss":"Dismiss tip","floater.add":"Add note","dropzone.text":"Drop a .md file — or a .mdeverything.json backup — to open it","source.title":"Paste Markdown","source.openFile":"Open Markdown…","paste2.mdSub":"From any AI chat or editor — check the preview, then open it.","paste2.aiTitle":"Paste AI result","paste2.aiSub":"Answers to your comments or a whole revised document — recognised automatically.","paste2.tabPaste":"Paste","paste2.tabPreview":"Preview","paste2.colInput":"Markdown","paste2.colAi":"AI reply","paste2.colPreview":"Preview","paste2.colMatches":"Matched comments","paste2.clear":"Clear","paste2.inputAria":"Markdown to paste","paste2.aiInputAria":"AI result to paste","paste2.emptyHint":"{key}+V to paste · or drop a .md file","paste2.fromClipboard":"Paste from clipboard","paste2.aiEmptyTip":"Answers to comments start with ## [1]. Anything else is read as a revised document.","paste2.dropHere":"Drop the file to paste its text","paste2.dropBad":"Only .md or .txt files can be dropped here","paste2.clipBlocked":"The browser blocked clipboard access — press {key}+V in the box instead","paste2.clipEmpty":"The clipboard has no text","paste2.prevEmpty":"The preview appears here","paste2.optLegend":"Open as","paste2.optNew":"New document","paste2.optReplace":"Replace the open document (keep comments)","paste2.btnOpen":"Open document","paste2.btnReplace":"Replace document","paste2.btnBoth":"{n, plural, one {Add # answer + replace document} other {Add # answers + replace document}}","paste2.apply":"Apply","paste2.kbdHint":"{key}+Enter to apply","paste2.detEmpty":"Nothing pasted yet","paste2.detDoc":"Markdown document","paste2.detAnswers":"Answers to your comments","paste2.detRevised":"Revised document","paste2.detBoth":"Answers + revised document","paste2.detNone":"Couldn't recognise this","paste2.tipNone":"Paste the AI's whole reply. Answers to comments start with ## [1]; a revised document is ordinary Markdown.","paste2.unwrapped":"Removed the code block wrapper","paste2.nHeadings":"{n, plural, one {# heading} other {# headings}}","paste2.nTables":"{n, plural, one {# table} other {# tables}}","paste2.nDiagrams":"{n, plural, one {# diagram} other {# diagrams}}","paste2.nWords":"{n, plural, one {# word} other {# words}}","paste2.nMarks":"{n, plural, one {# marked edit} other {# marked edits}}","paste2.nMatched":"{n, plural, one {# matched} other {# matched}}","paste2.nNotFound":"{n, plural, one {# not found} other {# not found}}","paste2.nDup":"{n, plural, one {# already added} other {# already added}}","paste2.keptShort":"Comments still anchored: {kept}/{total}","paste2.docInfo":"Replaces the open document · comments still anchored: {kept}/{total}","paste2.docInfoNoNotes":"Replaces the open document","paste2.shorter":"Much shorter than the open document","paste2.diagram":"Mermaid diagram (drawn after opening)","paste2.replaced":"Document replaced","paste2.replacedKept":"Document replaced · {kept}/{total} comments still anchored","paste2.undone":"Restored the previous document and comments","confirm.defaultTitle":"Replace current document?","confirm.defaultMessage":"This action cannot be undone.","confirm.exportFirst":"Export your notes first if you want to keep a copy.","confirm.continue":"Continue","confirm.replaceMessage":"Loading a new document will remove the current annotations.","confirm.replaceOk":"Replace document","common.cancel":"Cancel","common.save":"Save","common.undo":"Undo","common.cancelEsc":"Cancel (Esc)","common.close":"Close","common.closeEsc":"Close (Esc)","common.edit":"Edit","common.delete":"Delete","common.open":"Open","doc.sampleName":"Sample document","doc.untitled":"Markdown document","doc.labelTitle":"{name} — Documents","doc.editedName":"Edited document","doc.sampleCopy":"Sample copy","doc.pastedName":"Pasted Markdown","doc.untitledShort":"Untitled","doc.recoveredName":"Recovered document","doc.importedName":"Imported document","sample.confirmTitle":"Open sample workspace?","sample.confirmMessage":"You currently have {n, plural, one {# note} other {# notes}}. Loading the sample will delete these annotations.","sample.confirmOk":"Open sample","sample.confirmKeep":"Keep current document","sample.loaded":"Sample loaded with {n, plural, one {# example comment} other {# example comments}}","sample.liveDemo":"Live demo · hover or click the highlights","render.failed":"Could not render markdown.","code.label":"code","code.copy":"Copy","code.copied":"Copied","code.error":"Error","mermaid.rendering":"Rendering diagram…","mermaid.error":"Diagram didn’t parse — showing source.","diag.add":"Comment","diag.addAria":"Comment on “{label}”","diag.wrapAria":"Diagram {n}. Use the arrow keys to pick a shape, then Enter to comment on it.","diag.cardQuote":"Diagram {n} · “{label}”","diag.cardWhole":"Diagram {n}","diag.location":"diagram {n} ({type}) · {shape} “{label}”","diag.locationWhole":"diagram {n} ({type})","diag.bundleMermaid":"Mermaid: {code}","diag.shapeNode":"node","diag.shapeEdge":"edge label","diag.shapeGroup":"group","diag.shapeParticipant":"participant","diag.shapeMessage":"message","diag.shapeNote":"note","outline.untitled":"Untitled section","outline.title":"On this page","outline.close":"Close outline","outline.collapse":"Collapse outline","outline.empty_html":"No headings in this document yet. Add \u003ccode>#\u003c/code>, \u003ccode>##\u003c/code> or \u003ccode>###\u003c/code> headings to get an outline.","outline.expand":"Expand outline","outline.aria":"Document outline","rview.fsOpen":"Open diagram {n} full screen","rview.fsTitle":"Diagram {n}","rview.fsViewAria":"Diagram {n}. Drag to pan; + and − zoom, 0 fits, 1 shows 100%.","rview.fsHint":"Drag to pan · scroll or pinch to zoom","rview.fsClose":"Close full screen (Esc)","rview.zoomIn":"Zoom in","rview.zoomOut":"Zoom out","rview.fit":"Fit","rview.fitTitle":"Fit to screen (0)","rview.actual":"100%","rview.actualTitle":"Actual size (1)","rview.collapse":"Collapse section “{title}”","rview.expand":"Expand section “{title}”","rview.collapseAll":"Collapse all sections","rview.expandAll":"Expand all sections","rview.hiddenComments":"{n, plural, one {# comment hidden} other {# comments hidden}}","rview.hiddenCommentsAria":"{n, plural, one {# comment hidden in this section. Expand the section} other {# comments hidden in this section. Expand the section}}","rview.reading":"Reading","rview.textSize":"Text size","rview.smaller":"Smaller text","rview.larger":"Larger text","rview.width":"Column width","rview.narrow":"Narrow","rview.medium":"Medium","rview.wide":"Wide","rview.toTop":"Back to top","rview.readTime":"≈ {n} min read","rview.readTimeTitle":"Estimated reading time: about {n, plural, one {# minute} other {# minutes}}","gutter.comment":"Comment on this block","rail.countLabel":"{n, plural, one {note} other {notes}}","rail.show":"Show comments panel","rail.hide":"Hide comments panel","rail.collapse":"Collapse comments panel","rail.showCount":"Show comments panel ({n, plural, one {# comment} other {# comments}})","rail.notesWord":"notes","rail.empty_html":"\u003cb>Select any passage\u003c/b> in the document to add a note or question. Notes anchor right beside the passage and travel with it when you copy.","rail.reviewerNotes":"Reviewer notes","rail.exampleNotes":"Example notes","rail.demoHint":"Demo comments show how annotations connect to highlighted passages.","card.notFound":"This passage was not found in the document","card.exampleChip":"Example note","card.replies":"{n, plural, one {# reply} other {# replies}}","card.editNote":"Edit note","card.deleteNote":"Delete note","card.replyPlaceholder":"Reply…","card.replyToNote":"Reply to note {n}","card.reply":"Reply","card.addNotePlaceholder":"Click to add a note…","card.ariaNote":"Note {n}: {quote}","card.ariaEmpty":"Empty note {n} on “{quote}” — activate to write","card.deleteNoteN":"Delete note {n}","card.editNoteN":"Edit note {n}","ctime.created":"Created {date}","ctime.edited":"edited","ctime.editedAt":"Edited {date}","ctime.sortLabel":"Sort comments","ctime.sortDoc":"Document order","ctime.sortNew":"Newest first","pop.notesOnPassage":"{n, plural, one {# note on this passage} other {# notes on this passage}}","pop.noNoteClick":"No note yet — click to add","pop.preview":"Note preview","pop.newNote":"New note","pop.notePlaceholder":"Add a note or question…","pop.noteText":"Note text","pop.hint":"Enter to save · Shift+Enter new line","pop.noteN":"Note {n}","pop.notesHere":"{n, plural, one {# note here} other {# notes here}}","pop.showNote":"Show note {n}","pop.noNote":"No note yet","reply.deleted":"Reply deleted","reply.edit":"Edit reply","reply.delete":"Delete reply","reply.editHintTitle":"Enter to save · Shift+Enter new line · Esc to cancel","reply.editHint":"Enter to save · Esc to cancel","reply.edited":"edited","reply.editedAt":"Edited {date}","filter.none.all":"No comments.","filter.none.replies":"No comments with replies.","filter.none.unanchored":"No unanchored comments.","filter.none.ai":"No comments with an AI answer.","filter.none.noai":"No comments without an AI answer.","filter.none.sugg":"No comments with pending suggestions.","filter.noneQ.all":"No comments match “{q}”.","filter.noneQ.replies":"No comments with replies match “{q}”.","filter.noneQ.unanchored":"No unanchored comments match “{q}”.","filter.noneQ.ai":"No comments with an AI answer match “{q}”.","filter.noneQ.noai":"No comments without an AI answer match “{q}”.","filter.noneQ.sugg":"No comments with pending suggestions match “{q}”.","filter.label":"Filter comments","filter.all":"All","filter.replies":"With replies","filter.unanchored":"Unanchored","filter.unanchoredTitle":"Notes whose passage is no longer in the document","filter.ai":"With AI answer","filter.noai":"No AI answer","filter.sugg":"Pending suggestions","filter.suggTitle":"AI suggested edits not yet accepted or rejected","filter.clear":"Clear filters","search.placeholder":"Search comments","help.titleShort":"Keyboard shortcuts (?)","help.title":"Keyboard shortcuts","help.nextPrev":"Next / previous comment","help.search":"Search comments","help.addNote":"Add a note on the selected text","help.close":"Close a card, menu or dialog","help.show":"Show these shortcuts","nav.noComments":"No comments yet","nav.noMatch":"No comments match the filter","nav.noHighlight":"No comments with a highlight in this document","toast.noteGone":"That note no longer exists","toast.noteDeleted":"Note deleted","toast.noteRestoredOrphan":"Note restored — its passage is no longer in the document","toast.storageFull":"Browser storage is full — your latest changes aren't saved","toast.manageStorage":"Manage storage","toast.storageUnavailable":"Browser storage isn't available here — changes won't be kept after a reload","toast.savedAs":"Your changes are saved as “{name}”","toast.opened":"Opened {name}","toast.docLoaded":"Document loaded","toast.cantRead":"Couldn't read “{name}”","toast.pasteFirst":"Paste Markdown first","toast.rendered":"Markdown rendered","time.justNow":"just now","time.yesterday":"yesterday","editor.undo":"Undo","editor.redo":"Redo","editor.bold":"Bold","editor.italic":"Italic","editor.strike":"Strikethrough","editor.h1":"Heading 1","editor.h2":"Heading 2","editor.h3":"Heading 3","editor.ul":"Bulleted list","editor.ol":"Numbered list","editor.task":"Task list","editor.quote":"Quote","editor.code":"Inline code","editor.codeblock":"Code block","editor.link":"Link","editor.table":"Insert table","editor.hr":"Horizontal rule","editor.region":"Markdown editor","editor.formatting":"Formatting","editor.discardTitle":"Discard changes and return to the document","editor.discard":"Discard","editor.applyTitle":"Apply changes ({key})","editor.done":"Done","editor.view":"Editor view","editor.write":"Write","editor.preview":"Preview","editor.source":"Markdown source","editor.placeholder":"Write Markdown…","editor.livePreview":"Live preview","editor.hint_html":"\u003ckbd>{key}\u003c/kbd> apply · \u003ckbd>Esc\u003c/kbd> then \u003ckbd>Tab\u003c/kbd> leaves the editor","editor.finishTitle":"Finish editing and apply changes ({key})","editor.editTitle":"Edit Markdown source with live preview","editor.editing":"Editing","editor.edit":"Edit","editor.draftRestored":"Restored your unsaved draft","editor.noChanges":"No changes to apply","editor.applied":"Changes applied","editor.lost":"{n, plural, one {# comment lost its anchor} other {# comments lost their anchor}}","editor.reanchored":"{n, plural, one {# comment re-anchored} other {# comments re-anchored}}","editor.discardConfirmTitle":"Discard your edits?","editor.discardConfirmMessage":"Your changes to the Markdown source will be lost.","editor.discardConfirmNote":"The document and its comments stay exactly as they were before you started editing.","editor.discardConfirmOk":"Discard edits","editor.keepEditing":"Keep editing","editor.discarded":"Edits discarded","editor.count":"{w, plural, one {# word} other {# words}} · {c, plural, one {# character} other {# characters}}","editor.unsaved":"Unsaved changes","editor.clean":"No changes","editor.nothingToPreview":"Nothing to preview yet.","editor.ph.linkText":"link text","editor.ph.bold":"bold text","editor.ph.italic":"italic text","editor.ph.strike":"strikethrough","editor.ph.code":"code","editor.ph.column":"Column {n}","editor.ph.cell":"Cell","editor.finishFirst":"Finish editing first: Done ({key}) applies, Discard reverts","editor.finishBeforeOpen":"Finish editing before opening another file","editor.finishFirstShort":"Finish editing first","lib.documents":"Documents","lib.full":"You can keep up to {max} documents — delete one to add another","lib.manage":"Manage","lib.recovered":"Recovered {n, plural, one {# document that wasn't} other {# documents that weren't}} listed in Documents","lib.cantOpen":"Couldn't open “{name}” — its saved data is missing","lib.deletedOne":"Deleted “{name}”","lib.deletedMany":"Deleted {n} documents","lib.restoredOne":"Restored “{name}”","lib.restoredMany":"Restored {n} documents","lib.notRestored":" — {n, plural, one {# document} other {# documents}} not restored (limit {max})","lib.nothingToBackup":"Nothing to back up yet","lib.downloaded":"Downloaded {file}","lib.importFailed":"Couldn't import “{name}” — {why}","lib.importNotJson":"it isn't valid JSON","lib.importNotBackup":"it isn't an mdeverything backup","lib.importEmpty":"it contains no documents","lib.dupSkipped":" — {n, plural, one {# duplicate} other {# duplicates}} skipped (already in Documents)","lib.imported":"Imported {docs, plural, one {# document} other {# documents}} · {notes, plural, one {# comment} other {# comments}}","lib.importFull":" — storage is full, the rest were skipped","lib.importCapped":" — {n, plural, one {# document} other {# documents}} skipped (limit {max})","lib.dupOne":"“{name}” is already in Documents — nothing new to import","lib.dupAll":"All {n} documents are already in Documents — nothing new to import","lib.backupNag":"No backup in over {days} days — browsers can clear site data. Keep a copy of your documents as a file.","lib.downloadBackup":"Download backup","lib.changedElsewhere":"“{name}” was changed in another tab","lib.loadLatest":"Load latest","lib.deletedElsewhere":"“{name}” was deleted in another tab — it stays open here, and your next change saves it again","lib.cantLoadLatest":"Couldn't load the latest version","lib.loadedLatest":"Loaded the latest “{name}”","lib.quotaWarn":"Storage is almost full — only ~{free} left. Download a backup and remove documents you no longer need.","lib.lsWarn":"This site's small-document storage is almost full (it's shared with other pages on this domain). Remove documents you no longer need.","lib.backupFirst":"Download backup first","lib.backupFirstMany":"Download backup of {n} documents first","lib.backupDone":"Backup downloaded ✓","lib.noOld":"No documents older than {days} days","lib.andMore":"…and {n} more","lib.oldTitle":"Remove {n, plural, one {# old document} other {# old documents}}?","lib.oldMessage":"Not changed in the last {days} days:","lib.oldNote":"This frees browser storage. You can undo right after.","lib.oldOk":"Remove {n}","lib.oldKeep":"Keep them","lib.wipeTitle":"Delete all data?","lib.wipeMessage":"This permanently removes {docs, plural, one {# document} other {# documents}}, {notes, plural, one {# comment} other {# comments}} and your saved preferences from this browser.","lib.wipeNote":"This can't be undone.","lib.wipeOk":"Delete everything","lib.wiped":"All data deleted from this browser","lib.new":"New","lib.newOpen":"Open file…","lib.newOpenSub":".md, .markdown or .txt","lib.newPaste":"Paste Markdown…","lib.newPasteSub":"Start a new document from text","lib.newSample":"Sample document","lib.newSampleSub":"The guided demo (not saved)","lib.close":"Close documents","lib.search":"Search documents","lib.searchAria":"Search documents by name","lib.listAria":"Saved documents","lib.backup":"Backup","lib.backupAll":"Download backup (.json)","lib.restore":"Restore from backup…","lib.backupNote":"A backup keeps your documents and comments in one file — use it to move to another browser or keep a safe copy.","lib.removeOld":"Remove documents older than {days} days","lib.wipe":"Delete all data","lib.showingSample":"Showing the sample document","lib.sampleNotice":"You're viewing the sample document. It isn't saved unless you change it — then it's kept here as “{name}”.","lib.emptyTitle":"No saved documents yet","lib.emptyText":"Open or paste a Markdown file — it's kept here automatically, with its comments.","lib.noMatch":"No documents match “{q}”.","lib.rowComments":"{n, plural, one {# comment} other {# comments}}","lib.renameAria":"Rename {name}","lib.openTitle":"Open {name}","lib.current":"Open","lib.rename":"Rename","lib.backupOne":"Download backup","lib.backupOneAria":"Download backup of {name}","lib.deleteAria":"Delete {name}","lib.hostStorage":"Storage is managed by the app hosting this page, so usage can't be measured here.","lib.noStorage":"Browser storage isn't available here — documents won't be kept after a reload.","lib.storage":"Storage","lib.used_html":"\u003cb>~{size}\u003c/b> used","lib.meterTitle":"Small documents: ~{ls} in localStorage · large documents: ~{idb} in IndexedDB","lib.meterFree":" · the browser has ~{free} free for this site","lib.meterAria":"Browser storage used","ai.fmtOn":"AI replies on — exports ask the AI to answer in a format you can paste back","ai.fmtOff":"AI replies off — exports use the plain format","ai.noDocDownload":"No Markdown document to download yet","ai.noNoteId":"No note with id {id} in this document","ai.noNoteNum":"No note [{n}] in this document","ai.emptyAnswer":"Empty answer","ai.suggestedEdits":"{n, plural, one {Suggested an edit.} other {Suggested # edits.}}","ai.noNotes":"This document has no notes yet, so there is nothing to attach answers to.","ai.srAdd":"Will be added: ","ai.srDup":"Skipped, duplicate: ","ai.srSkip":"Skipped: ","ai.prevNote":"Note {n} · {snippet}","ai.byNumber":"Matched by number","ai.byId":"Matched by id","ai.includes":"{n, plural, one {includes a suggested edit} other {includes # suggested edits}}","ai.round":"Note {n} already has an AI answer — this will be round {round}","ai.roundSuperseded":" (its pending edits will be marked superseded)","ai.dupSkipped":"Identical answer already added — skipped","ai.skippedWhy":"{why} — skipped","ai.general":"General","ai.generalNote":"Not stored — copy it if you need it","ai.generalCopied":"General comments copied","ai.addN":"{n, plural, one {Add # answer} other {Add # answers}}","ai.added":"{n, plural, one {Added # AI answer} other {Added # AI answers}}","ai.removed":"{n, plural, one {Removed # AI answer} other {Removed # AI answers}}","ai.line":"Line {n}","ai.moreChanges":"{n, plural, one {… and # more change — use Review} other {… and # more changes — use Review}}","ai.noChanges":"No changes","ai.scope.quote":"Quoted passage","ai.scope.everywhere":"{n, plural, one {Everywhere · # place} other {Everywhere · # places}}","ai.scope.section":"Section: {name}","ai.scope.document":"{n, plural, one {Whole document · # change} other {Whole document · # changes}}","ai.scope.sentence":"Sentence · paragraph","ai.scope.elsewhereLine":"Elsewhere · line ~{n}","ai.scope.elsewhere":"Elsewhere","ai.scope.deletion":" · deletion","ai.scope.addition":" · addition","ai.miss.overlap":"Overlaps an accepted change","ai.miss.conflict":"Overlaps another edit in this batch","ai.miss.same":"Already in the document","ai.miss.format":"Not word for word in the Markdown (the passage spans formatting)","ai.miss.changed":"Text changed since the AI answered","ai.byHand":"{why} — apply it by hand","ai.suggCopied":"Suggested text copied","ai.cantApplyN":"Couldn't apply {n} edits — see their notes","ai.finishFirst":"Finish editing first: Done applies, Discard reverts","ai.applied":"{n, plural, one {Suggested edit applied} other {Applied # suggested edits}}","ai.notApplied":" · {n} couldn't be applied","ai.lostHighlight":" · {n, plural, one {# note lost its highlight} other {# notes lost their highlight}}","ai.undone":"{n, plural, one {Edit undone} other {Edits undone}}","ai.rejected":"{n, plural, one {Suggestion rejected} other {Rejected # suggestions}}","ai.noReview":"No changes to review","ai.revHint":"Note {num} · {scope} · {n, plural, one {# change} other {# changes}}. Accept or reject each change, then apply.","ai.revChange":"Change {n} · line ~{line}","ai.accept":"Accept","ai.reject":"Reject","ai.acceptN":"Accept change {n}","ai.rejectN":"Reject change {n}","ai.apply":"Apply","ai.applyNofM":"{m, plural, one {Apply {k} of # change} other {Apply {k} of # changes}}","ai.rejectEdit":"Reject this edit","ai.docChanged":"The document changed — open Review again","ai.tag":"AI","ai.tagRound":"AI · round {n}","ai.tagTitle":"Answer pasted from your AI assistant","ai.copyAnswer":"Copy answer","ai.copyAnswerAria":"Copy AI answer","ai.answerCopied":"Answer copied","ai.earlier":"Earlier AI answer · round {n}","ai.editN":"Edit {n} · ","ai.st.accepted":"✓ Accepted","ai.st.rejected":"Rejected","ai.st.superseded":"Superseded","ai.supersededTitle":"A newer AI answer replaced this suggestion","ai.copySugg":"Copy suggested text","ai.dismiss":"Dismiss","ai.dismissAria":"Dismiss suggested edit for note {n}","ai.review":"Review…","ai.reviewAria":"Review suggested changes for note {n}","ai.acceptAria":"Accept suggested edit for note {n}","ai.rejectAria":"Reject suggested edit for note {n}","ai.chipRewrite":"Note {n} · Suggested rewrite · Review","ai.chipPlaces":"Note {n} · Suggested change · {k} places","ai.chipChange":"Note {n} · Suggested change · Review","ai.chipShowNote":"Show the note","ai.chipReview":"Review the suggested changes","ai.suggCount":"{n, plural, one {# suggestion} other {# suggestions}}","ai.pasteAnswer":"Paste AI answer…","ai.showSuggTitle":"Show suggested edits in the document","ai.showSugg":"Show suggestions","ai.suggBar":"Suggested edits","ai.acceptAll":"Accept all","ai.rejectAll":"Reject all","ai.hideSuggAria":"Hide suggestions in the document","ai.hideSugg":"Hide suggestions","ai.reviewTitle":"Review changes","bundle.section":"section “{name}”","bundle.line":"line ~{n}","bundle.notFound":"(not found in the current document)","bundle.location":"Location:","bundle.quoted":"Quoted passage:","bundle.context":"Context:","bundle.note":"Note / question:","bundle.noNote":"(no note)","bundle.replies":"Replies ({n}):","bundle.aiRound":"(AI, round {n})","bundle.editsSummary":"({n, plural, one {suggested edit} other {suggested edits}}: {list})","bundle.state.accepted":"{n} accepted","bundle.state.rejected":"{n} rejected","bundle.state.superseded":"{n} superseded","bundle.state.pending":"{n} pending","link.kind.section":"Section","link.kind.p":"Paragraph","link.kind.li":"List item","link.kind.td":"Table cell","link.kind.quote":"Quote","link.kind.pre":"Code block","link.kind.table":"Table","link.kind.figure":"Figure","link.kind.dd":"Definition","link.kind.dt":"Term","link.broken":"Broken link","link.notFound":"Section not found","link.noMatch":"{frag} doesn't match any heading in this document","link.jumpHint":"Click to jump · ↩ Back afterwards","link.email":"Email","link.external":"External link","link.copy":"Copy link","link.opensMail":"Opens your email app","link.opensTab":"Opens in a new tab","link.otherFile":"Other file","link.fileBlocked":"Links to other files can't be opened here","link.copied":"Link copied","link.copyFailed":"Couldn't copy the link","link.backAria":"Back to where you were (Alt+Left)","link.back":"Back","table.region":"Table {n}","table.optionsN":"Table {n} options","table.options":"Table options","table.colWidth":"Column {n} width","table.rowHeight":"Row {n} height","table.reset":"Reset sizes","table.density":"Density","table.compact":"Compact","table.default":"Default","table.comfortable":"Comfortable","table.resetDone":"Table sizes reset","tview.expand":"Expand table","tview.expandN":"Expand table {n}","tview.title":"Table {n}","tview.rows":"{n, plural, one {# row} other {# rows}}","tview.copyMd":"Copy as Markdown","tview.copyTsv":"Copy for Excel","tview.close":"Close","tview.copiedMd":"Table copied as Markdown","tview.copiedTsv":"Table copied, ready to paste into Excel or Sheets","tview.copyFailed":"Couldn't copy the table","pane.resizeOutline":"Resize outline","pane.resizeRail":"Resize comments panel","pane.resizeTitle":"Drag to resize · double-click to reset"},"suggest":{"vi":{"text":"Trang này có bản Tiếng Việt","go":"Chuyển","dismiss":"Đóng"},"ja":{"text":"このページは日本語でもご覧いただけます","go":"切り替える","dismiss":"閉じる"},"pt-BR":{"text":"Esta página está disponível em português","go":"Mudar","dismiss":"Dispensar"},"es":{"text":"Esta página está disponible en español","go":"Cambiar","dismiss":"Cerrar"}}}</script>
 <script type="application/json" id="i18n-sample">{"md":"# Welcome to mdeverything ✨\n\n**Read, comment and edit Markdown — then hand it to your AI.** mdeverything is a quiet, fast review desk for any `.md` file: point at the exact words that matter, say what you want, and export a package your assistant can act on without guessing.\n\n> 👋 **This page is a live document.** Hover a highlighted phrase to peek at an example comment, click it to open the thread, or select any sentence below and press **Enter** to add your own. Nothing you do here leaves your browser.\n\n## 1. Why mdeverything?\n\nMost AI reviews start the same way: you copy-paste a few paragraphs into a chatbot, type \"can you improve this?\", and get back a rewrite of the wrong section. The model never saw the whole document, and it can't tell which sentence you meant.\n\nmdeverything fixes the handoff:\n\n- **Precise** — every comment is pinned to a quoted passage, its section and the text around it, so repeated wording is never confused.\n- **Complete** — export the full document together with every comment and reply, in one copy.\n- **Fast** — no sign-up, no upload, no plug-ins. Open a file and start reviewing in seconds.\n- **Calm** — a distraction-free reading view with an outline, three themes and typography made for long specs.\n\n## 2. How it works\n\n1. **Open** a Markdown file, drop it on the page, or paste the text.\n2. **Comment** on the words that matter — select a passage, or use the margin button to cover a whole paragraph.\n3. **Refine** the source in the built-in editor when you spot a typo; your comments re-anchor automatically.\n4. **Export for AI** and paste the bundle into ChatGPT, Claude, Gemini or your coding assistant.\n\n```mermaid\nflowchart LR\n    A[Open .md] --> B[Read]\n    B --> C[Comment]\n    C --> D[Edit]\n    D --> E[Export]\n    E --> F[Your AI]\n```\n\nCurious what the export looks like? Hover or click [What your AI receives](#31-what-your-ai-receives) to peek at it.\n\n### 2.1 Ask, answer, accept\n\nTurn on **Let AI reply back into mdeverything** in the Export menu and your assistant answers in a format this page understands. Paste its reply with **Paste AI answer…**: each answer lands under its comment, and every suggested edit shows as a diff you can accept or reject. Accepting rewrites the Markdown for you, and Undo is always one click away.\n\n## 3. Features at a glance\n\n| Feature | What you get | How |\n| --- | --- | --- |\n| Inline comments | Comment right on the selected words, with reply threads | Select text, press `Enter` |\n| Margin comments | One click to comment on a whole paragraph, heading or table cell | Hover a block, use the left margin |\n| Outline | A table of contents that follows your reading position | `☰` in the top bar |\n| Markdown editor | Formatting toolbar, shortcuts and a live preview | `✎ Edit`, then `Ctrl + Enter` to apply |\n| Reading themes | Paper, Sepia (cream paper with a bookish serif) and Night | Theme switch in the top bar |\n| Autosave | Your document and comments are still here when you come back | Automatic |\n| AI answers in place | Paste the AI's reply back: each answer lands under its comment, edits shown as old → new | **Paste AI answer** in the Export menu |\n| Follow-up rounds | Export again and only new and follow-up comments get answered | Automatic |\n\n### 3.1 What your AI receives\n\nEvery export starts with clear instructions, then the document, then one block per comment:\n\n```text\n[1] Location: section “Pricing” · line ~42\nQuoted passage:\n\"\"\"\nFree for teams of up to 5 people\n\"\"\"\nContext: …Our plans start simple: 〈Free for teams of up to 5 people〉, then $8 per seat…\nNote / question:\n\"\"\"\nIs 5 still the right limit? Check it against the FAQ section.\n\"\"\"\nReplies (1):\n- Also confirm the per-seat price in the table below.\n```\n\nThe assistant knows exactly **where** to look and **what** you want — so it answers the question you asked, in the place you asked it.\n\n## 4. Made for real documents\n\n- 📐 **Product specs** — PRDs, BRDs and user requirements with wide tables and flow diagrams.\n- 💻 **Technical docs** — READMEs, API guides and runbooks with code blocks you can copy in one click.\n- 🧪 **Research & analysis** — long notes where every claim needs a second look.\n- ✍️ **Drafts** — blog posts, proposals and release notes before they ship.\n\nIt works in any language — English, Tiếng Việt, 日本語 — because comments anchor to the exact words, not to line numbers.\n\nAlready handled for you:\n\n- [x] Wide tables scroll sideways instead of breaking words\n- [x] Mermaid diagrams render right in the page\n- [x] Code blocks get a language label and a copy button\n- [ ] Your own document is next\n\n## 5. Private by design\n\n> **No account. No upload. No tracking.** mdeverything runs entirely in your browser, and your work is saved locally on this device. Close the tab, come back tomorrow, and pick up where you left off.\n\n## 6. Try it now\n\n1. Select any sentence on this page and press **Enter** to leave a comment.\n2. Click a highlight, then write a **Reply** to start a thread.\n3. Press **Export for AI** in the top bar and paste the result into your favourite assistant.\n\nReady for your own file? Use **Open** in the top bar, or drop a `.md` file anywhere on this page. 🚀","notes":[{"quote":"copy-paste a few paragraphs into a chatbot","note":"Example — ask a question. Is this pain point the strongest hook for the intro, or should “AI edits the wrong section” lead? Suggest two alternative opening lines.","replies":["Leaning towards the wrong-section angle — it's more concrete."]},{"quote":"repeated wording is never confused","note":"Example — check a claim. Add a one-line example that shows how the surrounding context tells two identical phrases apart."},{"quote":"your comments re-anchor automatically","note":"Example — request an edit. “Re-anchor” may be jargon for first-time readers; rewrite this step in plain words."},{"quote":"One click to comment on a whole paragraph, heading or table cell","note":"Example — comment on a table cell. Shorten this description to under 8 words without losing the meaning.","replies":["Maybe: “Comment on a whole block in one click.”"]},{"quote":"Your own document is next","note":"Example — turn a to-do into a call to action. Suggest a short, friendly line that points people to the Open button."},{"quote":"your work is saved locally on this device","note":"Example — fact-check. Confirm this matches how autosave works (browser storage, per device) and say what happens in a private window.","replies":["Worth mentioning that clearing site data removes it too.","Agreed — keep it to one short sentence though."]},{"quote":"every suggested edit shows as a diff you can accept or reject","note":"Example — an AI answer with a suggested edit. Make this phrase friendlier for readers who don't know the word “diff”.","replies":[{"by":"ai","round":1,"text":"Here's a plainer version that avoids the jargon. Accept it to rewrite the sentence, or Reject to keep yours.","edits":[{"kind":"quote","text":"every suggested edit appears as a tracked change you can accept or reject in one click"}]}]},{"kind":"diagram","diagram":0,"quote":"Your AI","label":"Your AI","shape":"node","mermaidLine":"E --> F[Your AI]","note":"Example — comment on a diagram. Hover any box or arrow label to comment on it; the export quotes this Mermaid line. Rename this step so it's clear any assistant works."}]}</script>
 <script>
 "use strict";
@@ -3811,6 +3945,7 @@ async function drawMermaid(){
     }
   }
   try{ dgAfterDraw(); }catch(e){ console.error(e); }   // DIAGRAM: re-anchor notes on diagram shapes
+  try{ if(typeof rvAfterMermaid==="function") rvAfterMermaid(); }catch(e){ console.error(e); }   // READ: full-screen buttons
   layoutCards();   // diagram heights changed → re-anchor the notes
   applyViewportLock();
 }
@@ -4131,6 +4266,7 @@ function restoreAnn(snap){
 }
 
 function focusCard(id,scroll){
+  if(scroll && typeof rvRevealAnn==="function") rvRevealAnn(id);   // READ: open a collapsed section first
   activeId=id;
   doc.querySelectorAll("mark.hl").forEach(m=>m.classList.toggle("on",m.dataset.id===id));
   doc.querySelectorAll(".hl-badge").forEach(b=>b.classList.toggle("on",b.dataset.id===id));
@@ -4166,7 +4302,10 @@ function doLayout(){
     return;
   }
   const items=list.map(c=>{
-    const m=doc.querySelector(`mark.hl[data-id="${c.dataset.id}"]`);
+    let m=doc.querySelector(`mark.hl[data-id="${c.dataset.id}"]`);
+    // READ: a note inside a collapsed section sits beside that section heading (dimmed)
+    const fold=m && typeof rvFoldHead==="function" ? rvFoldHead(m) : null;
+    c.classList.toggle("rv-folded", !!fold); if(fold) m=fold;
     const anchor=m ? (m.getBoundingClientRect().top - railTop)
                    : parseFloat(c.dataset.lastTop||"0");
     return { c, anchor:Math.max(0,anchor), h:c.offsetHeight };
@@ -4487,6 +4626,7 @@ function finishComposer(how){
 function openCard(id,{anchor=null}={}){
   const a=annById(id); if(!a) return;
   if(!doc.querySelector(`mark.hl[data-id="${id}"]`)) return;
+  if(typeof rvRevealAnn==="function") rvRevealAnn(id);   // READ: open a collapsed section first
   const group = anchor ? marksAtPoint(anchor) : (POP.group.includes(id) ? POP.group : [id]);
   clearTimeout(POP.armT);
   POP.mode="card"; POP.id=id; POP.isNew=false; POP.anchor=null;
@@ -4640,7 +4780,7 @@ const THEME_KEY="marginalia:theme:v1";
 function applyTheme(name){
   if(!["light","dark","beige"].includes(name)) name="light";
   document.body.dataset.theme=name;
-  document.querySelectorAll("#themeSeg button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.themeSet===name?"true":"false"));
+  document.querySelectorAll("#themeSeg button[data-theme-set]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.themeSet===name?"true":"false"));
   const mc={light:"#f7f7f5",dark:"#1c1d21",beige:"#f2ebd6"}[name];
   const meta=document.querySelector('meta[name="theme-color"]'); if(meta) meta.setAttribute("content",mc);
   const ico={light:"light",beige:"sepia",dark:"dark"}[name];
@@ -5389,11 +5529,11 @@ function olSpy(){
   const pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
   const line = Math.max(hdr ? hdr.getBoundingClientRect().bottom : 0, pad) + 40;
   let cur = olHeads[0];
-  for(const h of olHeads){ if(h.getBoundingClientRect().top - line <= 0) cur = h; else break; }
+  for(const h of olHeads){ if(!h.getClientRects().length) continue;   /* inside a collapsed section */ if(h.getBoundingClientRect().top - line <= 0) cur = h; else break; }
   const se = document.scrollingElement || document.documentElement;
   if(se.scrollTop > 0 && se.scrollTop + window.innerHeight >= se.scrollHeight - 2){
     // at the very bottom the last short sections can never reach the reading line
-    const visible = olHeads.filter(h=>h.getBoundingClientRect().top < window.innerHeight);
+    const visible = olHeads.filter(h=>h.getClientRects().length && h.getBoundingClientRect().top < window.innerHeight);
     if(visible.length) cur = visible[visible.length-1];
   }
   olSetActive(cur.id);
@@ -5428,6 +5568,7 @@ window.addEventListener("scroll", ()=>{
 function olGo(id){
   const h = document.getElementById(id);
   if(!h) return;
+  if(typeof rvReveal === "function") rvReveal(h);   // READ: open collapsed parent sections
   clearTimeout(olLockTimer);
   olLock = id; olSetActive(id);
   const release = ()=>{ olLock = null; clearTimeout(olLockTimer); window.removeEventListener("scrollend", release); olSpy(); };
@@ -6008,6 +6149,432 @@ function dgCommit(sh){
   }
 }
 /* ==[/DIAGRAM]== */
+
+/* ==[READ]== reading tools: diagram full screen · collapsible sections · text size / column width ·
+   back to top · reading time.
+   Collapsing never removes nodes: the top-level blocks after a collapsed h1–h3 (up to the next heading
+   of the same or a higher level) get .rv-hidden (display:none). The chevron and the "N comments hidden"
+   hint are .no-anchor buttons inside the heading (appended/prepended, never splitting text), so anchoring
+   and heading text (olHeadingText strips .no-anchor) are unchanged.
+   Notes in a collapsed section: doLayout places their cards beside the collapsed heading, dimmed
+   (.rv-folded), and the heading counts them. Anything that needs the hidden highlight — a panel card
+   click, J/K, opening the inline card (focusCard/openCard), an outline jump (olGo) or an in-document
+   link (lkJump) — expands the section first (rvReveal / rvRevealAnn).
+   Collapsed headings are kept per document in memory and in localStorage (by heading id). */
+const RV_FOLD_KEY = "marginalia:fold:v1", RV_SIZE_KEY = "marginalia:readsize:v1", RV_WIDTH_KEY = "marginalia:readwidth:v1";
+const RV_STEPS = [0.9, 1, 1.1, 1.2, 1.3];
+const RV_WIDTHS = ["narrow", "medium", "wide"];
+const rvReduce = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const rvSvg = d => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
+const rvLocale = () => document.documentElement.lang || "en";
+
+/* ---------- collapsible sections ---------- */
+const rvFolds = new Map();          // doc key → Set of collapsed heading ids
+const rvOwner = new WeakMap();      // hidden top-level block → its collapsed heading
+function rvDocKey(){ return isSampleMode ? "sample:" + rvLocale() : ((typeof LIB !== "undefined" && LIB.activeId) || "doc"); }
+function rvFoldSet(){
+  const k = rvDocKey();
+  if(!rvFolds.has(k)){
+    let ids = [];
+    try{ const o = JSON.parse(localStorage.getItem(RV_FOLD_KEY) || "{}"); if(Array.isArray(o[k])) ids = o[k]; }catch(e){}
+    rvFolds.set(k, new Set(ids));
+  }
+  return rvFolds.get(k);
+}
+function rvSaveFolds(){
+  try{
+    const o = JSON.parse(localStorage.getItem(RV_FOLD_KEY) || "{}"), k = rvDocKey(), ids = [...rvFoldSet()];
+    delete o[k]; if(ids.length) o[k] = ids;          // re-insert → most recent last
+    const keys = Object.keys(o); while(keys.length > 30) delete o[keys.shift()];
+    localStorage.setItem(RV_FOLD_KEY, JSON.stringify(o));
+  }catch(e){}
+}
+function rvFoldHeads(){ return [...doc.children].filter(el => /^H[1-3]$/.test(el.tagName) && el.querySelector(":scope > .rv-fold")); }
+function rvApplyFolds(){
+  const set = rvFoldSet();
+  let level = 0, owner = null;
+  for(const el of doc.children){
+    const lv = /^H[1-6]$/.test(el.tagName) ? +el.tagName[1] : 0;
+    if(owner && lv && lv <= level){ owner = null; level = 0; }
+    if(owner){ el.classList.add("rv-hidden"); rvOwner.set(el, owner); continue; }
+    el.classList.remove("rv-hidden"); rvOwner.delete(el);
+    const btn = el.querySelector(":scope > .rv-fold");
+    if(btn){
+      const folded = !!el.id && set.has(el.id);
+      btn.setAttribute("aria-expanded", folded ? "false" : "true");
+      const name = olHeadingText(el) || t("outline.untitled");
+      const l = t(folded ? "rview.expand" : "rview.collapse", {title:name});
+      btn.setAttribute("aria-label", l); btn.title = l;
+      el.classList.toggle("rv-folded-head", folded);
+      if(folded){ owner = el; level = lv; }
+    }
+  }
+  // headings hidden inside a collapsed parent keep their own state but show as expanded-looking
+  rvUpdateHints();
+  rvSyncOutline();
+}
+// the collapsed heading that hides this node (null when it is visible)
+function rvFoldHead(node){
+  let el = node;
+  while(el && el.parentNode !== doc) el = el.parentNode;
+  return el && el.classList && el.classList.contains("rv-hidden") ? (rvOwner.get(el) || null) : null;
+}
+function rvUpdateHints(){
+  const per = new Map();
+  doc.querySelectorAll("mark.hl[data-id]").forEach(m => {
+    const h = rvFoldHead(m); if(!h) return;
+    if(!per.has(h)) per.set(h, new Set());
+    per.get(h).add(m.dataset.id);
+  });
+  rvFoldHeads().forEach(h => {
+    const n = per.has(h) ? per.get(h).size : 0;
+    let hint = h.querySelector(":scope > .rv-hint");
+    const show = n > 0 && h.classList.contains("rv-folded-head");
+    if(!show){ if(hint && !hint.hidden) hint.hidden = true; return; }
+    if(!hint){
+      hint = document.createElement("button");
+      hint.type = "button"; hint.className = "rv-hint no-anchor";
+      hint.addEventListener("click", e => { e.stopPropagation(); rvSetFold(h, false); });
+      h.appendChild(hint);
+    }
+    const txt = t("rview.hiddenComments", {n});
+    if(hint.textContent !== txt) hint.textContent = txt;
+    const l = t("rview.hiddenCommentsAria", {n});
+    if(hint.getAttribute("aria-label") !== l) hint.setAttribute("aria-label", l);
+    if(hint.hidden) hint.hidden = false;
+  });
+}
+function rvSetFold(h, folded, opts = {}){
+  if(!h || !h.id) return;
+  const set = rvFoldSet();
+  if(folded) set.add(h.id); else set.delete(h.id);
+  rvSaveFolds();
+  rvApplyFolds();
+  if(!opts.quiet){ layoutCards(); window.dispatchEvent(new Event("resize")); }
+}
+function rvSetAll(folded){
+  const set = rvFoldSet();
+  rvFoldHeads().forEach(h => { if(h.id){ if(folded) set.add(h.id); else set.delete(h.id); } });
+  rvSaveFolds(); rvApplyFolds();
+  layoutCards(); window.dispatchEvent(new Event("resize"));
+}
+// expand every collapsed section that hides `node` (nested sections included)
+function rvReveal(node){
+  if(!node || !doc.contains(node)) return false;
+  let changed = false, h;
+  const set = rvFoldSet();
+  while((h = rvFoldHead(node))){ set.delete(h.id); changed = true; rvApplyFolds(); }
+  if(changed){ rvSaveFolds(); doLayout(); window.dispatchEvent(new Event("resize")); }
+  return changed;
+}
+function rvRevealAnn(id){
+  const m = doc.querySelector(`mark.hl[data-id="${id}"]`);
+  return m ? rvReveal(m) : false;
+}
+function rvSyncOutline(){
+  if(!olNav) return;
+  olNav.querySelectorAll(".ol-item").forEach(a => {
+    const h = document.getElementById(a.dataset.target);
+    a.classList.toggle("rv-ol-folded", !!(h && rvFoldHead(h)));
+  });
+  const heads = rvFoldHeads(), set = rvFoldSet();
+  const anyOpen = heads.some(h => !set.has(h.id)), anyFolded = heads.some(h => set.has(h.id));
+  const c = olNav.querySelector(".rv-ol-collapse"), x = olNav.querySelector(".rv-ol-expand");
+  if(c) c.hidden = !anyOpen;
+  if(x) x.hidden = !anyFolded;
+}
+function rvBuildFolds(){
+  doc.querySelectorAll(":scope > h1, :scope > h2, :scope > h3").forEach(h => {
+    if(h.querySelector(":scope > .rv-fold")) return;
+    if(!h.id) return;                                  // buildOutline gives every h1–h3 an id
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "rv-fold no-anchor";
+    b.innerHTML = rvSvg("M6 9l6 6 6-6");
+    b.addEventListener("mousedown", e => e.preventDefault());   // keep any text selection
+    b.addEventListener("click", e => {
+      e.stopPropagation();
+      rvSetFold(h, b.getAttribute("aria-expanded") !== "false");
+      try{ b.focus({preventScroll:true}); }catch(err){}
+    });
+    h.insertBefore(b, h.firstChild);
+  });
+  // outline head: Collapse all / Expand all (re-added after every buildOutline)
+  const head = olNav && olNav.querySelector(".ol-head");
+  if(head && !head.querySelector(".rv-olbtn") && rvFoldHeads().length){
+    const mk = (cls, key, d) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "rv-olbtn " + cls;
+      b.title = t(key); b.setAttribute("aria-label", t(key));
+      b.innerHTML = rvSvg(d);
+      return b;
+    };
+    const cAll = mk("rv-ol-collapse", "rview.collapseAll", "M7 4l5 5 5-5M7 20l5-5 5 5");
+    const xAll = mk("rv-ol-expand", "rview.expandAll", "M7 9l5-5 5 5M7 15l5 5 5-5");
+    cAll.addEventListener("click", () => { rvSetAll(true); if(!xAll.hidden) xAll.focus({preventScroll:true}); });
+    xAll.addEventListener("click", () => { rvSetAll(false); if(!cAll.hidden) cAll.focus({preventScroll:true}); });
+    const title = head.querySelector(".ol-title");
+    if(title) title.after(cAll, xAll); else head.prepend(cAll, xAll);
+  }
+}
+// keep the "N comments hidden" hints right when notes are added / deleted / restored
+let rvHintRaf = 0;
+new MutationObserver(muts => {
+  if(rvHintRaf || !rvFoldSet().size) return;
+  if(muts.every(m => m.target.closest && m.target.closest(".rv-hint, .rv-fold"))) return;
+  rvHintRaf = setTimeout(() => { rvHintRaf = 0; rvUpdateHints(); }, 0);
+}).observe(doc, {childList:true, subtree:true});
+
+/* ---------- diagram full screen ---------- */
+function rvAfterMermaid(){
+  dgWraps().forEach(w => {
+    if(w.classList.contains("mmd-error") || !w.querySelector(":scope > svg")) return;
+    let b = w.querySelector(":scope > .rv-fsbtn");
+    if(!b){
+      b = document.createElement("button");
+      b.type = "button"; b.className = "rv-fsbtn no-anchor";
+      b.innerHTML = rvSvg("M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7");
+      b.addEventListener("mousedown", e => e.preventDefault());
+      b.addEventListener("click", e => { e.stopPropagation(); rvFsOpen(w, b); });
+      b.addEventListener("keydown", e => e.stopPropagation());   // arrows / Enter belong to the button, not the shape picker
+      w.appendChild(b);
+    }
+    const n = dgWraps().indexOf(w) + 1;
+    const l = t("rview.fsOpen", {n});
+    b.title = l; b.setAttribute("aria-label", l);
+  });
+}
+let rvFs = null;
+function rvFsOpen(wrap, opener){
+  const src = wrap.querySelector(":scope > svg");
+  if(!src) return;
+  rvFsClose();
+  const n = dgWraps().indexOf(wrap) + 1;
+  const vb = src.viewBox && src.viewBox.baseVal;
+  const r = src.getBoundingClientRect();
+  const W = (vb && vb.width) || r.width || 600, H = (vb && vb.height) || r.height || 400;
+  const ov = document.createElement("div");
+  ov.className = "rv-fs"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true");
+  ov.setAttribute("aria-label", t("rview.fsTitle", {n}));
+  ov.innerHTML =
+    `<div class="rv-fs-bar"><span class="rv-fs-title"></span><span class="rv-fs-hint"></span>` +
+    `<div class="rv-fs-tools">` +
+      `<button type="button" data-z="out"><span aria-hidden="true">−</span></button>` +
+      `<span class="rv-fs-pct" aria-live="polite"></span>` +
+      `<button type="button" data-z="in"><span aria-hidden="true">+</span></button>` +
+      `<button type="button" data-z="fit"></button>` +
+      `<button type="button" data-z="one" class="rv-fs-one"></button>` +
+      `<button type="button" data-z="close" class="rv-fs-x"><span aria-hidden="true">×</span></button>` +
+    `</div></div>` +
+    `<div class="rv-fs-view" tabindex="0" role="img"><div class="rv-fs-stage"></div></div>`;
+  ov.querySelector(".rv-fs-title").textContent = t("rview.fsTitle", {n});
+  ov.querySelector(".rv-fs-hint").textContent = t("rview.fsHint");
+  const lab = (sel, key) => { const b = ov.querySelector(sel); b.title = t(key); b.setAttribute("aria-label", t(key)); };
+  lab('[data-z="out"]', "rview.zoomOut"); lab('[data-z="in"]', "rview.zoomIn");
+  lab('[data-z="close"]', "rview.fsClose");
+  const fitB = ov.querySelector('[data-z="fit"]'); fitB.textContent = t("rview.fit"); fitB.title = t("rview.fitTitle");
+  const oneB = ov.querySelector('[data-z="one"]'); oneB.textContent = t("rview.actual"); oneB.title = t("rview.actualTitle");
+  const view = ov.querySelector(".rv-fs-view"), stage = ov.querySelector(".rv-fs-stage"), pct = ov.querySelector(".rv-fs-pct");
+  view.setAttribute("aria-label", t("rview.fsViewAria", {n}));
+  const svg = src.cloneNode(true);
+  svg.removeAttribute("style");
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.querySelectorAll("[tabindex]").forEach(x => x.removeAttribute("tabindex"));
+  svg.setAttribute("aria-hidden", "true");
+  stage.appendChild(svg);
+  stage.style.width = W + "px"; stage.style.height = H + "px";
+
+  const st = { s:1, x:0, y:0 };
+  const fmt = new Intl.NumberFormat(rvLocale(), { style:"percent", maximumFractionDigits:0 });
+  const apply = () => {
+    stage.style.transform = `translate(${st.x}px,${st.y}px) scale(${st.s})`;
+    pct.textContent = fmt.format(st.s);
+  };
+  const clampS = s => Math.min(8, Math.max(0.1, s));
+  const zoomAt = (s, cx, cy) => {        // keep the point under (cx, cy) (view coords) still
+    s = clampS(s);
+    st.x = cx - (cx - st.x) * (s / st.s); st.y = cy - (cy - st.y) * (s / st.s); st.s = s; apply();
+  };
+  const center = () => ({ x:view.clientWidth / 2, y:view.clientHeight / 2 });
+  const fit = () => {
+    const pad = 24, vw = view.clientWidth - pad * 2, vh = view.clientHeight - pad * 2;
+    st.s = clampS(Math.min(vw / W, vh / H, 4));
+    st.x = (view.clientWidth - W * st.s) / 2; st.y = (view.clientHeight - H * st.s) / 2; apply();
+  };
+  const actual = () => {
+    const c = center();
+    if(W <= view.clientWidth && H <= view.clientHeight){ st.s = 1; st.x = (view.clientWidth - W) / 2; st.y = (view.clientHeight - H) / 2; apply(); }
+    else zoomAt(1, c.x, c.y);
+  };
+  ov.querySelector(".rv-fs-tools").addEventListener("click", e => {
+    const b = e.target.closest("button[data-z]"); if(!b) return;
+    const z = b.dataset.z, c = center();
+    if(z === "in") zoomAt(st.s * 1.25, c.x, c.y);
+    else if(z === "out") zoomAt(st.s / 1.25, c.x, c.y);
+    else if(z === "fit") fit();
+    else if(z === "one") actual();
+    else if(z === "close") rvFsClose();
+  });
+  view.addEventListener("wheel", e => {
+    e.preventDefault();
+    const r0 = view.getBoundingClientRect();
+    const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+    zoomAt(st.s * Math.exp(-dy * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - r0.left, e.clientY - r0.top);
+  }, { passive:false });
+  // drag to pan; two pointers pinch-zoom
+  const pts = new Map(); let pinch = null;
+  view.addEventListener("pointerdown", e => {
+    if(e.button !== 0 && e.pointerType === "mouse") return;
+    view.setPointerCapture(e.pointerId);
+    pts.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    view.classList.add("dragging");
+    if(pts.size === 2){
+      const [a, b] = [...pts.values()];
+      pinch = { d:Math.hypot(a.x - b.x, a.y - b.y) || 1, s:st.s };
+    }
+  });
+  view.addEventListener("pointermove", e => {
+    const p = pts.get(e.pointerId); if(!p) return;
+    if(pts.size === 1){
+      st.x += e.clientX - p.x; st.y += e.clientY - p.y; apply();
+      pts.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    } else if(pts.size === 2 && pinch){
+      const before = [...pts.values()];
+      const mx0 = (before[0].x + before[1].x) / 2, my0 = (before[0].y + before[1].y) / 2;
+      pts.set(e.pointerId, { x:e.clientX, y:e.clientY });
+      const [a, b] = [...pts.values()];
+      const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+      const r0 = view.getBoundingClientRect();
+      st.x += mx - mx0; st.y += my - my0;
+      zoomAt(pinch.s * (Math.hypot(a.x - b.x, a.y - b.y) / pinch.d), mx - r0.left, my - r0.top);
+    }
+  });
+  const up = e => {
+    pts.delete(e.pointerId);
+    if(pts.size < 2) pinch = null;
+    if(!pts.size) view.classList.remove("dragging");
+  };
+  view.addEventListener("pointerup", up); view.addEventListener("pointercancel", up);
+  // keyboard: + / − / 0 (fit) / 1 (100%) / arrows pan / Esc closes; Tab stays inside the dialog
+  ov.addEventListener("keydown", e => {
+    e.stopPropagation();                     // app shortcuts (J/K, Esc handlers…) stay out while open
+    if(e.key === "Escape"){ e.preventDefault(); rvFsClose(); return; }
+    if(e.key === "Tab"){
+      const f = [...ov.querySelectorAll("button, [tabindex='0']")].filter(x => x.offsetParent !== null);
+      const i = f.indexOf(document.activeElement);
+      if(e.shiftKey && i <= 0){ e.preventDefault(); f[f.length - 1].focus(); }
+      else if(!e.shiftKey && i === f.length - 1){ e.preventDefault(); f[0].focus(); }
+      return;
+    }
+    if(e.target.closest("button") && (e.key === "Enter" || e.key === " ")) return;
+    const c = center(), step = 60;
+    if(e.key === "+" || e.key === "="){ e.preventDefault(); zoomAt(st.s * 1.25, c.x, c.y); }
+    else if(e.key === "-" || e.key === "_"){ e.preventDefault(); zoomAt(st.s / 1.25, c.x, c.y); }
+    else if(e.key === "0"){ e.preventDefault(); fit(); }
+    else if(e.key === "1"){ e.preventDefault(); actual(); }
+    else if(e.key === "ArrowLeft"){ e.preventDefault(); st.x += step; apply(); }
+    else if(e.key === "ArrowRight"){ e.preventDefault(); st.x -= step; apply(); }
+    else if(e.key === "ArrowUp"){ e.preventDefault(); st.y += step; apply(); }
+    else if(e.key === "ArrowDown"){ e.preventDefault(); st.y -= step; apply(); }
+  });
+  const onResize = () => fit();
+  window.addEventListener("resize", onResize);
+  document.body.appendChild(ov);
+  document.body.classList.add("rv-fs-open");
+  rvFs = { ov, opener, onResize };
+  fit();
+  view.focus({ preventScroll:true });
+}
+function rvFsClose(){
+  if(!rvFs) return;
+  const { ov, opener, onResize } = rvFs;
+  rvFs = null;
+  window.removeEventListener("resize", onResize);
+  ov.remove();
+  document.body.classList.remove("rv-fs-open");
+  if(opener && opener.isConnected) try{ opener.focus({ preventScroll:true }); }catch(e){}
+}
+
+/* ---------- text size + column width (Theme ▾ → Reading) ---------- */
+let rvSizeI = 1, rvWidth = "medium";
+try{ const i = RV_STEPS.indexOf(Number(localStorage.getItem(RV_SIZE_KEY))); if(i >= 0) rvSizeI = i; }catch(e){}
+try{ const w = localStorage.getItem(RV_WIDTH_KEY); if(RV_WIDTHS.includes(w)) rvWidth = w; }catch(e){}
+function rvApplyReading(persist){
+  const k = RV_STEPS[rvSizeI];
+  document.documentElement.style.setProperty("--rv-k", String(k));
+  RV_WIDTHS.forEach(w => document.body.classList.toggle("rv-w-" + w, w === rvWidth && w !== "medium"));
+  const val = $("#rvSizeVal");
+  if(val) val.textContent = new Intl.NumberFormat(rvLocale(), { style:"percent", maximumFractionDigits:0 }).format(k);
+  document.querySelectorAll("#themeSeg [data-rv-size]").forEach(b => {
+    const off = b.dataset.rvSize === "-1" ? rvSizeI === 0 : rvSizeI === RV_STEPS.length - 1;
+    if(off) b.setAttribute("aria-disabled", "true"); else b.removeAttribute("aria-disabled");
+  });
+  document.querySelectorAll("#themeSeg [data-rv-width]").forEach(b => b.setAttribute("aria-checked", b.dataset.rvWidth === rvWidth ? "true" : "false"));
+  if(persist){
+    try{ localStorage.setItem(RV_SIZE_KEY, String(k)); localStorage.setItem(RV_WIDTH_KEY, rvWidth); }catch(e){}
+    layoutCards();
+    window.dispatchEvent(new Event("resize"));   // diagram overlays, table handles, card layout
+  }
+}
+(() => {
+  const menu = $("#themeSeg"); if(!menu) return;
+  menu.addEventListener("click", e => {
+    const b = e.target.closest("[data-rv-size], [data-rv-width]");
+    if(!b) return;
+    e.stopPropagation();                         // stay in the menu (the theme items close it)
+    if(b.dataset.rvSize){
+      if(b.getAttribute("aria-disabled") === "true") return;
+      rvSizeI = Math.min(RV_STEPS.length - 1, Math.max(0, rvSizeI + Number(b.dataset.rvSize)));
+    } else rvWidth = b.dataset.rvWidth;
+    rvApplyReading(true);
+  }, true);
+  rvApplyReading(false);
+})();
+
+/* ---------- back to top ---------- */
+const rvTop = document.createElement("button");
+rvTop.type = "button"; rvTop.className = "rv-top";
+rvTop.title = t("rview.toTop"); rvTop.setAttribute("aria-label", t("rview.toTop"));
+rvTop.innerHTML = rvSvg("M12 19V5M5 12l7-7 7 7");
+rvTop.tabIndex = -1;
+document.body.appendChild(rvTop);
+let rvTopRaf = 0;
+function rvTopSync(){
+  const on = window.scrollY > window.innerHeight * 1.5;
+  if(on === rvTop.classList.contains("show")) return;
+  rvTop.classList.toggle("show", on);
+  document.body.classList.toggle("rv-top-on", on);
+  rvTop.tabIndex = on ? 0 : -1;
+  if(!on && document.activeElement === rvTop){ const l = $("#docLabel"); if(l) try{ l.focus({ preventScroll:true }); }catch(e){} }
+}
+window.addEventListener("scroll", () => {
+  if(rvTopRaf) return;
+  rvTopRaf = requestAnimationFrame(() => { rvTopRaf = 0; rvTopSync(); });
+}, { passive:true });
+rvTop.addEventListener("click", () => window.scrollTo({ top:0, behavior: rvReduce() ? "auto" : "smooth" }));
+
+/* ---------- reading time (beside the document name) ---------- */
+const RV_CJK = /[぀-ヿ㐀-䶿一-鿿豈-﫿가-힯ｦ-ﾟ]/g;
+function rvReadTime(){
+  const el = $("#rvTime"); if(!el) return;
+  const txt = anchorText(doc);
+  const cjk = (txt.match(RV_CJK) || []).length;
+  const words = (txt.replace(RV_CJK, " ").match(/[\p{L}\p{N}][\p{L}\p{N}'’_-]*/gu) || []).length;
+  const mins = words / 230 + cjk / 500;            // ≈230 words/min; CJK ≈500 characters/min
+  if(!words && !cjk){ el.hidden = true; el.textContent = ""; return; }
+  const n = Math.max(1, Math.round(mins));
+  el.textContent = t("rview.readTime", {n});
+  el.title = t("rview.readTimeTitle", {n});
+  el.hidden = false;
+}
+
+// after every full render (see onDocRendered): chevrons, saved folds, reading time
+function readOnRendered(){
+  rvBuildFolds();
+  rvApplyFolds();
+  rvReadTime();
+  rvTopSync();
+}
+/* ==[/READ]== */
 
 /* ==[W4 EDITOR]== owned by the editor workstream (also wires #bEdit) */
 /* Markdown source editor: toolbar + textarea + debounced live preview. It renders
@@ -9609,6 +10176,7 @@ function lkFlash(el){
   lkFlashT = setTimeout(()=>{ el.classList.remove("link-flash"); if(lkFlashEl === el) lkFlashEl = null; }, 1300);
 }
 function lkJump(t){
+  if(typeof rvReveal === "function") rvReveal(t);   // READ: open a collapsed section first
   lkStack.push(window.scrollY);
   if(lkStack.length > 20) lkStack.shift();
   // an inline / empty anchor (<a name>, <span id>) is too small to see: flash its block instead
@@ -10534,6 +11102,7 @@ function tvOnRendered(){
   if(tvRO){ tvRO.disconnect(); tvRO = null; }
   const tables = tblTables();
   tvWideCheck(tables);
+  tvMobileButtons(tables);
   if(window.ResizeObserver && tables.length){
     tvRO = new ResizeObserver(entries => {
       const set = new Set(entries.map(e => e.target.tagName === "TABLE" ? e.target : e.target.querySelector(":scope > table")).filter(Boolean));
@@ -10675,6 +11244,21 @@ async function tvCopy(kind, tb){
 }
 
 /* ---------- fullscreen view ---------- */
+// phones: the hover layer (#tblLayer) is hidden ≤768px, so each table gets a small "Expand table" line above it
+function tvMobileButtons(tables){
+  tables.forEach((tb, i) => {
+    const wrap = tb.parentElement && tb.parentElement.classList.contains("table-scroll") ? tb.parentElement : tb;
+    let b = wrap.previousElementSibling;
+    if(!(b && b.classList.contains("tv-mexp"))){
+      b = document.createElement("button");
+      b.type = "button"; b.className = "tv-mexp no-anchor";
+      b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span></span>';
+      wrap.parentNode.insertBefore(b, wrap);
+    }
+    b.querySelector("span").textContent = t("tview.expand");
+    b.onclick = () => tvOpen(tb, i, b);
+  });
+}
 function tvOpen(table, idx, opener){
   if(TVO) tvClose();
   const title = t("tview.title", { n:idx + 1 });
@@ -10791,6 +11375,7 @@ function onDocRendered(){
   try{ if(typeof linksOnRendered === "function") linksOnRendered(); }catch(e){ console.error(e); }
   try{ if(typeof aiOnRendered === "function") aiOnRendered(); }catch(e){ console.error(e); }
   try{ if(typeof layoutOnRendered === "function") layoutOnRendered(); }catch(e){ console.error(e); }
+  try{ if(typeof readOnRendered === "function") readOnRendered(); }catch(e){ console.error(e); }
 }
 
 (async function(){
