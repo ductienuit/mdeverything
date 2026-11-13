@@ -45,7 +45,7 @@
     "paste": "Pegar Markdown…",
     "pasteSub": "Empieza con texto del portapapeles",
     "restoreTitle": "Restaurar documentos y comentarios desde un archivo de respaldo",
-    "restore": "Restaurar respaldo (.json)…",
+    "restore": "Restaurar respaldo…",
     "restoreSub": "Recupera documentos y sus comentarios"
   },
   "theme": {
@@ -147,7 +147,7 @@
     "dropAria": "Abrir un archivo Markdown, o soltarlo aquí",
     "dropTitle": "Suelta tu archivo .md aquí",
     "dropBrowse": "o haz clic para buscarlo en tu equipo",
-    "dropHint": ".md · .markdown · .txt — o un respaldo .mdeverything.json"
+    "dropHint": ".md · .markdown · .txt — o un respaldo de mdeverything (.mdeverything.md)"
   },
   "how": {
     "title": "Cómo funciona",
@@ -189,7 +189,7 @@
     "add": "Agregar nota"
   },
   "dropzone": {
-    "text": "Suelta un archivo .md, o un respaldo .mdeverything.json, para abrirlo"
+    "text": "Suelta un archivo .md, o un respaldo de mdeverything, para abrirlo"
   },
   "source": {
     "title": "Pegar Markdown",
@@ -247,7 +247,13 @@
     "diagram": "Diagrama Mermaid (se dibuja al abrir)",
     "replaced": "Documento reemplazado",
     "replacedKept": "Documento reemplazado · {kept}/{total} comentarios aún anclados",
-    "undone": "Se restauraron el documento y los comentarios anteriores"
+    "undone": "Se restauraron el documento y los comentarios anteriores",
+    "detBackup": "Respaldo de mdeverything",
+    "nDocs": "{n, plural, one {# documento} other {# documentos}}",
+    "nComments": "{n, plural, one {# comentario} other {# comentarios}}",
+    "nReplies": "{n, plural, one {# respuesta} other {# respuestas}}",
+    "btnRestore": "Restaurar",
+    "bkRebuilt": "Reconstruido de los comentarios legibles"
   },
   "confirm": {
     "defaultTitle": "¿Reemplazar el documento actual?",
@@ -602,9 +608,9 @@
     "searchAria": "Buscar documentos por nombre",
     "listAria": "Documentos guardados",
     "backup": "Respaldo",
-    "backupAll": "Descargar respaldo (.json)",
+    "backupAll": "Descargar respaldo (.md)",
     "restore": "Restaurar respaldo…",
-    "backupNote": "Un respaldo guarda tus documentos y comentarios en un solo archivo — úsalo para pasarte a otro navegador o tener una copia segura.",
+    "backupNote": "Un respaldo es un único archivo Markdown con tus documentos, comentarios y respuestas: se lee en cualquier sitio y aquí lo restaura todo. Úsalo para cambiar de navegador o guardar una copia segura.",
     "removeOld": "Eliminar documentos de más de {days} días",
     "wipe": "Borrar todos los datos",
     "showingSample": "Mostrando el documento de ejemplo",
@@ -626,7 +632,27 @@
     "used_html": "<b>~{size}</b> en uso",
     "meterTitle": "Documentos pequeños: ~{ls} en localStorage · documentos grandes: ~{idb} en IndexedDB",
     "meterFree": " · el navegador tiene ~{free} libres para este sitio",
-    "meterAria": "Almacenamiento del navegador en uso"
+    "meterAria": "Almacenamiento del navegador en uso",
+    "bkHeading": "Comentarios de revisión",
+    "bkIntro": "Exportado desde mdeverything el {date} · {notes, plural, one {# comentario} other {# comentarios}} · {replies, plural, one {# respuesta} other {# respuestas}}. Abre o pega este archivo en mdeverything para recuperar los comentarios.",
+    "bkNoteHead": "Comentario {n}",
+    "bkLocation": "Ubicación",
+    "bkSection": "Sección «{name}»",
+    "bkDiagram": "Diagrama {n} · {label}",
+    "bkTime": "Fecha",
+    "bkEdited": "editado el {date}",
+    "bkComment": "Comentario / pregunta",
+    "bkEmpty": "(sin texto)",
+    "bkReply": "Respuesta",
+    "bkAi": "Respuesta de la IA (ronda {n})",
+    "bkEdit": "Edición sugerida",
+    "bkEditReplace": "reemplazar «{find}»",
+    "bkEditSection": "sección «{name}»",
+    "bkEditDocument": "documento completo",
+    "bkEditAccepted": "aplicada",
+    "bkEditRejected": "rechazada",
+    "bkEditSuperseded": "sustituida por una respuesta más reciente",
+    "bkRebuilt": " — reconstruido a partir de los comentarios legibles (faltaba la copia exacta)"
   },
   "ai": {
     "fmtOn": "Respuestas de la IA activadas — las exportaciones piden a la IA responder en un formato que puedes pegar de vuelta",

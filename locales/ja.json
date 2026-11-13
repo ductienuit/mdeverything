@@ -45,7 +45,7 @@
     "paste": "Markdownを貼り付け…",
     "pasteSub": "クリップボードのテキストから始める",
     "restoreTitle": "バックアップファイルから文書とコメントを復元",
-    "restore": "バックアップから復元（.json）…",
+    "restore": "バックアップから復元…",
     "restoreSub": "文書とそのコメントを元に戻す"
   },
   "theme": {
@@ -147,7 +147,7 @@
     "dropAria": "Markdownファイルを開く — またはここにドロップ",
     "dropTitle": ".mdファイルをここにドロップ",
     "dropBrowse": "またはクリックしてファイルを選択",
-    "dropHint": ".md · .markdown · .txt — または .mdeverything.json バックアップ"
+    "dropHint": ".md · .markdown · .txt — または mdeverything バックアップ（.mdeverything.md）"
   },
   "how": {
     "title": "使い方",
@@ -189,7 +189,7 @@
     "add": "メモを追加"
   },
   "dropzone": {
-    "text": ".mdファイル（または .mdeverything.json バックアップ）をドロップして開く"
+    "text": ".md ファイル、または mdeverything バックアップをドロップして開く"
   },
   "source": {
     "title": "Markdownを貼り付け",
@@ -247,7 +247,13 @@
     "diagram": "Mermaid図（開いた後に描画）",
     "replaced": "文書を置き換えました",
     "replacedKept": "文書を置き換えました · {kept}/{total}件のコメントが位置を保っています",
-    "undone": "以前の文書とコメントに戻しました"
+    "undone": "以前の文書とコメントに戻しました",
+    "detBackup": "mdeverything バックアップ",
+    "nDocs": "{n, plural, other {文書 # 件}}",
+    "nComments": "{n, plural, other {コメント # 件}}",
+    "nReplies": "{n, plural, other {返信 # 件}}",
+    "btnRestore": "復元",
+    "bkRebuilt": "読みやすいコメント部分から復元"
   },
   "confirm": {
     "defaultTitle": "現在の文書を置き換えますか？",
@@ -602,9 +608,9 @@
     "searchAria": "文書を名前で検索",
     "listAria": "保存された文書",
     "backup": "バックアップ",
-    "backupAll": "バックアップをダウンロード（.json）",
+    "backupAll": "バックアップをダウンロード（.md）",
     "restore": "バックアップから復元…",
-    "backupNote": "バックアップは文書とコメントを1つのファイルにまとめます。別のブラウザへの移行や控えの保管に使えます。",
+    "backupNote": "バックアップは文書・コメント・回答を1つの Markdown ファイルにまとめます。どこでも読めて、ここで丸ごと復元できます。別のブラウザへの移行や控えの保管に使えます。",
     "removeOld": "{days} 日より古い文書を削除",
     "wipe": "すべてのデータを削除",
     "showingSample": "サンプル文書を表示中",
@@ -626,7 +632,27 @@
     "used_html": "<b>約 {size}</b> 使用中",
     "meterTitle": "小さな文書: localStorage に約 {ls} · 大きな文書: IndexedDB に約 {idb}",
     "meterFree": " · このサイトにはブラウザの空き容量が約 {free} あります",
-    "meterAria": "ブラウザのストレージ使用量"
+    "meterAria": "ブラウザのストレージ使用量",
+    "bkHeading": "レビューコメント",
+    "bkIntro": "{date} に mdeverything から書き出し · {notes, plural, other {コメント # 件}} · {replies, plural, other {返信 # 件}}。このファイルを mdeverything で開くか貼り付けると、コメントが戻ります。",
+    "bkNoteHead": "コメント {n}",
+    "bkLocation": "場所",
+    "bkSection": "セクション「{name}」",
+    "bkDiagram": "図 {n} · {label}",
+    "bkTime": "日時",
+    "bkEdited": "{date} に編集",
+    "bkComment": "コメント / 質問",
+    "bkEmpty": "（本文なし）",
+    "bkReply": "返信",
+    "bkAi": "AI の回答（{n} 回目）",
+    "bkEdit": "修正案",
+    "bkEditReplace": "「{find}」を置換",
+    "bkEditSection": "セクション「{name}」",
+    "bkEditDocument": "文書全体",
+    "bkEditAccepted": "適用済み",
+    "bkEditRejected": "却下",
+    "bkEditSuperseded": "新しい回答に置き換え",
+    "bkRebuilt": " — 読みやすいコメント部分から復元しました（正確なコピーがありません）"
   },
   "ai": {
     "fmtOn": "AIの回答: オン — 書き出し時に、貼り戻せる形式で答えるようAIに依頼します",

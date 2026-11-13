@@ -45,7 +45,7 @@
     "paste": "Paste Markdown…",
     "pasteSub": "Start from text on your clipboard",
     "restoreTitle": "Restore documents and comments from a backup file",
-    "restore": "Restore from backup (.json)…",
+    "restore": "Restore from backup…",
     "restoreSub": "Bring back documents and their comments"
   },
   "theme": {
@@ -147,7 +147,7 @@
     "dropAria": "Open a Markdown file — or drop one here",
     "dropTitle": "Drop your .md file here",
     "dropBrowse": "or click to browse your computer",
-    "dropHint": ".md · .markdown · .txt — or a .mdeverything.json backup"
+    "dropHint": ".md · .markdown · .txt — or an mdeverything backup (.mdeverything.md)"
   },
   "how": {
     "title": "How it works",
@@ -189,7 +189,7 @@
     "add": "Add note"
   },
   "dropzone": {
-    "text": "Drop a .md file — or a .mdeverything.json backup — to open it"
+    "text": "Drop a .md file — or an mdeverything backup — to open it"
   },
   "source": {
     "title": "Paste Markdown",
@@ -247,7 +247,13 @@
     "diagram": "Mermaid diagram (drawn after opening)",
     "replaced": "Document replaced",
     "replacedKept": "Document replaced · {kept}/{total} comments still anchored",
-    "undone": "Restored the previous document and comments"
+    "undone": "Restored the previous document and comments",
+    "detBackup": "mdeverything backup",
+    "nDocs": "{n, plural, one {# document} other {# documents}}",
+    "nComments": "{n, plural, one {# comment} other {# comments}}",
+    "nReplies": "{n, plural, one {# reply} other {# replies}}",
+    "btnRestore": "Restore",
+    "bkRebuilt": "Rebuilt from the readable comments"
   },
   "confirm": {
     "defaultTitle": "Replace current document?",
@@ -602,9 +608,9 @@
     "searchAria": "Search documents by name",
     "listAria": "Saved documents",
     "backup": "Backup",
-    "backupAll": "Download backup (.json)",
+    "backupAll": "Download backup (.md)",
     "restore": "Restore from backup…",
-    "backupNote": "A backup keeps your documents and comments in one file — use it to move to another browser or keep a safe copy.",
+    "backupNote": "A backup is one Markdown file with your documents, comments and answers — easy to read anywhere, and it restores everything here. Use it to move to another browser or keep a safe copy.",
     "removeOld": "Remove documents older than {days} days",
     "wipe": "Delete all data",
     "showingSample": "Showing the sample document",
@@ -626,7 +632,27 @@
     "used_html": "<b>~{size}</b> used",
     "meterTitle": "Small documents: ~{ls} in localStorage · large documents: ~{idb} in IndexedDB",
     "meterFree": " · the browser has ~{free} free for this site",
-    "meterAria": "Browser storage used"
+    "meterAria": "Browser storage used",
+    "bkHeading": "Review comments",
+    "bkIntro": "Exported from mdeverything on {date} · {notes, plural, one {# comment} other {# comments}} · {replies, plural, one {# reply} other {# replies}}. Open or paste this file in mdeverything to bring the comments back.",
+    "bkNoteHead": "Comment {n}",
+    "bkLocation": "Location",
+    "bkSection": "Section “{name}”",
+    "bkDiagram": "Diagram {n} · {label}",
+    "bkTime": "Time",
+    "bkEdited": "edited {date}",
+    "bkComment": "Comment / question",
+    "bkEmpty": "(no text)",
+    "bkReply": "Reply",
+    "bkAi": "AI answer (round {n})",
+    "bkEdit": "Suggested edit",
+    "bkEditReplace": "replace “{find}”",
+    "bkEditSection": "section “{name}”",
+    "bkEditDocument": "whole document",
+    "bkEditAccepted": "applied",
+    "bkEditRejected": "rejected",
+    "bkEditSuperseded": "replaced by a newer answer",
+    "bkRebuilt": " — rebuilt from the readable comments (the exact copy was missing)"
   },
   "ai": {
     "fmtOn": "AI replies on — exports ask the AI to answer in a format you can paste back",

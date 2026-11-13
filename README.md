@@ -67,6 +67,7 @@ The pages are **generated**. Edit the sources, then rebuild (Node 18+, no depend
 node scripts/build.mjs            # writes index.html, vi/index.html …, sitemap.xml
 node scripts/check-locales.mjs    # missing / extra keys, placeholder mismatches, demo quotes
 node scripts/test-roundtrip.mjs   # export bundle → sample AI answer → parser, for every language
+node scripts/test-backup.mjs      # Markdown backup (.mdeverything.md) → restore: same text, comments and replies
 node scripts/build.mjs --check    # fails when a generated file is out of date
 ```
 

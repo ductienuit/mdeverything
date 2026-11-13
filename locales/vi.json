@@ -45,7 +45,7 @@
     "paste": "Dán Markdown…",
     "pasteSub": "Bắt đầu từ văn bản trong clipboard",
     "restoreTitle": "Khôi phục tài liệu và bình luận từ file sao lưu",
-    "restore": "Khôi phục từ bản sao lưu (.json)…",
+    "restore": "Khôi phục từ bản sao lưu…",
     "restoreSub": "Lấy lại tài liệu cùng bình luận của chúng"
   },
   "theme": {
@@ -147,7 +147,7 @@
     "dropAria": "Mở một file Markdown — hoặc thả file vào đây",
     "dropTitle": "Thả file .md của bạn vào đây",
     "dropBrowse": "hoặc bấm để chọn file trên máy",
-    "dropHint": ".md · .markdown · .txt — hoặc bản sao lưu .mdeverything.json"
+    "dropHint": ".md · .markdown · .txt — hoặc bản sao lưu mdeverything (.mdeverything.md)"
   },
   "how": {
     "title": "Cách hoạt động",
@@ -189,7 +189,7 @@
     "add": "Thêm ghi chú"
   },
   "dropzone": {
-    "text": "Thả file .md — hoặc bản sao lưu .mdeverything.json — để mở"
+    "text": "Thả file .md — hoặc bản sao lưu mdeverything — để mở"
   },
   "source": {
     "title": "Dán Markdown",
@@ -247,7 +247,13 @@
     "diagram": "Diagram Mermaid (vẽ sau khi mở)",
     "replaced": "Đã thay tài liệu",
     "replacedKept": "Đã thay tài liệu · {kept}/{total} comment còn bám",
-    "undone": "Đã khôi phục tài liệu và comment trước đó"
+    "undone": "Đã khôi phục tài liệu và comment trước đó",
+    "detBackup": "Bản sao lưu mdeverything",
+    "nDocs": "{n, plural, other {# tài liệu}}",
+    "nComments": "{n, plural, other {# bình luận}}",
+    "nReplies": "{n, plural, other {# trả lời}}",
+    "btnRestore": "Khôi phục",
+    "bkRebuilt": "Dựng lại từ phần bình luận dễ đọc"
   },
   "confirm": {
     "defaultTitle": "Thay tài liệu hiện tại?",
@@ -602,9 +608,9 @@
     "searchAria": "Tìm tài liệu theo tên",
     "listAria": "Tài liệu đã lưu",
     "backup": "Sao lưu",
-    "backupAll": "Tải bản sao lưu (.json)",
+    "backupAll": "Tải bản sao lưu (.md)",
     "restore": "Khôi phục từ bản sao lưu…",
-    "backupNote": "Bản sao lưu giữ tài liệu và bình luận của bạn trong một file — dùng để chuyển sang trình duyệt khác hoặc cất giữ an toàn.",
+    "backupNote": "Bản sao lưu là một file Markdown chứa tài liệu, bình luận và câu trả lời — đọc được ở bất cứ đâu, và khôi phục lại đầy đủ tại đây. Dùng để chuyển sang trình duyệt khác hoặc cất giữ an toàn.",
     "removeOld": "Xóa tài liệu cũ hơn {days} ngày",
     "wipe": "Xóa toàn bộ dữ liệu",
     "showingSample": "Đang xem tài liệu mẫu",
@@ -626,7 +632,27 @@
     "used_html": "Đã dùng <b>~{size}</b>",
     "meterTitle": "Tài liệu nhỏ: ~{ls} trong localStorage · tài liệu lớn: ~{idb} trong IndexedDB",
     "meterFree": " · trình duyệt còn trống ~{free} cho trang này",
-    "meterAria": "Bộ nhớ trình duyệt đã dùng"
+    "meterAria": "Bộ nhớ trình duyệt đã dùng",
+    "bkHeading": "Bình luận review",
+    "bkIntro": "Xuất từ mdeverything lúc {date} · {notes, plural, other {# bình luận}} · {replies, plural, other {# trả lời}}. Mở hoặc dán file này vào mdeverything để lấy lại các bình luận.",
+    "bkNoteHead": "Bình luận {n}",
+    "bkLocation": "Vị trí",
+    "bkSection": "Mục “{name}”",
+    "bkDiagram": "Sơ đồ {n} · {label}",
+    "bkTime": "Thời gian",
+    "bkEdited": "sửa lúc {date}",
+    "bkComment": "Bình luận / câu hỏi",
+    "bkEmpty": "(không có nội dung)",
+    "bkReply": "Trả lời",
+    "bkAi": "AI trả lời (vòng {n})",
+    "bkEdit": "Đề xuất sửa",
+    "bkEditReplace": "thay “{find}”",
+    "bkEditSection": "mục “{name}”",
+    "bkEditDocument": "cả tài liệu",
+    "bkEditAccepted": "đã áp dụng",
+    "bkEditRejected": "đã bỏ qua",
+    "bkEditSuperseded": "đã thay bằng câu trả lời mới hơn",
+    "bkRebuilt": " — dựng lại từ phần bình luận dễ đọc (thiếu bản sao chính xác)"
   },
   "ai": {
     "fmtOn": "Đã bật phản hồi AI — khi xuất sẽ yêu cầu AI trả lời theo định dạng bạn dán lại được",

@@ -45,7 +45,7 @@
     "paste": "Colar Markdown…",
     "pasteSub": "Comece com o texto da área de transferência",
     "restoreTitle": "Restaurar documentos e comentários de um arquivo de backup",
-    "restore": "Restaurar backup (.json)…",
+    "restore": "Restaurar backup…",
     "restoreSub": "Recupere documentos e seus comentários"
   },
   "theme": {
@@ -147,7 +147,7 @@
     "dropAria": "Abrir um arquivo Markdown — ou solte um aqui",
     "dropTitle": "Solte seu arquivo .md aqui",
     "dropBrowse": "ou clique para procurar no computador",
-    "dropHint": ".md · .markdown · .txt — ou um backup .mdeverything.json"
+    "dropHint": ".md · .markdown · .txt — ou um backup do mdeverything (.mdeverything.md)"
   },
   "how": {
     "title": "Como funciona",
@@ -189,7 +189,7 @@
     "add": "Adicionar nota"
   },
   "dropzone": {
-    "text": "Solte um arquivo .md — ou um backup .mdeverything.json — para abrir"
+    "text": "Solte um arquivo .md — ou um backup do mdeverything — para abrir"
   },
   "source": {
     "title": "Colar Markdown",
@@ -247,7 +247,13 @@
     "diagram": "Diagrama Mermaid (desenhado ao abrir)",
     "replaced": "Documento substituído",
     "replacedKept": "Documento substituído · {kept}/{total} comentários ainda ancorados",
-    "undone": "Documento e comentários anteriores restaurados"
+    "undone": "Documento e comentários anteriores restaurados",
+    "detBackup": "Backup do mdeverything",
+    "nDocs": "{n, plural, one {# documento} other {# documentos}}",
+    "nComments": "{n, plural, one {# comentário} other {# comentários}}",
+    "nReplies": "{n, plural, one {# resposta} other {# respostas}}",
+    "btnRestore": "Restaurar",
+    "bkRebuilt": "Reconstruído dos comentários legíveis"
   },
   "confirm": {
     "defaultTitle": "Substituir o documento atual?",
@@ -602,9 +608,9 @@
     "searchAria": "Buscar documentos pelo nome",
     "listAria": "Documentos salvos",
     "backup": "Backup",
-    "backupAll": "Baixar backup (.json)",
+    "backupAll": "Baixar backup (.md)",
     "restore": "Restaurar…",
-    "backupNote": "Um backup guarda seus documentos e comentários em um só arquivo — use para mudar de navegador ou ter uma cópia segura.",
+    "backupNote": "Um backup é um único arquivo Markdown com seus documentos, comentários e respostas — fácil de ler em qualquer lugar, e restaura tudo aqui. Use para mudar de navegador ou guardar uma cópia segura.",
     "removeOld": "Remover documentos com mais de {days} dias",
     "wipe": "Excluir todos os dados",
     "showingSample": "Mostrando o documento de exemplo",
@@ -626,7 +632,27 @@
     "used_html": "<b>~{size}</b> em uso",
     "meterTitle": "Documentos pequenos: ~{ls} no localStorage · documentos grandes: ~{idb} no IndexedDB",
     "meterFree": " · o navegador tem ~{free} livres para este site",
-    "meterAria": "Armazenamento do navegador em uso"
+    "meterAria": "Armazenamento do navegador em uso",
+    "bkHeading": "Comentários de revisão",
+    "bkIntro": "Exportado do mdeverything em {date} · {notes, plural, one {# comentário} other {# comentários}} · {replies, plural, one {# resposta} other {# respostas}}. Abra ou cole este arquivo no mdeverything para recuperar os comentários.",
+    "bkNoteHead": "Comentário {n}",
+    "bkLocation": "Local",
+    "bkSection": "Seção “{name}”",
+    "bkDiagram": "Diagrama {n} · {label}",
+    "bkTime": "Data",
+    "bkEdited": "editado em {date}",
+    "bkComment": "Comentário / pergunta",
+    "bkEmpty": "(sem texto)",
+    "bkReply": "Resposta",
+    "bkAi": "Resposta da IA (rodada {n})",
+    "bkEdit": "Edição sugerida",
+    "bkEditReplace": "substituir “{find}”",
+    "bkEditSection": "seção “{name}”",
+    "bkEditDocument": "documento inteiro",
+    "bkEditAccepted": "aplicada",
+    "bkEditRejected": "rejeitada",
+    "bkEditSuperseded": "substituída por uma resposta mais nova",
+    "bkRebuilt": " — reconstruído a partir dos comentários legíveis (a cópia exata não estava no arquivo)"
   },
   "ai": {
     "fmtOn": "Respostas da IA ativadas — as exportações pedem que a IA responda num formato que você pode colar de volta",
