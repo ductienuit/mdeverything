@@ -1370,7 +1370,12 @@ body.no-notes:not(.outline-hidden) .rail{grid-column:2}
   display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;   /* one line; full text in #olTip */
   transition:background-color .15s,color .15s}
 #outline .ol-item[data-depth="0"]{color:var(--ink);font-weight:550}
-#outline .ol-item[data-depth="2"],#outline .ol-item[data-depth="3"]{font-size:12.5px}
+#outline .ol-item[data-depth="2"],#outline .ol-item[data-depth="3"],#outline .ol-item[data-depth="4"],#outline .ol-item[data-depth="5"]{font-size:12.5px}
+#outline .ol-item[data-depth="4"],#outline .ol-item[data-depth="5"]{color:var(--ink-faint)}
+#outline .ol-depth{flex:none;max-width:84px;padding:2px 4px;border:1px solid var(--line);border-radius:6px;background:var(--surface);
+  color:var(--ink-soft);font:600 11px/1.3 var(--font-ui);cursor:pointer}
+#outline .ol-depth:hover{border-color:var(--line-strong);color:var(--ink)}
+#outline .ol-depth:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 #outline .ol-item:hover{background:var(--surface-2);color:var(--ink)}
 #outline .ol-item:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 #outline .ol-item::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:2px;border-radius:2px;
@@ -2482,13 +2487,18 @@ body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8
   border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink); }
 #linkPop .lp-copy:hover{ background:var(--accent-soft); color:var(--accent-soft-fg); border-color:transparent; }
 #linkPop .lp-copy:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-#linkBack{ position:fixed; z-index:79; left:50%; bottom:76px; transform:translate(-50%, 12px); opacity:0;
-  display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:999px; cursor:pointer;
-  border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); box-shadow:var(--shadow-md);
-  font:600 13px/1.2 var(--font-ui); transition:opacity .18s ease, transform .18s ease; }
-#linkBack[hidden]{ display:none; }
-#linkBack.show{ opacity:1; transform:translate(-50%, 0); }
+#linkBackBar{ position:fixed; z-index:79; left:50%; bottom:76px; transform:translate(-50%, 12px); opacity:0;
+  display:inline-flex; align-items:stretch; max-width:calc(100vw - 24px); border-radius:999px; overflow:hidden;
+  border:1px solid var(--line-strong); background:var(--surface); box-shadow:var(--shadow-md); transition:opacity .18s ease, transform .18s ease; }
+#linkBackBar[hidden]{ display:none; }
+#linkBackBar.show{ opacity:1; transform:translate(-50%, 0); }
+#linkBack{ display:inline-flex; align-items:center; gap:8px; min-width:0; padding:8px 8px 8px 16px; border:0; background:none; cursor:pointer;
+  color:var(--ink); font:600 13px/1.2 var(--font-ui); }
+#linkBack .lb-txt{ min-width:0; max-width:46vw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 #linkBack:hover{ background:var(--accent-soft); color:var(--accent-soft-fg); }
+#linkBackX{ flex:none; width:34px; border:0; border-left:1px solid var(--line); background:none; color:var(--ink-faint); font-size:17px; line-height:1; cursor:pointer; }
+#linkBackX:hover{ background:var(--surface-2); color:var(--ink); }
+#linkBackX:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
 #linkBack:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 #linkBack kbd{ font:500 11px/1 var(--font-ui); color:var(--ink-faint); padding:2px 5px; border:1px solid var(--line); border-radius:4px; }
 #doc .link-flash{ border-radius:4px; animation:linkFlash 1.2s ease-out; }
@@ -2498,9 +2508,9 @@ body[data-theme="dark"]{ --ins:#c4b5fd; --ins-bg:rgba(196,181,253,.12); --del:#8
 }
 @media (max-width:640px), (hover:none){ #linkBack kbd{ display:none; } }
 @media (prefers-reduced-motion:reduce){
-  #linkPop, #linkBack{ transition:none; transform:none; }
-  #linkBack.show{ transform:translate(-50%, 0); }
-  #linkBack{ transform:translate(-50%, 0); }
+  #linkPop, #linkBackBar{ transition:none; transform:none; }
+  #linkBackBar.show{ transform:translate(-50%, 0); }
+  #linkBackBar{ transform:translate(-50%, 0); }
   #doc .link-flash{ animation:none; background:var(--accent-soft); box-shadow:0 0 0 6px var(--accent-soft); }
 }
 /* ==[/LINKS CSS]== */
@@ -3405,7 +3415,7 @@ Note: Is that right? I thought…</pre>
 <!-- ==[/AI HTML]== -->
 <!-- ==[LINKS HTML]== B — in-document links -->
 <div id="linkPop" role="tooltip" aria-hidden="true"></div>
-<button id="linkBack" type="button" hidden aria-label="Back to where you were (Alt+Left)" data-i18n-attr="aria-label:link.backAria">↩ <!--t:link.back-->Back<!--/t--> <kbd aria-hidden="true">Alt+←</kbd></button>
+<div id="linkBackBar" hidden><button id="linkBack" type="button" aria-label="Back to where you were (Alt+Left)" data-i18n-attr="aria-label:link.backAria">↩ <span class="lb-txt"><!--t:link.back-->Back<!--/t--></span> <kbd aria-hidden="true">Alt+←</kbd></button><button id="linkBackX" type="button" aria-label="Hide" title="Hide" data-i18n-attr="aria-label:link.backHide;title:link.backHide">×</button></div>
 <!-- ==[/LINKS HTML]== -->
 <!-- ==[LAYOUT HTML]== C — header, panes, outline, documents panel -->
 <div class="ol-tip" id="olTip" aria-hidden="true" hidden></div>
@@ -4238,6 +4248,7 @@ function focusCard(id,scroll){
     const m=doc.querySelector(`mark.hl[data-id="${id}"]`);
     if(m){ const r=m.getBoundingClientRect();
       if(r.top<76 || r.bottom>window.innerHeight-20){
+        if(Math.abs(r.top - window.innerHeight/2) > window.innerHeight && typeof navPush==="function") navPush(window.scrollY);   // a real jump -> Back can return
         const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         m.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"}); } }
   }
@@ -5461,7 +5472,8 @@ function buildOutline(){
   if(!olNav) return;
   if(olObserver){ olObserver.disconnect(); olObserver = null; }
   olActive = null; olLinks = new Map();
-  olHeads = [...doc.querySelectorAll("h1, h2, h3")].filter(h=>!h.closest(".no-anchor"));
+  const depth = olDepth();
+  olHeads = [...doc.querySelectorAll(["h1","h2","h3","h4","h5","h6"].slice(0, depth).join(", "))].filter(h=>!h.closest(".no-anchor"));
   const used = new Set();
   const items = olHeads.map(h=>{
     if(!h.id || used.has(h.id)){
@@ -5478,10 +5490,12 @@ function buildOutline(){
     `<button type="button" class="ol-close" aria-label="${te("outline.close")}" title="${te("common.closeEsc")}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`+
     // wide screens: collapse the outline to a thin strip (same path as the header toggle)
     `<button type="button" class="pane-chev ol-collapse" data-pane-collapse="outline" aria-label="${te("outline.collapse")}" title="${te("outline.collapse")}"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7l-5 5 5 5M18 7l-5 5 5 5"/></svg></button>`+
+    (doc.querySelector("h2, h3, h4, h5, h6") ? `<select class="ol-depth" aria-label="${te("outline.depth")}" title="${te("outline.depth")}">`+
+      [2,3,4,5,6].map(n=>`<option value="${n}"${n===depth?" selected":""}>${te("outline.depthOpt",{n})}</option>`).join("")+`</select>` : ``)+
     (items.length ? `<span class="ol-progress" aria-hidden="true"><i></i></span>` : ``)+`</div>`;
   olNav.innerHTML = head + (items.length
     ? `<ol class="ol-list" aria-labelledby="olTitle">` + items.map(i=>{
-        const d = Math.min(i.level - minLevel, 3);
+        const d = Math.min(i.level - minLevel, 5);
         // single line + ellipsis; the full text shows in an instant tooltip when truncated (layout module)
         return `<li><a class="ol-item" href="#${olEsc(i.id)}" data-target="${olEsc(i.id)}" data-depth="${d}" style="--d:${d}">${olEsc(i.text)}</a></li>`;
       }).join("") + `</ol>`
@@ -5539,6 +5553,16 @@ window.addEventListener("scroll", ()=>{
   olRaf = requestAnimationFrame(()=>{ olRaf = 0; olProgress(); olSpy(); });
 }, {passive:true});
 
+// how many heading levels the outline lists (H1-H3 by default), remembered
+const OL_DEPTH_KEY = "marginalia:oldepth:v1";
+function olDepth(){ let n = 3; try{ n = parseInt(localStorage.getItem(OL_DEPTH_KEY), 10) || 3; }catch(e){} return Math.min(6, Math.max(2, n)); }
+if(olNav) olNav.addEventListener("change", e=>{
+  const sel = e.target.closest && e.target.closest(".ol-depth"); if(!sel) return;
+  try{ localStorage.setItem(OL_DEPTH_KEY, sel.value); }catch(err){}
+  buildOutline();
+  try{ if(typeof readOnRendered === "function") readOnRendered(); }catch(err){ console.error(err); }   // re-adds Collapse/Expand all
+  const s2 = olNav.querySelector(".ol-depth"); if(s2) s2.focus({ preventScroll:true });
+});
 function olGo(id){
   const h = document.getElementById(id);
   if(!h) return;
@@ -5601,6 +5625,7 @@ if(olNav) olNav.addEventListener("click", e=>{
   if(e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   e.preventDefault();
   olCloseDrawer(false);
+  if(typeof navPush === "function") navPush(window.scrollY);
   olGo(a.dataset.target);
 });
 document.addEventListener("keydown", e=>{
@@ -6524,7 +6549,7 @@ window.addEventListener("scroll", () => {
   if(rvTopRaf) return;
   rvTopRaf = requestAnimationFrame(() => { rvTopRaf = 0; rvTopSync(); });
 }, { passive:true });
-rvTop.addEventListener("click", () => window.scrollTo({ top:0, behavior: rvReduce() ? "auto" : "smooth" }));
+rvTop.addEventListener("click", () => { if(typeof navPush === "function") navPush(window.scrollY); window.scrollTo({ top:0, behavior: rvReduce() ? "auto" : "smooth" }); });
 
 /* ---------- reading time (beside the document name) ---------- */
 const RV_CJK = /[぀-ヿ㐀-䶿一-鿿豈-﫿가-힯ｦ-ﾟ]/g;
@@ -10157,38 +10182,70 @@ function lkFlash(el){
   el.classList.add("link-flash"); lkFlashEl = el;
   lkFlashT = setTimeout(()=>{ el.classList.remove("link-flash"); if(lkFlashEl === el) lkFlashEl = null; }, 1300);
 }
+// Navigation history shared by every "jump" (links, outline, comment cards, back to top):
+// the Back pill stays until it's used, dismissed (x) or the reader scrolls back there by hand.
+const lkBackBar = $("#linkBackBar"), lkBackX = $("#linkBackX");
+function navHeadingAt(y){
+  let best = null;
+  for(const h of doc.querySelectorAll("h1,h2,h3,h4,h5,h6")){
+    if(h.closest(".no-anchor") || !h.getClientRects().length) continue;
+    if(h.getBoundingClientRect().top + window.scrollY <= y + 90) best = h; else break;
+  }
+  return best ? (olHeadingText(best) || "") : "";
+}
+function navPush(y){
+  y = Math.max(0, Math.round(y == null ? window.scrollY : y));
+  const top = lkStack[lkStack.length - 1];
+  if(top && Math.abs(top.y - y) < 40) return;                 // the same spot (e.g. link -> outline jump)
+  lkStack.push({ y, where: y < 120 ? t("link.backTop") : navHeadingAt(y) });
+  if(lkStack.length > 20) lkStack.shift();
+  lkShowBack();
+}
+window.navPush = navPush;
 function lkJump(t){
   if(typeof rvReveal === "function") rvReveal(t);   // READ: open a collapsed section first
-  lkStack.push(window.scrollY);
-  if(lkStack.length > 20) lkStack.shift();
+  navPush(window.scrollY);
   // an inline / empty anchor (<a name>, <span id>) is too small to see: flash its block instead
   const blk = /^(H[1-6]|P|LI|TD|TH|BLOCKQUOTE|PRE|TABLE|FIGURE|DD|DT|DIV|SECTION)$/.test(t.tagName) ? t
     : (t.closest("p,li,td,th,blockquote,pre,dd,dt,h1,h2,h3,h4,h5,h6") || t);
   if(t.id && document.getElementById(t.id) === t && blk === t) olGo(t.id);
   else blk.scrollIntoView({ behavior: olReducedMQ.matches ? "auto" : "smooth", block:"start" });
   lkFlash(blk);
-  lkShowBack();
 }
+let navReturning = 0;   // while scrolling back on purpose, don't treat it as "reached by hand"
 function lkShowBack(){
   clearTimeout(lkBackT);
-  lkBack.hidden = false;
-  requestAnimationFrame(()=>lkBack.classList.add("show"));
-  lkBackT = setTimeout(lkHideBack, 8000);
+  const top = lkStack[lkStack.length - 1]; if(!top){ lkHideBack(); return; }
+  const where = top.where ? t("link.backTo", { where: top.where }) : t("link.back");
+  lkBack.querySelector(".lb-txt").textContent = where;
+  lkBack.title = where;
+  lkBackBar.hidden = false;
+  void lkBackBar.offsetWidth;
+  lkBackBar.classList.add("show");
 }
 function lkHideBack(){
   clearTimeout(lkBackT);
-  lkBack.classList.remove("show");
+  lkBackBar.classList.remove("show");
   lkStack = [];
-  lkBackT = setTimeout(()=>{ if(!lkBack.classList.contains("show")) lkBack.hidden = true; }, 220);
+  lkBackT = setTimeout(()=>{ if(!lkBackBar.classList.contains("show")) lkBackBar.hidden = true; }, 220);
 }
 function lkGoBack(){
-  if(!lkStack.length){ lkHideBack(); return; }
-  const y = lkStack.pop();
-  window.scrollTo({ top:y, behavior: olReducedMQ.matches ? "auto" : "smooth" });
+  const top = lkStack.pop();
+  if(!top){ lkHideBack(); return; }
+  navReturning = Date.now();
+  window.scrollTo({ top:top.y, behavior: olReducedMQ.matches ? "auto" : "smooth" });
   if(lkStack.length) lkShowBack(); else lkHideBack();
 }
 lkBack.addEventListener("mousedown", e=>e.preventDefault());
 lkBack.addEventListener("click", lkGoBack);
+lkBackX.addEventListener("click", lkHideBack);
+// the reader scrolled back to the saved spot by hand -> that entry is done
+window.addEventListener("scroll", ()=>{
+  if(!lkStack.length || Date.now() - navReturning < 1500) return;
+  const top = lkStack[lkStack.length - 1], dy = Math.abs(window.scrollY - top.y);
+  if(!top.left){ if(dy > 200) top.left = true; return; }      // the jump itself starts right next to the saved spot
+  if(dy < 60){ lkStack.pop(); if(lkStack.length) lkShowBack(); else lkHideBack(); }
+}, { passive:true });
 
 // capture on document: decides before the comment handler on #doc (which is also capture)
 document.addEventListener("click", e=>{
@@ -10217,7 +10274,7 @@ document.addEventListener("click", e=>{
 }, true);
 document.addEventListener("keydown", e=>{
   if(e.key === "Escape" && lkCur){ lkHide(true); return; }
-  if(e.altKey && e.key === "ArrowLeft" && !lkBack.hidden && lkBack.classList.contains("show")){
+  if(e.altKey && e.key === "ArrowLeft" && !lkBackBar.hidden && lkBackBar.classList.contains("show")){
     e.preventDefault(); e.stopPropagation(); lkGoBack();
   }
 }, true);

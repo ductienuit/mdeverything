@@ -323,7 +323,9 @@
     "collapse": "Collapse outline",
     "empty_html": "No headings in this document yet. Add <code>#</code>, <code>##</code> or <code>###</code> headings to get an outline.",
     "expand": "Expand outline",
-    "aria": "Document outline"
+    "aria": "Document outline",
+    "depth": "Heading levels shown",
+    "depthOpt": "H1–H{n}"
   },
   "rview": {
     "fsOpen": "Open diagram {n} full screen",
@@ -776,7 +778,10 @@
     "copied": "Link copied",
     "copyFailed": "Couldn't copy the link",
     "backAria": "Back to where you were (Alt+Left)",
-    "back": "Back"
+    "back": "Back",
+    "backTo": "Back to {where}",
+    "backTop": "top of the page",
+    "backHide": "Hide"
   },
   "table": {
     "region": "Table {n}",

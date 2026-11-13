@@ -323,7 +323,9 @@
     "collapse": "Recolher sumário",
     "empty_html": "Este documento ainda não tem títulos. Adicione títulos <code>#</code>, <code>##</code> ou <code>###</code> para ter um sumário.",
     "expand": "Expandir sumário",
-    "aria": "Sumário do documento"
+    "aria": "Sumário do documento",
+    "depth": "Níveis de título exibidos",
+    "depthOpt": "H1–H{n}"
   },
   "rview": {
     "fsOpen": "Abrir o diagrama {n} em tela cheia",
@@ -776,7 +778,10 @@
     "copied": "Link copiado",
     "copyFailed": "Não foi possível copiar o link",
     "backAria": "Voltar para onde você estava (Alt+Left)",
-    "back": "Voltar"
+    "back": "Voltar",
+    "backTo": "Voltar para {where}",
+    "backTop": "o topo da página",
+    "backHide": "Ocultar"
   },
   "table": {
     "region": "Tabela {n}",

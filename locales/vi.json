@@ -323,7 +323,9 @@
     "collapse": "Thu gọn mục lục",
     "empty_html": "Tài liệu này chưa có tiêu đề nào. Thêm tiêu đề <code>#</code>, <code>##</code> hoặc <code>###</code> để có mục lục.",
     "expand": "Mở rộng mục lục",
-    "aria": "Mục lục tài liệu"
+    "aria": "Mục lục tài liệu",
+    "depth": "Số cấp heading hiển thị",
+    "depthOpt": "H1–H{n}"
   },
   "rview": {
     "fsOpen": "Mở sơ đồ {n} toàn màn hình",
@@ -776,7 +778,10 @@
     "copied": "Đã sao chép liên kết",
     "copyFailed": "Không sao chép được liên kết",
     "backAria": "Quay lại chỗ bạn đang đọc (Alt+Left)",
-    "back": "Quay lại"
+    "back": "Quay lại",
+    "backTo": "Quay lại: {where}",
+    "backTop": "đầu trang",
+    "backHide": "Ẩn"
   },
   "table": {
     "region": "Bảng {n}",

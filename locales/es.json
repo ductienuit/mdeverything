@@ -323,7 +323,9 @@
     "collapse": "Contraer índice",
     "empty_html": "Este documento aún no tiene títulos. Agrega títulos <code>#</code>, <code>##</code> o <code>###</code> para generar un índice.",
     "expand": "Expandir índice",
-    "aria": "Índice del documento"
+    "aria": "Índice del documento",
+    "depth": "Niveles de título visibles",
+    "depthOpt": "H1–H{n}"
   },
   "rview": {
     "fsOpen": "Abrir el diagrama {n} a pantalla completa",
@@ -776,7 +778,10 @@
     "copied": "Enlace copiado",
     "copyFailed": "No se pudo copiar el enlace",
     "backAria": "Volver a donde estabas (Alt+Izquierda)",
-    "back": "Volver"
+    "back": "Volver",
+    "backTo": "Volver a {where}",
+    "backTop": "el inicio de la página",
+    "backHide": "Ocultar"
   },
   "table": {
     "region": "Tabla {n}",

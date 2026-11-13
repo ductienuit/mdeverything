@@ -323,7 +323,9 @@
     "collapse": "アウトラインを折りたたむ",
     "empty_html": "この文書にはまだ見出しがありません。<code>#</code>、<code>##</code>、<code>###</code> の見出しを追加するとアウトラインが表示されます。",
     "expand": "アウトラインを展開",
-    "aria": "文書のアウトライン"
+    "aria": "文書のアウトライン",
+    "depth": "表示する見出しの階層",
+    "depthOpt": "H1–H{n}"
   },
   "rview": {
     "fsOpen": "図 {n} を全画面で表示",
@@ -776,7 +778,10 @@
     "copied": "リンクをコピーしました",
     "copyFailed": "リンクをコピーできませんでした",
     "backAria": "元の位置に戻る（Alt+Left）",
-    "back": "戻る"
+    "back": "戻る",
+    "backTo": "戻る：{where}",
+    "backTop": "ページの先頭",
+    "backHide": "閉じる"
   },
   "table": {
     "region": "表 {n}",
