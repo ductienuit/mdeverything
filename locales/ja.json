@@ -449,7 +449,13 @@
     "noai": "AIの回答なし",
     "sugg": "未処理の修正案",
     "suggTitle": "まだ承認も却下もしていないAIの修正案",
-    "clear": "絞り込みを解除"
+    "clear": "絞り込みを解除",
+    "groupComments": "コメント",
+    "groupAi": "AI",
+    "clearOne": "絞り込みを解除",
+    "status": "{total} 件中 {shown} 件を表示",
+    "statusWith": "{total} 件中 {shown} 件を表示 · {filter}",
+    "more": "その他のオプション"
   },
   "search": {
     "placeholder": "コメントを検索"

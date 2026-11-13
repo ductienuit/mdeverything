@@ -449,7 +449,13 @@
     "noai": "Sem resposta da IA",
     "sugg": "Sugestões pendentes",
     "suggTitle": "Edições sugeridas pela IA ainda não aceitas nem rejeitadas",
-    "clear": "Limpar filtros"
+    "clear": "Limpar filtros",
+    "groupComments": "Comentários",
+    "groupAi": "IA",
+    "clearOne": "Limpar filtro",
+    "status": "Mostrando {shown} de {total}",
+    "statusWith": "Mostrando {shown} de {total} · {filter}",
+    "more": "Mais opções"
   },
   "search": {
     "placeholder": "Buscar comentários"

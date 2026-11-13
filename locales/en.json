@@ -449,7 +449,13 @@
     "noai": "No AI answer",
     "sugg": "Pending suggestions",
     "suggTitle": "AI suggested edits not yet accepted or rejected",
-    "clear": "Clear filters"
+    "clear": "Clear filters",
+    "groupComments": "Comments",
+    "groupAi": "AI",
+    "clearOne": "Clear filter",
+    "status": "Showing {shown} of {total}",
+    "statusWith": "Showing {shown} of {total} · {filter}",
+    "more": "More options"
   },
   "search": {
     "placeholder": "Search comments"

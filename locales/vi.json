@@ -449,7 +449,13 @@
     "noai": "Chưa có trả lời AI",
     "sugg": "Đề xuất đang chờ",
     "suggTitle": "Đề xuất sửa của AI chưa được chấp nhận hay từ chối",
-    "clear": "Xóa bộ lọc"
+    "clear": "Xóa bộ lọc",
+    "groupComments": "Bình luận",
+    "groupAi": "AI",
+    "clearOne": "Bỏ lọc",
+    "status": "Đang hiện {shown}/{total}",
+    "statusWith": "Đang hiện {shown}/{total} · {filter}",
+    "more": "Thêm tuỳ chọn"
   },
   "search": {
     "placeholder": "Tìm bình luận"
